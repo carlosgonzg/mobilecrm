@@ -9,11 +9,11 @@ var config = {
 	},
 	production : {
 		APP_PORT : process.env.PORT || 80,
-		DB_URL: 'localhost:270017/mobilecrm',
-		SERVER_URL: 'http://localhost:270017/mobilecrm',
-		MAIL_USR: 'carltronik@gmail.com',
+		DB_URL: 'ds161315.mlab.com:61315/heroku_cqkmxzc1',
+		SERVER_URL: 'https://mobileonecrm.herokuapp.com',
+		MAIL_USR: 'info@mobileonecontainers.com',
 		MAIL_PASS: 'ElMundoGira2012!',
-		PUBLIC_PATH: 'public/app-dist'
+		PUBLIC_PATH: 'public/app'
 	}
 };
 
