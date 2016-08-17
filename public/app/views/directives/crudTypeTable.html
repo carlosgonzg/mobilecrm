@@ -1,0 +1,296 @@
+<link rel="stylesheet" type="text/css" href="css/crudtypetable.css">
+
+<div class="panel no-margin-bottom">
+    <div class="panel-body panel-crud">
+        <div class="row">
+            <div class="col-sm-3 col-lg-3">
+                <div class="input-group crud-search">
+                    <span class="input-group-addon">Buscar: </span>
+                    <input class="form-control" type="text" ng-model="params.search" ng-keyup="$event.keyCode == 13 ? search() : null"></input>
+                    <span class="input-group-addon btn btn-default" ng-click="search()"><i class="fa fa-search"></i></span>
+                </div>
+            </div>
+            <!-- <div class="col-sm-3 col-lg-3"> -->
+                <!-- <div class="input-group crud-search"> -->
+                    <!-- <span class="input-group-addon">Doctor: </span> -->
+                    <!-- <input class="form-control" type="text" ng-model="params.search" ng-keyup="$event.keyCode == 13 ? search() : null"></input> -->
+                    <!-- <entitypicker ng-model="doctor" ws-class="wsClass" ws-fields="wsFields" ng-change="selectedDoctor(doctor)"></entitypicker>  -->
+                    <!-- <span class="input-group-addon btn btn-default" ng-click="search()"><i class="fa fa-search"></i></span> -->
+                <!-- </div> -->
+            <!-- </div> -->
+            
+            <!-- <div class="col-sm-3 col-lg-3">
+                <div class="input-group crud-search">
+                    <span class="input-group-addon">Servicio: </span>
+                    <input class="form-control" type="text" ng-model="servicio" ng-keyup="$event.keyCode == 13 ? search() : null"></input>
+                    <span class="input-group-addon btn btn-default" ng-click="selectedServicio(servicio)"><i class="fa fa-search"></i></span>
+                </div>
+            </div> -->
+            <!-- <div class="col-sm-4 col-lg-4"> -->
+                <!-- <div class="input-group pull-right"> -->
+                    <!-- No Code -->
+                <!-- </div> -->
+            <!-- </div> -->
+            <div class="col-sm-3 col-lg-6 text-right pull-right">
+                <!-- <button ng-click="loadExcel()" class="btn btn-default">
+                    <i class="fa fa-plus"></i> Descargar
+                </button>
+                <button ng-click="loadExcel()" class="btn btn-default">
+                    <i class="fa fa-plus"></i> Cargar
+                </button> -->
+                <button type="button" class="btn btn-warning" ng-click="addElement()">
+                    <i class="fa fa-plus"></i> Agregar
+                </button>
+            </div>
+        </div>
+        <form role="form" id="myForm" name="myForm" novalidate angular-validator angular-validator-submit="save()">
+
+            <table cellspacing="0" class="table table-crud  tableNoBottom crudTable table-condensed table-hover">
+                <thead>
+                    <tr>
+                        <!-- Muestra el Id o no -->
+                        <th ng-if="show" class="col-md-1" ng-click="filter('_id')">#</th>
+                        <!-- Aqui van los nombres de los Campos -->
+                        <th class="col-xs-2" ng-repeat="field in fields" ng-click="filter(field.name)">{{field.title}}</th>
+                        <th class="col-xs-1">
+                            <div class="input-group f-right"></div>
+                        </th>
+                    </tr>
+                </thead>
+                <tr ng-if="objeto.edit" class="currentRow">
+                    <!-- Id del Elemento -->
+                    <td ng-if="show" class="eliminar-hover delete-td"></td>
+                    <!-- Aqui van los Campos de los Elementos -->
+                    <td ng-repeat="field in fields" class="editable first-column delete-td">
+
+                        <!-- Inputs No Numericos -->
+                        <span ng-if="field.type=='text' && !field.decimalsOnly">
+                            <input type="text" class="form-control input-sm" ng-model="objeto[field.name]" name="{{objeto[field.name]}}" maxlength="{{field.maxlength}}" ng-required="field.required" />
+                        </span>
+
+                        <!-- Inputs Numericos -->
+                        <span ng-if="field.type=='text' && field.decimalsOnly">
+                            <input type="text" class="form-control input-sm" ng-model="objeto[field.name]" name="{{objeto[field.name]}}" maxlength="{{field.maxlength}}" decimals-only='field.decimalsOnly' ng-required="field.required" />
+                        </span>
+
+                        <!-- Inputs Numericos -->
+                        <span ng-if="field.type=='number'">
+                            <input type="number" class="form-control input-sm" ng-model="objeto[field.name]" name="{{field.name + $index}}" step="field.step" ng-required="field.required" />
+                        </span>
+
+                        <!-- Inputs Fecha -->
+                        <span ng-if="field.type=='date'">
+                            <input type="date" class="form-control input-sm" ng-model="objeto[field.name]" name="{{field.name + $index}}" maxlength="{{field.maxlength}}" ng-required="field.required" />
+                        </span>
+
+                        <!-- Inputs Select -->
+                        <span ng-if="field.type=='select'">
+                            <!-- <ui-select ng-model="objeto[field.name]" ng-required="field.required" append-to-body name="{{field.name + ' select'}}" >
+                                <ui-select-match placeholder="Elegir {{field.title}}...">
+                                    {{$select.selected.label}}
+                                </ui-select-match>
+                                <ui-select-choices repeat="option.value as option in field.options  | filter: $select.search | limitTo: 1">
+                                    <span ng-bind-html="option.label | highlight: $select.search"></span>
+                                </ui-select-choices>
+                            </ui-select> -->
+
+                            <ui-select ng-model="objeto[field.name]" ng-required="field.required" append-to-body name="{{field.name + ' select'}}">
+                                <ui-select-match placeholder="Elegir {{field.title}}...">
+                                    {{field.config? $select.selected[field.config.label] : $select.selected.label}}
+                                </ui-select-match>
+                                <ui-select-choices repeat="option.value as option in field.options | filter: $select.search | limitTo: 20">
+                                    <span ng-bind-html="option.label | highlight: $select.search"></span>
+                                </ui-select-choices>
+                            </ui-select>
+                        </span>
+
+                        <span ng-if="field.type=='collection'">
+                            <ui-select ng-model="objeto[field.name]" ng-required="field.required" append-to-body name="{{field.name + ' select'}}" >
+                                <ui-select-match placeholder="Elegir {{field.title}}...">
+                                    {{$select.selected.label}}
+                                </ui-select-match>
+                                <ui-select-choices repeat="option.value as option in arreglos[field.name] | filter: $select.search"
+                                    refresh="filterCollection($select.search,field.name,field.config,objeto)"
+                                    refresh-delay="200">
+                                    <span ng-bind-html="option.label | highlight: $select.search"></span>
+                                </ui-select-choices>
+                            </ui-select>
+                        </span>
+
+                        <span ng-if="field.type=='collection-multiple'">
+                            <ui-select multiple ng-model="objeto[field.name]"
+                                     ng-required="field.required" append-to-body name="{{field.name + ' select'}}" >
+                                <ui-select-match placeholder="Elegir {{field.title}}...">
+                                    {{$item.label}}
+                                </ui-select-match>
+                                <ui-select-choices repeat="option.value as option in arreglos[field.name] | filter: $select.search"
+                                    refresh="filterCollection($select.search,field.name,field.config,objeto)"
+                                    refresh-delay="200">
+                                    <span ng-bind-html="option.label | highlight: $select.search"></span>
+                                </ui-select-choices>
+                            </ui-select>
+                        </span>
+
+                        <!-- Inputs Checkbox -->
+                        <span ng-if="field.type=='checkbox'">
+                            <input ng-model="objeto[field.name]" type="checkbox">
+                        </span>
+
+                        <!-- Inputs Modal -->
+                        <span ng-if="field.type=='modal'">
+                            <button type="button" class="btn btn-xs btn-primary" ng-click="openModal(objeto[field.name]);$event.stopPropagation()" disabled>
+                                {{field.title}}
+                            </button>
+                        </span>
+                    </td>
+                    <td class="ta_right first-column delete-td text-right">
+                        <!-- Cancelar Elemento -->
+                        <button class="btn btn-sm ta_right btn-danger" ng-click="cancelEdition(objeto)">
+                            <i class="fa fa-undo"></i>
+                        </button>
+                        <!-- Guardar Elemento -->
+                        <button ng-if="objeto.edit" class="btn btn-sm ta_right btn-primary" type="submit" name="save" value="crt">
+                            <i class="fa fa-check"></i>
+                        </button>
+                    </td>
+                </tr>
+                <tr class="visibility-hover" ng-repeat="elem in list track by $index" ng-init='trId=$index' ng-click="editElement(elem)" ng-mouseover="clear$index= true" ng-mouseleave="clear$index = false" id='{{$index}}' ng-class="{current:elem.edit}">
+                    <!-- Muestra el Id o no -->
+                    <td ng-if="show">{{elem._id}} </td>
+                    <!-- Aqui van los nombres de los Campos -->
+                    <td ng-repeat="field in fields">
+
+
+                        <!-- Inputs No Numericos -->
+                        <span ng-if="field.type=='text' && field.decimalsOnly!= 'decimals-only'">
+                            <input type="text" class="form-control input-sm" ng-model="elem[field.name]" name="{{elem[field.name]}}" maxlength="{{field.maxlength}}" ng-required="field.required" />
+                        </span>
+
+                        <!-- Inputs Numericos -->
+                        <span ng-if="field.type=='text' && field.decimalsOnly== 'decimals-only'">
+                            <input type="text" class="form-control input-sm" ng-model="elem[field.name]" name="{{elem[field.name]}}" maxlength="{{field.maxlength}}" decimals-only='field.decimalsOnly' ng-required="field.required" />
+                        </span>
+
+                        <!-- Inputs Numericos -->
+                        <span ng-if="field.type=='number'">
+                            <input type="number" class="form-control input-sm" ng-model="elem[field.name]" name="{{elem[field.name]}}" maxlength="{{field.maxlength}}" ng-required="field.required" />
+                        </span>
+
+                        <!-- Inputs Fecha -->
+                        <span ng-if="field.type=='date'">
+                            <input type="date" class="form-control input-sm" ng-model="elem[field.name]" name="{{field.name + $index}}" maxlength="{{field.maxlength}}" ng-required="field.required" />
+                        </span>
+
+                        <!-- Inputs Select -->
+                        <!-- <span ng-if="field.type=='select'">
+                            <select class="form-control input-sm" ng-model="elem[field.name]" name="{{elem[field.name]}}" ng-options="e.value as e.label for e in field.options" ng-required="field.required" class="table-editable-select"></select>
+                        </span> -->
+
+                        <!-- Inputs Icon -->
+                        <!-- Elementos Checkbox -->
+                        <span ng-if="field.type=='icon'">
+                            <sc-icon-selector ng-model="elem[field.name]" icons="field.options"></sc-icon-selector>
+                        </span>
+
+                        <!-- Inputs Checkbox -->
+                        <span ng-if="field.type=='checkbox'">
+                            <input class="form-control input-sm" type="checkbox" ng-model="elem[field.name]" ng-disabled="elem.edit" ng-selected="elem[field.name] == true" />
+                        </span>
+
+                        <!-- Inputs Select -->
+                        <span ng-if="field.type=='select'">
+                            <!-- <ui-select ng-model="elem[field.name]" ng-required="field.required" append-to-body name="{{field.name + ' select'}}" >
+                                <ui-select-match placeholder="Elegir {{field.title}}...">
+                                    {{field.config? $select.selected[field.config.label] : $select.selected.label}}
+                                    {{$select.selected.label}}
+                                </ui-select-match>
+                                <ui-select-choices repeat="option.value as option in field.options  | filter: $select.search">
+                                    <span ng-bind-html="option.label | highlight: $select.search"></span>
+                                </ui-select-choices>
+                            </ui-select> -->
+                            <ui-select ng-model="elem[field.name]" ng-required="field.required" append-to-body name="{{field.name + ' select'}}">
+                                <ui-select-match placeholder="Elegir {{field.title}}...">
+                                    {{field.config? $select.selected[field.config.label] : $select.selected.label}}
+                                </ui-select-match>
+                                <ui-select-choices repeat="option.value as option in field.options | filter: $select.search | limitTo: 20">
+                                    <span ng-bind-html="option.label | highlight: $select.search"></span>
+                                </ui-select-choices>
+                            </ui-select>
+                        </span>
+
+                        <span ng-if="field.type=='collection'">
+                            <ui-select ng-model="elem[field.name]" ng-required="field.required" append-to-body name="{{field.name + ' select'}}" >
+                                <ui-select-match placeholder="Elegir {{field.title}}...">
+                                    {{$select.selected.label}}
+                                </ui-select-match>
+                                <ui-select-choices repeat="option.value as option in arreglos[field.name] | filter: $select.search track by option.value"
+                                    refresh="filterCollection($select.search,field.name,field.config,elem)"
+                                    refresh-delay="200"
+                                    title="{{option.label}}">
+                                    <span title="{{option.label}}" ng-bind-html="option.label | highlight: $select.search"></span>
+                                </ui-select-choices>
+                            </ui-select>
+                        </span>
+
+                        <span ng-if="field.type=='collection-multiple'">
+                            <ui-select multiple ng-model="elem[field.name]"
+                                     ng-required="field.required" append-to-body name="{{field.name + ' select'}}" >
+                                <ui-select-match placeholder="Elegir {{field.title}}...">
+                                    {{$item.value}}
+                                </ui-select-match>
+                                <ui-select-choices repeat="option.value as option in arreglos[field.name] | filter: $select.search track by option.value"
+                                    refresh="filterCollection($select.search,field.name,field.config,elem)"
+                                    refresh-delay="200">
+                                    <span ng-bind-html="option.label | highlight: $select.search"></span>
+                                </ui-select-choices>
+                            </ui-select>
+                        </span>
+
+                        <!-- Inputs Modal -->
+                        <span ng-if="field.type=='modal'">
+                            <button type="button" class="btn btn-xs btn-primary" ng-click="openModal(field.config, elem);$event.stopPropagation()" ng-disabled="currentElement._id && currentElement._id != elem._id">
+                                {{field.title}}
+                            </button>
+                        </span>
+
+                    </td>
+                    <td class="text-right">
+                        <!-- Eliminar Elemento -->
+                        <button class="btn btn-sm btn-default visibility-hidden" type="button" ng-model="clear$index" ng-if="clear$index && !elem.edit" ng-click="editElement(elem);$event.stopPropagation()">
+                            <span class="fa fa-pencil fa-lg"></span>
+                        </button>
+                        <button class="btn btn-sm btn-default visibility-hidden" type="button" ng-model="clear$index" ng-if="clear$index && !elem.edit">
+                            <span class="fa fa-times fa-lg" ng-click="deleteElement(elem);$event.stopPropagation()"></span>
+                        </button>
+                        <!-- Cancelar Elemento -->
+                        <button type="button" ng-if="elem.edit" class="btn btn-sm ta_right btn-danger" ng-click="cancelEdition(elem);$event.stopPropagation()">
+                            <i class="fa fa-undo"></i>
+                        </button>
+                        <!-- Guardar Elemento -->
+                        <button type="submit" ng-if="elem.edit" class="btn btn-sm ta_right btn-primary" name="save" value="crtr">
+                            <i class="fa fa-check"></i>
+                        </button>
+                    </td>
+                </tr>
+            </table>
+    </div>
+</div>
+</form>
+<div class="col-xs-12 center-element paginator">
+    <div class="btn-group margin-top-15">
+
+        <!-- Pagina Anterior -->
+        <button type="button" class="btn btn-default disabled" ng-class="prevPageDisabled()" ng-click="prevPage()">
+            <i class="fa fa-angle-double-left"></i>
+        </button>
+
+        <!-- Pagina Actual | Total de Paginas -->
+        <button type="button" class="btn btn-default ng-binding" disabled="">{{currentPage}}/{{maxPage}}</button>
+
+        <!-- Proxima Pagina -->
+        <button type="button" class="btn btn-default" ng-class="nextPageDisabled()" ng-click="nextPage()">
+            <i class="fa fa-angle-double-right"></i>
+        </button>
+
+    </div>
+</div>
