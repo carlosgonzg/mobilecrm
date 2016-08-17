@@ -1,6 +1,6 @@
 {
-  "name": "pmcore",
-  "version": "0.0.0",
+  "name": "mobileonecrm",
+  "version": "0.1.0",
   "dependencies": {
     "MD5": "^1.3.0",
     "bcryptjs": "^2.3.0",
@@ -33,6 +33,22 @@
     "node": ">=0.10.0"
   },
   "scripts": {
-    "start": "nodemon server.js"
-  }
+    "start": "node server.js"
+  },
+  "description": "MobileOne CRM Application",
+  "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/carlosgonzg/mobilecrm.git"
+  },
+  "keywords": [
+    "mobileone",
+    "heroku"
+  ],
+  "author": "Carlos Gonzalez",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/carlosgonzg/mobilecrm/issues"
+  },
+  "homepage": "https://github.com/carlosgonzg/mobilecrm#readme"
 }
