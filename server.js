@@ -55,11 +55,11 @@ d.run(function () {
 	require('./api/ws/user')('/api/user', app, secret);
 	require('./api/ws/role')('/api/role', app);
 	require('./api/ws/option')('/api/option', app);
-	require('./api/ws/roleOptions')('/api/roleoptions', app);
+	require('./api/ws/roleOptions')('/api/roleOptions', app);
 	require('./api/ws/country')('/api/country', app);
 	require('./api/ws/state')('/api/state', app);
 	require('./api/ws/city')('/api/city', app);
-	require('./api/ws/orderservice')('/api/orderservice', app);
+	require('./api/ws/orderService')('/api/orderService', app);
 	require('./api/ws/item')('/api/item', app);
 
 	//Inicializando Server
