@@ -13,7 +13,7 @@ function Crud(db, table, userLogged, filterByUser) {
 	this.uniqueFields = [];
 	this.schema = {};
 	this.userLogged = userLogged || {};
-	this.filterByUser = !filterByUser;
+	this.filterByUser = filterByUser;
 }
 
 //Funcion para manejar las respuestas de Mongo
@@ -33,6 +33,53 @@ function handleMongoResponse(deferred) {
 		}
 	};
 }
+
+var accented = {
+  'A': '[aàáâäãÅåæ]',
+  'B': '[bß]',
+  'C': '[cçÇ]',
+  'D': '[d]',
+  'E': '[eèéêëÆæœ]',
+  'F': '[f]',
+  'G': '[g]',
+  'H': '[h]',
+  'I': '[iíïî]',
+  'J': '[j]',
+  'K': '[k]',
+  'L': '[l]',
+  'M': '[m]',
+  'N': '[nñ]',
+  'O': '[oòóõöôØøœ]',
+  'P': '[p]',
+  'Q': '[q]',
+  'R': '[r]',
+  'S': '[s]',
+  'T': '[t]',
+  'U': '[uûüùú]',
+  'V': '[v]',
+  'W': '[w]',
+  'X': '[x]',
+  'Y': '[yýÿ]',
+  'Z': '[z]'
+};
+
+var convertStringRegExp = function (string) {
+  var _string = '';
+  string = (string || '').toUpperCase();
+  for (var x in string) {
+    _string = _string.concat(accented[string[x]] || string[x]);
+  }
+
+  var split = _string.split(' ');
+  for (var x in split) {
+    split[x] = '(?=.*' + split[x] + ')';
+  }
+  var _string = '';
+  for (var x in split) {
+    _string = _string.concat(split[x]);
+  }
+  return _string;
+};
 
 //Funcion que verifica si el objeto a ser insertado ya lo esta.
 var checkUniqueFields = function (object, crud) {
@@ -297,6 +344,7 @@ Crud.prototype.find = function (query, sort) {
 	}
 	
 	var sortObj = sort ? sort : [['_id', 'asc']];
+	console.log('lequq', query)
 	this.db.get(this.table).find(query, {
 		sort : sortObj
 	}, handleMongoResponse(deferred));
@@ -322,248 +370,247 @@ Crud.prototype.count = function (query) {
 //
 
 Crud.prototype.paginatedSearch = function (query) {
-	var deferred = q.defer(),
-	where = {};
+  try {
+    var deferred = q.defer();
+    var where = {};
+    if (query.filter) {
+      if (typeof query.filter == 'string') {
+        try {
+          where = JSON.parse(query.filter);
+        } catch (e) {
+        }
+      } else {
+        where = query.filter;
+      }
+    }
+    var search = query.search;
+    var dateRange = query.dateRange;
+    var fields = query.fields;
+    var field = {};
 
-	if (query.filter !== undefined) {
-		if (typeof query.filter === 'string') {
-			try {
-				where = JSON.parse(query.filter);
-			} catch (e) {}
-		} else {
-			where = query.filter;
-		}
-		//where = typeof query.filter == 'string' ? try {JSON.parse(query.filter) } catch (e) {console.log(e) } : query.filter;
-	}
+    // Pagination Limits
+    var pagination = {
+      limit: query.limit,
+      skip: query.skip,
+      sort: query.sort
+    }
 
-	var search = query.search,
-	fields = query.fields,
-	dateRange = query.dateRange,
-	startDate = query.startDate,
-	endDate = query.endDate,
-	pagination = {
-		limit : query.limit,
-		skip : query.skip,
-		sort : query.sort
-	},
-	field = {};
-	if (!query.all) {
-		if (Array.isArray(fields) && fields.length > 0) {
+    if (!query.all) {
+      if (Array.isArray(fields) && fields.length > 0) {
+        fields.forEach(function (item) {
+          field[item] = 1;
+        });
+        pagination.fields = field;
+      }
+    }
+    where = joinObjects(where, this.where);
+    if (query.noAuth) {
+      
+    }
+    // Filtro por multiples campos
+    if (search)
+      search = (isNaN(search)) ? convertStringRegExp(search) : Number(search);
 
-			fields.forEach(function (item) {
-				field[item] = 1;
-			});
+    if (Array.isArray(fields) && fields.length > 0 && search) {
+      where.$or = where.$or || [];
+      fields.forEach(function (field) {
+        var obj = {};
+        if (isNaN(search)) {
+          obj[field] = {
+            $regex: search,
+            $options: 'i'
+          }
 
-			pagination.fields = field;
+        } else { //Es un numero
 
-		}
-	}
-	//Login Credentials
+          //Fix: To ignore documents where the property is missing
+          var tmp = "try { return String(this.XFIELD).match(XSEARCH) } catch (e) { return false}";
 
-	// Filtro por multiples campos
-	if (Array.isArray(fields) && fields.length > 0 && search) {
-		where.$or = [];
-		fields.forEach(function (field) {
-			var obj = {};
-			// MEJORAR LA BUSQUEDA
-			if (isNaN(search)) {
-				obj[field] = {
-					$regex : search,
-					$options : 'i'
-				};
-			} else {
-				obj[field] = parseFloat(search);
-			}
+          tmp = tmp.replace(/XFIELD/g, field);
+          tmp = tmp.replace(/XSEARCH/g, search);
 
-			where.$or.push(obj);
-		});
-	}
+          obj = {
+            $where: tmp
+          }
+        }
+        where.$or.push(obj);
+      });
+    }
+    if (where.$or && where.$or.length == 0) {
+      delete where.$or;
+    }
+    // Filtro por multiples campos para fecha
+    if (dateRange != undefined && dateRange != "") {
+      where.$and = (where.$and) ? where.$and : [];
+      var fieldsRange = dateRange.fields;
 
-	// Filtro por multiples campos para fecha
-	if (dateRange !== undefined && dateRange !== "") {
-		where.$and = [];
-		var fieldsRange = dateRange.fields,
-		fechaInicio = dateRange.start.toString().split('-'),
-		fechaFin = dateRange.end.toString().split('-'),
-		objectStart = {
-			dia : fechaInicio[2].substring(0, 2),
-			mes : fechaInicio[1],
-			ano : fechaInicio[0]
-		},
-		objectEnd = {
-			dia : fechaFin[2].substring(0, 2),
-			mes : fechaFin[1],
-			ano : fechaFin[0]
-		};
-		fieldsRange.forEach(function (field) {
-			var obj = {};
-			obj[field] = {
-				$gte : new Date(objectStart.ano, math.sub(objectStart.mes, 1), objectStart.dia, 0, 0, 0),
-				$lte : new Date(objectEnd.ano, math.sub(objectEnd.mes, 1), objectEnd.dia, 23, 59, 59)
-			};
-			where.$and.push(obj);
-		});
-	}
+      var fechaInicio = (dateRange.start) ? moment(dateRange.start) : null;
+      var fechaFin = (dateRange.end) ? moment(dateRange.end) : null;
+      var objectStart = (fechaInicio) ? new Date(fechaInicio) : null;
+      var objectEnd = (fechaFin) ? new Date(fechaFin) : null;
+      fieldsRange.forEach(function (field) {
+        var obj = {};
+        obj[field] = {};
+        if (objectStart) {
+          obj[field].$gte = objectStart;
+        }
+        if (objectEnd) {
+          obj[field].$lte = objectEnd
+        }
+        where.$and.push(obj);
+      })
+    }
+		console.log(JSON.stringify(where));
+    this.db.get(this.table).find(where, pagination, handleMongoResponse(deferred));
 
-	if (startDate !== undefined && startDate !== "") {
-		if (where.$and === undefined) {
-			where.$and = [];
-		}
-		var from = startDate.date.toString().split('-'),
-		obj = {
-			dia : from[2].substring(0, 2),
-			mes : from[1],
-			ano : from[0]
-		};
-		var date = {};
-		date[startDate.field] = {
-			$gte : new Date(obj.ano, math.sub(obj.mes, 1), obj.dia, 0, 0, 0)
-		};
-		where.$and.push(date);
+  } catch (e) {
+    deferred.reject(e);
+  }
 
-	}
-
-	if (endDate != undefined && endDate != "") {
-		if (where.$and == undefined) {
-			where.$and = [];
-		}
-		var from = endDate.date.toString().split('-');
-		var obj = {
-			dia : from[2].substring(0, 2),
-			mes : from[1],
-			ano : from[0]
-		};
-		var date = {};
-		date[endDate.field] = {
-			$lte : new Date(obj.ano, math.sub(obj.mes, 1), obj.dia, 23, 59, 59)
-		};
-		where.$and.push(date);
-	}
-
-	if(this.userLogged && this.userLogged._id && this.userLogged.role._id != 1 && this.filterByUser){
-		where.$and['createdBy._id'] = this.userLogged._id;
-	}
-	this.db.get(this.table).find(where, pagination, handleMongoResponse(deferred));
-
-	return deferred.promise;
+  return deferred.promise;
 };
 
+
+function joinObjects(objTo, objFrom) {
+  for (var i in objFrom) {
+    //Si la propiedad ya existe en el objeto base
+    if (objTo[i]) {
+      //Verificar si es un arreglo y si el que se quiere copiar es un arreglo concatenar
+      if (Array.isArray(objTo[i]) && Array.isArray(objFrom[i])) {
+        objTo[i] = objTo[i].concat(objFrom[i]);
+      }
+      //De lo contrario agregar la propiedad
+    } else {
+      objTo[i] = objFrom[i];
+    }
+  };
+  return objTo;
+};
 Crud.prototype.paginatedCount = function (query) {
-	var deferred = q.defer(),
-	where = {};
-	//console.log(query.filter);
-	if (query.filter != undefined) {
-		if (typeof query.filter == 'string') {
-			try {
-				where = JSON.parse(query.filter);
-			} catch (e) {
-				console.log('\n **** Error: ');
-			}
-		} else {
-			where = query.filter;
-			console.log('not string');
-		}
-		//where = typeof query.filter == 'string' ? try {JSON.parse(query.filter) } catch (e) {console.log(e) } : query.filter;
-	}
+  var deferred = q.defer();
 
-	var search = query.search,
-	fields = query.fields,
-	dateRange = query.dateRange,
-	startDate = query.startDate,
-	endDate = query.endDate,
-	pagination = {
-		limit : query.limit,
-		skip : query.skip,
-		sort : query.sort
-	}
+  var where = {};
+  if (query.filter != undefined) {
+    if (typeof query.filter == 'string') {
+      try {
+        where = JSON.parse(query.filter);
+      } catch (e) {
+      }
+    } else {
+      where = query.filter;
+    }
+  }
+  var search = query.search,
+    fields = query.fields,
+    dateRange = query.dateRange,
+    startDate = query.startDate,
+    endDate = query.endDate,
+    pagination = {
+      limit: query.limit,
+      skip: query.skip,
+      sort: query.sort
+    }
 
-	// Filtro por multiples campos
-	if (Array.isArray(fields) && fields.length > 0 && search) {
-		where.$or = [];
-		fields.forEach(function (field) {
-			var obj = {};
-			// MEJORAR LA BUSQUEDA
-			if (isNaN(search)) {
-				obj[field] = {
-					$regex : search,
-					$options : 'i'
-				}
-			} else {
-				obj[field] = parseFloat(search);
-			}
+  // Login Credentials
+  where = joinObjects(where, this.where);
+  // Filtro por multiples campos
+  if (Array.isArray(fields) && fields.length > 0 && search) {
+    where.$or = [];
+    fields.forEach(function (field) {
+      var obj = {};
+      // MEJORAR LA BUSQUEDA
+      if (isNaN(search)) {
+        obj[field] = {
+          $regex: search,
+          $options: 'i'
+        }
+      } else {
+        //Fix: To ignore documents where the property is missing
+        var tmp = "try { return String(this.XFIELD).match(XSEARCH) } catch (e) { return false}";
 
-			where.$or.push(obj);
-		});
-	}
+        tmp = tmp.replace(/XFIELD/g, field);
+        tmp = tmp.replace(/XSEARCH/g, search);
 
-	// Filtro por multiples campos para fecha
-	if (dateRange != undefined && dateRange != "") {
-		where.$and = [];
-		var fieldsRange = dateRange.fields;
-		var fechaInicio = dateRange.start.toString().split('-');
-		var fechaFin = dateRange.end.toString().split('-');
-		var objectStart = {
-			dia : fechaInicio[2].substring(0, 2),
-			mes : fechaInicio[1],
-			ano : fechaInicio[0]
-		};
-		var objectEnd = {
-			dia : fechaFin[2].substring(0, 2),
-			mes : fechaFin[1],
-			ano : fechaFin[0]
-		};
-		fieldsRange.forEach(function (field) {
-			var obj = {};
-			obj[field] = {
-				$gte : new Date(objectStart.ano, math.sub(objectStart.mes, 1), objectStart.dia, 0, 0, 0),
-				$lte : new Date(objectEnd.ano, math.sub(objectEnd.mes, 1), objectEnd.dia, 23, 59, 59)
-			};
-			where.$and.push(obj);
-		})
-	}
+        obj = {
+          $where: tmp
+        }
+      }
+      where.$or.push(obj);
+    });
+  }
 
-	if (startDate != undefined && startDate != "") {
-		if (where.$and == undefined) {
-			where.$and = [];
-		}
-		var from = startDate.date.toString().split('-');
-		var obj = {
-			dia : from[2].substring(0, 2),
-			mes : from[1],
-			ano : from[0]
-		};
-		var date = {};
-		date[startDate.field] = {
-			$gte : new Date(obj.ano, math.sub(obj.mes, 1), obj.dia, 0, 0, 0)
-		};
-		where.$and.push(date);
+  // Filtro por multiples campos para fecha
+  if (dateRange != undefined && dateRange != "") {
+    where.$and = [];
+    var fieldsRange = dateRange.fields;
+    var fechaInicio = dateRange.start.toString().split('-');
+    var fechaFin = dateRange.end.toString().split('-');
+    var objectStart = {
+      dia: fechaInicio[2].substring(0, 2),
+      mes: fechaInicio[1],
+      ano: fechaInicio[0]
+    };
+    var objectEnd = {
+      dia: fechaFin[2].substring(0, 2),
+      mes: fechaFin[1],
+      ano: fechaFin[0]
+    };
+    fieldsRange.forEach(function (field) {
+      var obj = {};
+      obj[field] = {
+        $gte: new Date(objectStart.ano, objectStart.mes - 1, objectStart.dia, 0, 0, 0),
+        $lte: new Date(objectEnd.ano, objectEnd.mes - 1, objectEnd.dia, 23, 59, 59)
+      };
+      where.$and.push(obj);
+    })
+  }
 
-	}
+  if (startDate != undefined && startDate != "") {
+    if (where.$and == undefined) {
+      where.$and = [];
+    }
+    var from = startDate.date.toString().split('-');
+    var obj = {
+      dia: from[2].substring(0, 2),
+      mes: from[1],
+      ano: from[0]
+    };
+    var date = {};
+    date[startDate.field] = {
+      $gte: new Date(obj.ano, obj.mes - 1, obj.dia, 0, 0, 0)
+    };
+    where.$and.push(date);
 
-	if (endDate != undefined && endDate != "") {
-		if (where.$and == undefined) {
-			where.$and = [];
-		}
-		var from = endDate.date.toString().split('-');
-		var obj = {
-			dia : from[2].substring(0, 2),
-			mes : from[1],
-			ano : from[0]
-		};
-		var date = {};
-		date[endDate.field] = {
-			$lte : new Date(obj.ano, math.sub(obj.mes, 1), obj.dia, 23, 59, 59)
-		};
-		where.$and.push(date);
-	}
+  }
 
-	if(this.userLogged && this.userLogged._id && this.userLogged.role._id != 1 && this.filterByUser){
-		where.$and['createdBy._id'] = this.userLogged._id;
-	}
-	this.db.get(this.table).count(where, /*pagination,*/
-		handleMongoResponse(deferred));
+  if (endDate != undefined && endDate != "") {
+    if (where.$and == undefined) {
+      where.$and = [];
+    }
+    var from = endDate.date.toString().split('-');
+    var obj = {
+      dia: from[2].substring(0, 2),
+      mes: from[1],
+      ano: from[0]
+    };
+    var date = {};
+    date[endDate.field] = {
+      $lte: new Date(obj.ano, obj.mes - 1, obj.dia, 23, 59, 59)
+    };
+    where.$and.push(date);
+  }
 
-	return deferred.promise;
+  // Clear
+  if (where.$or && where.$or.length == 0) {
+    delete where.$or;
+  }
+  if (where.$and && where.$and.length == 0) {
+    delete where.$and;
+  }
+
+  this.db.get(this.table).count(where, /*pagination,*/ handleMongoResponse(deferred));
+
+  return deferred.promise;
 };
 
 Crud.prototype.getNext = function (date) {

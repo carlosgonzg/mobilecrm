@@ -4,45 +4,14 @@
             <i class="fa fa-lg fa-users"></i> <span> User's List</span>
         </h1>
         <div class="btn-group pull-right" style="margin-top: 20px;" role="group" aria-label="...">
-            <button type="button" class="btn btn-default" ng-click="goBack()"><i class="fa fa-reply"></i>&nbsp;<span>Go Back</span></button>
+            <back-button></back-button>
             <button type="button" class="btn btn-primary" ng-click="createNew()"><i class="fa fa-plus"></i>&nbsp;<span>Create New</span></button>
         </div>
         <hr />
     </div>
 </div>
-<div class="table-responsive">
-    <table class="table table-striped table-hover">
-        <thead>
-            <tr>
-                <th>
-                    Username
-                </th>
-                <th>
-                    Role
-                </th>
-                <th>
-                    Created Date
-                </th>
-                <th>
-                    Active
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr ng-repeat="user in userList track by $index" ng-dblclick="user.goTo()">
-                <td>
-                    {{ user.username }}
-                </td>
-                <td>
-                    {{ user.role.description }}
-                </td>
-                <td>
-                    {{ user.createdDate | date:'MM-dd-yyyy' }}
-                </td>
-                <td>
-                    <input type="checkbox" ng-model="user.active" disabled/>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+<div class="row">
+	<div class="col-xs-12">
+		<list clase="wsUser" fields="fields" showid="false" search-fields="search" list="list"></list>
+	</div>
 </div>

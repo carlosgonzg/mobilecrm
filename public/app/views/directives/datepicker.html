@@ -1,0 +1,452 @@
+<style>
+	/*animaciones*/
+	.animated {
+		-webkit-animation-duration:0.5s;
+		animation-duration:0.5s;
+		-webkit-animation-fill-mode:both;
+		animation-fill-mode:both;
+	}
+	@-webkit-keyframes fadeIn {
+		0% {
+			opacity: 0;
+		}
+		100% {
+			opacity: 1;
+		}
+	}
+	@keyframes fadeIn {
+		0% {
+			opacity:0;
+		}
+		100% {
+			opacity: 1;
+		}
+	}
+	.fadeIn {
+		-webkit-animation-name:fadeIn;
+		animation-name:fadeIn;
+	}
+	@-webkit-keyframes fadeOut {
+		0% {
+			opacity: 1;
+		}
+		100% {
+			opacity: 0;
+		}
+	}
+	@keyframes fadeOut {
+		0% {
+			opacity:1;
+		}
+		100% {
+			opacity: 0;
+		}
+	}
+	.fadeOut {
+		-webkit-animation-name:fadeOut;
+		animation-name:fadeOut;
+	}
+
+
+	/* Estilo Base*/
+
+	.dp-modal {
+		position: relative;
+		float:left;
+		z-index: 2000;
+		background-color: white;
+		max-height: 320px;
+		margin: 0;
+		padding: 0;
+		font-size: 14px;
+		color: white;
+		box-shadow: 0px 2px 5px 0 rgba(0, 0, 0, 0.26);
+		overflow: auto;
+		-webkit-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		user-select: none;
+		overflow-x: hidden;
+		overflow-y: hidden;
+	}
+	.dp-display {
+		margin: 0;
+		padding: 0;
+		height: 100%;
+		background-color: rgb(240, 134, 41);
+	}
+	.dp-header {
+		width: 100%;
+		height: 40px;
+		background-color: rgba(224, 126, 39, 1);
+		margin: 0;
+		padding: 10px;
+		vertical-align: middle;
+		text-align: center;
+		font-size: 16px;
+	}
+	.dp-date {
+		width: 100%;
+		height: 100%;
+		background-color: #F08629;
+		padding: 10px;
+		text-align: center;
+		font-size: 20px;
+	}
+	.dp-date h1 {
+		margin-top: 5px;
+		margin-bottom: 5px;
+		font-size: 30px;
+	}
+	.dp-date button {
+		border:0;
+		background-color:transparent;
+		width:48px;
+		height:25px;
+		color:white;
+	}
+	.dp-date button:hover {
+		color:#DC7C2C;
+	}
+	.d-date-n-day{
+		display: none;
+	}
+	.dp-footer {
+		color:#DC7C2C;
+		height: 40px;
+		font-size:14px;
+		background-color: rgba(224, 126, 39, 1);
+	}
+	.dp-footer button {
+		padding:5px;
+		margin-right:2px;
+		border:0;
+		font-size:14px;
+		color:#fff;
+	}
+	.dp-footer button:focus,
+	.dp-footer button:hover,
+	.dp-footer button.active,
+	.dp-footer button:active,
+	.dp-footer button i 	{
+		color:#fff;
+	}
+	.dp-calendar {
+		width:100%;
+		height:100%;
+		color:black;
+		font-size:12px;
+		padding:10px;
+		text-align:center;
+	}
+	.dp-calendar table {
+		width:100%;
+		margin:0;
+		padding:0;
+	}
+	.dp-calendar table tr th {
+		padding:8px;
+		text-align:center;
+	}
+	.dp-calendar table tr td {
+		padding:4px;
+		text-align:center;
+		font-size:11px;
+	}
+	.dp-calendar table tr td button {
+		border:0;
+		background-color:transparent;
+		font-weight:bold;
+	}
+	.dp-calendar table tr td.dp-dateisselected {
+		color:white;
+		background-color:#009587;
+	}
+	.dp-calendar table tr td.dp-dateistoday button {
+		color:#DC7C2C;
+	}
+	.dp-calendar-holder{
+		float: left;
+		position: relative;
+		min-height: 1px;
+		width: 50%;
+	}
+	/* Tamaños */
+	/*Small displays*/
+	@media(max-width:767px){
+		.dp-modal {
+			width:100%;
+			max-height: 422px;
+		}
+		.dp-display {
+			width: 100%;
+			margin-top: 0px;
+			min-height: 140px;
+		}
+		.dp-date {
+			float: left;
+			position: relative;
+			min-height: 1px;
+			height: 100px;
+			font-size: 12px;
+		}
+
+		.dp-date div h1 {
+			font-size: 2.2em;
+			padding: 0;
+			margin: -5px 0px 0px 0px;
+		}
+		.dp-date div button {
+			padding: 0;
+			margin: -10px 0px 0px 0px;
+			font-size: 17px;
+		}
+		.dp-calendar table tr th{
+			padding: 4px;
+		}
+
+		.dp-calendar-holder{
+			width: 100%;
+		}
+	}
+
+	/*Medium Displays*/
+	@media(min-width:768px) and (max-width:1399px) {
+		.dp-modal {
+			width: 350px;
+			height: 270px;
+		}
+		.dp-display {
+			float: left;
+			position: relative;
+			min-height: 1px;
+			width: 100%;
+			height:40px;
+		}
+		.dp-header{
+			float:left;
+			width: 70px;
+			height: 40px;
+			font-size: 12px;
+		}
+		.dp-date {
+			width: 229px;
+			height: 40px;
+			float:left;
+			padding-top: 20px;
+			font-size: 12px;
+		}
+		.dp-date div {
+			float: left;
+			padding: 0;
+			width:50%;
+			margin-top: -10px;
+		}
+		.dp-date div button {
+			float:left;
+			padding: 0;
+			width: 20px;
+			height: 40px;
+			margin: -10px 0px 0px 0px;
+			font-size: 12px;
+		}
+		.dp-date div button.btn-text-sm{
+			width: 40px;
+		}
+		.d-date-day{
+			display: none;
+		}
+		.d-date-n-day{
+			display: inline;
+		}
+		.dp-footer{
+			float:left;
+			width: 50px;
+			height: 40px;
+			font-size: 12px;
+		}
+		.dp-footer button {
+			font-size: 12px;
+		}
+		.dp-calendar{
+			margin: 0 auto;
+			font-size: 12px;
+		}
+		.dp-calendar-holder{
+			width: 100%;
+		}
+	}
+
+	/*High resolution*/
+	@media(min-width:1400px) {
+		.dp-modal {
+			width: 440px;
+			height: 232px;
+		}
+		.dp-display {
+			float: left;
+			position: relative;
+			min-height: 1px;
+			width: 40%;
+		}
+		.dp-date {
+			height: 152px;
+			padding-top: 20px;
+		}
+	}
+</style>
+<div style="z-index:20;position:fixed; top: 0; left: 0; width:100%; height:100%;" ng-click="closedp()" ng-show="open"></div>
+<div class="input-group">
+  <input ng-model="ngModelFixed" name="modelFixed" id="modelFixed" type="text" class="form-control" ng-focus="opendp()" ng-required="required" ng-disabled="disable" ng-change="changeNgModel()" style="z-index:2" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 50000, 'blur': 0 } }"/>
+  <span class="input-group-btn" id="calendarBtn">
+		<button type="button" ng-click="toggledp()" class="btn btn-primary" ng-disabled="disable">
+			<i class="fa fa-calendar"></i>
+		</button>
+	</span>
+</div>
+<div style="position:absolute">
+	<div class="dp-modal" ng-show="open" style="margin-bottom:5px;">
+		<div class="dp-display">
+			<div class="dp-header">
+				{{ days[selectedDate.getDay()] }}
+			</div>
+			<div class="dp-date">
+				<div class="dp-month">
+					<button type="button" ng-click="previousRange('month')">
+						<i class="fa fa-chevron-left"></i>
+					</button>
+					<button type="button" disabled class="btn-text-sm">
+						{{ monthsAbbr[selectedDate.getMonth()] }}
+					</button>
+					<button type="button" ng-click="nextRange('month')">
+						<i class="fa fa-chevron-right"></i>
+					</button>
+					<h1 class="d-date-day">
+						{{ selectedDate.getDate() }}
+					</h1>
+				</div>
+				<div class="dp-year">
+					<button type="button" ng-click="previousRange('year')">
+						<i class="fa fa-chevron-left"></i>
+					</button>
+					<button type="button" disabled class="btn-text-sm">
+						{{ selectedDate.getFullYear() }}
+					</button>
+					<button ng-click="nextRange('year')" type="button">
+						<i class="fa fa-chevron-right"></i>
+					</button>
+				</div>
+			</div>
+			<div class="dp-footer text-center">
+				<button type="button" ng-click="today()" class="btn btn-default navbar-btn">
+					<i class="fa fa-calendar"></i>
+					{{ todayText || 'Hoy' }}
+				</button>
+        <button type="button" ng-click="changeView()" ng-if="time" class="btn btn-default navbar-btn">
+          <i class="fa fa-calendar"></i>
+          {{ setTime? 'Fecha' : 'Hora' }}
+        </button>
+			</div>
+		</div>
+		<div class="dp-calendar-holder" style="margin: 0; padding: 0;">
+			<div class="dp-calendar" ng-if="!useManualDate && !setTime">
+				<table ng-show="selectedView='day'">
+					<tr>
+						<th colspan="7" style="padding-top:0;">
+							{{ months[selectedDate.getMonth()] }}, {{ selectedDate.getFullYear() }}
+						</th>
+					</tr>
+					<tr>
+						<th ng-repeat="day in daysAbbr track by $index" width="14%">
+							{{ day }}
+						</th>
+					</tr>
+					<tr ng-repeat="week in calendar track by $index">
+						<td ng-repeat="day in week track by $index" ng-click="setDate(day)" ng-class="getStyle(day)">
+							<button type="button" ng-click="setDate(day)">
+								{{ day.getDate() }}
+							</button>
+						</td>
+					</tr>
+				</table>
+			</div>
+      <div class="dp-calendar" ng-if="!useManualDate && setTime && time">
+
+        <table>
+
+          <tr>
+            <th >
+              <div class="col-xs-4" ng-click="changeHour(true)"><i class="fa fa-chevron-up"></i></div>
+            </th>
+            <th >
+              <div class="col-xs-1"></div>
+            </th>
+            <th >
+              <div class="col-xs-3" ng-click="changeMinute(true)"><i class="fa fa-chevron-up"></i></div>
+            </th>
+            <th >
+              <div class="col-xs-3" ng-click="changeMeridian()"><i class="fa fa-chevron-up"></i></div>
+            </th>
+          </tr>
+          <tr>
+            <th>
+              <div class="col-xs-4">{{getFixedHours()}}</div>
+            </th>
+            <th>
+              <div class="col-xs-1">:</div>
+            </th>
+            <th>
+              <div class="col-xs-3">{{getFixedMinutes()}}</div>
+            </th>
+            <th>
+              <div class="col-xs-3">{{getMeridian()}}</div>
+            </th>
+          </tr>
+          <tr>
+            <th style="padding-top:0;">
+              <div class="col-xs-4" ng-click="changeHour(false)"><i class="fa fa-chevron-down"></i></div>
+            </th>
+            <th style="padding-top:0;">
+              <div class="col-xs-1"></div>
+            </th>
+            <th style="padding-top:0;">
+              <div class="col-xs-3" ng-click="changeMinute(false)"><i class="fa fa-chevron-down"></i></div>
+            </th>
+            <th style="padding-top:0;">
+              <div class="col-xs-3" ng-click="changeMeridian()"><i class="fa fa-chevron-down"></i></div>
+            </th>
+          </tr>
+        </table>
+      </div>
+			<div class="row">
+				<div class="col-md-12" ng-style="{ 'display': (useManualDate)? '' : 'none'}">
+					<div class="row">
+						<div class="col-md-1"></div>
+						<div class="col-md-10">
+							<div class="col-md-8">
+								<label style="color: black">D&iacute;a:</label>
+								<input class="form-control" style="color: black" ng-change="validateDate(manualDate)" ng-model="manualDate.day">
+							</div>
+							<div class="col-md-8">
+								<label style="color: black">Mes:</label>
+								<input class="form-control" style="color: black" ng-change="validateDate(manualDate)" ng-model="manualDate.month">
+							</div>
+							<div class="col-md-8">
+								<label style="color: black">A&ntilde;o:</label>
+								<input class="form-control" style="color: black" ng-change="validateDate(manualDate)" ng-model="manualDate.year">
+							</div>
+							<div class="col-md-8">
+								<button class="btn btn-sm btn-default" ng-click="setManualEdit(false)">
+									<i class="fa fa-times"></i>
+								</button>
+								<button class="btn btn-sm btn-primary" ng-click="saveManualDate()">
+									<i class="fa fa-check"></i>
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

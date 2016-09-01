@@ -13,7 +13,7 @@ var jwt = require('jsonwebtoken');
 var _ = require('underscore');
 
 function User(db, secret, userLogged) {
-	this.crud = new Crud(db, 'USER', userLogged);
+	this.crud = new Crud(db, 'USER', userLogged );
 	this.secret = secret;
 	//DB Table Schema
 	var accountSchema = {
@@ -43,6 +43,10 @@ function User(db, secret, userLogged) {
 			fullName : {
 				type : 'string',
 				required : true
+			},
+			url : {
+				type : 'string',
+				required : false
 			}
 		}
 	};
@@ -322,8 +326,10 @@ User.prototype.getActual = function(){
 	var query = {
 		_id: _this.crud.userLogged._id
 	};
+	console.log(query);
 	_this.crud.find(query)
 	.then(function (obj) {
+			console.log(obj);
 			d.resolve({
 				result: 'ok',
 				data : obj.data[0]

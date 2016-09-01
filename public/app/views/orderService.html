@@ -1,0 +1,118 @@
+<div class="row">
+	<div class="col-xs-12">
+		<h1 class="pull-left">
+			<i class="fa fa-lg fa-user"></i> <span> User</span>
+		</h1>
+		<div class="btn-group pull-right" style="margin-top: 20px;" role="group" aria-label="...">
+			<button type="submit" form="userForm" class="btn btn-primary" ng-click="save()"><i class="fa fa-save"></i>&nbsp;<span>Save</span></button>
+			<back-button></back-button>
+		</div>
+		<hr />
+	</div>
+</div>
+<form class="form" id="userForm" name="userForm">
+	<div class="row">
+		<div class="col-xs-12">
+			<div class="col-xs-4">
+				<div class="col-xs-12 pull-left">
+					<div class="form-group">
+						<label for="Client">Client</label>
+						<entitypicker ng-model="orderService.client" ws-class="wsClass" ws-fields="wsFields" ng-change="selectedDoctor()"></entitypicker>
+					</div>
+				</div>
+				<div class="col-xs-12 pull-left" ng-show="orderService.client._id">
+					<div class="panel panel-default">
+						<div class="panel-heading">{{orderService.client.entity.fullName}}</div>
+						<div class="panel-body">
+							<p class="col-xs-12 text-left" ng-repeat="address in orderService.client.addresses track by $index">
+								<i class="fa fa-map"></i>&nbsp;{{ address.address1 }},&nbsp;{{ address.city.description }},&nbsp;{{ address.state.description }},&nbsp;{{ address.country.description }}
+							</p>
+							<p class="col-xs-12 text-left" ng-repeat="phone in orderService.client.phones track by $index">
+								<i class="fa fa-phone"></i>&nbsp;{{ phone.number }}
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-4">
+			</div>
+			<div class="col-xs-4">
+				<div class="col-xs-12 pull-right">
+					<div class="form-group">
+						<label for="date">Invoice #</label>
+						<input type="text" class="form-control" ng-model="orderService.invoiceNumber" disabled>
+					</div>
+				</div>
+				<div class="col-xs-12 pull-right">
+					<div class="form-group">
+						<label for="date">Date</label>
+						<sc-datepicker ng-model="orderService.date"></sc-datepicker>
+					</div>
+				</div>
+				<div class="col-xs-12 pull-right">
+					<div class="form-group">
+						<label for="date">PO #</label>
+						<input type="number" class="form-control" ng-model="orderService.pono">
+					</div>
+				</div>
+				<div class="col-xs-12 pull-right">
+					<div class="form-group">
+						<label for="date">Unit #</label>
+						<input type="number" class="form-control" ng-model="orderService.unitno">
+					</div>
+				</div>
+				<div class="col-xs-12 pull-right">
+					<div class="form-group">
+						<label for="date">SOR</label>
+						<input type="number" class="form-control" ng-model="orderService.sor">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-xs-12 col-md-6">
+		<div class="form-group">
+			<label for="lastName">Last Name</label>
+			<input type="text" class="form-control" ng-model="user.entity.lastName" id="lastName" placeholder="Last Name">
+		</div>
+	</div>
+	<div class="col-xs-12 col-md-6">
+		<div class="form-group">
+			<label for="email">Email</label>
+			<input type="email" class="form-control" ng-model="user.account.email" id="email" placeholder="Email">
+		</div>
+	</div>
+	<div class="col-xs-12 col-md-6">
+		<div class="form-group">
+			<label for="url">URL</label>
+			<input type="url" class="form-control" ng-model="user.entity.url" id="url" placeholder="URL">
+		</div>
+	</div>
+	<div class="col-xs-12 col-md-6">
+		<div class="form-group">
+			<label for="role">Role</label>
+			<select class="form-control" ng-model="user.role" id="role" ng-options="role as role.description for role in roles track by role._id"></select>
+		</div>
+	</div>
+	
+	<div class="col-xs-12">
+		<h2 class="pull-left"><i class="fa fa-map"></i>&nbsp;Addresses</h2>
+		<button type="button" class="btn btn-sm btn-primary pull-right" style="margin-top:20px" ng-click="addAddress()"><i class="fa fa-plus"></i></button>
+	</div>
+	<div class="col-xs-12" ng-repeat="address in user.addresses track by $index">
+		<div class="col-xs-12">
+			<button type="button" class="btn btn-sm btn-danger pull-right" style="margin-top:20px;" ng-click="removeAddress($index)"><i class="fa fa-minus"></i></button>
+		</div>
+		<address-model ng-model="user.addresses[$index]"></address-model>
+	</div>
+	<div class="col-xs-12">
+		<h2 class="pull-left"><i class="fa fa-phone"></i>&nbsp;Phone List</h2>
+		<button type="button" class="btn btn-sm btn-primary pull-right" style="margin-top:20px" ng-click="addPhone()"><i class="fa fa-plus"></i></button>
+	</div>
+	<div class="col-xs-12" ng-repeat="phone in user.phones track by $index">
+		<div class="col-xs-12">
+			<button type="button" class="btn btn-sm btn-danger pull-right" style="margin-top:20px;" ng-click="removePhone($index)"><i class="fa fa-minus"></i></button>
+		</div>
+		<phone-model ng-model="user.phones[$index]"></phone-model>
+	</div>
+</form>

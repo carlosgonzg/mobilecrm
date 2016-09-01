@@ -1,7 +1,7 @@
 ﻿'use strict';
 
 angular.module('MobileCRMApp')
-.factory('State', function (Base, $http, $q, $window, $rootScope, $location, toaster, City) {
+.factory('State', function (Base, $http) {
 
 	// Variable que se utiliza para comprobar si un objeto tiene una propiedad
 	// var hasProp = Object.prototype.hasOwnProperty;
@@ -11,7 +11,7 @@ angular.module('MobileCRMApp')
 
 	function State(propValues) {
 		State.super.constructor.apply(this, arguments);
-		this.baseApiPath = "/api/State";
+		this.baseApiPath = "/api/state";
 	}
 	var extend = function (child, parent) {
 		var key;
@@ -38,25 +38,6 @@ angular.module('MobileCRMApp')
 		return at;
 	};
 
-	State.prototype.getCities = function () {
-		var d = $q.defer();
-		var _this = this;
-		$http.get(_this.baseApiPath + '/getcities?id=' + _this.id)
-		.success(function (result) {
-			/*
-			var cities = [];
-			console.log(result)
-			for (var i = 0; i < result.data.length; i++) {
-			var city = new City(result.data[i]);
-			cities.push(cities);
-			}*/
-			d.resolve(result.data);
-		})
-		.error(function (error) {
-			d.reject(error);
-		});
-		return d.promise;
-	};
 	return State;
 
 });

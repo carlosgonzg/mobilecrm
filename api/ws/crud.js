@@ -11,7 +11,7 @@ module.exports = function (prefix, app, ParentClass) {
 	//Insert
 	app.post(prefix, function (req, res) {
 		var obj = new ParentClass(app.db, req.user);
-		obj.crud.insert(req.body).then(success(res), error(res));
+		obj.crud.insert(req.body.obj).then(success(res), error(res));
 	});
 
 	//Update
@@ -23,7 +23,7 @@ module.exports = function (prefix, app, ParentClass) {
 	//Find
 	app.get(prefix, function (req, res) {
 		var obj = new ParentClass(app.db, req.user);
-		obj.crud.find(req.body).then(success(res), error(res));
+		obj.crud.find({}).then(success(res), error(res));
 	});
 	//Find By Id
 	app.get(prefix + '/:id', function (req, res) {
@@ -33,7 +33,10 @@ module.exports = function (prefix, app, ParentClass) {
 		};
 		obj.crud.find(query).then(success(res), error(res));
 	});
-
+	app.post(prefix + '/filter', function (req, res) {
+		var obj = new ParentClass(app.db, req.user);
+		obj.crud.find(req.body).then(success(res), error(res));
+	});
 	//Delete by Id
 	app.delete (prefix + '/:id', function (req, res) {
 		var obj = new ParentClass(app.db, req.user);

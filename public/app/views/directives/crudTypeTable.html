@@ -5,41 +5,14 @@
         <div class="row">
             <div class="col-sm-3 col-lg-3">
                 <div class="input-group crud-search">
-                    <span class="input-group-addon">Buscar: </span>
+                    <span class="input-group-addon">Search: </span>
                     <input class="form-control" type="text" ng-model="params.search" ng-keyup="$event.keyCode == 13 ? search() : null"></input>
                     <span class="input-group-addon btn btn-default" ng-click="search()"><i class="fa fa-search"></i></span>
                 </div>
             </div>
-            <!-- <div class="col-sm-3 col-lg-3"> -->
-                <!-- <div class="input-group crud-search"> -->
-                    <!-- <span class="input-group-addon">Doctor: </span> -->
-                    <!-- <input class="form-control" type="text" ng-model="params.search" ng-keyup="$event.keyCode == 13 ? search() : null"></input> -->
-                    <!-- <entitypicker ng-model="doctor" ws-class="wsClass" ws-fields="wsFields" ng-change="selectedDoctor(doctor)"></entitypicker>  -->
-                    <!-- <span class="input-group-addon btn btn-default" ng-click="search()"><i class="fa fa-search"></i></span> -->
-                <!-- </div> -->
-            <!-- </div> -->
-            
-            <!-- <div class="col-sm-3 col-lg-3">
-                <div class="input-group crud-search">
-                    <span class="input-group-addon">Servicio: </span>
-                    <input class="form-control" type="text" ng-model="servicio" ng-keyup="$event.keyCode == 13 ? search() : null"></input>
-                    <span class="input-group-addon btn btn-default" ng-click="selectedServicio(servicio)"><i class="fa fa-search"></i></span>
-                </div>
-            </div> -->
-            <!-- <div class="col-sm-4 col-lg-4"> -->
-                <!-- <div class="input-group pull-right"> -->
-                    <!-- No Code -->
-                <!-- </div> -->
-            <!-- </div> -->
             <div class="col-sm-3 col-lg-6 text-right pull-right">
-                <!-- <button ng-click="loadExcel()" class="btn btn-default">
-                    <i class="fa fa-plus"></i> Descargar
-                </button>
-                <button ng-click="loadExcel()" class="btn btn-default">
-                    <i class="fa fa-plus"></i> Cargar
-                </button> -->
                 <button type="button" class="btn btn-warning" ng-click="addElement()">
-                    <i class="fa fa-plus"></i> Agregar
+                    <i class="fa fa-plus"></i>
                 </button>
             </div>
         </div>
@@ -85,15 +58,6 @@
 
                         <!-- Inputs Select -->
                         <span ng-if="field.type=='select'">
-                            <!-- <ui-select ng-model="objeto[field.name]" ng-required="field.required" append-to-body name="{{field.name + ' select'}}" >
-                                <ui-select-match placeholder="Elegir {{field.title}}...">
-                                    {{$select.selected.label}}
-                                </ui-select-match>
-                                <ui-select-choices repeat="option.value as option in field.options  | filter: $select.search | limitTo: 1">
-                                    <span ng-bind-html="option.label | highlight: $select.search"></span>
-                                </ui-select-choices>
-                            </ui-select> -->
-
                             <ui-select ng-model="objeto[field.name]" ng-required="field.required" append-to-body name="{{field.name + ' select'}}">
                                 <ui-select-match placeholder="Elegir {{field.title}}...">
                                     {{field.config? $select.selected[field.config.label] : $select.selected.label}}
@@ -199,15 +163,6 @@
 
                         <!-- Inputs Select -->
                         <span ng-if="field.type=='select'">
-                            <!-- <ui-select ng-model="elem[field.name]" ng-required="field.required" append-to-body name="{{field.name + ' select'}}" >
-                                <ui-select-match placeholder="Elegir {{field.title}}...">
-                                    {{field.config? $select.selected[field.config.label] : $select.selected.label}}
-                                    {{$select.selected.label}}
-                                </ui-select-match>
-                                <ui-select-choices repeat="option.value as option in field.options  | filter: $select.search">
-                                    <span ng-bind-html="option.label | highlight: $select.search"></span>
-                                </ui-select-choices>
-                            </ui-select> -->
                             <ui-select ng-model="elem[field.name]" ng-required="field.required" append-to-body name="{{field.name + ' select'}}">
                                 <ui-select-match placeholder="Elegir {{field.title}}...">
                                     {{field.config? $select.selected[field.config.label] : $select.selected.label}}
@@ -259,7 +214,7 @@
                         <button class="btn btn-sm btn-default visibility-hidden" type="button" ng-model="clear$index" ng-if="clear$index && !elem.edit" ng-click="editElement(elem);$event.stopPropagation()">
                             <span class="fa fa-pencil fa-lg"></span>
                         </button>
-                        <button class="btn btn-sm btn-default visibility-hidden" type="button" ng-model="clear$index" ng-if="clear$index && !elem.edit">
+                        <button class="btn btn-sm btn-danger visibility-hidden" type="button" ng-model="clear$index" ng-if="clear$index && !elem.edit">
                             <span class="fa fa-times fa-lg" ng-click="deleteElement(elem);$event.stopPropagation()"></span>
                         </button>
                         <!-- Cancelar Elemento -->
@@ -277,20 +232,20 @@
 </div>
 </form>
 <div class="col-xs-12 center-element paginator">
-    <div class="btn-group margin-top-15">
+    <div style="width:150px; margin: 0 auto;">
+			<div class="btn-group">
+					<!-- Pagina Anterior -->
+					<button type="button" class="btn btn-default disabled" ng-class="prevPageDisabled()" ng-click="prevPage()">
+							<i class="fa fa-angle-double-left"></i>
+					</button>
 
-        <!-- Pagina Anterior -->
-        <button type="button" class="btn btn-default disabled" ng-class="prevPageDisabled()" ng-click="prevPage()">
-            <i class="fa fa-angle-double-left"></i>
-        </button>
+					<!-- Pagina Actual | Total de Paginas -->
+					<button type="button" class="btn btn-default ng-binding" disabled="">{{currentPage}}/{{maxPage}}</button>
 
-        <!-- Pagina Actual | Total de Paginas -->
-        <button type="button" class="btn btn-default ng-binding" disabled="">{{currentPage}}/{{maxPage}}</button>
-
-        <!-- Proxima Pagina -->
-        <button type="button" class="btn btn-default" ng-class="nextPageDisabled()" ng-click="nextPage()">
-            <i class="fa fa-angle-double-right"></i>
-        </button>
-
+					<!-- Proxima Pagina -->
+					<button type="button" class="btn btn-default" ng-class="nextPageDisabled()" ng-click="nextPage()">
+							<i class="fa fa-angle-double-right"></i>
+					</button>
+			</div>
     </div>
 </div>

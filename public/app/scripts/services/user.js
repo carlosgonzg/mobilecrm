@@ -14,7 +14,8 @@ angular.module('MobileCRMApp')
 		this.baseApiPath = "/api/user";
 		this.account = this.account || {};
 		this.addresses = this.addresses || [];
-		this.roleId = this.roleId || null;
+		this.phones = this.phones || [];
+		this.role = this.role || null;
 	}
 	var extend = function (child, parent) {
 		var key;
@@ -107,9 +108,7 @@ angular.module('MobileCRMApp')
 		$location.path('/login');
 	};
 	User.prototype.goTo = function () {
-		$location.path('user/' + this.id);
+		$location.path('/user/' + this._id);
 	};
-
 	return User;
-
 });

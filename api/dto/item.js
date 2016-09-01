@@ -11,7 +11,7 @@ function Item(db, userLogged) {
 		type : 'object',
 		properties : {
 			code : {
-				type : 'string',
+				type : 'int',
 				required : true
 			},
 			description : {
@@ -23,7 +23,7 @@ function Item(db, userLogged) {
 				required: true
 			},
 			part : {
-				type : 'string',
+				type : 'int',
 				required : false
 			}
 		}

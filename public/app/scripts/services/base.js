@@ -1,4 +1,4 @@
-﻿'use strict';
+'use strict';
 
 angular.module('MobileCRMApp')
 .factory('Base', function ($http, $q) {
@@ -41,11 +41,39 @@ angular.module('MobileCRMApp')
 		return (property) ? hiddenProperties[property] : hiddenProperties;
 	}
 
-	// Find: Get data and instantiate new objects for existing records from a REST API
+		// Find: Get data and instantiate new objects for existing records from a REST API
 	Base.prototype.find = function () {
 		var deferred = $q.defer();
 		var _this = this.constructor;
 		$http.get(this.baseApiPath).success(function (data, status, headers, config) {
+			var response = {},
+			data = data.data;
+
+			//Create a new object of the current class (or an array of them) and return it (or them)
+			if (Array.isArray(data)) {
+				response.data = data.map(function (obj) {
+						return new _this(obj);
+					});
+				//Add "delete" method to results object to quickly delete objects and remove them from the results array
+				response.delete  = function (object) {
+					object.delete ().then(function () {
+						return response.data.splice(response.data.indexOf(object), 1);
+					});
+				};
+			} else {
+				response = new _this(data);
+			}
+			return deferred.resolve(response);
+		}).error(function (data, status, headers, config) {
+			return deferred.reject(data);
+		});
+		return deferred.promise;
+	};
+	
+	Base.prototype.filter = function (query) {
+		var deferred = $q.defer();
+		var _this = this.constructor;
+		$http.post(this.baseApiPath + '/filter', query).success(function (data, status, headers, config) {
 			var response = {},
 			data = data.data;
 
@@ -93,18 +121,211 @@ angular.module('MobileCRMApp')
 			} else {
 				response = new _this(data);
 			}
-			return deferred.resolve(response);
+			return deferred.resolve(response.data[0]);
 		}).error(function (data, status, headers, config) {
 			return deferred.reject(data);
 		});
 		return deferred.promise;
 	};
-
+	
 	var validate = function () {
 		return true;
 	};
 
 	Base.prototype.validate = validate;
+
+
+	// Paginated Search: Find documents filtered, sorted, limited and skiped by params.
+	Base.prototype.paginatedSearch = function (params) {
+		var deferred = $q.defer(),
+		_this = this.constructor;
+
+		// console.log("\n\n PaginatedSearch: ", params);
+		if (params) {
+			// console.log('----- Aqui ----');
+			$http.post(this.baseApiPath + '/paginated', params).success(function (data, status, headers, config) {
+				var response = {},
+				data = data.data;
+				// Create a new object of the current class (or an array of them) and return it (or them)
+				if (Array.isArray(data)) {
+					response.data = data.map(function (obj) {
+							return new _this(obj);
+						});
+					// Add "delete" method to results object to quickly delete objects and remove them from the results array
+					response.delete  = function (object) {
+						object.delete ().then(function () {
+							response.data.splice(response.data.indexOf(object), 1);
+						});
+					};
+				} else {
+					response = new _this(data);
+				}
+				return deferred.resolve(response);
+			}).error(function (data, status, headers, config) {
+				return deferred.reject(data);
+			});
+		} else {
+			deferred.reject({
+				res : 'Not ok',
+				message : 'Debe introducir los parametros para esta funcion!',
+				data : {}
+			});
+		}
+		return deferred.promise;
+	};
+
+	// Paginated Search: Find documents filtered, sorted, limited and skiped by params.
+	Base.prototype.paginatedCount = function (params) {
+		var deferred = $q.defer(),
+		_this = this.constructor;
+
+		if (params) {
+			$http.post(this.baseApiPath + '/paginated/count', params).success(function (data, status, headers, config) {
+				var response = {},
+				data = data.data;
+				//Create a new object of the current class (or an array of them) and return it (or them)
+				if (Array.isArray(data)) {
+					response.data = data.map(function (obj) {
+							return new _this(obj);
+						});
+					//Add "delete" method to results object to quickly delete objects and remove them from the results array
+					response.delete  = function (object) {
+						object.delete ().then(function () {
+							response.data.splice(response.data.indexOf(object), 1);
+						});
+					};
+				} else {
+					if (typeof data == 'number') {
+						data = {
+							count : data
+						};
+					}
+					response = new _this(data);
+				}
+				return deferred.resolve(response);
+			}).error(function (data, status, headers, config) {
+				return deferred.reject(data);
+			});
+		} else {
+			deferred.reject({
+				res : 'Not ok',
+				message : 'Debe introducir los parametros para esta funcion!',
+				data : {}
+			});
+		}
+		return deferred.promise;
+	};
+
+	/*
+	Persist the current object's data by passing it to a REST API
+	Dynamically switch between POST and PUT verbs if the current object has a populated _id property
+	 */
+	Base.prototype.save = function (data) {
+		var promise,
+		_this = this,
+		deferred = $q.defer();
+		if (data == null || data == undefined) {
+			delete this.errors;
+			data = this.getDataForApi();
+		}
+
+		delete data.baseApiPath;
+		if (_this.validate ? _this.validate() : validate()) {
+			var url = "" + this.baseApiPath;
+
+			if (_this._id != null && _this._id != undefined)
+				url = _this.baseApiPath + "/" + _this._id;
+			if (_this.createdBy != undefined) {
+				promise = $http.put(url, {
+						obj : data
+					});
+			} else {
+				promise = $http.post(_this.baseApiPath, {
+						obj : data
+					});
+			}
+			promise.success(function (data, status, headers, config) {
+				return deferred.resolve(_this.successCallback(data, status, headers, config));
+			}).error(function (data, status, headers, config) {
+				return deferred.reject(_this.failureCallback(data, status, headers, config));
+			});
+		} else {
+			deferred.reject(new Error('Invalid Object'));
+		}
+		return deferred.promise;
+	};
+
+	// Funcion para actualizar
+	Base.prototype.update = function (data) {
+		var promise,
+		_this = this,
+		deferred = $q.defer(); ;
+
+		if (data == null || data == undefined) {
+			data = this.getDataForApi();
+		}
+		if (_this.validate ? _this.validate() : validate()) {
+			if (_this._id != null && _this._id != undefined) {
+				promise = $http.put(_this.baseApiPath, {
+						query : {
+							_id : _this._id
+						},
+						obj : data
+						//,query: params
+					});
+				promise.success(function (data, status, headers, config) {
+					return deferred.resolve(_this.successCallback(data, status, headers, config));
+				}).error(function (data, status, headers, config) {
+					return deferred.reject(_this.failureCallback(data, status, headers, config));
+				});
+			} else {
+				deferred.reject(new Error('Invalid Object'));
+			}
+		} else {
+			deferred.reject(new Error('Invalid Object'));
+		}
+		return deferred.promise;
+	};
+
+	Base.prototype.remove = function (params) {
+		var _this = this;
+		if (params == null) {
+			params = {};
+		}
+		var deferred = $q.defer();
+
+		var url = this.baseApiPath;
+		if (_this._id)
+			url = _this.baseApiPath + "/" + this._id;
+
+		$http.delete (url, {
+			query : params
+		})
+		.success(function (data, status, headers, config) {
+			return deferred.resolve(_this.successCallback(data, status, headers, config));
+		}).error(function (data, status, headers, config) {
+			return deferred.reject(_this.failureCallback(data, status, headers, config));
+		});
+
+		return deferred.promise;
+	};
+
+	Base.prototype.count = function (params) {
+		var deferred = $q.defer();
+		var _this = this;
+		params = params == null ? {}
+
+		 : params;
+
+		$http.post("" + this.baseApiPath + "/count", params).success(function (data, status, headers, config) {
+			return deferred.resolve(_this.successCallback(data, status, headers, config));
+		})
+		.error(function (data, status, headers, config) {
+			return deferred.reject(_this.failureCallback(data, status, headers, config));
+		});
+
+		return deferred.promise;
+	};
 
 	Base.prototype.assignProperties = function (data) {
 
@@ -172,6 +393,24 @@ angular.module('MobileCRMApp')
 		return JSON.parse(JSON.stringify(object));
 	};
 
+	Base.prototype.refresh = function () {
+		if (this._id == undefined)
+			throw new Error('Refresh needs the id of the object');
+		var _this = this,
+		deferred = $q.defer();
+		//    console.log('refresh')
+		//    console.log('refresh')
+
+		this.searchById(this._id)
+		.then(function (data) {
+			deferred.resolve(_this.assignProperties(hiddenProperties.data));
+			delete hiddenProperties.data;
+		})
+		.catch (deferred.reject);
+
+		return deferred.promise;
+	};
+
 	/*
 	Callbacks for $http response promise
 	 */
@@ -189,55 +428,10 @@ angular.module('MobileCRMApp')
 		return this.errors = errorData;
 	};
 
-	Base.prototype.insert = function () {
-		var d = $q.defer();
-		var _this = this;
-		$http.post('/api/auth', _this)
-		.success(function (result) {
-			_this.assignProperties(result.data);
-			d.resolve(_this);
-		})
-		.error(function (error) {
-			d.reject(error);
-		});
-		return d.promise;
-	};
-
-	Base.prototype.update = function () {
-		var d = $q.defer();
-		var _this = this;
-		$http.put('/api/auth/' + _this.id, _this)
-		.success(function (result) {
-			_this.assignProperties(result.data);
-			d.resolve(_this);
-		})
-		.error(function (error) {
-			d.reject(error);
-		});
-		return d.promise;
-	};
-
-	Base.prototype.save = function () {
-		var d = $q.defer();
-		var _this = this;
-		var promise = (_this.id != null && _this.id != undefined && _this.id != 0) ? _this.update() : _this.insert();
-		promise
-		.then(function (result) {
-			d.resolve(_this);
-		},
-			function (error) {
-			d.reject(error);
-		});
-		return d.promise;
-	};
-
 	function convertToDate(object) {
-
 		var key;
 		var dateRegex = /(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))/;
-
 		for (key in object) {
-
 			//Si es un arreglo, para cada elemento, recursivamente actualizar sus propiedades
 			if (Array.isArray(object[key])) {
 				for (var i in object[key]) {
@@ -250,7 +444,6 @@ angular.module('MobileCRMApp')
 			} else if (typeof object[key] == "string") {
 				if (/date|fecha/.test(key.toLowerCase()) || dateRegex.test(object[key])) {
 					object[key] = new Date(object[key]);
-
 					if (isNaN(object[key])) {
 						object[key] = undefined;
 					}

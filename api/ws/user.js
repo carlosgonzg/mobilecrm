@@ -59,6 +59,7 @@ module.exports = function (prefix, app, secret) {
 		user.getRoleOptions(req.user)
 		.then(util.success(res), util.error(res));
 	});
+	
 	require('./crud')(prefix, app, User);
 	
 	app.post(prefix, function(req, res){

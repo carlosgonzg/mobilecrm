@@ -89,6 +89,15 @@ header.navbar{
 	transition: all 0.5s ease;
 }
 
+.btn-default{
+    background-color: #cccccc;
+    color: white;
+} 
+
+.btn-default > i{
+    color: white;
+}
+
 .btn-primary{
     background-color: #333333;
     color: white;
@@ -99,7 +108,8 @@ header.navbar{
 }
 
 .btn-danger{
-    color: white;
+	background-color: #ff0000;
+	color: white;
 }
 
 .btn-danger > i{
@@ -129,4 +139,11 @@ input{
 }
 .login a:hover{
 	text-decoration: underline;
+}
+
+.jumbotron > h1 {
+	font-size: 16px;
+}
+.jumbotron > p {
+	font-size: 12px;
 }

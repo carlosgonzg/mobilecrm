@@ -1,7 +1,7 @@
 ﻿'use strict';
 
 angular.module('MobileCRMApp')
-.factory('Country', function (Base, $http, $q, $window, $rootScope, $location, toaster, Province) {
+.factory('Country', function (Base, $http) {
 
 	// Variable que se utiliza para comprobar si un objeto tiene una propiedad
 	// var hasProp = Object.prototype.hasOwnProperty;
@@ -38,23 +38,6 @@ angular.module('MobileCRMApp')
 		return at;
 	};
 
-	Country.prototype.getProvinces = function () {
-		var d = $q.defer();
-		var _this = this;
-		$http.get(_this.baseApiPath + '/getprovinces?id=' + _this.id)
-		.success(function (result) {
-			var provinces = [];
-			for (var i = 0; i < result.data.length; i++) {
-				var province = new Province(result.data[i]);
-				provinces.push(province);
-			}
-			d.resolve(provinces);
-		})
-		.error(function (error) {
-			d.reject(error);
-		});
-		return d.promise;
-	};
 	return Country;
 
 });

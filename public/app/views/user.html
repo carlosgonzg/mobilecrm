@@ -1,99 +1,67 @@
 <div class="row">
-    <div class="col-xs-12">
-        <h1 class="pull-left">
-            <i class="fa fa-lg fa-user"></i> <span> User</span>
-        </h1>
-        <div class="btn-group pull-right" style="margin-top: 20px;" role="group" aria-label="...">
-            <button type="button" class="btn btn-default" ng-click="goBack()"><i class="fa fa-reply"></i>&nbsp;<span>Go Back</span></button>
-            <button type="submit" form="userForm" class="btn btn-primary" ng-click="save()"><i class="fa fa-save"></i>&nbsp;<span>Save</span></button>
-        </div>
-        <hr />
-    </div>
+	<div class="col-xs-12">
+		<h1 class="pull-left">
+			<i class="fa fa-lg fa-user"></i> <span> User</span>
+		</h1>
+		<div class="btn-group pull-right" style="margin-top: 20px;" role="group" aria-label="...">
+			<button type="submit" form="userForm" class="btn btn-primary" ng-click="save()"><i class="fa fa-save"></i>&nbsp;<span>Save</span></button>
+			<back-button></back-button>
+		</div>
+		<hr />
+	</div>
 </div>
 <div class="col-xs-12 col-md-6">
-    <form class="form" id="userForm" name="userForm">
-        <div class="col-xs-12 col-md-6">
-            <div class="form-group">
-                <label for="firstName">First Name</label>
-                <input type="text" class="form-control" ng-model="user.firstName" id="firstName" placeholder="First Name">
-            </div>
-        </div>
-        <div class="col-xs-12 col-md-6">
-            <div class="form-group">
-                <label for="lastName">Last Name</label>
-                <input type="text" class="form-control" ng-model="user.lastName" id="lastName" placeholder="Last Name">
-            </div>
-        </div>
-        <div class="col-xs-12 col-md-6">
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" class="form-control" ng-model="user.username" id="email" placeholder="Email">
-            </div>
-        </div>
-        <div class="col-xs-12 col-md-6">
-            <div class="form-group">
-                <label for="role">Role</label>
-                <select class="form-control" ng-model="user.roleId" id="role" ng-options="role.id as role.description for role in roles"></select>
-            </div>
-        </div>
-        <div class="col-xs-12">
-            <h2 class="pull-left"><i class="fa fa-map"></i>&nbsp;Addresses</h2>
-            <button type="button" class="btn btn-sm btn-primary pull-right" style="margin-top:20px" ng-click="addAddress()"><i class="fa fa-plus"></i></button>
-        </div>
-        <div class="col-xs-12" ng-repeat="address in user.addresses track by $index">
-            <div class="col-xs-12">
-                <button type="button" class="btn btn-sm btn-danger pull-right" style="margin-top:20px;" ng-click="removeAddress($index)"><i class="fa fa-minus"></i></button>
-            </div>
-            <div class="col-xs-12">
-                <div class="form-group">
-                    <label for="branch">Branch's name</label>
-                    <input type="text" class="form-control" id="branch" ng-model="address.branch" />
-                </div>
-            </div>
-            <div class="col-xs-12 col-md-6">
-                <div class="form-group">
-                    <label for="address1">Address 1</label>
-                    <input type="text" class="form-control" id="address1" ng-model="address.address1" />
-                </div>
-            </div>
-            <div class="col-xs-12 col-md-6">
-                <div class="form-group">
-                    <label for="address2">Address 2</label>
-                    <input type="text" class="form-control" id="address2" ng-model="address.address2" />
-                </div>
-            </div>
-            <div class="col-xs-12 col-md-6">
-                <div class="form-group">
-                    <label for="country">Country</label>
-                    <select class="form-control" ng-model="address.country" id="country" ng-change="searchProvince(address.country, $index)" ng-options="country as country.description for country in countries[$index] track by country.id"></select>
-                </div>
-            </div>
-            <div class="col-xs-12 col-md-6">
-                <div class="form-group">
-                    <label for="province">State / Province</label>
-                    <select class="form-control" ng-model="address.province" id="province" ng-change="searchCity(address.province, $index)" ng-options="province as province.description for province in provinces[$index] track by province.id"></select>
-                </div>
-            </div>
-            <div class="col-xs-12 col-md-6">
-                <div class="form-group">
-                    <label for="city">City</label>
-                    <select class="form-control" ng-model="address.cityId" id="city" ng-options="city.id as city.description for city in cities[$index]"></select>
-                </div>
-            </div>
-            <div class="col-xs-12 col-md-6">
-                <div class="form-group">
-                    <label for="address2">Zipcode</label>
-                    <input type="text" class="form-control" id="address2" ng-model="address.zipcode" />
-                </div>
-            </div>
-                <!-- private string _branch;
-        private string _address1;
-        private string _address2;
-        private City _city;
-        private string _zipcode;
-        private List<Phone> _phones;
-        private int _userId;
-        private int _locationId; -->
-            </div>
-</form>
+	<form class="form" id="userForm" name="userForm">
+		<div class="col-xs-12 col-md-6">
+			<div class="form-group">
+				<label for="firstName">First Name</label>
+				<input type="text" class="form-control" ng-model="user.entity.firstName" id="firstName" placeholder="First Name">
+			</div>
+		</div>
+		<div class="col-xs-12 col-md-6">
+			<div class="form-group">
+				<label for="lastName">Last Name</label>
+				<input type="text" class="form-control" ng-model="user.entity.lastName" id="lastName" placeholder="Last Name">
+			</div>
+		</div>
+		<div class="col-xs-12 col-md-6">
+			<div class="form-group">
+				<label for="email">Email</label>
+				<input type="email" class="form-control" ng-model="user.account.email" id="email" placeholder="Email">
+			</div>
+		</div>
+		<div class="col-xs-12 col-md-6">
+			<div class="form-group">
+				<label for="url">URL</label>
+				<input type="url" class="form-control" ng-model="user.entity.url" id="url" placeholder="URL">
+			</div>
+		</div>
+		<div class="col-xs-12 col-md-6">
+			<div class="form-group">
+				<label for="role">Role</label>
+				<select class="form-control" ng-model="user.role" id="role" ng-options="role as role.description for role in roles track by role._id"></select>
+			</div>
+		</div>
+		
+		<div class="col-xs-12">
+			<h2 class="pull-left"><i class="fa fa-map"></i>&nbsp;Addresses</h2>
+			<button type="button" class="btn btn-sm btn-primary pull-right" style="margin-top:20px" ng-click="addAddress()"><i class="fa fa-plus"></i></button>
+		</div>
+		<div class="col-xs-12" ng-repeat="address in user.addresses track by $index">
+			<div class="col-xs-12">
+				<button type="button" class="btn btn-sm btn-danger pull-right" style="margin-top:20px;" ng-click="removeAddress($index)"><i class="fa fa-minus"></i></button>
+			</div>
+			<address-model ng-model="user.addresses[$index]"></address-model>
+		</div>
+		<div class="col-xs-12">
+			<h2 class="pull-left"><i class="fa fa-phone"></i>&nbsp;Phone List</h2>
+			<button type="button" class="btn btn-sm btn-primary pull-right" style="margin-top:20px" ng-click="addPhone()"><i class="fa fa-plus"></i></button>
+		</div>
+		<div class="col-xs-12" ng-repeat="phone in user.phones track by $index">
+			<div class="col-xs-12">
+				<button type="button" class="btn btn-sm btn-danger pull-right" style="margin-top:20px;" ng-click="removePhone($index)"><i class="fa fa-minus"></i></button>
+			</div>
+			<phone-model ng-model="user.phones[$index]"></phone-model>
+		</div>
+	</form>
 </div>

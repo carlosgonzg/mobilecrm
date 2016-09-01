@@ -1,0 +1,41 @@
+<div class="row">
+	<div class="col-xs-12">
+		<h1 class="pull-left">
+				<i class="fa fa-lg fa-users"></i> <span> Role Options</span>
+		</h1>
+		<div class="btn-group pull-right" style="margin-top: 20px;" role="group" aria-label="...">
+			<back-button></back-button>
+			<button type="button" class="btn btn-sm btn-default" ng-click="addOption()"><i class="fa fa-plus"></i>&nbsp;<span>Add Option</span></button>
+			<button type="submit" form="userForm" class="btn btn-primary" ng-click="save()"><i class="fa fa-save"></i>&nbsp;<span>Save</span></button>
+		</div>
+		<hr />
+	</div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+		<ul class="nav nav-tabs">
+			<li role="presentation" ng-class="{ active: selectedTab == role.description }" ng-repeat="role in roles track by $index" ng-click="selectTab(role)">
+				<a>{{role.description}}</a>
+			</li>
+		</ul>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+		<table class="table">
+			<thead>
+				<tr>
+					<th>
+						Option
+					</th>
+					<th>
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="rOption in roleOptions">
+				</tr>
+			</tbody>
+		</table>
+  </div>
+</div>

@@ -3,7 +3,7 @@
 var Crud = require('./crud');
 
 function Role(db, userLogged) {
-	this.crud = new Crud(db, 'ROLE', userLogged, true);
+	this.crud = new Crud(db, 'ROLE', userLogged);
 
 	//DB Table Schema
 	this.schema = {

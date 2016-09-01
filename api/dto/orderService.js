@@ -18,6 +18,10 @@ function OrderService(db, userLogged) {
 				type : 'object',
 				required : true
 			},
+			date : {
+				type : 'date',
+				required : true
+			},
 			invoiceNumber : {
 				type : 'string',
 				required : true

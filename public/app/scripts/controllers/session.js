@@ -7,11 +7,12 @@ angular.module('MobileCRMApp')
 		$rootScope.userData = {};
 	} else {
 		$rootScope.isAuthenticated = true;
+		$rootScope.userData = JSON.parse($window.sessionStorage.user);
 		var user = new User();
 		user.getActualUser()
 		.then(function (obj) {
-			$rootScope.userData = user;
-			$window.sessionStorage.user = JSON.stringify($rootScope.userData);
+			$rootScope.userData = obj;
+			$window.sessionStorage.user = JSON.stringify(obj);
 		}, function (error) {
 			$location.path('/login');
 		});

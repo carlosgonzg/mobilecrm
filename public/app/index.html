@@ -34,8 +34,26 @@
 				<div ng-controller="SessionCtrl"></div>
 				<div id="sidebar" class="col-sm-3 col-md-2 sidebar" ng-controller="NavigationCtrl" ng-show="isAuthenticated">
 					<ul class="nav nav-sidebar">
+						<li style="background-color: #1b1b1b; color: white; padding: 20px;">
+							<span>Welcome <b>{{ userData.entity.fullName }}</b></span>
+						</li>
+						<li ng-if="userData.role._id == 1">
+							<a href="#/userList"><i class="fa fa-circle-o"></i>Users</a>
+						</li>
 						<li>
+							<a href="#/orderServiceList"><i class="fa fa-circle-o"></i>Order Services</a>
+						</li>
+						<li ng-if="userData.role._id == 1">
+							<a href="#/itemList"><i class="fa fa-circle-o"></i>Items</a>
+						</li>
+						<li ng-if="userData.role._id == 1">
 							<a href="#/roleList"><i class="fa fa-circle-o"></i>Roles</a>
+						</li>
+						<li ng-if="userData.role._id == 1">
+							<a href="#/optionList"><i class="fa fa-circle-o"></i>Options</a>
+						</li>
+						<li ng-if="userData.role._id == 1">
+							<a href="#/roleOptionsList"><i class="fa fa-circle-o"></i>Role Options</a>
 						</li>
 						<li>
 							<a ng-click="userData.logout()"><i class="fa fa-sign-out"></i>Log out</a>
@@ -63,6 +81,9 @@
     <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
     <script src="bower_components/angular-dialog-service/dist/dialogs.min.js"></script>
     <script src="bower_components/angular-dialog-service/dist/dialogs-default-translations.min.js"></script>
+    <script src="bower_components/tg-angular-validator/dist/angular-validator.min.js"></script>
+    <script src="bower_components/moment/moment.min.js"></script>
+    <script src="bower_components/jquery-mask/jquery.mask.min.js"></script>
 		<script>
 			$('.navbar-toggle').click(function(){
 				$('#sidebar').toggleClass('sidebar');
@@ -71,7 +92,12 @@
 		</script>
 		<script src="scripts/app.js"></script>
 		<script src="scripts/directives/crudTypeTable.js"></script>
+		<script src="scripts/directives/list.js"></script>
 		<script src="scripts/directives/backbutton.js"></script>
+		<script src="scripts/directives/address.js"></script>
+		<script src="scripts/directives/phone.js"></script>
+		<script src="scripts/directives/datepicker.js"></script>
+		<script src="scripts/directives/entitypicker.js"></script>
 		<script src="scripts/services/authinterceptor.js"></script>
 		<script src="scripts/services/base.js"></script>
 		<script src="scripts/services/city.js"></script>
@@ -80,12 +106,19 @@
 		<script src="scripts/services/role.js"></script>
 		<script src="scripts/services/option.js"></script>
 		<script src="scripts/services/roleoptions.js"></script>
+		<script src="scripts/services/item.js"></script>
+		<script src="scripts/services/orderService.js"></script>
 		<script src="scripts/services/user.js"></script>
 		<script src="scripts/controllers/navigation.js"></script>
 		<script src="scripts/controllers/session.js"></script>
 		<script src="scripts/controllers/login.js"></script>
 		<script src="scripts/controllers/user.js"></script>
 		<script src="scripts/controllers/userList.js"></script>
+		<script src="scripts/controllers/itemList.js"></script>
+		<script src="scripts/controllers/orderService.js"></script>
+		<script src="scripts/controllers/orderServiceList.js"></script>
 		<script src="scripts/controllers/roleList.js"></script>
+		<script src="scripts/controllers/optionList.js"></script>
+		<script src="scripts/controllers/roleOptionsList.js"></script>
 	</body>
 </html>
