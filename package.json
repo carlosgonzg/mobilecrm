@@ -33,7 +33,7 @@
     "node": ">=0.10.0"
   },
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "node server.js"
   },
   "description": "MobileOne CRM Application",
   "main": "server.js",
