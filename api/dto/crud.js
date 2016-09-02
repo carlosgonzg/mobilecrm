@@ -200,7 +200,7 @@ Crud.prototype.insert = function (newObject) {
 		if (!data.exists) {
 			return util.getSequence(_this.db, _this.table);
 		} else {
-			throw 'The user already exists';
+			throw 'The object already exists';
 		}
 	})
 	.then(function (sequence) {
@@ -277,14 +277,16 @@ Crud.prototype.update = function (qry, obj) {
 	}
 
 	obj = convertToDate(obj);
-
+  console.log('1')
   _this.validate(obj)
 	.then(function () {
+    console.log('2')
 		delete obj.baseApiPath;
 		delete obj.errors
 		return checkUniqueFields(obj, _this);
 	})
 	.then(function (data) {
+      console.log(data)
 			if (!data.exists) {
 				return _this.db.get(_this.table).update(query, {
 					$set : obj

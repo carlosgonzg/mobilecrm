@@ -12,6 +12,8 @@ angular.module('MobileCRMApp')
 	function Item(propValues) {
 		Item.super.constructor.apply(this, arguments);
 		this.baseApiPath = "/api/item";
+		this.price = this.price || 0;
+		this.quantity = this.quantity || 1;
 	}
 	var extend = function (child, parent) {
 		var key;

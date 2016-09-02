@@ -13,7 +13,8 @@ angular
 		'toaster',
 		'ui.bootstrap',
 		'dialogs.main',
-		'angularValidator'
+		'angularValidator',
+		'ui.select'
 	])
 .config(function ($routeProvider) {
 	$routeProvider

@@ -234,10 +234,13 @@ angular.module('MobileCRMApp')
 			var url = "" + this.baseApiPath;
 
 			if (_this._id != null && _this._id != undefined)
-				url = _this.baseApiPath + "/" + _this._id;
+				url = _this.baseApiPath;
 			if (_this.createdBy != undefined) {
 				promise = $http.put(url, {
-						obj : data
+						obj : data,
+						query: {
+							_id: data._id
+						}
 					});
 			} else {
 				promise = $http.post(_this.baseApiPath, {

@@ -12,13 +12,14 @@ angular.module('MobileCRMApp')
 			filterByOwner : '=?',
 			goTo : '&?',
 			ngChange : '&?',
-			disable : '=ngDisabled',
+			disable : '=',
 			wsList : '=',
 			wsDefault : '='
 		},
 		templateUrl : 'views/directives/entitypicker.html',
 		controller : function ($scope, $timeout, dialogs, toaster) {
 			$scope.wsLabel = $scope.wsLabel || 'entity.fullName';
+			console.log($scope.disable)
 			$scope.showModal = function () {
 				var dialog = dialogs.create('views/directives/entitypicker.modal.html', 'EntityPickerCtrl', {
 						wsClass : $scope.wsClass,

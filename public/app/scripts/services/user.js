@@ -110,5 +110,10 @@ angular.module('MobileCRMApp')
 	User.prototype.goTo = function () {
 		$location.path('/user/' + this._id);
 	};
+	User.prototype.miniUser = function(){
+		var user = angular.copy(this);
+		delete user.account.password;
+		return user;
+	};
 	return User;
 });

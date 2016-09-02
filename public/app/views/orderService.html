@@ -1,10 +1,12 @@
 <div class="row">
 	<div class="col-xs-12">
 		<h1 class="pull-left">
-			<i class="fa fa-lg fa-user"></i> <span> User</span>
+			<i class="fa fa-lg fa-calculator"></i> <span> Order Service</span>
 		</h1>
 		<div class="btn-group pull-right" style="margin-top: 20px;" role="group" aria-label="...">
-			<button type="submit" form="userForm" class="btn btn-primary" ng-click="save()"><i class="fa fa-save"></i>&nbsp;<span>Save</span></button>
+			<button type="submit" form="userForm" class="btn btn-primary" ng-click="save()" ng-if="userData.role._id == 1">
+				<i class="fa fa-save"></i>&nbsp;<span>Save</span>
+			</button>
 			<back-button></back-button>
 		</div>
 		<hr />
@@ -17,7 +19,7 @@
 				<div class="col-xs-12 pull-left">
 					<div class="form-group">
 						<label for="Client">Client</label>
-						<entitypicker ng-model="orderService.client" ws-class="wsClass" ws-fields="wsFields" ng-change="selectedDoctor()"></entitypicker>
+						<entitypicker ng-model="orderService.client" ws-class="wsClass" ws-fields="wsFields" disable="userData.role._id != 1"></entitypicker>
 					</div>
 				</div>
 				<div class="col-xs-12 pull-left" ng-show="orderService.client._id">
@@ -45,74 +47,135 @@
 				</div>
 				<div class="col-xs-12 pull-right">
 					<div class="form-group">
-						<label for="date">Date</label>
-						<sc-datepicker ng-model="orderService.date"></sc-datepicker>
+						<label for="pono">Status</label>
+						<select class="form-control" ng-model="orderService.status" ng-options="status as status.description for status in listStatus track by status._id" ng-disabled="userData.role._id != 1"></select>
 					</div>
 				</div>
 				<div class="col-xs-12 pull-right">
 					<div class="form-group">
-						<label for="date">PO #</label>
-						<input type="number" class="form-control" ng-model="orderService.pono">
+						<label for="date">Date</label>
+						<sc-datepicker ng-model="orderService.date" ng-disabled="userData.role._id != 1"></sc-datepicker>
+					</div>
+				</div>
+				<div class="col-xs-12 pull-right">
+					<div class="form-group">
+						<label for="pono">Address</label>
+						<select class="form-control" ng-model="orderService.siteAddress" ng-options="address as address.address1 for address in orderService.client.addresses track by address.branch" ng-disabled="userData.role._id != 1"></select>
+					</div>
+				</div>
+				<div class="col-xs-12 pull-right">
+					<div class="form-group">
+						<label for="pono">Phone</label>
+						<select class="form-control" ng-model="orderService.phone" ng-options="phone as phone.number for phone in orderService.client.phones track by phone.number" ng-disabled="userData.role._id != 1"></select>
+					</div>
+				</div>
+				<div class="col-xs-12 pull-right">
+					<div class="form-group">
+						<label for="pono">PO #</label>
+						<input type="text" class="form-control" ng-model="orderService.pono" ng-disabled="userData.role._id != 1">
+					</div>
+				</div>
+				<div class="col-xs-12 pull-right">
+					<div class="form-group">
+						<label for="pono">ISO #</label>
+						<input type="text" class="form-control" ng-model="orderService.isono" ng-disabled="userData.role._id != 1">
 					</div>
 				</div>
 				<div class="col-xs-12 pull-right">
 					<div class="form-group">
 						<label for="date">Unit #</label>
-						<input type="number" class="form-control" ng-model="orderService.unitno">
+						<input type="text" class="form-control" ng-model="orderService.unitno" ng-disabled="userData.role._id != 1">
 					</div>
 				</div>
 				<div class="col-xs-12 pull-right">
 					<div class="form-group">
 						<label for="date">SOR</label>
-						<input type="number" class="form-control" ng-model="orderService.sor">
+						<input type="text" class="form-control" ng-model="orderService.sor" ng-disabled="userData.role._id != 1">
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-	<div class="col-xs-12 col-md-6">
-		<div class="form-group">
-			<label for="lastName">Last Name</label>
-			<input type="text" class="form-control" ng-model="user.entity.lastName" id="lastName" placeholder="Last Name">
-		</div>
-	</div>
-	<div class="col-xs-12 col-md-6">
-		<div class="form-group">
-			<label for="email">Email</label>
-			<input type="email" class="form-control" ng-model="user.account.email" id="email" placeholder="Email">
-		</div>
-	</div>
-	<div class="col-xs-12 col-md-6">
-		<div class="form-group">
-			<label for="url">URL</label>
-			<input type="url" class="form-control" ng-model="user.entity.url" id="url" placeholder="URL">
-		</div>
-	</div>
-	<div class="col-xs-12 col-md-6">
-		<div class="form-group">
-			<label for="role">Role</label>
-			<select class="form-control" ng-model="user.role" id="role" ng-options="role as role.description for role in roles track by role._id"></select>
-		</div>
-	</div>
-	
-	<div class="col-xs-12">
-		<h2 class="pull-left"><i class="fa fa-map"></i>&nbsp;Addresses</h2>
-		<button type="button" class="btn btn-sm btn-primary pull-right" style="margin-top:20px" ng-click="addAddress()"><i class="fa fa-plus"></i></button>
-	</div>
-	<div class="col-xs-12" ng-repeat="address in user.addresses track by $index">
+	<div class="row">
 		<div class="col-xs-12">
-			<button type="button" class="btn btn-sm btn-danger pull-right" style="margin-top:20px;" ng-click="removeAddress($index)"><i class="fa fa-minus"></i></button>
+			<table class="table table-striped table-hover" width="960" style="margin: 0 auto">
+				<thead>
+					<tr>
+						<th width="290">
+							Code
+						</th>
+						<th width="100">
+							Quantity
+						</th>
+						<th width="150">
+							Price
+						</th>
+						<th width="150">
+							Total
+						</th>
+						<th width="70">
+							<button type="button" class="btn btn-sm btn-primary" ng-click="addItem()" ng-if="userData.role._id == 1">
+								<i class="fa fa-plus"></i>
+							</button>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="item in orderService.items track by $index">
+						<td>
+							<ui-select ng-model="newItem" theme="bootstrap" on-select="setItem(newItem, $index)"  ng-disabled="userData.role._id != 1">
+				            	<ui-select-match placeholder="Select the item you want on the list...">
+            						{{$select.selected.code}}&nbsp;-&nbsp;{{$select.selected.description}}
+				            	</ui-select-match>
+				            	<ui-select-choices repeat="i in items | filter: $select.search track by i._id">
+			              			<div ng-bind-html="i.description | highlight: $select.search"></div>
+				              		<small ng-bind-html="i.code | highlight: $select.search"></small>
+				            	</ui-select-choices>
+				          	</ui-select>
+						</td>
+						<td>
+							<input type="number" class="form-control" ng-model="item.quantity"  ng-disabled="userData.role._id != 1">
+						</td>
+						<td>
+							<input type="number" class="form-control" ng-model="item.price"  ng-disabled="userData.role._id != 1">
+						</td>
+						<td>
+							{{item.getTotalPrice() | currency }}
+						</td>
+						<td>
+							<button type="button" class="btn btn-sm btn-danger" ng-click="removeItem()" ng-if="userData.role._id == 1">
+								<i class="fa fa-times"></i>
+							</button>
+						</td>
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<th colspan="3">
+							<span class="pull-right">
+								Total
+							</span>
+						</th>
+						<th colspan="2">
+							<span class="pull-left">
+								{{orderService.getTotal() | currency}}
+							</span>
+						</th>
+					</tr>
+				</tfoot>
+			</table>
 		</div>
-		<address-model ng-model="user.addresses[$index]"></address-model>
 	</div>
-	<div class="col-xs-12">
-		<h2 class="pull-left"><i class="fa fa-phone"></i>&nbsp;Phone List</h2>
-		<button type="button" class="btn btn-sm btn-primary pull-right" style="margin-top:20px" ng-click="addPhone()"><i class="fa fa-plus"></i></button>
-	</div>
-	<div class="col-xs-12" ng-repeat="phone in user.phones track by $index">
+	<div class="row">
 		<div class="col-xs-12">
-			<button type="button" class="btn btn-sm btn-danger pull-right" style="margin-top:20px;" ng-click="removePhone($index)"><i class="fa fa-minus"></i></button>
+			<div class="col-xs-4 pull-left">
+					<div class="form-group">
+						<label for="comment">Comment</label>
+						<textarea id="comment" ng-model="orderService.comment" class="form-control">
+							
+						</textarea> 
+					</div>
+				</div>
 		</div>
-		<phone-model ng-model="user.phones[$index]"></phone-model>
 	</div>
 </form>

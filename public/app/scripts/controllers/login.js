@@ -6,7 +6,12 @@ angular.module('MobileCRMApp')
 	$scope.login = function () {
 		$rootScope.userData.login()
 		.then(function (data) {
-			$location.path('userList');
+			if($rootScope.userData.role._id == 1){
+				$location.path('userList');
+			}
+			else {
+				$location.path('orderServiceList');
+			}
 		}, function (err) {});
 	};
 });

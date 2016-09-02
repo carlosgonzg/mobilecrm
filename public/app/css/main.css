@@ -17,7 +17,6 @@ input, select, option {
 	border: 1px solid #ffdd00;
 	padding-left: 5px;
 	color:#000000;
-	min-width:200px;
 }
 
 input, select {

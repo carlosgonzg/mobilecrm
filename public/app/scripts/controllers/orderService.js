@@ -8,11 +8,24 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-.controller('OrderServiceCtrl', function ($scope, $rootScope, $location, toaster, User, orderService, items) {
+.controller('OrderServiceCtrl', function ($scope, $rootScope, $location, toaster, User, orderService, items, Item) {
 	$scope.orderService = orderService;
-	$scope.items = items;
+	$scope.items = items.data;
 	$scope.readOnly = $rootScope.userData.role._id != 1;
-	
+	$scope.listStatus = [{
+		_id: 1,
+		description: 'Pending'
+	},{
+		_id: 2,
+		description: 'In Progress'
+	},{
+		_id: 3,
+		description: 'Done'
+	},{
+		_id: 4,
+		description: 'Paid'
+	}];
+
 	$scope.wsClass = User;
 	$scope.wsFields = [{
 			field : 'entity.fullName',
@@ -27,41 +40,27 @@ angular.module('MobileCRMApp')
 		}
 	];
 	
-	$scope.addAddress = function () {
-		$scope.orderService.addresses.push({});
+	$scope.addItem = function () {
+		$scope.orderService.items.push(new Item())
 	};
-	$scope.removeAddress = function (index) {
-		$scope.orderService.addresses.splice(index, 1);
+	$scope.removeItem = function (index) {
+		$scope.orderService.items.splice(index, 1);
 	};
-	$scope.addPhone = function () {
-		$scope.orderService.phones.push({});
+	$scope.setItem = function(item, index) {
+		$scope.orderService.items[index] = new Item(item);
 	};
-	$scope.removePhone = function (index) {
-		$scope.orderService.phones.splice(index, 1);
-	};
-	
+
 	$scope.save = function () {
-		if (!$scope.orderService._id) {
-			$scope.orderService.insert()
-			.then(function (data) {
-				toaster.success('The Order Service was registered successfully');
-				$location.path('userList')
-			},
-				function (error) {
-				console.log(error);
-				toaster.error(error.message);
-			});
-		} else {
-			$scope.orderService.update()
-			.then(function (data) {
-				toaster.success('The Order Service was updated successfully');
-				$location.path('userList');
-			},
-				function (error) {
-				console.log(error);
-				toaster.error(error.message);
-			});
-		}
+		delete $scope.orderService.client.account.password;
+		$scope.orderService.save()
+		.then(function (data) {
+			toaster.success('The Order Service was saved successfully');
+			$location.path('orderServiceList')
+		},
+			function (error) {
+			console.log(error);
+			toaster.error(error.message);
+		});
 	};
 
 });

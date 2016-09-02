@@ -30,7 +30,7 @@ angular.module('MobileCRMApp')
 		}, {
 			title : 'Total Amount',
 			name : 'total',
-			type : 'int'
+			type : 'currency'
 		}
 	];
 

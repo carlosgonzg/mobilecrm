@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('MobileCRMApp')
-.factory('OrderService', function (Base, Item, $rootScope) {
+.factory('OrderService', function (Base, Item, $rootScope, $location) {
 
 	// Variable que se utiliza para comprobar si un objeto tiene una propiedad
 	// var hasProp = Object.prototype.hasOwnProperty;
@@ -21,7 +21,7 @@ angular.module('MobileCRMApp')
 		this.siteAddress = this.siteAddress || {};
 		this.phone = this.phone || {};
 		this.comment = this.comment || '';
-		this.status = this.status || '';
+		this.status = this.status || { _id: 1, description: 'Pending' };
 		this.total = this.total || '';
 		this.items = this.items || [];
 		for(var i = 0; i < this.items.length; i++){

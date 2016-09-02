@@ -67,10 +67,7 @@ function OrderService(db, userLogged) {
 		}
 	};
 	this.crud.schema = this.schema;
-	this.crud.uniqueFields = ['account.email'];
-	this.role = new Role(db);
-	this.option = new Option(db);
-	this.roleOptions = new RoleOptions(db);
+	this.crud.uniqueFields = ['invoiceNumber'];
 }
 
 OrderService.prototype.insert = function (orderService) {
@@ -101,7 +98,7 @@ OrderService.prototype.insert = function (orderService) {
 	return d.promise;
 };
 
-OrderService.prototype.update = function (id, orderService) {
+OrderService.prototype.update = function (query, orderService) {
 	var d = q.defer();
 	var _this = this;
 	var total = 0;
@@ -110,9 +107,6 @@ OrderService.prototype.update = function (id, orderService) {
 		total += orderService.items[i].quantity * orderService.items[i].price;
 	}
 	orderService.total = total;
-	var query = {
-		_id : id
-	};
 	_this.crud.update(query, orderService)
 	.then(function (obj) {
 		d.resolve(obj);

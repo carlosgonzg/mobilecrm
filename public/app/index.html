@@ -11,6 +11,7 @@
 		<link rel="stylesheet" type="text/css" href="bower_components/angularjs-toaster/toaster.min.css"/>
 		<link rel="stylesheet" type="text/css" href="bower_components/angular-bootstrap/ui-bootstrap-csp.css"/>
 		<link rel="stylesheet" type="text/css" href="bower_components/angular-dialog-service/dist/dialogs.min.css"/>
+		<link rel="stylesheet" type="text/css" href="bower_components/ui-select/dist/select.min.css"/>
 		<link rel="stylesheet" type="text/css" href="css/dashboard.css"/>
 		<link rel="stylesheet" type="text/css" href="css/main.css"/>
 		<link rel="icon" href="./favicon.ico"/>
@@ -38,22 +39,22 @@
 							<span>Welcome <b>{{ userData.entity.fullName }}</b></span>
 						</li>
 						<li ng-if="userData.role._id == 1">
-							<a href="#/userList"><i class="fa fa-circle-o"></i>Users</a>
+							<a href="#/userList"><i class="fa fa-users"></i>Users</a>
 						</li>
 						<li>
-							<a href="#/orderServiceList"><i class="fa fa-circle-o"></i>Order Services</a>
+							<a href="#/orderServiceList"><i class="fa fa-calculator"></i>Order Services</a>
 						</li>
 						<li ng-if="userData.role._id == 1">
-							<a href="#/itemList"><i class="fa fa-circle-o"></i>Items</a>
+							<a href="#/itemList"><i class="fa fa-book"></i>Items</a>
 						</li>
 						<li ng-if="userData.role._id == 1">
 							<a href="#/roleList"><i class="fa fa-circle-o"></i>Roles</a>
 						</li>
 						<li ng-if="userData.role._id == 1">
-							<a href="#/optionList"><i class="fa fa-circle-o"></i>Options</a>
+							<a href="#/optionList"><i class="fa fa-check"></i>Options</a>
 						</li>
 						<li ng-if="userData.role._id == 1">
-							<a href="#/roleOptionsList"><i class="fa fa-circle-o"></i>Role Options</a>
+							<a href="#/roleOptionsList"><i class="fa fa-list"></i>Role Options</a>
 						</li>
 						<li>
 							<a ng-click="userData.logout()"><i class="fa fa-sign-out"></i>Log out</a>
@@ -84,6 +85,7 @@
     <script src="bower_components/tg-angular-validator/dist/angular-validator.min.js"></script>
     <script src="bower_components/moment/moment.min.js"></script>
     <script src="bower_components/jquery-mask/jquery.mask.min.js"></script>
+    <script src="bower_components/ui-select/dist/select.min.js"></script>
 		<script>
 			$('.navbar-toggle').click(function(){
 				$('#sidebar').toggleClass('sidebar');

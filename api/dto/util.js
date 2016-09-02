@@ -97,19 +97,21 @@ exports.getYearlySequence = function (db, name) {
 			sequence : 1
 		}
 	};
+	console.log('aqui')
 	db.get('YEARLYSEQUENCE').findOneAndUpdate(query, project)
 	.then(function (obj) {
 		var finalSequence;
 		var retorno;
+	console.log('aqui 2', obj)
 			if (obj && obj.value == null && obj.sequence) {
 				finalSequence = obj.sequence + 1;
-				retorno = year + '-' + obj.prefix + finalSequence;
+				retorno = year + '-' + obj.preffix + finalSequence;
 				return retorno;
 			} else {
 				ySequence = {};
 				ySequence.name = name;
 				ySequence.sequence = 1;
-				ySequence.prefix = yearlySequencePrefix[name];
+				ySequence.preffix = yearlySequencePrefix[name];
 				
 				finalSequence = 1;
 				retorno = year + '-' + yearlySequencePrefix[name] + finalSequence;
