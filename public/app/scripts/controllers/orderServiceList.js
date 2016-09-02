@@ -42,6 +42,7 @@ angular.module('MobileCRMApp')
 		'_id',
 		'createdDate',
 		'invoiceNumber',
+		'sor'
 		'client.entity',
 		'client.entity.fullName',
 		'status.description',
