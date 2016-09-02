@@ -14,4 +14,7 @@ angular.module('MobileCRMApp')
 			}
 		}, function (err) {});
 	};
+	$scope.forgetPassword = function(){
+		$rootScope.userData.forgetPassword();
+	};
 });

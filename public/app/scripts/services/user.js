@@ -1,7 +1,7 @@
 ﻿'use strict';
 
 angular.module('MobileCRMApp')
-.factory('User', function (Base, $http, $q, $window, $rootScope, $location, toaster) {
+.factory('User', function (Base, $http, $q, $window, $rootScope, $location, dialogs, toaster) {
 
 	// Variable que se utiliza para comprobar si un objeto tiene una propiedad
 	// var hasProp = Object.prototype.hasOwnProperty;
@@ -98,7 +98,23 @@ angular.module('MobileCRMApp')
 		});
 		return d.promise;
 	};
-
+	User.prototype.forgetPassword = function(){
+		var _this = this;
+		var dialog = dialogs.create('views/forgetPassword.html', 'ForgetPasswordCtrl');
+		dialog.result.then(function (res) {
+			$http.post('/user/forgetPassword', {
+				email: res
+			})
+			.success(function(result){
+				toaster.success('The email was sent successfully');
+			})
+			.error(function (error) {
+				console.log(error);
+				toaster.error(error.errors);
+				d.reject(error);
+			});
+		}, function (res) {});
+	};
 	User.prototype.logout = function () {
 		delete $rootScope.userData;
 		delete $rootScope.isAuthenticated;

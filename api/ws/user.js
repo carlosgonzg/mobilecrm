@@ -18,7 +18,7 @@ module.exports = function (prefix, app, secret) {
 	});
 
 	//Forget Password
-	app.post(prefix + '/forgetPassword', function (req, res) {
+	app.post('/user/forgetPassword', function (req, res) {
 		var user = new User(app.db, secret, req.user);
 		user.forgetPassword(req.body.email)
 		.then(util.success(res), util.error(res));

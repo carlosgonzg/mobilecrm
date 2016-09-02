@@ -141,14 +141,17 @@ User.prototype.forgetPassword = function (email) {
 	var query = {
 		'account.email' : email
 	};
+	console.log('email', email)
 	this.crud.find(query)
 	.then(function (obj) {
 		var user = obj.data[0];
 		if (user && user.status._id) {
-			user.confirmToken = mail.sendChangePassword(email);
+			console.log('here')
+			user.confirmToken = mail.sendForgotPasswordMail(email);
+			console.log('here 1')
 			return _this.crud.update(query, user);
 		} else {
-			throw new Error('Couldn\'t find user');
+			throw 'Couldn\'t find user';
 		}
 	})
 	.then(function (obj) {
