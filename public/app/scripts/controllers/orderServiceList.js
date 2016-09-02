@@ -16,11 +16,15 @@ angular.module('MobileCRMApp')
 			name : 'createdDate',
 			type : 'date'
 		}, {
+			title : 'SOR',
+			name : 'sor',
+			type : 'text'
+		}, {
 			title : 'Invoice #',
 			name : 'invoiceNumber',
 			type : 'text'
 		}, {
-			title : 'Client',
+			title : 'Customer',
 			name : 'client.entity.fullName',
 			type : 'text'
 		}, {
@@ -39,6 +43,7 @@ angular.module('MobileCRMApp')
 		'createdDate',
 		'invoiceNumber',
 		'client.entity',
+		'client.entity.fullName',
 		'status.description',
 		'total'
 	];

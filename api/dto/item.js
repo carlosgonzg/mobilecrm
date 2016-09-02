@@ -25,6 +25,10 @@ function Item(db, userLogged) {
 			part : {
 				type : 'int',
 				required : false
+			},
+			unitOfMeasure: {
+				type: 'string',
+				required: false
 			}
 		}
 	};

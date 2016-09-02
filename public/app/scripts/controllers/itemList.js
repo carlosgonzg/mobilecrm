@@ -14,6 +14,7 @@ angular.module('MobileCRMApp')
 		{title: 'Code', name: 'code', required: true, type: 'number'},
 		{title: 'Description', name: 'description', required: true, type: 'text'},
 		{title: 'Part', name: 'part', required: false, type: 'number'},
-		{title: 'Price', name: 'price', required: false, type: 'number'},
+		{title: 'Unit of Measure', name: 'unitOfMeasure', required: false, type: 'text'},
+		{title: 'Price', name: 'price', required: false, type: 'number'}
 	];
 });
