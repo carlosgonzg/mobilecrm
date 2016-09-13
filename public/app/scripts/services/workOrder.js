@@ -60,7 +60,7 @@ angular.module('MobileCRMApp')
 	
 	
 	WorkOrder.prototype.goTo = function () {
-		$location.path('/WorkOrder/' + this._id);
+		$location.path('/workOrder/' + this._id);
 	};
 	
 	return WorkOrder;
