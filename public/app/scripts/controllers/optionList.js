@@ -12,6 +12,7 @@ angular.module('MobileCRMApp')
 	$scope.wsOption = Option;
 	$scope.fields = [
 		{title: 'Description', name: 'description', required: true, type: 'text'},
-		{title: 'URL', name: 'url', required: true, type: 'text'}
+		{title: 'URL', name: 'url', required: true, type: 'text'},
+		{title: 'Icon', name: 'icon', required: false, type: 'text'},
 	];
 });

@@ -103,7 +103,7 @@ angular.module('MobileCRMApp')
 		var deferred = $q.defer(),
 		_this = this.constructor;
 		//    console.log(params, 'params');
-		$http.get(this.baseApiPath + '?id=' + id).success(function (data, status, headers, config) {
+		$http.get(this.baseApiPath + '/' + id).success(function (data, status, headers, config) {
 			var response = {},
 			data = data.data;
 

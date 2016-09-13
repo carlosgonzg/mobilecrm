@@ -3,7 +3,7 @@
 var Crud = require('./crud');
 
 function RoleOptions(db, userLogged) {
-	this.crud = new Crud(db, 'ROLEOPTIONS', userLogged, true);
+	this.crud = new Crud(db, 'ROLEOPTIONS', userLogged);
 
 	//DB Table Schema
 	this.schema = {
@@ -14,8 +14,8 @@ function RoleOptions(db, userLogged) {
 				type : 'int',
 				required : true
 			},
-			optionId : {
-				type : 'int',
+			option : {
+				type : 'object',
 				required : true
 			},
 			read : {
@@ -41,7 +41,7 @@ function RoleOptions(db, userLogged) {
 		}
 	};
 	this.crud.schema = this.schema;
-	this.crud.uniqueFields = [ ['roleId', 'optionId'] ];
+	this.crud.uniqueFields = [ ['roleId', 'option._id'] ];
 }
 
 //Export

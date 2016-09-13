@@ -12,6 +12,9 @@ angular.module('MobileCRMApp')
 	$scope.orderService = orderService;
 	$scope.items = items.data;
 	$scope.readOnly = $rootScope.userData.role._id != 1;
+	if($rootScope.userData.role._id != 1){
+		$scope.orderService.client = new User($rootScope.userData);
+	}
 	$scope.listStatus = [{
 		_id: 1,
 		description: 'Pending'
@@ -50,6 +53,40 @@ angular.module('MobileCRMApp')
 		$scope.orderService.items[index] = new Item(item);
 	};
 
+	$scope.changed = function(field){
+		if($scope.orderService._id && $rootScope.userData.role._id != 1){
+			var isHere = false;
+			$scope.orderService.fieldsChanged = $scope.orderService.fieldsChanged || [];
+			for(var i = 0; i < $scope.orderService.fieldsChanged.length; i++){
+				if($scope.orderService.fieldsChanged[i] == field){
+					isHere = true;
+					break;
+				}
+			}
+			if(!isHere){
+				$scope.orderService.fieldsChanged.push(field);
+			}
+		} 
+	};
+	$scope.isChanged = function(field){
+		if($scope.orderService._id && $rootScope.userData.role._id == 1){
+			var isHere = false;
+			$scope.orderService.fieldsChanged = $scope.orderService.fieldsChanged || [];
+			for(var i = 0; i < $scope.orderService.fieldsChanged.length; i++){
+				if($scope.orderService.fieldsChanged[i] == field){
+					isHere = true;
+					break;
+				}
+			}
+			return isHere ? 'changed' : '';
+		}
+		return '';
+	};
+	$scope.isDisabled = function(){
+		return $rootScope.userData.role._id != 1 && $scope.orderService.status._id == 3;
+	};
+
+	
 	$scope.save = function () {
 		delete $scope.orderService.client.account.password;
 		$scope.orderService.save()
@@ -62,5 +99,4 @@ angular.module('MobileCRMApp')
 			toaster.error(error.message);
 		});
 	};
-
 });

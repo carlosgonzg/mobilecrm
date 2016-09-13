@@ -1,7 +1,7 @@
 ﻿'use strict';
 
 angular.module('MobileCRMApp')
-.factory('User', function (Base, $http, $q, $window, $rootScope, $location, dialogs, toaster) {
+.factory('User', function (Base, $http, $q, $window, $rootScope, $location, dialogs, toaster, RoleOptions) {
 
 	// Variable que se utiliza para comprobar si un objeto tiene una propiedad
 	// var hasProp = Object.prototype.hasOwnProperty;
@@ -42,6 +42,48 @@ angular.module('MobileCRMApp')
 		return at;
 	};
 
+	User.prototype.getRoleOptions = function(){
+		var d = $q.defer();
+		var roleOptions = new RoleOptions();
+		roleOptions.filter({ roleId: this.role._id })
+		.then(function(result){
+			result.data.sort(function(a, b){
+				return a.sort - b.sort;
+			});
+			d.resolve(result.data);
+		});
+		return d.promise;
+	};
+	User.prototype.getAccessOfView = function (path) {
+		var d = $q.defer();
+		var roleOptions = new RoleOptions();
+		if(!path){
+			path = $location.path();
+			path = '/' + path.split('/')[1];
+		}
+		var result = {
+			read: false,
+			write: false,
+			delete: false,
+			update: false
+		};
+		if(['/login', '/noaccess', '/'].indexOf(path) == -1){
+			var isHere = false;
+			$rootScope.roleOptions.forEach(function(rOption){
+				if(rOption.option.url == path){
+					result.read = rOption.read;
+					result.write = rOption.write;
+					result.delete = rOption.delete;
+					result.update = rOption.update;
+					isHere = true;
+				}
+			});
+			if(!isHere){
+				$location.path('/noaccess');
+			}
+		}
+		return result;
+	};
 	User.prototype.getActualUser = function () {
 		var d = $q.defer();
 		var _this = this;
@@ -52,7 +94,13 @@ angular.module('MobileCRMApp')
 			$rootScope.isAuthenticated = true;
 			$window.sessionStorage.isAuthenticated = true;
 			$window.sessionStorage.user = JSON.stringify($rootScope.userData);
-			d.resolve(_this);
+			_this.getRoleOptions()
+			.then(function(rOptions){
+				$window.sessionStorage.roleOptions = JSON.stringify(rOptions);
+				$rootScope.roleOptions = rOptions;
+				d.resolve(_this);
+			});
+			
 		})
 		.error(function (error) {
 			d.reject(error);

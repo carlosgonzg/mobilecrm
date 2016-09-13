@@ -89,6 +89,9 @@ angular
 			}
 		}
 	})
+	.when('/noaccess', {
+		templateUrl : 'views/noaccess.html'
+	})
 	.otherwise({
 		redirectTo : '/'
 	});

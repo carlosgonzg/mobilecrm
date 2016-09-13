@@ -8,10 +8,12 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-.controller('UserCtrl', function ($scope, $window, $location, toaster, user, roles, $timeout) {
+.controller('UserCtrl', function ($scope, $rootScope, $window, $location, toaster, user, roles, $timeout) {
 	$scope.user = user;
 	$scope.roles = roles.data || [];
-
+	if($rootScope.userData.role._id != 1 && user._id != $rootScope.userData._id){
+		$location.path('/noaccess');
+	}
 	$scope.addAddress = function () {
 		$scope.user.addresses.push({});
 	};
@@ -42,7 +44,7 @@ angular.module('MobileCRMApp')
 			$scope.user.update()
 			.then(function (data) {
 				toaster.success('The user was updated successfully');
-				$location.path('userList');
+				//$location.path('userList');
 			},
 				function (error) {
 				console.log(error);

@@ -5,7 +5,7 @@
 		</h1>
 		<div class="btn-group pull-right" style="margin-top: 20px;" role="group" aria-label="...">
 			<back-button></back-button>
-			<button type="button" class="btn btn-sm btn-default" ng-click="addOption()"><i class="fa fa-plus"></i>&nbsp;<span>Add Option</span></button>
+			<button type="button" class="btn btn-default" ng-click="addOption()"><i class="fa fa-plus"></i>&nbsp;<span>Add Option</span></button>
 			<button type="submit" form="userForm" class="btn btn-primary" ng-click="save()"><i class="fa fa-save"></i>&nbsp;<span>Save</span></button>
 		</div>
 		<hr />
@@ -25,15 +25,61 @@
 		<table class="table">
 			<thead>
 				<tr>
-					<th>
+					<th class="col-xs-3">
 						Option
+					</th>
+					<th>
+						Read
+					</th>
+					<th>
+						Write
+					</th>
+					<th>
+						Delete
+					</th>
+					<th>
+						Update
+					</th>
+					<th class="col-xs-1">
+						Sort Menu
 					</th>
 					<th>
 					</th>
 				</tr>
 			</thead>
 			<tbody>
-				<tr ng-repeat="rOption in roleOptions">
+				<tr ng-repeat="rOption in roleOptions[selectedId] | orderBy:'sort' track by $index">
+					<td>
+						<ui-select ng-model="rOption.option" theme="bootstrap">
+			            	<ui-select-match placeholder="Select the option you want on the list...">
+			            		{{$select.selected.description}}
+			            	</ui-select-match>
+			            	<ui-select-choices repeat="o in options | filter: $select.search track by o._id">
+		              			<div ng-bind-html="o.description | highlight: $select.search"></div>
+			              		<small ng-bind-html="o.url | highlight: $select.search"></small>
+			            	</ui-select-choices>
+			          	</ui-select>
+					</td>
+					<td>
+						<input type="checkbox" ng-model="rOption.read" />
+					</td>
+					<td>
+						<input type="checkbox" ng-model="rOption.write" />
+					</td>
+					<td>
+						<input type="checkbox" ng-model="rOption.delete" />
+					</td>
+					<td>
+						<input type="checkbox" ng-model="rOption.update" />
+					</td>
+					<td>
+						<input type="number" class="form-control" ng-model="rOption.sort" />
+					</td>
+					<td>
+						<button type="button" class="btn btn-sm btn-danger" ng-click="removeOption($index)">
+							<i class="fa fa-times"></i>
+						</button>
+					</td>
 				</tr>
 			</tbody>
 		</table>

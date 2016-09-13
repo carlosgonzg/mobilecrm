@@ -247,8 +247,7 @@ Crud.prototype.remove  = function (query) {
 		if (err) {
 			throw err;
 		}
-
-		if (data > 0) {
+		if (data.result.ok) {
 			deferred.resolve({
 				result : "Ok",
 				data : data

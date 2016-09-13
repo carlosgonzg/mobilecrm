@@ -146,3 +146,6 @@ input{
 .jumbotron > p {
 	font-size: 12px;
 }
+.changed{
+	border: 1px solid red;
+}

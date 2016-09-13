@@ -8,7 +8,7 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-.controller('OrderServiceListCtrl', function ($scope, $location, OrderService) {
+.controller('OrderServiceListCtrl', function ($scope, $rootScope, $location, OrderService) {
 	$scope.orderService = OrderService;
 
 	$scope.fields = [{
@@ -48,6 +48,8 @@ angular.module('MobileCRMApp')
 		'status.description',
 		'total'
 	];
+
+	$scope.filter = $rootScope.userData.role._id == 1 ? { } : { 'client._id': $rootScope.userData._id };
 
 	$scope.createNew = function () {
 		$location.path('orderService');

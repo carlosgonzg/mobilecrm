@@ -36,28 +36,20 @@
 				<div id="sidebar" class="col-sm-3 col-md-2 sidebar" ng-controller="NavigationCtrl" ng-show="isAuthenticated">
 					<ul class="nav nav-sidebar">
 						<li style="background-color: #1b1b1b; color: white; padding: 20px;">
-							<span>Welcome <b>{{ userData.entity.fullName }}</b></span>
+							<span>Welcome&nbsp;<b>{{ userData.entity.fullName }}</b></span>
 						</li>
-						<li ng-if="userData.role._id == 1">
-							<a href="#/userList"><i class="fa fa-users"></i>Users</a>
-						</li>
-						<li>
-							<a href="#/orderServiceList"><i class="fa fa-calculator"></i>Service Orders </a>
-						</li>
-						<li ng-if="userData.role._id == 1">
-							<a href="#/itemList"><i class="fa fa-book"></i>Items</a>
-						</li>
-						<li ng-if="userData.role._id == 1">
-							<a href="#/roleList"><i class="fa fa-circle-o"></i>Roles</a>
-						</li>
-						<li ng-if="userData.role._id == 1">
-							<a href="#/optionList"><i class="fa fa-check"></i>Options</a>
-						</li>
-						<li ng-if="userData.role._id == 1">
-							<a href="#/roleOptionsList"><i class="fa fa-list"></i>Role Options</a>
+						<li ng-repeat="rOptions in roleOptions | orderBy: 'sort' track by $index" ng-if="rOptions.sort != 0">
+							<a ng-href="{{ '#' + rOptions.option.url}}">
+								<i class="fa" ng-class="rOptions.option.icon"></i>
+								&nbsp;
+								{{rOptions.option.description}}
+							</a>
 						</li>
 						<li>
-							<a ng-click="userData.logout()"><i class="fa fa-sign-out"></i>Log out</a>
+							<a href="#/user/{{userData._id}}"><i class="fa fa-user"></i>&nbsp;My Profile</a>
+						</li>
+						<li>
+							<a ng-click="userData.logout()"><i class="fa fa-sign-out"></i>&nbsp;Log out</a>
 						</li>
 					</ul>
 				</div>

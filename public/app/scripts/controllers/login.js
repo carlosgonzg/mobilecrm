@@ -6,11 +6,11 @@ angular.module('MobileCRMApp')
 	$scope.login = function () {
 		$rootScope.userData.login()
 		.then(function (data) {
-			if($rootScope.userData.role._id == 1){
-				$location.path('userList');
-			}
-			else {
-				$location.path('orderServiceList');
+			for(var i = 0; i < $rootScope.roleOptions.length; i++){
+				if($rootScope.roleOptions[i].sort != 0){
+					$location.path($rootScope.roleOptions[i].option.url);
+					break;
+				}
 			}
 		}, function (err) {});
 	};
