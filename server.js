@@ -60,6 +60,7 @@ d.run(function () {
 	require('./api/ws/state')('/api/state', app);
 	require('./api/ws/city')('/api/city', app);
 	require('./api/ws/orderService')('/api/orderService', app);
+	require('./api/ws/workOrder')('/api/workOrder', app);
 	require('./api/ws/item')('/api/item', app);
 
 	//Inicializando Server

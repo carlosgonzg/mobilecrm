@@ -89,6 +89,26 @@ angular
 			}
 		}
 	})
+	.when('/workOrderList', {
+		templateUrl : 'views/workOrderList.html',
+		controller : 'WorkOrderListCtrl'
+	})
+	.when('/workOrder/:id?', {
+		templateUrl : 'views/workOrder.html',
+		controller : 'WorkOrderCtrl',
+		resolve:{
+			items : function (Item) {
+				return new Item().find({});
+			},
+			workOrder : function (WorkOrder, $route) {
+				if ($route.current.params.id) {
+					return new WorkOrder().findById(parseInt($route.current.params.id));
+				} else {
+					return new WorkOrder();
+				}
+			}
+		}
+	})
 	.when('/noaccess', {
 		templateUrl : 'views/noaccess.html'
 	})
