@@ -112,7 +112,7 @@ exports.getYearlySequence = function (db, name) {
 				ySequence.name = name;
 				ySequence.sequence = 1;
 				ySequence.preffix = yearlySequencePrefix[name];
-				
+
 				finalSequence = 1;
 				retorno = year + '-' + yearlySequencePrefix[name] + finalSequence;
 
@@ -131,6 +131,19 @@ exports.getYearlySequence = function (db, name) {
 	});
 	return deferred.promise;
 };
+
+exports.convertFecha = function (fecha) {
+  if (fecha === undefined) {
+    fecha = new Date()
+  }
+
+  var date = new Date(fecha);
+  var dia = (date.getDate() + 1 >= 10) ? date.getDate() + 1 : '0' + (date.getDate())
+  var anio = date.getFullYear();
+  var mes = (date.getMonth() + 1 >= 10) ? date.getMonth() + 1 : '0' + (date.getMonth() + 1);
+
+  return dia + "/" + mes + "/" + anio;
+}
 
 exports.getEnv = function (config) {
 	return function (req, res) {

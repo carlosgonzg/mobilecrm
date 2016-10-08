@@ -43,6 +43,11 @@ module.exports = function (prefix, app, ParentClass) {
 		obj.crud.remove (req.params.id).then(success(res), error(res));
 	});
 
+  app.post(prefix + '/excel', function (req, res) {
+    var obj = new ParentClass(app.db, req.user);
+    obj.crud.excel(req.body, req.user.entity.fullName || req.user.entity.name, res);
+  });
+
 	//Count
 	app.post(prefix + '/count', function (req, res) {
 		var obj = new ParentClass(app.db, req.user);

@@ -43,7 +43,7 @@ angular.module('MobileCRMApp')
 			message = '',
 			filtro = $scope.filterField ? $scope.filterField : {},
 			filtroOrBackup = $scope.filterField && $scope.filterField.$or ? $scope.filterField.$or : [];
-			
+
 			$scope.params = {
 				filter : filtro,
 				limit : 10,
@@ -58,6 +58,8 @@ angular.module('MobileCRMApp')
 				excelFields : $scope.excelFields || $scope.fields,
 				fieldFilter : {}
 			};
+
+      console.log($scope.excelTitle)
 
 			if ($scope.sortList == "-1") {
 				$scope.params.sort = {
@@ -228,7 +230,10 @@ angular.module('MobileCRMApp')
 				var _params = angular.copy(pParams);
 
 				//Leave out all the function fields
-				console.warn(_params.excelFields);
+				if (!_params.title){
+          _params.title = $scope.excelTitle;
+        }
+        console.log($scope.excelTitle)
 				_params.excelFields = _.filter(_params.excelFields, function (field) {
 						return (field.function  == undefined)
 					})

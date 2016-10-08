@@ -51,6 +51,33 @@ angular.module('MobileCRMApp')
 	];
 	$scope.filterDate = 'createdDate';
 
+  $scope.excelFields = [{
+      title : 'Created Date',
+      name : 'createdDate',
+      type : 'date'
+    }, {
+      title : 'SOR',
+      name : 'sor',
+      type : 'text'
+    }, {
+      title : 'Invoice #',
+      name : 'invoiceNumber',
+      type : 'text'
+    }, {
+      title : 'Customer',
+      name : 'client.entity.fullName',
+      type : 'text'
+    }, {
+      title : 'Status',
+      name : 'status.description',
+      type : 'text'
+    }, {
+      title : 'Total Amount',
+      name : 'total',
+      type : 'currency'
+    }
+  ];
+
 	$scope.filter = $rootScope.userData.role._id == 1 ? { } : { 'client._id': $rootScope.userData._id };
 
 	$scope.createNew = function () {

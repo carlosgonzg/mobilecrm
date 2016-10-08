@@ -6,6 +6,7 @@
     "bcryptjs": "^2.3.0",
     "body-parser": "^1.13.2",
     "domain": "0.0.1",
+    "exceljs": "^0.2.25",
     "express": "^4.13.1",
     "express-jwt": "^3.0.1",
     "express-validator": "^2.13.0",

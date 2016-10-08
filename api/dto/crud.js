@@ -2,6 +2,7 @@
 
 var q = require('q'),
 util = require('./util'),
+Excel = require('./excel'),
 Validator = require('jsonschema').Validator,
 math = require('sinful-math');
 var moment = require('moment')
@@ -336,11 +337,11 @@ Crud.prototype.find = function (query, sort) {
 	delete query.toDate;
 
 	query = convertToDate(query);
-	
+
 	if(this.userLogged && this.userLogged._id && this.userLogged.role._id != 1 && this.filterByUser){
 		query['createdBy._id'] = this.userLogged._id;
 	}
-	
+
 	var sortObj = sort ? sort : [['_id', 'asc']];
 	console.log('lequq', query)
 	this.db.get(this.table).find(query, {
@@ -348,6 +349,25 @@ Crud.prototype.find = function (query, sort) {
 	}, handleMongoResponse(deferred));
 	return deferred.promise;
 };
+
+Crud.prototype.excel = function (query, username, res) {
+  delete query.limit
+  delete query.skip
+
+  this.paginatedSearch(query)
+    .then(function (data) {
+      try {
+        var excel = new Excel(query.title, query.excelFields);
+        excel.addHeader();
+        excel.addData(data.data);
+        excel.addFooter(username);
+        excel.download(res);
+
+      } catch (e) {
+        util.error(res)(e);
+      }
+    });
+}
 
 Crud.prototype.count = function (query) {
 	var deferred = q.defer();
@@ -403,7 +423,7 @@ Crud.prototype.paginatedSearch = function (query) {
     }
     where = joinObjects(where, this.where);
     if (query.noAuth) {
-      
+
     }
     // Filtro por multiples campos
     if (search)
