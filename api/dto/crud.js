@@ -4,7 +4,7 @@ var q = require('q'),
 util = require('./util'),
 Validator = require('jsonschema').Validator,
 math = require('sinful-math');
-
+var moment = require('moment')
 //Constructor
 function Crud(db, table, userLogged, filterByUser) {
 	this.table = table;
@@ -276,16 +276,13 @@ Crud.prototype.update = function (qry, obj) {
 	}
 
 	obj = convertToDate(obj);
-  console.log('1')
   _this.validate(obj)
 	.then(function () {
-    console.log('2')
 		delete obj.baseApiPath;
 		delete obj.errors
 		return checkUniqueFields(obj, _this);
 	})
 	.then(function (data) {
-      console.log(data)
 			if (!data.exists) {
 				return _this.db.get(_this.table).update(query, {
 					$set : obj

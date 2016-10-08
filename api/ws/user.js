@@ -2,7 +2,7 @@ var q = require('q');
 var User = require('../dto/user');
 var util = require('../dto/util');
 
-module.exports = function (prefix, app, secret) {
+module.exports = function (prefix, app, secret, config) {
 	
 	//actual User
 	app.get(prefix + '/actual', function (req, res) {
@@ -11,7 +11,7 @@ module.exports = function (prefix, app, secret) {
 		.then(util.success(res), util.error(res));
 	});
 	//Change password
-	app.post(prefix + '/changePassword', function (req, res) {
+	app.post('/user/changePassword', function (req, res) {
 		var user = new User(app.db, secret, req.user);
 		user.changePassword(req.body.username, req.body.password)
 		.then(util.success(res), util.error(res));
@@ -20,7 +20,7 @@ module.exports = function (prefix, app, secret) {
 	//Forget Password
 	app.post('/user/forgetPassword', function (req, res) {
 		var user = new User(app.db, secret, req.user);
-		user.forgetPassword(req.body.email)
+		user.forgetPassword(req.body.email, config.SERVER_URL)
 		.then(util.success(res), util.error(res));
 	});
 

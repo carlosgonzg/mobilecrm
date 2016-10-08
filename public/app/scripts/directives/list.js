@@ -10,6 +10,7 @@ angular.module('MobileCRMApp')
 			excelFields : '=excelFields',
 			showId : '=showId',
 			searchFields : '=searchFields',
+			filterDate : '=filterDate',
 			dblClickFn : '=dblClick',
 			filterField : '=',
 			searchBar : '=',
@@ -30,6 +31,11 @@ angular.module('MobileCRMApp')
 				},
 				reverse : false,
 				field : '_id'
+			};
+			var today = new Date();
+			$scope.filterDateOptions = {
+				fromDate: new Date(today.getFullYear(), today.getMonth() - 1, today.getDate()),
+				toDate: new Date(today.getFullYear(), today.getMonth(), today.getDate())
 			};
 			var listBk = [],
 			searchByFields = ['_id'],
@@ -185,6 +191,14 @@ angular.module('MobileCRMApp')
 						}
 					}
 				});
+				if($scope.filterDate){
+					var queryDate = {};
+					pParams.dateRange = {
+						fields: [ $scope.filterDate ],
+						start: new Date($scope.filterDateOptions.fromDate),
+						end: new Date($scope.filterDateOptions.toDate)
+					};
+				}
 				$scope.objeto.paginatedSearch(pParams).then(function (result) {
 					if (result.data.length == 0) {
 						toaster.pop('error', 'Information', 'Couldn\'t load the items');

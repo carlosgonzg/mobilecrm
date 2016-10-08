@@ -52,7 +52,7 @@ d.run(function () {
 	app.db = require('monk')(config.DB_URL);
 	//WebAPI
 	require('./api/ws/list')('/api/list', app);
-	require('./api/ws/user')('/api/user', app, secret);
+	require('./api/ws/user')('/api/user', app, secret, config);
 	require('./api/ws/role')('/api/role', app);
 	require('./api/ws/option')('/api/option', app);
 	require('./api/ws/roleOptions')('/api/roleOptions', app);

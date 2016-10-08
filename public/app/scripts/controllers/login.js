@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('MobileCRMApp')
-.controller('LoginCtrl', function ($scope, $rootScope, $location, User) {
+.controller('LoginCtrl', function ($scope, $rootScope, $location, User, changePassword) {
 	$rootScope.userData = new User();
 	$scope.login = function () {
 		$rootScope.userData.login()
@@ -17,4 +17,8 @@ angular.module('MobileCRMApp')
 	$scope.forgetPassword = function(){
 		$rootScope.userData.forgetPassword();
 	};
+
+	if(changePassword){
+		$rootScope.userData.changePassword();
+	}
 });

@@ -67,7 +67,7 @@ angular.module('MobileCRMApp')
 			delete: false,
 			update: false
 		};
-		if(['/login', '/noaccess', '/'].indexOf(path) == -1){
+		if(['/login', '/noaccess', '/', '/changepassword'].indexOf(path) == -1){
 			var isHere = false;
 			$rootScope.roleOptions.forEach(function(rOption){
 				if(rOption.option.url == path){
@@ -81,6 +81,14 @@ angular.module('MobileCRMApp')
 			if(!isHere){
 				$location.path('/noaccess');
 			}
+		}
+		else {
+			result = {
+				read: true,
+				write: true,
+				delete: true,
+				update: true
+			};
 		}
 		return result;
 	};
@@ -159,7 +167,24 @@ angular.module('MobileCRMApp')
 			.error(function (error) {
 				console.log(error);
 				toaster.error(error.errors);
-				d.reject(error);
+			});
+		}, function (res) {});
+	};
+
+	User.prototype.changePassword = function(){
+		var _this = this;
+		var dialog = dialogs.create('views/changePassword.html', 'ChangePasswordCtrl');
+		dialog.result.then(function (res) {
+			$http.post('/user/changePassword', {
+				username: res.email,
+				password: res.password
+			})
+			.success(function(result){
+				toaster.success('The password was changed successfully');
+			})
+			.error(function (error) {
+				console.log(error);
+				toaster.error(error.errors);
 			});
 		}, function (res) {});
 	};

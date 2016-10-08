@@ -3,13 +3,15 @@ var md5 = require('MD5');
 var fs = require('fs');
 var smtpTransport;
 var urlServer;
-var tmpMail = './email/templateUser.html';
+var tmpMail = '/email/templateUser.html';
 var mailOptions = {};
 var q = require('q');
+var config; 
 
 var bringTemplateData = function (url) {
 	var deferred = q.defer();
-	fs.readFile(url, function (err, data) {
+	var daUrl = __dirname + url;
+	fs.readFile(daUrl, function (err, data) {
 		if (err) {
 			deferred.reject(err);
 			return;
@@ -32,6 +34,7 @@ var init = function (conf) {
 	urlServer = conf.SERVER_URL;
 	smtpTransport = nodemailer.createTransport(smtpConfig);
 	mailOptions.from = 'Info MobileOne <' + conf.MAIL_USR + '>';
+	config = conf;
 };
 
 var sendMail = function (to, subject, body, isHtmlBody, attachments, cc, cco) {
@@ -64,7 +67,7 @@ var sendMail = function (to, subject, body, isHtmlBody, attachments, cc, cco) {
 
 var sendActivationEmail = function (to, link, config) {
 	var deferred = q.defer();
-	bringTemplateData('./email/activar.html')
+	bringTemplateData('/email/activar.html')
 	.then(function (body) {
 		var url = config.SERVER_URL + '/#/perfil/activar/' + link;
 		body = body.replace(/\|url\|/g, url);
@@ -82,21 +85,26 @@ var sendActivationEmail = function (to, link, config) {
 	return deferred.promise;
 };
 
-var sendForgotPasswordMail = function (to, link, config) {
+var sendForgotPasswordMail = function (to, link, urlServer) {
 	var deferred = q.defer();
-	bringTemplateData('./email/forgotpassword.html')
+	bringTemplateData('/email/templateChangePassword.html')
 	.then(function (body) {
-		var url = config.SERVER_URL + '/#/perfil/forgotpassword/' + link;
-		body = body.replace(/\|url\|/g, url);
-		sendMail(to, config.FORGOT_SUBJECT || 'Test Mail', body, true)
+		var url = urlServer + '/#/perfil/forgotpassword/' + link;
+		console.log(url)
+		body = body.replace('<emailUrl>', url);
+		console.log('sending mail')
+		sendMail(to, config.FORGOT_SUBJECT || 'Forgot your password?', body, true)
 		.then(function (response) {
+			console.log('DONE Sending Mail: ', response)
 			deferred.resolve(response);
 		},
 			function (err) {
+			console.log('error', err)
 			deferred.reject(err);
 		});
 	},
 		function (err) {
+			console.log('error', err)
 		deferred.reject(err);
 	});
 	return deferred.promise;

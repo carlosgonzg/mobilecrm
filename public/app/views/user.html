@@ -5,6 +5,7 @@
 		</h1>
 		<div class="btn-group pull-right" style="margin-top: 20px;" role="group" aria-label="...">
 			<button type="submit" form="userForm" class="btn btn-primary update" ng-click="save()"><i class="fa fa-save"></i>&nbsp;<span>Save</span></button>
+			<button type="button" class="btn btn-default update" ng-click="userData.changePassword()" ng-if="userData._id == user._id"><i class="fa fa-save"></i>&nbsp;<span>Change Password</span></button>
 			<back-button></back-button>
 		</div>
 		<hr />

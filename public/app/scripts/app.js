@@ -20,7 +20,12 @@ angular
 	$routeProvider
 	.when('/login', {
 		templateUrl : 'views/login.html',
-		controller : 'LoginCtrl'
+		controller : 'LoginCtrl',
+		resolve: {
+			changePassword: function(){
+				return false;
+			}
+		}
 	})
 	.when('/userList', {
 		templateUrl : 'views/userList.html',
@@ -62,6 +67,15 @@ angular
 				} else {
 					return new User();
 				}
+			}
+		}
+	})
+	.when('/changepassword/:token', {
+		templateUrl : 'views/login.html',
+		controller : 'LoginCtrl',
+		resolve: {
+			changePassword: function(){
+				return true;
 			}
 		}
 	})

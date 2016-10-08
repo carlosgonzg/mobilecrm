@@ -11,6 +11,7 @@ var Address = require('./address');
 var Phone = require('./phone');
 var jwt = require('jsonwebtoken');
 var _ = require('underscore');
+var md5 = require('md5')
 
 function User(db, secret, userLogged) {
 	this.crud = new Crud(db, 'USER', userLogged );
@@ -105,11 +106,11 @@ User.prototype.encryptPassword = function (password) {
 };
 
 //Change password Function
-User.prototype.changePassword = function (userId, newPassword) {
+User.prototype.changePassword = function (email, newPassword) {
 	var d = q.defer();
 	var _this = this;
 	var query = {
-		_id : userId
+		'account.email' : email
 	};
 	this.crud.find(query)
 	.then(function (obj) {
@@ -134,21 +135,19 @@ User.prototype.changePassword = function (userId, newPassword) {
 };
 
 //Forget password Function
-User.prototype.forgetPassword = function (email) {
+User.prototype.forgetPassword = function (email, urlServer) {
 	var d = q.defer();
 	var changed = false;
 	var _this = this;
 	var query = {
 		'account.email' : email
 	};
-	console.log('email', email)
 	this.crud.find(query)
 	.then(function (obj) {
 		var user = obj.data[0];
 		if (user && user.status._id) {
-			console.log('here')
-			user.confirmToken = mail.sendForgotPasswordMail(email);
-			console.log('here 1')
+			user.confirmToken = md5(new Date() + email);
+			mail.sendForgotPasswordMail(email, user.confirmToken, urlServer);
 			return _this.crud.update(query, user);
 		} else {
 			throw 'Couldn\'t find user';

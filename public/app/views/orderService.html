@@ -40,7 +40,7 @@
 				<div class="col-xs-6">
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
-							<label for="date">SOR</label>
+							<label for="date">SOR/Service order #</label>
 							<input type="text" class="form-control" ng-model="orderService.sor" ng-class="isChanged('sor')" ng-change="changed('sor')" ng-disabled="isDisabled()">
 						</div>
 					</div>
@@ -131,7 +131,7 @@
 					<div class="col-xs-12 pull-right">
 						<div class="checkbox">
 						    <label>
-						      <input type="checkbox" ng-model="orderService.partsFromTheYard" ng-class="isChanged('partsFromTheYard')" ng-change="changed('partsFromTheYard')" id="partsFromTheYard" ng-disabled="isDisabled()"> Parts from the yards
+						      <input type="checkbox" ng-model="orderService.partsFromTheYard" ng-class="isChanged('partsFromTheYard')" ng-change="changed('partsFromTheYard')" id="partsFromTheYard" ng-disabled="isDisabled()"> Parts from the yard
 							</label>
 					  	</div>
 					</div>

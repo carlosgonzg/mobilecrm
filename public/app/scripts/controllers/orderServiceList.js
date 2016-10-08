@@ -43,11 +43,13 @@ angular.module('MobileCRMApp')
 		'createdDate',
 		'invoiceNumber',
 		'sor',
+		'siteAddress.branch',
 		'client.entity',
 		'client.entity.fullName',
 		'status.description',
 		'total'
 	];
+	$scope.filterDate = 'createdDate';
 
 	$scope.filter = $rootScope.userData.role._id == 1 ? { } : { 'client._id': $rootScope.userData._id };
 
