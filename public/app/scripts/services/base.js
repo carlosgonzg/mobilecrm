@@ -69,7 +69,7 @@ angular.module('MobileCRMApp')
 		});
 		return deferred.promise;
 	};
-	
+
 	Base.prototype.filter = function (query) {
 		var deferred = $q.defer();
 		var _this = this.constructor;
@@ -127,7 +127,7 @@ angular.module('MobileCRMApp')
 		});
 		return deferred.promise;
 	};
-	
+
 	var validate = function () {
 		return true;
 	};
@@ -312,6 +312,49 @@ angular.module('MobileCRMApp')
 
 		return deferred.promise;
 	};
+
+    // Excel: Find documents filtered, sorted by params, and return an stream excel file.
+  Base.prototype.excel = function (params) {
+    var deferred = $q.defer(),
+      _this = this.constructor;
+
+
+    if (params) {
+      $http({
+        url: this.baseApiPath + '/excel',
+        method: "POST",
+        data: params, //this is your json data string
+        headers: {
+          'Content-type': 'application/json'
+        },
+        responseType: 'arraybuffer'
+      }).success(function (data, status, headers, config) {
+
+        // console.log(data, headers, params.title)
+
+        var json = JSON.stringify(data),
+          blob = new Blob([data], {
+            type: "application/vnd.ms-excel"
+          }),
+          url = window.URL.createObjectURL(blob);
+        a.href = url;
+        a.download = params.title? params.title + '.xlsx' : 'Prueba.xlsx';
+        a.click();
+        window.URL.revokeObjectURL(url);
+
+        return deferred.resolve();
+      }).error(function (data, status, headers, config) {
+        return deferred.reject(data);
+      });
+    } else {
+      deferred.reject({
+        res: 'Not ok',
+        message: 'Debe introducir los parametros para esta funcion!',
+        data: {}
+      });
+    }
+    return deferred.promise;
+  };
 
 	Base.prototype.count = function (params) {
 		var deferred = $q.defer();
