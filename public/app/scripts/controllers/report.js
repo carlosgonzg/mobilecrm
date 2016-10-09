@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('MobileCRMApp')
-.controller('ReportCtrl', function ($scope, $rootScope, toaster, clients, countries, OrderService) {
+.controller('ReportCtrl', function ($scope, $rootScope, toaster, clients, countries, OrderService, $timeout) {
 	var today = new Date();
 
 	$scope.selectedTab = 'data';
@@ -183,49 +183,51 @@ angular.module('MobileCRMApp')
 		return obj;
 	};
 	var drawChart = function(){
-		var chartType = ['totalPriceByClient', 'countByClient'].indexOf($scope.selectedTab) != -1 ? 'column' : 'pie';
-		var data = chartData();
+		$timeout(function(){
+			var chartType = ['totalPriceByClient', 'countByClient'].indexOf($scope.selectedTab) != -1 ? 'column' : 'pie';
+			var data = chartData();
 
-		var seriesData = [];
-		if(chartType == 'pie'){
-			seriesData = [{
-				name: 'Amount',
-				colorByPoint: true,
-				data: []
-			}];
-		}
-		var array = $scope.selectedTab == 'totalPriceByClient' ? data.price : $scope.selectedTab == 'countByClient' ? data.count : $scope.selectedTab == 'status' ? data.status : [];
-		for(var i = 0; i < array.length; i++){
+			var seriesData = [];
 			if(chartType == 'pie'){
-				seriesData[0].data.push({
-					name: array[i].label,
-					y: array[i].value
-				});
+				seriesData = [{
+					name: 'Amount',
+					colorByPoint: true,
+					data: []
+				}];
 			}
-			else {
-				seriesData.push({
-					name: array[i].label,
-					data: [ array[i].value ]
-				});
+			var array = $scope.selectedTab == 'totalPriceByClient' ? data.price : $scope.selectedTab == 'countByClient' ? data.count : $scope.selectedTab == 'status' ? data.status : [];
+			for(var i = 0; i < array.length; i++){
+				if(chartType == 'pie'){
+					seriesData[0].data.push({
+						name: array[i].label,
+						y: array[i].value
+					});
+				}
+				else {
+					seriesData.push({
+						name: array[i].label,
+						data: [ array[i].value ]
+					});
+				}
 			}
-		}
-		var myChart = Highcharts.chart('chart_container', {
-	        chart: {
-	            type: chartType
-	        },
-	        title: {
-	            text: ''
-	        },
-	        xAxis: {
-	            categories: ['Amount']
-	        },
-	        yAxis: {
-	            title: {
-	                text: ''
-	            }
-	        },
-	        series: seriesData
-	    });
+			var myChart = Highcharts.chart('chart_container', {
+		        chart: {
+		            type: chartType
+		        },
+		        title: {
+		            text: ''
+		        },
+		        xAxis: {
+		            categories: ['Amount']
+		        },
+		        yAxis: {
+		            title: {
+		                text: ''
+		            }
+		        },
+		        series: seriesData
+		    });
+		});
 	};
 	//Search function
 	$scope.search = function(){
