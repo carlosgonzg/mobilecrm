@@ -10,7 +10,7 @@
 angular.module('MobileCRMApp')
 .controller('OrderServiceCtrl', function ($scope, $rootScope, $location, toaster, User, orderService, items, Item) {
 	$scope.orderService = orderService;
-	$scope.items = items.data;
+	$scope.items = [];
 	$scope.readOnly = $rootScope.userData.role._id != 1;
 	if($rootScope.userData.role._id != 1){
 		$scope.orderService.client = new User($rootScope.userData);
@@ -42,6 +42,24 @@ angular.module('MobileCRMApp')
 			show: true
 		}
 	];
+
+	$scope.clientChanged = function(client){
+		$scope.items = [];
+		for(var i = 0; i < items.data.length; i++){
+			if(!items.data[i].clients){
+				$scope.items.push(items.data[i]);
+			}
+			else {
+				for(var j = 0; j < items.data[i].clients.length; j++){
+					if(items.data[i].clients[j]._id == client._id){
+						$scope.items.push(items.data[i]);
+						break;
+					}
+				}
+			}
+		}
+		console.log(items.data, $scope.items)
+	};
 	
 	$scope.addItem = function () {
 		$scope.orderService.items.push(new Item())
@@ -98,5 +116,13 @@ angular.module('MobileCRMApp')
 			console.log(error);
 			toaster.error(error.message);
 		});
+	};
+
+	$scope.export = function(){
+		$scope.orderService.getInvoice();
+	};
+
+	$scope.send = function(){
+		$scope.orderService.sendInvoice();
 	};
 });

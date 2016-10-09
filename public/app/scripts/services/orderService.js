@@ -1,15 +1,17 @@
 'use strict';
 
 angular.module('MobileCRMApp')
-.factory('OrderService', function (Base, Item, $rootScope, $location) {
+.factory('OrderService', function (Base, Item, $rootScope, $location, $q,$http, toaster) {
 
 	// Variable que se utiliza para comprobar si un objeto tiene una propiedad
 	// var hasProp = Object.prototype.hasOwnProperty;
 
 	// Nombre de la clase
 	var OrderService;
-
+var a;
 	function OrderService(propValues) {
+		a = document.createElement("a");
+			document.body.appendChild(a);
 		OrderService.super.constructor.apply(this, arguments);
 		this.baseApiPath = "/api/OrderService";
 		this.client = this.client || {};
@@ -66,7 +68,49 @@ angular.module('MobileCRMApp')
 	OrderService.prototype.goTo = function () {
 		$location.path('/orderService/' + this._id);
 	};
-	
-	return OrderService;
 
+	OrderService.prototype.getInvoice = function(){
+		var d = $q.defer();
+		var _this = this;
+		$http({
+			url: this.baseApiPath + '/invoice',
+			method: "POST",
+			data: { id: _this._id }, //this is your json data string
+			headers: {
+			'Content-type': 'application/json'
+			},
+			responseType: 'arraybuffer'
+		})
+		.success(function (data, status, headers, config) {
+			var json = JSON.stringify(data);
+			var blob = new Blob([data], {
+				type: "application/pdf"
+			});
+			var url = window.URL.createObjectURL(blob);
+			
+			a.href = url;
+			a.download = _this.invoiceNumber + '.pdf';
+			a.click();
+			window.URL.revokeObjectURL(url);
+			d.resolve(url);
+	    })
+	    .error(function (data, status, headers, config) {
+	    	toaster.error('There was an error exporting the file, please try again')
+	        d.reject(data);
+	    });
+	    return d.promise;
+	};
+	OrderService.prototype.sendInvoice = function(){
+		var d = $q.defer();
+		$http.post(this.baseApiPath + '/send', { id: this._id })
+		.success(function (data) {
+			toaster.success('The invoice has been sent!.');
+	    })
+	    .error(function (data, status, headers, config) {
+	    	toaster.error('There was an error sending the file, please try again')
+	        d.reject(data);
+	    });
+		return d.promise;
+	};
+	return OrderService;
 });

@@ -16,7 +16,7 @@ angular.module('MobileCRMApp')
 			name : 'createdDate',
 			type : 'date'
 		}, {
-			title : 'SOR',
+			title : 'SOR/Service Order #',
 			name : 'sor',
 			type : 'text'
 		}, {

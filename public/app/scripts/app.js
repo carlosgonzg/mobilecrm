@@ -81,7 +81,15 @@ angular
 	})
 	.when('/itemList', {
 		templateUrl : 'views/itemList.html',
-		controller : 'ItemListCtrl'
+		controller : 'ItemListCtrl',
+		resolve:{
+			items : function (Item) {
+				return new Item().find({});
+			},
+			clients : function (User) {
+				return new User().filter({ 'role._id': { $ne: 1} });
+			}
+		}
 	})
 	.when('/orderServiceList', {
 		templateUrl : 'views/orderServiceList.html',
@@ -120,6 +128,18 @@ angular
 				} else {
 					return new WorkOrder();
 				}
+			}
+		}
+	})
+	.when('/report', {
+		templateUrl : 'views/report.html',
+		controller : 'ReportCtrl',
+		resolve:{
+			clients : function (User) {
+				return new User().filter({ 'role._id': { $ne: 1} });
+			},
+			countries : function (Country) {
+				return new Country().find();
 			}
 		}
 	})

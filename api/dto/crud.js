@@ -470,10 +470,10 @@ Crud.prototype.paginatedSearch = function (query) {
         var obj = {};
         obj[field] = {};
         if (objectStart) {
-          obj[field].$gte = objectStart;
+          obj[field].$gte = new Date(objectStart.getFullYear(), objectStart.getMonth(), objectStart.getDate(), 0, 0, 0, 0);
         }
         if (objectEnd) {
-          obj[field].$lte = objectEnd
+          obj[field].$lte = new Date(objectEnd.getFullYear(), objectEnd.getMonth(), objectEnd.getDate(), 23, 59, 59, 999);
         }
         where.$and.push(obj);
       })

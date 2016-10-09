@@ -6,9 +6,16 @@ var Address = require('./address');
 var Item = require('./item');
 var _ = require('underscore');
 var util = require('./util');
+var Excel = require('./excel');
+var moment = require('moment');
+var User = require('./user');
+var pdf = require('../pdf');
+var fs = require('fs')
 
-function OrderService(db, userLogged) {
+function OrderService(db, userLogged, dirname) {
 	this.crud = new Crud(db, 'ORDERSERVICE', userLogged);
+	this.user = new User(db, '', userLogged);
+	this.dirname = dirname;
 	//DB Table Schema
 	this.schema = {
 		id : '/OrderService',
@@ -70,7 +77,7 @@ function OrderService(db, userLogged) {
 	this.crud.uniqueFields = ['invoiceNumber'];
 }
 
-OrderService.prototype.insert = function (orderService) {
+OrderService.prototype.insert = function (orderService, username, mail) {
 	var d = q.defer();
 	var _this = this;
 	var total = 0;
@@ -87,6 +94,31 @@ OrderService.prototype.insert = function (orderService) {
 	})
 	//inserto
 	.then(function (obj) {
+		_this.sendInvoice(obj.data._id, username, mail);
+		d.resolve(obj);
+	})
+	.catch (function (err) {
+		console.log(err)
+		d.reject({
+			result : 'Not ok',
+			errors : err
+		});
+	});
+	return d.promise;
+};
+
+OrderService.prototype.update = function (query, orderService, username, mail) {
+	var d = q.defer();
+	var _this = this;
+	var total = 0;
+	//sumo el total
+	for (var i = 0; i < orderService.items.length; i++) {
+		total += orderService.items[i].quantity * orderService.items[i].price;
+	}
+	orderService.total = total;
+	_this.crud.update(query, orderService)
+	.then(function (obj) {
+		_this.sendInvoiceUpdate(query._id, username, mail);
 		d.resolve(obj);
 	})
 	.catch (function (err) {
@@ -98,18 +130,97 @@ OrderService.prototype.insert = function (orderService) {
 	return d.promise;
 };
 
-OrderService.prototype.update = function (query, orderService) {
+OrderService.prototype.sendInvoice = function(id, username, mail){
 	var d = q.defer();
 	var _this = this;
-	var total = 0;
-	//sumo el total
-	for (var i = 0; i < orderService.items.length; i++) {
-		total += orderService.items[i].quantity * orderService.items[i].price;
-	}
-	orderService.total = total;
-	_this.crud.update(query, orderService)
-	.then(function (obj) {
-		d.resolve(obj);
+	var orderService = {};
+	var url = '';
+	var urlPdf = '';
+	var fileName = '';
+	var fileNamePdf = '';
+	var emails = [];
+	_this.crud.find({ _id: id })
+	.then(function(orderS){
+		orderService = orderS.data[0];
+		return _this.user.getAdminUsers();
+	})
+	.then(function(users){
+		emails = [ orderService.client.account.email ];
+		for(var i = 0; i < users.data.length; i++){
+			emails.push(users.data[i].account.email);
+		}
+		return _this.createInvoice(id, username);
+	})
+	.then(function(excel){
+		fileName = orderService.invoiceNumber + '.xlsx';
+		fileNamePdf = orderService.invoiceNumber + '.pdf';
+		url = _this.dirname + '/api/invoices/' + fileName; 
+		urlPdf = _this.dirname + '/api/invoices/' + fileNamePdf; 
+		//return excel.workbook.xlsx.writeFile(url);
+		return pdf.createInvoice(orderService);
+	})
+	.then(function(){
+		return mail.sendInvoice(orderService.invoiceNumber, emails, urlPdf, fileNamePdf);
+	})
+	.then(function(){
+		d.resolve(true);
+	})
+	.catch (function (err) {
+		console.log(err)
+		d.reject({
+			result : 'Not ok',
+			errors : err
+		});
+	});
+	return d.promise;
+};
+
+OrderService.prototype.sendInvoiceUpdate = function(id, username, mail){
+	var d = q.defer();
+	var _this = this;
+	var orderService = {};
+	var emails = [];
+	_this.crud.find({ _id: id })
+	.then(function(orderS){
+		orderService = orderS.data[0];
+		return _this.user.getAdminUsers();
+	})
+	.then(function(users){
+		emails = [ ];
+		for(var i = 0; i < users.data.length; i++){
+			emails.push(users.data[i].account.email);
+		}
+		return _this.createInvoice(id, username);
+	})
+	.then(function(){
+		console.log('alo')
+		return mail.sendInvoiceUpdate(orderService.invoiceNumber, emails, username);
+	})
+	.then(function(){
+		d.resolve(true);
+	})
+	.catch (function (err) {
+		console.log(err)
+		d.reject({
+			result : 'Not ok',
+			errors : err
+		});
+	});
+	return d.promise;
+};
+
+OrderService.prototype.createInvoice = function(id, username){
+	var d = q.defer();
+	var _this = this;
+	var query = {
+		_id: id
+	};
+	_this.crud.find(query)
+	.then(function (result) {
+		return pdf.createInvoice(result.data[0]);
+	})
+	.then(function (data) {
+		d.resolve(data);
 	})
 	.catch (function (err) {
 		d.reject({
@@ -119,5 +230,16 @@ OrderService.prototype.update = function (query, orderService) {
 	});
 	return d.promise;
 };
+
+OrderService.prototype.getInvoice = function(id, res, username){
+	this.createInvoice(id, username)
+	.then(function(obj){
+		fs.readFile(obj.path, function (err,data){
+			res.contentType("application/pdf");
+			res.send(data);
+		});
+	});
+};
+
 
 module.exports = OrderService;

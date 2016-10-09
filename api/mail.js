@@ -37,6 +37,17 @@ var init = function (conf) {
 	config = conf;
 };
 
+var setAttachment = function (url, fileName) {
+	var thisAttachs = [];
+	var attach = {
+	    path: url,
+	    filename: fileName,
+	    contents: fs.readFileSync(url)
+  	};
+  	thisAttachs.push(attach);
+ 	return thisAttachs;
+}
+
 var sendMail = function (to, subject, body, isHtmlBody, attachments, cc, cco) {
 	var deferred = q.defer();
 	mailOptions.to = to;
@@ -89,11 +100,59 @@ var sendForgotPasswordMail = function (to, link, urlServer) {
 	var deferred = q.defer();
 	bringTemplateData('/email/templateChangePassword.html')
 	.then(function (body) {
-		var url = urlServer + '/#/perfil/forgotpassword/' + link;
-		console.log(url)
+		var url = urlServer + '/#/changePassword/' + link;
 		body = body.replace('<emailUrl>', url);
 		console.log('sending mail')
 		sendMail(to, config.FORGOT_SUBJECT || 'Forgot your password?', body, true)
+		.then(function (response) {
+			console.log('DONE Sending Mail: ', response)
+			deferred.resolve(response);
+		},
+			function (err) {
+			console.log('error', err)
+			deferred.reject(err);
+		});
+	},
+		function (err) {
+			console.log('error', err)
+		deferred.reject(err);
+	});
+	return deferred.promise;
+};
+
+var sendInvoice = function (invoice, mails, file, fileName) {
+	var deferred = q.defer();
+	bringTemplateData('/email/templateInvoice.html')
+	.then(function (body) {
+		var url = config.SERVER_URL;
+		body = body.replace('<emailUrl>', url);
+		var attachments = setAttachment(file, fileName)
+		sendMail(mails.join(', '), 'Invoice: ' + invoice + ' Created', body, true, attachments)
+		.then(function (response) {
+			console.log('DONE Sending Mail: ', response)
+			deferred.resolve(response);
+		},
+			function (err) {
+			console.log('error', err)
+			deferred.reject(err);
+		});
+	},
+		function (err) {
+			console.log('error', err)
+		deferred.reject(err);
+	});
+	return deferred.promise;
+};
+
+var sendInvoiceUpdate = function (invoice, mails, username) {
+	var deferred = q.defer();
+	bringTemplateData('/email/templateInvoiceUpdate.html')
+	.then(function (body) {
+		var url = config.SERVER_URL;
+		body = body.replace('<emailUrl>', url);
+		body = body.replace('<invoiceNumber>', invoice);
+		body = body.replace('<client>', username);
+		sendMail(mails.join(', '), 'Invoice: ' + invoice + ' Updated', body, true)
 		.then(function (response) {
 			console.log('DONE Sending Mail: ', response)
 			deferred.resolve(response);
@@ -116,12 +175,12 @@ exports.sendConfirmateMail = function (email, password) {
 	var urlEmail = urlServer + '/user/confirm/' + token;
 	bringTemplateData(tmpMail)
 	.then(function (body) {
-		console.log('aqui? 1')
+		//console.log('aqui? 1')
 		var html = body;
 		html = html.replace('<emailUrl>', urlEmail);
 		html = html.replace('<emailUsuario>', email);
 		html = html.replace('<emailPassword>', password);
-		console.log('aquiiiii')
+		//console.log('aquiiiii')
 		return sendMail(email, subject, html, true)
 	})
 	.then(function () {
@@ -134,6 +193,10 @@ exports.sendConfirmateMail = function (email, password) {
 	return token;
 };
 
+
+
+exports.sendInvoice = sendInvoice;
+exports.sendInvoiceUpdate = sendInvoiceUpdate;
 exports.init = init;
 exports.sendMail = sendMail;
 exports.sendActivationEmail = sendActivationEmail;

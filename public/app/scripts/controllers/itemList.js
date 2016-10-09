@@ -8,13 +8,43 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-.controller('ItemListCtrl', function ($scope, Item) {
-	$scope.wsItem = Item;
-	$scope.fields = [
-		{title: 'Code', name: 'code', required: true, type: 'number'},
-		{title: 'Description', name: 'description', required: true, type: 'text'},
-		{title: 'Part', name: 'part', required: false, type: 'number'},
-		{title: 'Unit of Measure', name: 'unitOfMeasure', required: false, type: 'text'},
-		{title: 'Price', name: 'price', required: false, type: 'number'}
-	];
+.controller('ItemListCtrl', function ($scope, items, clients, Item, $q, toaster, dialogs) {
+	$scope.items = items.data;
+	$scope.add = function(){
+		var item = new Item();
+		$scope.items.push(item);
+	};
+	$scope.remove = function(index){
+		$scope.items[index]
+		.remove()
+		.then(function(data){
+			$scope.items[$scope.selectedId].splice(index, 1);
+			toaster.success('The item was removed successfully');
+		})
+		.catch(function(error){
+			toaster.error(error.message);
+		});
+	};
+	
+	$scope.save = function(){
+		var promises = [];
+		for(var i = 0; i < $scope.items.length; i++){
+			promises.push($scope.items[i].save());
+		}
+		$q.all(promises)
+		.then(function(){
+			toaster.success('The items were updated successfully');
+		})
+		.catch(function(error){
+			toaster.error(error.message);
+		});
+	};
+
+	$scope.assignClients = function(item){
+		var itemClients = item.clients || [];
+		var dialog = dialogs.create('views/assignClients.html', 'AssignClientsCtrl', { clientList: clients.data, clients: itemClients });
+		dialog.result.then(function (res) {
+			item.clients = res.clients;
+		});
+	};
 });

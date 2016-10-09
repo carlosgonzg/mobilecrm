@@ -5,12 +5,67 @@
 		</h1>
 		<div class="btn-group pull-right" style="margin-top: 20px;" role="group" aria-label="...">
 			<back-button></back-button>
+			<button type="button" form="userForm" class="btn btn-primary" ng-click="save()"><i class="fa fa-save"></i>&nbsp;<span>Save</span></button>
+			<button type="button" class="btn btn-default" ng-click="add()"><i class="fa fa-plus"></i>&nbsp;<span>Add Item</span></button>
 		</div>
 		<hr />
 	</div>
 </div>
 <div class="row">
-  <div>
-    <crud-type-table clase="wsItem" fields="fields" show-id="false" filter-field="filter"></crud-type-table>
-  </div>
+	<div class="col-xs-12">
+		<table class="table">
+			<thead>
+				<tr>
+					<th class="col-xs-3">
+						Code
+					</th>
+					<th>
+						Description
+					</th>
+					<th>
+						Part
+					</th>
+					<th>
+						Unit of measure
+					</th>
+					<th>
+						Part
+					</th>
+					<th class="col-xs-1">
+					</th>
+					<th class="col-xs-1">
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="item in items track by $index">
+					<td>
+						<input class="form-control" type="number" ng-model="item.code" />
+					</td>
+					<td>
+						<input class="form-control" type="text" ng-model="item.description" />
+					</td>
+					<td>
+						<input class="form-control" type="text" ng-model="item.part" />
+					</td>
+					<td>
+						<input class="form-control" type="text" ng-model="item.unitOfMeasure" />
+					</td>
+					<td>
+						<input class="form-control" type="number" ng-model="item.price" />
+					</td>
+					<td>
+						<button type="button" class="btn btn-sm btn-danger" ng-click="remove($index)">
+							<i class="fa fa-times"></i>
+						</button>
+					</td>
+					<td>
+						<button type="button" class="btn btn-sm" ng-click="assignClients(item)">
+							<i class="fa fa-list"></i>
+						</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 </div>

@@ -1,0 +1,42 @@
+<div class="modal-header modal-header-color dialog-header-confirm">
+  <button type="button" class="close" ng-click="close()"><i class="fa fa-times"></i></button>
+  <h4 class="modal-title">
+		Assign Clients:
+  </h4>
+</div>
+<div class="modal-body">
+	<div class="row">
+		<div class="col-xs-12">
+			<table class="table">
+				<thead>
+					<tr>
+						<th>
+							Client
+						</th>
+						<th>
+							<button type="button" class="btn btn-sm" ng-click="add()">
+								<i class="fa fa-plus"></i>
+							</button>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="client in clients track by $index">
+						<td>
+							<select class="form-control" ng-model="client._id" ng-options="o._id as o.entity.fullName for o in clientList track by o._id" />
+						</td>
+						<td>
+							<button type="button" class="btn btn-sm btn-danger" ng-click="remove($index)">
+								<i class="fa fa-times"></i>
+							</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-primary" type="button" ng-click="send()">Assign</button>
+  <button class="btn btn-default" type="button" ng-click="close()">Close</button>
+</div>

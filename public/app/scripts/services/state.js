@@ -1,7 +1,7 @@
 ﻿'use strict';
 
 angular.module('MobileCRMApp')
-.factory('State', function (Base, $http) {
+.factory('State', function (Base, $http, $q, City) {
 
 	// Variable que se utiliza para comprobar si un objeto tiene una propiedad
 	// var hasProp = Object.prototype.hasOwnProperty;
@@ -36,6 +36,17 @@ angular.module('MobileCRMApp')
 	State.properties = function () {
 		var at = {};
 		return at;
+	};
+
+	State.prototype.getMyCities = function(){
+		var d = $q.defer();
+		new City().find({ stateId: this._id })
+		.then(function(data){
+			d.resolve(data);
+		}, function(err){
+			d.reject(err);
+		});
+		return d.promise;
 	};
 
 	return State;

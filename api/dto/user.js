@@ -328,10 +328,8 @@ User.prototype.getActual = function(){
 	var query = {
 		_id: _this.crud.userLogged._id
 	};
-	console.log(query);
 	_this.crud.find(query)
 	.then(function (obj) {
-			console.log(obj);
 			d.resolve({
 				result: 'ok',
 				data : obj.data[0]
@@ -343,6 +341,26 @@ User.prototype.getActual = function(){
 				errors : err
 			});
 		});
+	return d.promise;
+};
+User.prototype.getAdminUsers = function(){
+	var d = q.defer();
+	var query = {
+		'role._id': 1
+	};
+	this.crud.find(query)
+	.then(function (obj) {
+		d.resolve({
+			result: 'ok',
+			data : obj.data
+		});
+	})
+	.catch (function (err) {
+		d.reject({
+			result : 'not ok',
+			errors : err
+		});
+	});
 	return d.promise;
 };
 module.exports = User;
