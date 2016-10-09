@@ -61,13 +61,12 @@ var sendMail = function (to, subject, body, isHtmlBody, attachments, cc, cco) {
 	}
 	if (attachments != undefined)
 		mailOptions.attachments = attachments;
-	console.log('Enviando mensaje');
 	smtpTransport.sendMail(mailOptions, function (error, response) {
 		if (error) {
 			console.log(error);
 			deferred.reject(error);
 		} else {
-			console.log('Message sent: ' + response.response);
+			console.log('Message sent');
 			deferred.resolve(response);
 		}
 		// if you don't want to use this transport object anymore, uncomment following line
@@ -100,7 +99,7 @@ var sendForgotPasswordMail = function (to, link, urlServer) {
 	var deferred = q.defer();
 	bringTemplateData('/email/templateChangePassword.html')
 	.then(function (body) {
-		var url = urlServer + '/#/changePassword/' + link;
+		var url = urlServer + '/#/changepassword/' + link;
 		body = body.replace('<emailUrl>', url);
 		console.log('sending mail')
 		sendMail(to, config.FORGOT_SUBJECT || 'Forgot your password?', body, true)
