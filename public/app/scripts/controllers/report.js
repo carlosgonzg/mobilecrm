@@ -3,7 +3,7 @@
 angular.module('MobileCRMApp')
 .controller('ReportCtrl', function ($scope, $rootScope, toaster, clients, countries, OrderService, $timeout) {
 	var today = new Date();
-
+	$scope.isClient = $rootScope.userData.role._id != 1;
 	$scope.selectedTab = 'data';
 	$scope.orderServices = [];
 	$scope.clientList = clients.data;
@@ -50,7 +50,7 @@ angular.module('MobileCRMApp')
 	$scope.filter = {
 		fromDate: new Date(today.getFullYear(), today.getMonth(), 1),
 		toDate: today,
-		client: { _id: -1 },
+		client: $rootScope.userData.role._id != 1 ? { _id: $rootScope.userData._id } : { _id: -1 },
 		status: { _id: -1 },
 		country: { _id: -1 },
 		state: { _id: -1 },
