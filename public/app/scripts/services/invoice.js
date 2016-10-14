@@ -1,19 +1,19 @@
 'use strict';
 
 angular.module('MobileCRMApp')
-.factory('OrderService', function (Base, Item, $rootScope, $location, $q,$http, toaster) {
+.factory('Invoice', function (Base, Item, $rootScope, $location, $q,$http, toaster) {
 
 	// Variable que se utiliza para comprobar si un objeto tiene una propiedad
 	// var hasProp = Object.prototype.hasOwnProperty;
 
 	// Nombre de la clase
-	var OrderService;
+	var Invoice;
 var a;
-	function OrderService(propValues) {
+	function Invoice(propValues) {
 		a = document.createElement("a");
 			document.body.appendChild(a);
-		OrderService.super.constructor.apply(this, arguments);
-		this.baseApiPath = "/api/OrderService";
+		Invoice.super.constructor.apply(this, arguments);
+		this.baseApiPath = "/api/invoice";
 		this.client = this.client || {};
 		this.invoiceNumber = this.invoiceNumber || '';
 		this.sor = this.sor || '';
@@ -47,15 +47,15 @@ var a;
 		return child;
 	};
 	// Extender de la clase Base
-	extend(OrderService, Base);
+	extend(Invoice, Base);
 
 	// Funcion que retorna las propiedades de una cuenta
-	OrderService.properties = function () {
+	Invoice.properties = function () {
 		var at = {};
 		return at;
 	};
 	
-	OrderService.prototype.getTotal = function(){
+	Invoice.prototype.getTotal = function(){
 		var total = 0;
 		for(var i = 0; i < this.items.length; i++){
 			total += this.items[i].getTotalPrice();
@@ -65,11 +65,11 @@ var a;
 	};
 	
 	
-	OrderService.prototype.goTo = function () {
-		$location.path('/orderService/' + this._id);
+	Invoice.prototype.goTo = function () {
+		$location.path('/invoice/' + this._id);
 	};
 
-	OrderService.prototype.getInvoice = function(){
+	Invoice.prototype.getInvoice = function(){
 		var d = $q.defer();
 		var _this = this;
 		$http({
@@ -100,11 +100,11 @@ var a;
 	    });
 	    return d.promise;
 	};
-	OrderService.prototype.sendInvoice = function(){
+	Invoice.prototype.sendInvoice = function(){
 		var d = $q.defer();
 		$http.post(this.baseApiPath + '/send', { id: this._id })
 		.success(function (data) {
-			toaster.success('The Service Order has been sent!.');
+			toaster.success('The invoice has been sent!.');
 	    })
 	    .error(function (data, status, headers, config) {
 	    	toaster.error('There was an error sending the file, please try again')
@@ -112,5 +112,5 @@ var a;
 	    });
 		return d.promise;
 	};
-	return OrderService;
+	return Invoice;
 });

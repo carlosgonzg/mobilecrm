@@ -133,7 +133,13 @@ angular.module('MobileCRMApp')
 				} else {
 					var properties = field.toString().split('.');
 					for (var i = 0; i < properties.length; i++) {
-						data = data[properties[i]];
+						if(data){
+							data = data[properties[i]];
+						}
+						else {
+							data = '';
+							break;
+						}
 					}
 				}
 				return data;

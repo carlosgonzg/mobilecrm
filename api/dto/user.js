@@ -78,16 +78,6 @@ function User(db, secret, userLogged) {
 				required : true //,
 				//properties : new Role().schema
 			},
-			addresses : {
-				type : 'array',
-				required : true,
-				items : new Address().schema
-			},
-			phones : {
-				type : 'array',
-				required : true,
-				items : new Phone().schema
-			},
 			status : {
 				type : 'object',
 				required : true

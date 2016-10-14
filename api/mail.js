@@ -119,6 +119,55 @@ var sendForgotPasswordMail = function (to, link, urlServer) {
 	return deferred.promise;
 };
 
+var sendOrderService = function (invoice, mails, file, fileName) {
+	var deferred = q.defer();
+	bringTemplateData('/email/templateOrderService.html')
+	.then(function (body) {
+		var url = config.SERVER_URL;
+		body = body.replace('<emailUrl>', url);
+		var attachments = setAttachment(file, fileName)
+		sendMail(mails.join(', '), 'Service Order: ' + invoice + ' Created', body, true, attachments)
+		.then(function (response) {
+			console.log('DONE Sending Mail: ', response)
+			deferred.resolve(response);
+		},
+			function (err) {
+			console.log('error', err)
+			deferred.reject(err);
+		});
+	},
+		function (err) {
+			console.log('error', err)
+		deferred.reject(err);
+	});
+	return deferred.promise;
+};
+
+var sendOrderServiceUpdate = function (invoice, mails, username) {
+	var deferred = q.defer();
+	bringTemplateData('/email/templateOrderServiceUpdate.html')
+	.then(function (body) {
+		var url = config.SERVER_URL;
+		body = body.replace('<emailUrl>', url);
+		body = body.replace('<invoiceNumber>', invoice);
+		body = body.replace('<client>', username);
+		sendMail(mails.join(', '), 'Service Order: ' + invoice + ' Updated', body, true)
+		.then(function (response) {
+			console.log('DONE Sending Mail: ', response)
+			deferred.resolve(response);
+		},
+			function (err) {
+			console.log('error', err)
+			deferred.reject(err);
+		});
+	},
+		function (err) {
+			console.log('error', err)
+		deferred.reject(err);
+	});
+	return deferred.promise;
+};
+
 var sendInvoice = function (invoice, mails, file, fileName) {
 	var deferred = q.defer();
 	bringTemplateData('/email/templateInvoice.html')
@@ -196,6 +245,8 @@ exports.sendConfirmateMail = function (email, password) {
 
 exports.sendInvoice = sendInvoice;
 exports.sendInvoiceUpdate = sendInvoiceUpdate;
+exports.sendOrderService = sendOrderService;
+exports.sendOrderServiceUpdate = sendOrderServiceUpdate;
 exports.init = init;
 exports.sendMail = sendMail;
 exports.sendActivationEmail = sendActivationEmail;

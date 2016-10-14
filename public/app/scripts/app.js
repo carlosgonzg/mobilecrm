@@ -61,6 +61,9 @@ angular
 			roles : function (Role) {
 				return new Role().find({});
 			},
+			companies : function (Company) {
+				return new Company().find({});
+			},
 			user : function (User, $route) {
 				if ($route.current.params.id) {
 					return new User().findById(parseInt($route.current.params.id));
@@ -111,6 +114,26 @@ angular
 			}
 		}
 	})
+	.when('/invoiceList', {
+		templateUrl : 'views/invoiceList.html',
+		controller : 'InvoiceListCtrl'
+	})
+	.when('/invoice/:id?', {
+		templateUrl : 'views/invoice.html',
+		controller : 'InvoiceCtrl',
+		resolve:{
+			items : function (Item) {
+				return new Item().find({});
+			},
+			invoice : function (Invoice, $route) {
+				if ($route.current.params.id) {
+					return new Invoice().findById(parseInt($route.current.params.id));
+				} else {
+					return new Invoice();
+				}
+			}
+		}
+	})
 	.when('/workOrderList', {
 		templateUrl : 'views/workOrderList.html',
 		controller : 'WorkOrderListCtrl'
@@ -140,6 +163,23 @@ angular
 			},
 			countries : function (Country) {
 				return new Country().find();
+			}
+		}
+	})
+	.when('/companyList', {
+		templateUrl : 'views/companyList.html',
+		controller : 'CompanyListCtrl'
+	})
+	.when('/company/:id?', {
+		templateUrl : 'views/company.html',
+		controller : 'CompanyCtrl',
+		resolve : {
+			company : function (Company, $route) {
+				if ($route.current.params.id) {
+					return new Company().findById(parseInt($route.current.params.id));
+				} else {
+					return new Company();
+				}
 			}
 		}
 	})

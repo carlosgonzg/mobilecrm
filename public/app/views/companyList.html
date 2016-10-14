@@ -1,0 +1,17 @@
+<div class="row">
+    <div class="col-xs-12">
+        <h1 class="pull-left">
+            <i class="fa fa-lg fa-suitcase"></i> <span> Companies</span>
+        </h1>
+        <div class="btn-group pull-right" style="margin-top: 20px;" role="group" aria-label="...">
+            <back-button></back-button>
+            <button type="button" class="btn btn-primary new" ng-click="createNew()"><i class="fa fa-plus"></i>&nbsp;<span>Create New</span></button>
+        </div>
+        <hr />
+    </div>
+</div>
+<div class="row">
+	<div class="col-xs-12">
+		<list clase="wsCompanies" fields="fields" showid="false" search-fields="search" list="list"></list>
+	</div>
+</div>

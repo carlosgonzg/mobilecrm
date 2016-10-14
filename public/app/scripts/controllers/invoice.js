@@ -8,12 +8,12 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-.controller('OrderServiceCtrl', function ($scope, $rootScope, $location, toaster, User, orderService, items, Item) {
-	$scope.orderService = orderService;
+.controller('InvoiceCtrl', function ($scope, $rootScope, $location, toaster, User, invoice, items, Item, OrderService, Invoice) {
+	$scope.invoice = invoice;
 	$scope.items = [];
 	$scope.readOnly = $rootScope.userData.role._id != 1;
 	if($rootScope.userData.role._id != 1){
-		$scope.orderService.client = new User($rootScope.userData);
+		$scope.invoice.client = new User($rootScope.userData);
 	}
 	$scope.listStatus = [{
 		_id: 1,
@@ -29,6 +29,30 @@ angular.module('MobileCRMApp')
 		description: 'Paid'
 	}];
 
+
+	$scope.wsClassOS = OrderService;
+	$scope.wsFieldsOS = [{
+			label : 'SOR/Service Order #',
+			field : 'sor',
+			type : 'text',
+			show: true
+		}, {
+			label : 'Customer',
+			field : 'client.entity.fullName',
+			type : 'text',
+			show: true
+		}, {
+			label : 'Status',
+			field : 'status.description',
+			type : 'text',
+			show: true
+		}, {
+			label : 'Total Amount',
+			field : 'total',
+			type : 'currency',
+			show: true
+		}
+	];
 	$scope.wsClass = User;
 	$scope.wsFields = [{
 			field : 'entity.fullName',
@@ -53,6 +77,11 @@ angular.module('MobileCRMApp')
 		}
 	];
 
+	$scope.setInvoice = function(orderService){
+		$scope.invoice = new Invoice(orderService);
+		delete $scope.invoice._id;
+	};
+
 	$scope.clientChanged = function(client){
 		$scope.items = [];
 		for(var i = 0; i < items.data.length; i++){
@@ -71,36 +100,36 @@ angular.module('MobileCRMApp')
 	};
 	
 	$scope.addItem = function () {
-		$scope.orderService.items.push(new Item())
+		$scope.invoice.items.push(new Item())
 	};
 	$scope.removeItem = function (index) {
-		$scope.orderService.items.splice(index, 1);
+		$scope.invoice.items.splice(index, 1);
 	};
 	$scope.setItem = function(item, index) {
-		$scope.orderService.items[index] = new Item(item);
+		$scope.invoice.items[index] = new Item(item);
 	};
 
 	$scope.changed = function(field){
-		if($scope.orderService._id && $rootScope.userData.role._id != 1){
+		if($scope.invoice._id && $rootScope.userData.role._id != 1){
 			var isHere = false;
-			$scope.orderService.fieldsChanged = $scope.orderService.fieldsChanged || [];
-			for(var i = 0; i < $scope.orderService.fieldsChanged.length; i++){
-				if($scope.orderService.fieldsChanged[i] == field){
+			$scope.invoice.fieldsChanged = $scope.invoice.fieldsChanged || [];
+			for(var i = 0; i < $scope.invoice.fieldsChanged.length; i++){
+				if($scope.invoice.fieldsChanged[i] == field){
 					isHere = true;
 					break;
 				}
 			}
 			if(!isHere){
-				$scope.orderService.fieldsChanged.push(field);
+				$scope.invoice.fieldsChanged.push(field);
 			}
 		} 
 	};
 	$scope.isChanged = function(field){
-		if($scope.orderService._id && $rootScope.userData.role._id == 1){
+		if($scope.invoice._id && $rootScope.userData.role._id == 1){
 			var isHere = false;
-			$scope.orderService.fieldsChanged = $scope.orderService.fieldsChanged || [];
-			for(var i = 0; i < $scope.orderService.fieldsChanged.length; i++){
-				if($scope.orderService.fieldsChanged[i] == field){
+			$scope.invoice.fieldsChanged = $scope.invoice.fieldsChanged || [];
+			for(var i = 0; i < $scope.invoice.fieldsChanged.length; i++){
+				if($scope.invoice.fieldsChanged[i] == field){
 					isHere = true;
 					break;
 				}
@@ -110,16 +139,17 @@ angular.module('MobileCRMApp')
 		return '';
 	};
 	$scope.isDisabled = function(){
-		return $rootScope.userData.role._id != 1 && $scope.orderService.status._id == 3;
+		return $rootScope.userData.role._id != 1 && $scope.invoice.status._id == 3;
 	};
 
 	
 	$scope.save = function () {
-		delete $scope.orderService.client.account.password;
-		$scope.orderService.save()
+		delete $scope.invoice.client.account.password;
+		console.log($scope.invoice)
+		$scope.invoice.save()
 		.then(function (data) {
-			toaster.success('The Order Service was saved successfully');
-			$location.path('orderServiceList')
+			toaster.success('The Invoice was saved successfully');
+			$location.path('invoiceList')
 		},
 			function (error) {
 			console.log(error);
@@ -128,10 +158,10 @@ angular.module('MobileCRMApp')
 	};
 
 	$scope.export = function(){
-		$scope.orderService.getInvoice();
+		$scope.invoice.getInvoice();
 	};
 
 	$scope.send = function(){
-		$scope.orderService.sendInvoice();
+		$scope.invoice.sendInvoice();
 	};
 });

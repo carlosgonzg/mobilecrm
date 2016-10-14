@@ -8,16 +8,16 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-.controller('OrderServiceListCtrl', function ($scope, $rootScope, $location, OrderService) {
-	$scope.orderService = OrderService;
+.controller('InvoiceListCtrl', function ($scope, $rootScope, $location, Invoice) {
+	$scope.invoice = Invoice;
 
 	$scope.fields = [{
 			title : 'Created Date',
 			name : 'createdDate',
 			type : 'date'
 		}, {
-			title : 'SOR/Service Order #',
-			name : 'sor',
+			title : 'Invoice #',
+			name : 'invoiceNumber',
 			type : 'text'
 		}, {
 			title : 'Customer',
@@ -77,6 +77,6 @@ angular.module('MobileCRMApp')
 	$scope.filter = $rootScope.userData.role._id == 1 ? { } : { 'client._id': $rootScope.userData._id };
 
 	$scope.createNew = function () {
-		$location.path('orderService');
+		$location.path('invoice');
 	};
 });

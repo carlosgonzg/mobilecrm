@@ -43,26 +43,17 @@
 				<select class="form-control" ng-model="user.role" id="role" ng-options="role as role.description for role in roles track by role._id"></select>
 			</div>
 		</div>
-		
-		<div class="col-xs-12">
-			<h2 class="pull-left"><i class="fa fa-map"></i>&nbsp;Addresses</h2>
-			<button type="button" class="btn btn-sm btn-primary pull-right" style="margin-top:20px" ng-click="addAddress()"><i class="fa fa-plus"></i></button>
-		</div>
-		<div class="col-xs-12" ng-repeat="address in user.addresses track by $index">
-			<div class="col-xs-12">
-				<button type="button" class="btn btn-sm btn-danger pull-right" style="margin-top:20px;" ng-click="removeAddress($index)"><i class="fa fa-minus"></i></button>
+		<div class="col-xs-12 col-md-6" ng-if="user.role._id == 3">
+			<div class="form-group">
+				<label for="role">Company</label>
+				<select class="form-control" ng-model="user.company" id="role" ng-options="company as company.entity.name for company in companies track by company._id"></select>
 			</div>
-			<address-model ng-model="user.addresses[$index]"></address-model>
 		</div>
-		<div class="col-xs-12">
-			<h2 class="pull-left"><i class="fa fa-phone"></i>&nbsp;Phone List</h2>
-			<button type="button" class="btn btn-sm btn-primary pull-right" style="margin-top:20px" ng-click="addPhone()"><i class="fa fa-plus"></i></button>
-		</div>
-		<div class="col-xs-12" ng-repeat="phone in user.phones track by $index">
-			<div class="col-xs-12">
-				<button type="button" class="btn btn-sm btn-danger pull-right" style="margin-top:20px;" ng-click="removePhone($index)"><i class="fa fa-minus"></i></button>
+		<div class="col-xs-12 col-md-6" ng-if="user.role._id == 3 && user.company">
+			<div class="form-group">
+				<label for="branch">Branch</label>
+				<select class="form-control" ng-model="user.companyAddress" id="branch" ng-options="address as address.branch for address in user.company.addresses track by address.branch"></select>
 			</div>
-			<phone-model ng-model="user.phones[$index]"></phone-model>
 		</div>
 	</form>
 </div>

@@ -18,12 +18,12 @@ module.exports = function (prefix, app, mail, dirname) {
 
 	app.post(prefix + '/invoice', function (req, res) {
 		var orderService = new OrderService(app.db, req.user);
-		orderService.getInvoice(req.body.id, res, req.user.entity.fullName || req.user.entity.name)
+		orderService.getOrderService(req.body.id, res, req.user.entity.fullName || req.user.entity.name)
 	});
 
 	app.post(prefix + '/send', function (req, res) {
 		var orderService = new OrderService(app.db, req.user, dirname);
-		orderService.sendInvoice(req.body.id, req.user.entity.fullName || req.user.entity.name, mail)
+		orderService.sendOrderService(req.body.id, req.user.entity.fullName || req.user.entity.name, mail)
 		.then(util.success(res), util.error(res));
 	});
 	require('./crud')(prefix, app, OrderService);

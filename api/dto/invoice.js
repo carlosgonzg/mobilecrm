@@ -12,13 +12,13 @@ var User = require('./user');
 var pdf = require('../pdf');
 var fs = require('fs')
 
-function OrderService(db, userLogged, dirname) {
-	this.crud = new Crud(db, 'ORDERSERVICE', userLogged);
+function Invoice(db, userLogged, dirname) {
+	this.crud = new Crud(db, 'INVOICE', userLogged);
 	this.user = new User(db, '', userLogged);
 	this.dirname = dirname;
 	//DB Table Schema
 	this.schema = {
-		id : '/OrderService',
+		id : '/Invoice',
 		type : 'object',
 		properties : {
 			client : {
@@ -39,15 +39,15 @@ function OrderService(db, userLogged, dirname) {
 			},
 			pono : {
 				type : 'string',
-				required : true
+				required : false
 			},
 			unitno : {
 				type : 'string',
-				required : true
+				required : false
 			},
 			isono : {
 				type : 'string',
-				required : true
+				required : false
 			},
 			siteAddress : new Address().schema,
 			phone : {
@@ -77,7 +77,7 @@ function OrderService(db, userLogged, dirname) {
 	this.crud.uniqueFields = ['invoiceNumber'];
 }
 
-OrderService.prototype.insert = function (orderService, username, mail) {
+Invoice.prototype.insert = function (orderService, username, mail) {
 	var d = q.defer();
 	var _this = this;
 	var total = 0;
@@ -87,14 +87,14 @@ OrderService.prototype.insert = function (orderService, username, mail) {
 	}
 	orderService.total = total;
 	//Consigo el sequencial de invoice
-	util.getYearlySequence(_this.crud.db, 'OrderService')
+	util.getYearlySequence(_this.crud.db, 'Invoice')
 	.then(function (sequence) {
 		orderService.invoiceNumber = sequence;
 		return _this.crud.insert(orderService);
 	})
 	//inserto
 	.then(function (obj) {
-		_this.sendOrderService(obj.data._id, username, mail);
+		_this.sendInvoice(obj.data._id, username, mail);
 		d.resolve(obj);
 	})
 	.catch (function (err) {
@@ -107,7 +107,7 @@ OrderService.prototype.insert = function (orderService, username, mail) {
 	return d.promise;
 };
 
-OrderService.prototype.update = function (query, orderService, username, mail) {
+Invoice.prototype.update = function (query, orderService, username, mail) {
 	var d = q.defer();
 	var _this = this;
 	var total = 0;
@@ -118,7 +118,7 @@ OrderService.prototype.update = function (query, orderService, username, mail) {
 	orderService.total = total;
 	_this.crud.update(query, orderService)
 	.then(function (obj) {
-		_this.sendOrderServiceUpdate(query._id, username, mail);
+		_this.sendInvoiceUpdate(query._id, username, mail);
 		d.resolve(obj);
 	})
 	.catch (function (err) {
@@ -130,7 +130,7 @@ OrderService.prototype.update = function (query, orderService, username, mail) {
 	return d.promise;
 };
 
-OrderService.prototype.sendOrderService = function(id, username, mail){
+Invoice.prototype.sendInvoice = function(id, username, mail){
 	var d = q.defer();
 	var _this = this;
 	var orderService = {};
@@ -149,18 +149,18 @@ OrderService.prototype.sendOrderService = function(id, username, mail){
 		for(var i = 0; i < users.data.length; i++){
 			emails.push(users.data[i].account.email);
 		}
-		return _this.createOrderService(id, username);
+		return _this.createInvoice(id, username);
 	})
 	.then(function(excel){
 		fileName = orderService.invoiceNumber + '.xlsx';
 		fileNamePdf = orderService.invoiceNumber + '.pdf';
-		url = _this.dirname + '/api/orderservices/' + fileName; 
-		urlPdf = _this.dirname + '/api/orderservices/' + fileNamePdf; 
+		url = _this.dirname + '/api/invoices/' + fileName; 
+		urlPdf = _this.dirname + '/api/invoices/' + fileNamePdf; 
 		//return excel.workbook.xlsx.writeFile(url);
-		return pdf.createOrderService(orderService);
+		return pdf.createInvoice(orderService);
 	})
 	.then(function(){
-		return mail.sendOrderService(orderService.invoiceNumber, emails, urlPdf, fileNamePdf);
+		return mail.sendInvoice(orderService.invoiceNumber, emails, urlPdf, fileNamePdf);
 	})
 	.then(function(){
 		d.resolve(true);
@@ -175,7 +175,7 @@ OrderService.prototype.sendOrderService = function(id, username, mail){
 	return d.promise;
 };
 
-OrderService.prototype.sendOrderServiceUpdate = function(id, username, mail){
+Invoice.prototype.sendInvoiceUpdate = function(id, username, mail){
 	var d = q.defer();
 	var _this = this;
 	var orderService = {};
@@ -190,11 +190,11 @@ OrderService.prototype.sendOrderServiceUpdate = function(id, username, mail){
 		for(var i = 0; i < users.data.length; i++){
 			emails.push(users.data[i].account.email);
 		}
-		return _this.createOrderService(id, username);
+		return _this.createInvoice(id, username);
 	})
 	.then(function(){
 		console.log('alo')
-		return mail.sendOrderServiceUpdate(orderService.invoiceNumber, emails, username);
+		return mail.sendInvoiceUpdate(orderService.invoiceNumber, emails, username);
 	})
 	.then(function(){
 		d.resolve(true);
@@ -209,7 +209,7 @@ OrderService.prototype.sendOrderServiceUpdate = function(id, username, mail){
 	return d.promise;
 };
 
-OrderService.prototype.createOrderService = function(id, username){
+Invoice.prototype.createInvoice = function(id, username){
 	var d = q.defer();
 	var _this = this;
 	var query = {
@@ -217,7 +217,7 @@ OrderService.prototype.createOrderService = function(id, username){
 	};
 	_this.crud.find(query)
 	.then(function (result) {
-		return pdf.createOrderService(result.data[0]);
+		return pdf.createInvoice(result.data[0]);
 	})
 	.then(function (data) {
 		d.resolve(data);
@@ -231,8 +231,8 @@ OrderService.prototype.createOrderService = function(id, username){
 	return d.promise;
 };
 
-OrderService.prototype.getOrderService = function(id, res, username){
-	this.createOrderService(id, username)
+Invoice.prototype.getInvoice = function(id, res, username){
+	this.createInvoice(id, username)
 	.then(function(obj){
 		fs.readFile(obj.path, function (err,data){
 			res.contentType("application/pdf");
@@ -242,4 +242,4 @@ OrderService.prototype.getOrderService = function(id, res, username){
 };
 
 
-module.exports = OrderService;
+module.exports = Invoice;

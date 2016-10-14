@@ -60,8 +60,10 @@ d.run(function () {
 	require('./api/ws/state')('/api/state', app);
 	require('./api/ws/city')('/api/city', app);
 	require('./api/ws/orderService')('/api/orderService', app, mail, __dirname);
+	require('./api/ws/invoice')('/api/invoice', app, mail, __dirname);
 	require('./api/ws/workOrder')('/api/workOrder', app);
 	require('./api/ws/item')('/api/item', app);
+	require('./api/ws/company')('/api/company', app);
 
 	//Inicializando Server
 	http.createServer(app).listen(config.APP_PORT, function () {
