@@ -39,11 +39,13 @@
 						<div class="panel-heading">{{invoice.client.entity.fullName}}&nbsp;-&nbsp;{{invoice.client.company.entity.name}}</div>
 						<div class="panel-body">
 							<p class="col-xs-12 text-left">
-								<b>{{invoice.client.companyAddress.branch}}</b>
+								<b>{{invoice.client.branch.name}}</b>
 								<br/>
-								<i class="fa fa-map"></i>&nbsp;{{ invoice.client.companyAddress.address1 }},&nbsp;{{ invoice.client.companyAddress.city.description }},&nbsp;{{ invoice.client.companyAddress.state.description }},&nbsp;{{ invoice.client.companyAddress.country.description }}
+								<p class="col-xs-12 text-left" ng-repeat="address in invoice.client.branch.addresses track by $index">
+									<i class="fa fa-map"></i>&nbsp;{{ address.address1 }},&nbsp;{{ address.city.description }},&nbsp;{{ address.state.description }},&nbsp;{{ address.country.description }}
+								</p>
 							</p>
-							<p class="col-xs-12 text-left" ng-repeat="phone in invoice.client.company.phones track by $index">
+							<p class="col-xs-12 text-left" ng-repeat="phone in invoice.client.branch.phones track by $index">
 								<i class="fa fa-phone"></i>&nbsp;{{ phone.number }}
 							</p>
 						</div>

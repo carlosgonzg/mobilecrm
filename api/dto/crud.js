@@ -218,6 +218,7 @@ Crud.prototype.insert = function (newObject) {
 		});
 	})
 	.catch(function (error) {
+    console.log(error)
 		d.reject({
 			result : 'Not ok',
 			error : error,

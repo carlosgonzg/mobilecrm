@@ -1,0 +1,78 @@
+<div class="row">
+	<div class="col-xs-12">
+		<h1 class="pull-left">
+			<i class="fa fa-lg fa-list"></i> <span> Branch</span>
+		</h1>
+		<div class="btn-group pull-right" style="margin-top: 20px;" role="group" aria-label="...">
+			<button type="submit" form="userForm" class="btn btn-primary update" ng-click="save()"><i class="fa fa-save"></i>&nbsp;<span>Save</span></button>
+			<back-button></back-button>
+		</div>
+		<hr />
+	</div>
+</div>
+<div class="col-xs-12 col-md-6">
+	<form class="form" id="userForm" name="userForm">
+		<div class="col-xs-12 col-md-6">
+			<div class="form-group">
+				<label for="company">Company</label>
+				<select class="form-control" ng-model="branch.company" ng-options="company as company.entity.name for company in companies track by company._id" id="company"></select>
+			</div>
+		</div>
+		<div class="col-xs-12 col-md-6">
+			<div class="form-group">
+				<label for="name">Office</label>
+				<input type="text" class="form-control" ng-model="branch.name" id="name" placeholder="Name">
+			</div>
+		</div>
+		<div class="col-xs-12 col-md-6">
+			<div class="form-group">
+				<label for="operationsManager">Operations Manager</label>
+				<input type="text" class="form-control" ng-model="branch.operationsManager" id="operationsManager" placeholder="Operations Manager">
+			</div>
+		</div>
+		<div class="col-xs-12 col-md-6">
+			<div class="form-group">
+				<label for="operationsManager">Operations Manager</label>
+				<input type="text" class="form-control" ng-model="branch.officeCoordinator" id="operationsManager" placeholder="Operations Manager">
+			</div>
+		</div>
+		<div class="col-xs-12 col-md-6">
+			<div class="form-group">
+				<label for="branchManager">Branch Manager</label>
+				<input type="text" class="form-control" ng-model="branch.branchManager" id="branchManager" placeholder="Branch Manager">
+			</div>
+		</div>
+		<div class="col-xs-12 col-md-6">
+			<div class="form-group">
+				<label for="officeManager">Office Manager</label>
+				<input type="text" class="form-control" ng-model="branch.officeManager" id="officeManager" placeholder="Office Manager">
+			</div>
+		</div>
+		<div class="col-xs-12 col-md-6">
+			<div class="form-group">
+				<label for="dispatcher">Dispatcher</label>
+				<input type="text" class="form-control" ng-model="branch.dispatcher" id="dispatcher" placeholder="Dispatcher">
+			</div>
+		</div>
+		<div class="col-xs-12">
+			<h2 class="pull-left"><i class="fa fa-map"></i>&nbsp;Addresses</h2>
+			<button type="button" class="btn btn-sm btn-primary pull-right" style="margin-top:20px" ng-click="addAddress()"><i class="fa fa-plus"></i></button>
+		</div>
+		<div class="col-xs-12" ng-repeat="address in branch.addresses track by $index">
+			<div class="col-xs-12">
+				<button type="button" class="btn btn-sm btn-danger pull-right" style="margin-top:20px;" ng-click="removeAddress($index)"><i class="fa fa-minus"></i></button>
+			</div>
+			<address-model ng-model="branch.addresses[$index]"></address-model>
+		</div>
+		<div class="col-xs-12">
+			<h2 class="pull-left"><i class="fa fa-phone"></i>&nbsp;Phone List</h2>
+			<button type="button" class="btn btn-sm btn-primary pull-right" style="margin-top:20px" ng-click="addPhone()"><i class="fa fa-plus"></i></button>
+		</div>
+		<div class="col-xs-12" ng-repeat="phone in branch.phones track by $index">
+			<div class="col-xs-12">
+				<button type="button" class="btn btn-sm btn-danger pull-right" style="margin-top:20px;" ng-click="removePhone($index)"><i class="fa fa-minus"></i></button>
+			</div>
+			<phone-model ng-model="branch.phones[$index]"></phone-model>
+		</div>
+	</form>
+</div>

@@ -183,6 +183,26 @@ angular
 			}
 		}
 	})
+	.when('/branchList', {
+		templateUrl : 'views/branchList.html',
+		controller : 'BranchListCtrl'
+	})
+	.when('/branch/:id?', {
+		templateUrl : 'views/branch.html',
+		controller : 'BranchCtrl',
+		resolve : {
+			branch : function (Branch, $route) {
+				if ($route.current.params.id) {
+					return new Branch().findById(parseInt($route.current.params.id));
+				} else {
+					return new Branch();
+				}
+			},
+			companies : function (Company) {
+				return new Company().find();
+			}
+		}
+	})
 	.when('/noaccess', {
 		templateUrl : 'views/noaccess.html'
 	})

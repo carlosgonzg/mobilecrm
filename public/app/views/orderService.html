@@ -33,11 +33,13 @@
 						<div class="panel-heading">{{orderService.client.entity.fullName}}&nbsp;-&nbsp;{{orderService.client.company.entity.name}}</div>
 						<div class="panel-body">
 							<p class="col-xs-12 text-left">
-								<b>{{orderService.client.companyAddress.branch}}</b>
+								<b>{{orderService.client.branch.name}}</b>
 								<br/>
-								<i class="fa fa-map"></i>&nbsp;{{ orderService.client.companyAddress.address1 }},&nbsp;{{ orderService.client.companyAddress.city.description }},&nbsp;{{ orderService.client.companyAddress.state.description }},&nbsp;{{ orderService.client.companyAddress.country.description }}
+								<p class="col-xs-12 text-left" ng-repeat="address in orderService.client.branch.addresses track by $index">
+									<i class="fa fa-map"></i>&nbsp;{{ address.address1 }},&nbsp;{{ address.city.description }},&nbsp;{{ address.state.description }},&nbsp;{{ address.country.description }}
+								</p>
 							</p>
-							<p class="col-xs-12 text-left" ng-repeat="phone in orderService.client.company.phones track by $index">
+							<p class="col-xs-12 text-left" ng-repeat="phone in orderService.client.branch.phones track by $index">
 								<i class="fa fa-phone"></i>&nbsp;{{ phone.number }}
 							</p>
 						</div>

@@ -46,13 +46,13 @@
 		<div class="col-xs-12 col-md-6" ng-if="user.role._id == 3">
 			<div class="form-group">
 				<label for="role">Company</label>
-				<select class="form-control" ng-model="user.company" id="role" ng-options="company as company.entity.name for company in companies track by company._id"></select>
+				<select class="form-control" ng-model="user.company" id="role" ng-options="company as company.entity.name for company in companies track by company._id" ng-change="getBranches(user.company)"></select>
 			</div>
 		</div>
 		<div class="col-xs-12 col-md-6" ng-if="user.role._id == 3 && user.company">
 			<div class="form-group">
 				<label for="branch">Branch</label>
-				<select class="form-control" ng-model="user.companyAddress" id="branch" ng-options="address as address.branch for address in user.company.addresses track by address.branch"></select>
+				<select class="form-control" ng-model="user.branch" id="branch" ng-options="branch as branch.name for branch in branches track by branch._id"></select>
 			</div>
 		</div>
 	</form>

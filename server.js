@@ -64,6 +64,7 @@ d.run(function () {
 	require('./api/ws/workOrder')('/api/workOrder', app);
 	require('./api/ws/item')('/api/item', app);
 	require('./api/ws/company')('/api/company', app);
+	require('./api/ws/branch')('/api/branch', app);
 
 	//Inicializando Server
 	http.createServer(app).listen(config.APP_PORT, function () {

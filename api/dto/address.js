@@ -5,10 +5,6 @@ function Address() {
 		id : '/Address',
 		type : 'object',
 		properties : {
-			branch : {
-				type : 'string',
-				required : false
-			},
 			address1 : {
 				type : 'string',
 				required : true

@@ -13,18 +13,6 @@ angular.module('MobileCRMApp')
 	if($rootScope.userData.role._id != 1){
 		$location.path('/noaccess');
 	}
-	$scope.addAddress = function () {
-		$scope.company.addresses.push({});
-	};
-	$scope.removeAddress = function (index) {
-		$scope.company.addresses.splice(index, 1);
-	};
-	$scope.addPhone = function () {
-		$scope.company.phones.push({});
-	};
-	$scope.removePhone = function (index) {
-		$scope.company.phones.splice(index, 1);
-	};
 	
 	$scope.save = function () {
 		$scope.company.save()

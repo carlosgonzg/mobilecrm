@@ -70,7 +70,7 @@ angular.module('MobileCRMApp')
 			type : 'text',
 			show: true
 		}, {
-			field : 'branch',
+			field : 'branch.name',
 			label : 'Branch',
 			type : 'text',
 			show: true
