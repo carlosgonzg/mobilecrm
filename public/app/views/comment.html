@@ -1,0 +1,16 @@
+<div class="modal-header modal-header-color dialog-header-confirm">
+  <button type="button" class="close" ng-click="close()"><i class="fa fa-times"></i></button>
+  <h4 class="modal-title">
+		Comment:
+  </h4>
+</div>
+<div class="modal-body">
+	<div class="row">
+		<div class="col-xs-12">
+			<h3>{{orderService.yardComment || 'There are no comments to show'}}</h3>
+		</div>
+	</div>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-default" type="button" ng-click="close()">Close</button>
+</div>

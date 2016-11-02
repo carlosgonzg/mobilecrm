@@ -10,33 +10,33 @@ angular.module('MobileCRMApp')
 			type: 'text'
 		},
 		{
-			title: 'Name', 
+			title: 'Branch', 
 			name: 'name', 
 			type: 'text'
 		},
 		{
 			title: 'Operations Manager', 
-			name: 'operationsManager', 
+			name: 'operationsManager.name', 
 			type: 'text'
 		},
 		{
 			title: 'Office Coordinator', 
-			name: 'officeCoordinator', 
+			name: 'officeCoordinator.name', 
 			type: 'text'
 		},
 		{
 			title: 'Branch Manager', 
-			name: 'branchManager', 
+			name: 'branchManager.name', 
 			type: 'text'
 		},
 		{
 			title: 'Office Manager', 
-			name: 'officeManager', 
+			name: 'officeManager.name', 
 			type: 'text'
 		},
 		{
 			title: 'Dispatcher', 
-			name: 'dispatcher', 
+			name: 'dispatcher.name', 
 			type: 'text'
 		}
 	];

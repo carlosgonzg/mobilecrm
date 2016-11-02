@@ -4,7 +4,8 @@ angular.module('MobileCRMApp')
 		templateUrl : 'views/directives/phone.html',
 		restrict : 'E',
 		scope : {
-			ngModel : '='
+			ngModel : '=',
+			hideLabels: '='
 		},
 		controller : function ($scope) {
 			$scope.ngModel = $scope.ngModel || {};

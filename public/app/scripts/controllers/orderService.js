@@ -8,7 +8,7 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-.controller('OrderServiceCtrl', function ($scope, $rootScope, $location, toaster, User, orderService, items, Item) {
+.controller('OrderServiceCtrl', function ($scope, $rootScope, $location, toaster, User, orderService, items, Item, dialogs, $q) {
 	$scope.orderService = orderService;
 	$scope.items = [];
 	$scope.readOnly = $rootScope.userData.role._id != 1;
@@ -113,7 +113,38 @@ angular.module('MobileCRMApp')
 		return $rootScope.userData.role._id != 1 && $scope.orderService.status._id == 3;
 	};
 
-	
+	$scope.uploadFiles = function(files){
+		$scope.files = angular.copy(files)
+		function getBase64(file) {
+			var d = $q.defer();
+			var reader = new FileReader();
+			reader.readAsDataURL(file);
+			reader.onload = function () {
+				d.resolve(reader.result);
+			};
+			reader.onerror = function (error) {
+				d.reject(error);
+			};
+			return d.promise;
+		}
+		var promises = [];
+		for(var i = 0; i < files.length; i++){
+			promises.push(getBase64(files[i]))
+		}
+		$q.all(promises)
+		.then(function(urls){
+			$scope.orderService.photos = $scope.orderService.photos || [];
+			$scope.orderService.photos = $scope.orderService.photos.concat(urls)
+		})
+	}
+
+	$scope.showPicture = function(photo){
+		var dialog = dialogs.create('views/photo.html', 'PhotoCtrl', { photo: photo });
+		dialog.result
+		.then(function (res) {
+		}, function (res) {});
+	}
+
 	$scope.save = function () {
 		delete $scope.orderService.client.account.password;
 		$scope.orderService.save()

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('MobileCRMApp')
-.controller('ReportCtrl', function ($scope, $rootScope, toaster, clients, countries, OrderService, $timeout) {
+.controller('ReportCtrl', function ($scope, $rootScope, toaster, clients, countries, OrderService, $timeout, dialogs) {
 	var today = new Date();
 	$scope.isClient = $rootScope.userData.role._id != 1;
 	$scope.selectedTab = 'data';
@@ -56,6 +56,13 @@ angular.module('MobileCRMApp')
 		state: { _id: -1 },
 		city: { _id: -1 },
 		isOpen: true
+	};
+
+	$scope.showComment = function(orderService){
+		var dialog = dialogs.create('views/comment.html', 'CommentCtrl', { orderService: orderService });
+		dialog.result
+		.then(function (res) {
+		}, function (res) {});
 	};
 
 	$scope.getStates = function(){

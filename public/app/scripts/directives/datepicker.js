@@ -25,10 +25,10 @@ angular.module('MobileCRMApp')
           $('#modelFixed').mask('00/00/0000');
         });
         $scope.frontData = $scope.ngModel ? new Date($scope.ngModel) || '' : '';
-        $scope.days = $scope.dpDays || ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
-        $scope.daysAbbr = $scope.dpDaysAbbr || ['D', 'L', 'Ma', 'Mi', 'J', 'V', 'S'];
-        $scope.monthsAbbr = $scope.dpMonths || ['ENE', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'];
-        $scope.months = $scope.dpMonthsAbbr || ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiempbre', 'Octuber', 'Noviember', 'Diciember'];
+        $scope.days = $scope.dpDays || ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        $scope.daysAbbr = $scope.dpDaysAbbr || ['Su', 'M', 'Tu', 'W', 'Th', 'F', 'Sa'];
+        $scope.monthsAbbr = $scope.dpMonths || ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DIC'];
+        $scope.months = $scope.dpMonthsAbbr || ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
         // $scope.ngModel = angular.isDate($scope.ngModel) ? $scope.ngModel : new Date($scope.ngModel) == 'Invalid Date' ? new Date() : new Date($scope.ngModel);
         $scope.selectedDate = $scope.ngModel ? new Date($scope.ngModel) || new Date() : new Date();
         $scope.calendar = [];
@@ -100,10 +100,10 @@ angular.module('MobileCRMApp')
             var ano = 'yyyy';
           }
           if ($scope.time){
-            var fecha = dia + '/' + mes + '/' + ano + " " + hora + ":" + min + moment(date).format("A");
+            var fecha = mes + '/' + dia + '/' + ano + " " + hora + ":" + min + moment(date).format("A");
           }
           else{
-            var fecha = dia + '/' + mes + '/' + ano;
+            var fecha = mes + '/' + dia + '/' + ano;
           }
           return fecha;
         };

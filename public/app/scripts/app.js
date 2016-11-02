@@ -14,7 +14,8 @@ angular
 		'ui.bootstrap',
 		'dialogs.main',
 		'angularValidator',
-		'ui.select'
+		'ui.select',
+		'ngFileUpload'
 	])
 .config(function ($routeProvider) {
 	$routeProvider

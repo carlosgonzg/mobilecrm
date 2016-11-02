@@ -54,7 +54,7 @@ angular.module('MobileCRMApp')
 		});
 		return d.promise;
 	};
-	User.prototype.getAccessOfView = function (path) {
+	User.prototype.getAccessOfView = function (path, dontRedirect) {
 		var d = $q.defer();
 		var roleOptions = new RoleOptions();
 		if(!path){
@@ -78,7 +78,7 @@ angular.module('MobileCRMApp')
 					isHere = true;
 				}
 			});
-			if(!isHere){
+			if(!isHere && !dontRedirect){
 				$location.path('/noaccess');
 			}
 		}

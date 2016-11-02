@@ -27,13 +27,15 @@ angular.module('MobileCRMApp')
 			title : 'Status',
 			name : 'status.description',
 			type : 'text'
-		}, {
+		}
+	];
+	if($rootScope.userData.role._id == 1){
+		$scope.fields.push({
 			title : 'Total Amount',
 			name : 'total',
 			type : 'currency'
-		}
-	];
-
+		});
+	}
 	$scope.search = [
 		'_id',
 		'createdDate',

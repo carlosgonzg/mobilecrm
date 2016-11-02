@@ -33,6 +33,7 @@
 				  			</div>
 				  		</div>
 			  		</div>
+			  		<!--
 			  		<div class="row">
 						<div class="col-xs-12">
 							<div class="col-xs-4">
@@ -55,6 +56,7 @@
 				  			</div>
 				  		</div>
 			  		</div>
+			  		-->
 			  		<div class="row">
 						<div class="col-xs-12">
 							<div class="col-xs-6">
@@ -115,19 +117,31 @@
 			<thead>
 				<tr>
 					<th>
-						Date
+						Created Date
 					</th>
 					<th>
-						SOR/Service Order #
+						Completed Date
 					</th>
 					<th>
-						Invoice #
+						Service Order
+					</th>
+					<th>
+						Invoice
 					</th>
 					<th>
 						Customer
 					</th>
 					<th>
 						Status
+					</th>
+					<th>
+						Customer responsible for Charges
+					</th>
+					<th>
+						Materials from the Yard
+					</th>
+					<th>
+						Comment (Yard)
 					</th>
 					<th>
 						Total Amount
@@ -137,7 +151,10 @@
 			<tbody>
 				<tr ng-repeat="orderService in orderServices track by $index">
 					<td>
-						{{orderService.date|date:'mm/dd/yyyy'}}
+						{{orderService.date|date:'MM/dd/yyyy'}}
+					</td>
+					<td>
+						{{orderService.originalShipDate|date:'MM/dd/yyyy'}}
 					</td>
 					<td>
 						{{orderService.sor}}
@@ -150,6 +167,15 @@
 					</td>
 					<td>
 						{{orderService.status.description}}
+					</td>
+					<td>
+						<input type="checkbox" ng-model="orderService.clientResponsibleCharges" disabled="disabled" />
+					</td>
+					<td>
+						<input type="checkbox" ng-model="orderService.partsFromTheYard" disabled="disabled" />
+					</td>
+					<td>
+						<button class="btn btn-sm" ng-click="showComment(orderService)"><i class="fa fa-eye"></i></button>
 					</td>
 					<td>
 						{{orderService.getTotal()|currency}}

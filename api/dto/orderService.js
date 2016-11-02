@@ -160,7 +160,7 @@ OrderService.prototype.sendOrderService = function(id, username, mail){
 		return pdf.createOrderService(orderService);
 	})
 	.then(function(){
-		return mail.sendOrderService(orderService.invoiceNumber, emails, urlPdf, fileNamePdf);
+		return mail.sendOrderService(orderService, emails, urlPdf, fileNamePdf);
 	})
 	.then(function(){
 		d.resolve(true);
@@ -193,8 +193,7 @@ OrderService.prototype.sendOrderServiceUpdate = function(id, username, mail){
 		return _this.createOrderService(id, username);
 	})
 	.then(function(){
-		console.log('alo')
-		return mail.sendOrderServiceUpdate(orderService.invoiceNumber, emails, username);
+		return mail.sendOrderServiceUpdate(orderService, emails, username);
 	})
 	.then(function(){
 		d.resolve(true);

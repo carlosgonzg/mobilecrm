@@ -340,11 +340,11 @@
 			<div class="dp-footer text-center">
 				<button type="button" ng-click="today()" class="btn btn-default navbar-btn">
 					<i class="fa fa-calendar"></i>
-					{{ todayText || 'Hoy' }}
+					{{ todayText || 'Today' }}
 				</button>
         <button type="button" ng-click="changeView()" ng-if="time" class="btn btn-default navbar-btn">
           <i class="fa fa-calendar"></i>
-          {{ setTime? 'Fecha' : 'Hora' }}
+          {{ setTime? 'Date' : 'Time' }}
         </button>
 			</div>
 		</div>
@@ -424,15 +424,15 @@
 						<div class="col-md-1"></div>
 						<div class="col-md-10">
 							<div class="col-md-8">
-								<label style="color: black">D&iacute;a:</label>
+								<label style="color: black">Day:</label>
 								<input class="form-control" style="color: black" ng-change="validateDate(manualDate)" ng-model="manualDate.day">
 							</div>
 							<div class="col-md-8">
-								<label style="color: black">Mes:</label>
+								<label style="color: black">Month:</label>
 								<input class="form-control" style="color: black" ng-change="validateDate(manualDate)" ng-model="manualDate.month">
 							</div>
 							<div class="col-md-8">
-								<label style="color: black">A&ntilde;o:</label>
+								<label style="color: black">Year:</label>
 								<input class="form-control" style="color: black" ng-change="validateDate(manualDate)" ng-model="manualDate.year">
 							</div>
 							<div class="col-md-8">

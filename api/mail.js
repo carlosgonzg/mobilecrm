@@ -126,7 +126,8 @@ var sendOrderService = function (invoice, mails, file, fileName) {
 		var url = config.SERVER_URL;
 		body = body.replace('<emailUrl>', url);
 		var attachments = setAttachment(file, fileName)
-		sendMail(mails.join(', '), 'Service Order: ' + invoice + ' Created', body, true, attachments)
+		var subject = 'Customer: ' + invoice.client.entity.fullName + ' | Branch: ' + invoice.client.branch.name + ' | Service Order: ' + invoice.sor;
+		sendMail(mails.join(', '), subject, body, true, attachments)
 		.then(function (response) {
 			console.log('DONE Sending Mail: ', response)
 			deferred.resolve(response);
@@ -151,7 +152,8 @@ var sendOrderServiceUpdate = function (invoice, mails, username) {
 		body = body.replace('<emailUrl>', url);
 		body = body.replace('<invoiceNumber>', invoice);
 		body = body.replace('<client>', username);
-		sendMail(mails.join(', '), 'Service Order: ' + invoice + ' Updated', body, true)
+		var subject = 'Customer: ' + invoice.client.entity.fullName + ' | Branch: ' + invoice.client.branch.name + ' | Service Order: ' + invoice.sor + ' Updated';
+		sendMail(mails.join(', '), subject, body, true)
 		.then(function (response) {
 			console.log('DONE Sending Mail: ', response)
 			deferred.resolve(response);

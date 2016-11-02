@@ -1,12 +1,14 @@
-<div class="col-xs-12 col-md-6">
-	<div class="form-group">
-		<label for="phoneType">Type</label>
-		<select class="form-control" ng-model="ngModel.phoneType" id="phoneType" ng-options="phoneType as phoneType.description for phoneType in phoneTypes track by phoneType._id"></select>
+<div class="row">
+	<div class="col-xs-12 col-md-6">
+		<div class="form-group">
+			<label for="phoneType" ng-if="!hideLabels">Type</label>
+			<select class="form-control" ng-model="ngModel.phoneType" id="phoneType" ng-options="phoneType as phoneType.description for phoneType in phoneTypes track by phoneType._id"></select>
+		</div>
 	</div>
-</div>
-<div class="col-xs-12 col-md-6">
-	<div class="form-group">
-		<label for="number">Number</label>
-		<input type="text" class="form-control" id="number" ng-model="ngModel.number" />
+	<div class="col-xs-12 col-md-6">
+		<div class="form-group">
+			<label for="number" ng-if="!hideLabels">Number</label>
+			<input type="text" class="form-control" id="number" ng-model="ngModel.number" />
+		</div>
 	</div>
 </div>
