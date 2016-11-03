@@ -139,7 +139,9 @@ var sendOrderService = function (invoice, mails, file, fileName) {
 		body = body.replace('<sor>', invoice.sor);
 		//var attachments = setAttachment(file, fileName)
 		console.log('sending mail')
-		var subject = 'Customer: ' + invoice.client.company.entity.name + ' | Branch: ' + invoice.client.branch.name + ' | Service Order: ' + invoice.sor;
+		var company = invoice && invoice.client && invoice.client.company && invoice.client.company.entity ? invoice.client.company.name : 'Not Defined';
+		var branch = invoice && invoice.client && invoice.client.branch ? invoice.client.branch.name : 'Not Defined';
+		var subject = 'Customer: ' + company + ' | Branch: ' + branch + ' | Service Order: ' + invoice.sor;
 		console.log('sending mail 2', subject)
 		sendMail(mails.join(', '), subject, body, true)
 		.then(function (response) {
