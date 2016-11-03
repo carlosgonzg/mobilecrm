@@ -139,7 +139,7 @@ var sendOrderService = function (invoice, mails, file, fileName) {
 		body = body.replace('<sor>', invoice.sor);
 		//var attachments = setAttachment(file, fileName)
 		console.log('sending mail')
-		var subject = 'Customer: ' + invoice.client.entity.fullName + ' | Branch: ' + invoice.client.branch.name + ' | Service Order: ' + invoice.sor;
+		var subject = 'Customer: ' + invoice.client.company.entity.name + ' | Branch: ' + invoice.client.branch.name + ' | Service Order: ' + invoice.sor;
 		sendMail(mails.join(', '), subject, body, true)
 		.then(function (response) {
 			console.log('DONE Sending Mail: ', response)
@@ -165,7 +165,7 @@ var sendOrderServiceUpdate = function (invoice, mails, username) {
 		body = body.replace('<emailUrl>', url);
 		body = body.replace('<invoiceNumber>', invoice);
 		body = body.replace('<client>', username);
-		var subject = 'Customer: ' + invoice.client.entity.fullName + ' | Branch: ' + invoice.client.branch.name + ' | Service Order: ' + invoice.sor + ' Updated';
+		var subject = 'Customer: ' + invoice.client.company.entity.name + ' | Branch: ' + invoice.client.branch.name + ' | Service Order: ' + invoice.sor;
 		sendMail(mails.join(', '), subject, body, true)
 		.then(function (response) {
 			console.log('DONE Sending Mail: ', response)
