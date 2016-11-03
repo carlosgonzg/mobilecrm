@@ -131,7 +131,7 @@
 					<th style="width:20%">
 						Customer
 					</th>
-					<th style="width:10%">
+					<th style="width:5%">
 						Status
 					</th>
 					<th style="width:5%">
@@ -141,7 +141,10 @@
 						Mat. from the Yard
 					</th>
 					<th style="width:5%">
-						Comment (Yard)
+						Parts from the Yard
+					</th>
+					<th style="width:5%">
+						Issue / Comment
 					</th>
 					<th style="width:10%">
 						Total Amount
@@ -175,6 +178,9 @@
 					<td>
 						<i class="fa fa-times" ng-if="!orderService.partsFromTheYard"></i>
 						<i class="fa fa-check" ng-if="orderService.partsFromTheYard"></i>
+					</td>
+					<td>
+						<button class="btn btn-sm" ng-click="showYardComment(orderService)"><i class="fa fa-eye"></i></button>
 					</td>
 					<td>
 						<button class="btn btn-sm" ng-click="showComment(orderService)"><i class="fa fa-eye"></i></button>

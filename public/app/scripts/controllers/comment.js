@@ -2,7 +2,7 @@
 
 angular.module('MobileCRMApp')
 .controller('CommentCtrl', function ($scope, data, $uibModalInstance, toaster) {
-	$scope.orderService = data.orderService;
+	$scope.comment = data.comment;
 	$scope.close = function(){
 		$uibModalInstance.dismiss();
 	};

@@ -74,7 +74,7 @@ function OrderService(db, userLogged, dirname) {
 		}
 	};
 	this.crud.schema = this.schema;
-	this.crud.uniqueFields = ['invoiceNumber'];
+	//this.crud.uniqueFields = ['invoiceNumber'];
 }
 
 OrderService.prototype.insert = function (orderService, username, mail) {
@@ -87,7 +87,8 @@ OrderService.prototype.insert = function (orderService, username, mail) {
 	}
 	orderService.total = total;
 	//Consigo el sequencial de invoice
-	util.getYearlySequence(_this.crud.db, 'OrderService')
+	var promise = orderService.invoiceNumber ? q.when(orderService.invoiceNumber) : util.getYearlySequence(_this.crud.db, 'OrderService');
+	promise
 	.then(function (sequence) {
 		orderService.invoiceNumber = sequence;
 		return _this.crud.insert(orderService);

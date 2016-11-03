@@ -59,7 +59,14 @@ angular.module('MobileCRMApp')
 	};
 
 	$scope.showComment = function(orderService){
-		var dialog = dialogs.create('views/comment.html', 'CommentCtrl', { orderService: orderService });
+		var dialog = dialogs.create('views/comment.html', 'CommentCtrl', { comment: orderService.comment });
+		dialog.result
+		.then(function (res) {
+		}, function (res) {});
+	};
+
+	$scope.showYardComment = function(orderService){
+		var dialog = dialogs.create('views/comment.html', 'CommentCtrl', { comment: orderService.yardComment });
 		dialog.result
 		.then(function (res) {
 		}, function (res) {});
