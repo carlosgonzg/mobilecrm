@@ -146,7 +146,7 @@ OrderService.prototype.sendOrderService = function(id, username, mail){
 		return _this.user.getAdminUsers();
 	})
 	.then(function(users){
-		emails = [ orderService.client.account.email ];
+		emails = [ ];
 		for(var i = 0; i < users.data.length; i++){
 			emails.push(users.data[i].account.email);
 		}

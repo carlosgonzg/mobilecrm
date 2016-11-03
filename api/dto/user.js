@@ -336,7 +336,8 @@ User.prototype.getActual = function(){
 User.prototype.getAdminUsers = function(){
 	var d = q.defer();
 	var query = {
-		'role._id': 1
+		'role._id': 1,
+		'sendEmail': true
 	};
 	this.crud.find(query)
 	.then(function (obj) {

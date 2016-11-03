@@ -7,6 +7,7 @@ var tmpMail = '/email/templateUser.html';
 var mailOptions = {};
 var q = require('q');
 var config; 
+var moment = require('moment');
 
 var bringTemplateData = function (url) {
 	var deferred = q.defer();
@@ -121,13 +122,25 @@ var sendForgotPasswordMail = function (to, link, urlServer) {
 
 var sendOrderService = function (invoice, mails, file, fileName) {
 	var deferred = q.defer();
-	bringTemplateData('/email/templateOrderService.html')
+	bringTemplateData('/orderservice.html')
 	.then(function (body) {
+		console.log(mails)
 		var url = config.SERVER_URL;
 		body = body.replace('<emailUrl>', url);
-		var attachments = setAttachment(file, fileName)
+		body = body.replace('<createdDate>', moment(invoice.date).format('MM/DD/YYYY'));
+		body = body.replace('<clientName>', invoice.client.entity.fullName);
+		body = body.replace('<clientAddress>', invoice.siteAddress.address1 + ', ' + invoice.siteAddress.city.description + ', ' + invoice.siteAddress.state.description + ' ' + invoice.siteAddress.zipcode);
+		body = body.replace('<clientPhone>', invoice.phone.number);
+		body = body.replace('<clientMail>', invoice.client.account.email);
+		body = body.replace('<comment>', invoice.comment);
+		body = body.replace('<pono>', invoice.pono);
+		body = body.replace('<unitno>', invoice.unitno);
+		body = body.replace('<isono>', invoice.isono);
+		body = body.replace('<sor>', invoice.sor);
+		//var attachments = setAttachment(file, fileName)
+		console.log('sending mail')
 		var subject = 'Customer: ' + invoice.client.entity.fullName + ' | Branch: ' + invoice.client.branch.name + ' | Service Order: ' + invoice.sor;
-		sendMail(mails.join(', '), subject, body, true, attachments)
+		sendMail(mails.join(', '), subject, body, true)
 		.then(function (response) {
 			console.log('DONE Sending Mail: ', response)
 			deferred.resolve(response);
