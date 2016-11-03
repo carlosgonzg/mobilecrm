@@ -140,6 +140,7 @@ var sendOrderService = function (invoice, mails, file, fileName) {
 		//var attachments = setAttachment(file, fileName)
 		console.log('sending mail')
 		var subject = 'Customer: ' + invoice.client.company.entity.name + ' | Branch: ' + invoice.client.branch.name + ' | Service Order: ' + invoice.sor;
+		console.log('sending mail 2')
 		sendMail(mails.join(', '), subject, body, true)
 		.then(function (response) {
 			console.log('DONE Sending Mail: ', response)
