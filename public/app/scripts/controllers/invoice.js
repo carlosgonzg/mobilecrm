@@ -8,7 +8,7 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-.controller('InvoiceCtrl', function ($scope, $rootScope, $location, toaster, User, invoice, items, Item, OrderService, Invoice) {
+.controller('InvoiceCtrl', function ($scope, $rootScope, $location, toaster, User, invoice, items, Item, OrderService, dialogs, Invoice) {
 	$scope.invoice = invoice;
 	$scope.items = [];
 	$scope.readOnly = $rootScope.userData.role._id != 1;
@@ -156,7 +156,16 @@ angular.module('MobileCRMApp')
 			toaster.error(error.message);
 		});
 	};
-
+	$scope.delete = function(){
+		var dlg = dialogs.confirm('Warning','Are you sure you want to delete?');
+		dlg.result.then(function(btn){
+			$scope.invoice.remove()
+			.then(function(){
+				toaster.success('The invoice was deleted successfully');
+				$location.path('/invoiceList')
+			});
+		});
+	};
 	$scope.export = function(){
 		$scope.invoice.getInvoice();
 	};

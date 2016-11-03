@@ -158,6 +158,17 @@ angular.module('MobileCRMApp')
 		});
 	};
 
+	$scope.delete = function(){
+		var dlg = dialogs.confirm('Warning','Are you sure you want to delete?');
+		dlg.result.then(function(btn){
+			$scope.orderService.remove()
+			.then(function(){
+				toaster.success('The service order was deleted successfully');
+				$location.path('/orderServiceList')
+			});
+		});
+	};
+
 	$scope.export = function(){
 		$scope.orderService.getInvoice();
 	};
