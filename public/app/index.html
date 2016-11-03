@@ -35,7 +35,7 @@
 				<div ng-controller="SessionCtrl"></div>
 				<div id="sidebar" class="col-sm-3 col-md-2 sidebar" ng-controller="NavigationCtrl" ng-show="isAuthenticated">
 					<ul class="nav nav-sidebar">
-						<li style="background-color: #1b1b1b; color: white; padding: 20px;">
+						<li style="background-color: #999999; color: white; padding: 20px;">
 							<span>Welcome&nbsp;<b>{{ userData.entity.fullName }}</b></span>
 						</li>
 						<li ng-repeat="rOptions in roleOptions | orderBy: 'sort' track by $index" ng-if="rOptions.sort != 0">

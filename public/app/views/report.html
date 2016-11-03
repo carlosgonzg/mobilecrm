@@ -116,34 +116,34 @@
 		<table cellspacing="0" class="table table-hover tableNoBottom table-condensed" style="border-bottom: 1px solid #dddddd;">
 			<thead>
 				<tr>
-					<th>
+					<th style="width:10%">
 						Created Date
 					</th>
-					<th>
+					<th style="width:10%">
 						Completed Date
 					</th>
-					<th>
+					<th style="width:10%">
 						Service Order
 					</th>
-					<th>
+					<th style="width:10%">
 						Invoice
 					</th>
-					<th>
+					<th style="width:20%">
 						Customer
 					</th>
-					<th>
+					<th style="width:10%">
 						Status
 					</th>
-					<th>
-						Customer responsible for Charges
+					<th style="width:5%">
+						Resp. for Charges
 					</th>
-					<th>
-						Materials from the Yard
+					<th style="width:5%">
+						Mat. from the Yard
 					</th>
-					<th>
+					<th style="width:5%">
 						Comment (Yard)
 					</th>
-					<th>
+					<th style="width:10%">
 						Total Amount
 					</th>
 				</tr>
@@ -169,10 +169,12 @@
 						{{orderService.status.description}}
 					</td>
 					<td>
-						<input type="checkbox" ng-model="orderService.clientResponsibleCharges" disabled="disabled" />
+						<i class="fa fa-times" ng-if="!orderService.clientResponsibleCharges"></i>
+						<i class="fa fa-check" ng-if="orderService.clientResponsibleCharges"></i>
 					</td>
 					<td>
-						<input type="checkbox" ng-model="orderService.partsFromTheYard" disabled="disabled" />
+						<i class="fa fa-times" ng-if="!orderService.partsFromTheYard"></i>
+						<i class="fa fa-check" ng-if="orderService.partsFromTheYard"></i>
 					</td>
 					<td>
 						<button class="btn btn-sm" ng-click="showComment(orderService)"><i class="fa fa-eye"></i></button>
