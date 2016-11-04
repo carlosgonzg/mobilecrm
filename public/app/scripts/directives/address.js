@@ -121,7 +121,9 @@ angular.module('MobileCRMApp')
 				$scope.$apply();
 			}
 			$timeout(function(){
+				console.log(angular.copy($scope.ngModel));
 				$scope.ngModel = new Address($scope.ngModel);
+				console.log($scope.ngModel)
 				initAutocomplete();
 			});
 			
