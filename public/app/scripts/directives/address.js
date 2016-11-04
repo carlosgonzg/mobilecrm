@@ -49,6 +49,7 @@ angular.module('MobileCRMApp')
 			}
 
 			function fillInAddress() {
+				console.log('am i here?')
 				// Get the place details from the autocomplete object.
 				var place = autocomplete.getPlace();
 			 	var data = {
