@@ -17,7 +17,7 @@ angular.module('MobileCRMApp')
 				this.zipcode = address.zipcode || '';
 				this.latitude = address.latitude || 0;
 				this.longitude = address.longitude || 0;
-				this.distanceFrom =  this.distanceFrom || 0;
+				this.distanceFrom =  address.distanceFrom || 0;
 			};
 			var originPoint = {
 				latitude: 28.39788010000001,
@@ -49,7 +49,6 @@ angular.module('MobileCRMApp')
 			}
 
 			function fillInAddress() {
-				console.log('am i here?')
 				// Get the place details from the autocomplete object.
 				var place = autocomplete.getPlace();
 			 	var data = {
@@ -122,9 +121,7 @@ angular.module('MobileCRMApp')
 				$scope.$apply();
 			}
 			$timeout(function(){
-				console.log(angular.copy($scope.ngModel));
 				$scope.ngModel = new Address($scope.ngModel);
-				console.log($scope.ngModel)
 				initAutocomplete();
 			});
 			
