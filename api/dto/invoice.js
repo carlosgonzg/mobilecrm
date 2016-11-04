@@ -139,15 +139,16 @@ Invoice.prototype.sendInvoice = function(id, username, mail){
 	var fileName = '';
 	var fileNamePdf = '';
 	var emails = [];
+	var cc = [];
 	_this.crud.find({ _id: id })
 	.then(function(orderS){
 		orderService = orderS.data[0];
 		return _this.user.getAdminUsers();
 	})
 	.then(function(users){
-		emails = [ ];
+		emails = [ orderService.client.account.email ];
 		for(var i = 0; i < users.data.length; i++){
-			emails.push(users.data[i].account.email);
+			cc.push(users.data[i].account.email);
 		}
 		return _this.createInvoice(id, username);
 	})
@@ -160,7 +161,7 @@ Invoice.prototype.sendInvoice = function(id, username, mail){
 		return pdf.createInvoice(orderService);
 	})
 	.then(function(){
-		return mail.sendInvoice(orderService.invoiceNumber, emails, urlPdf, fileNamePdf);
+		return mail.sendInvoice(orderService, emails, cc, urlPdf, fileNamePdf);
 	})
 	.then(function(){
 		d.resolve(true);
@@ -194,7 +195,7 @@ Invoice.prototype.sendInvoiceUpdate = function(id, username, mail){
 	})
 	.then(function(){
 		console.log('alo')
-		return mail.sendInvoiceUpdate(orderService.invoiceNumber, emails, username);
+		return mail.sendInvoiceUpdate(orderService, emails, username);
 	})
 	.then(function(){
 		d.resolve(true);

@@ -17,6 +17,11 @@ angular.module('MobileCRMApp')
 				this.zipcode = address.zipcode || '';
 				this.latitude = address.latitude || 0;
 				this.longitude = address.longitude || 0;
+				this.distanceFrom =  this.distanceFrom || 0;
+			};
+			var originPoint = {
+				latitude: 28.39788010000001,
+				longitude: -81.33288979999998
 			};
 
 			var placeSearch, autocomplete;
@@ -112,43 +117,24 @@ angular.module('MobileCRMApp')
 				$scope.ngModel.zipcode = data.zipcode.postal;
 				$scope.ngModel.latitude = place.geometry.location.lat();
 				$scope.ngModel.longitude = place.geometry.location.lng();
+				$scope.ngModel.distanceFrom = getDistance($scope.ngModel, originPoint);
 				$scope.$apply();
-				console.log($scope.ngModel)
 			}
 			$timeout(function(){
 				$scope.ngModel = new Address($scope.ngModel);
 				initAutocomplete();
 			});
 			
-			/*
-			var getCountries = function(){
-				$scope.countries = [];
-				new Country().find({})
-				.then(function(result){
-					$scope.countries = result.data;
-				});
+			var rad = function(x) {
+				return x * Math.PI / 180;
 			};
-			$scope.getStates = function(){
-				$scope.states = [];
-				new State().filter({ countryId: $scope.ngModel.country._id })
-				.then(function(result){
-					$scope.states = result.data;
-				});
+
+			var getDistance = function(p1, p2) {
+				var p1 = new google.maps.LatLng(p1.latitude, p1.longitude);
+				var p2 = new google.maps.LatLng(p2.latitude, p2.longitude);
+				var distance = google.maps.geometry.spherical.computeDistanceBetween(p1, p2);
+				return parseFloat((distance * 0.00062137).toFixed(2));
 			};
-			$scope.getCities = function(){
-				$scope.cities = [];
-				new City().filter({ stateId: $scope.ngModel.state._id })
-				.then(function(result){
-					$scope.cities = result.data;
-				});
-			};
-			getCountries();
-			if($scope.ngModel.country && $scope.ngModel.country._id){
-				$scope.getStates();
-			}
-			if($scope.ngModel.state && $scope.ngModel.state._id){
-				$scope.getCities();
-			}*/
     }
   };
 });

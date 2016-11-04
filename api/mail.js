@@ -192,14 +192,17 @@ var sendOrderServiceUpdate = function (invoice, mails, username) {
 	return deferred.promise;
 };
 
-var sendInvoice = function (invoice, mails, file, fileName) {
+var sendInvoice = function (invoice, mails, cc, file, fileName) {
 	var deferred = q.defer();
 	bringTemplateData('/email/templateInvoice.html')
 	.then(function (body) {
 		var url = config.SERVER_URL;
 		body = body.replace('<emailUrl>', url);
+		body = body.replace('<clientName>', invoice.client.entity.fullName);
+		body = body.replace('<pono>', invoice.pono);
+		body = body.replace('<invoiceNumber>', invoice.invoiceNumber);
 		var attachments = setAttachment(file, fileName)
-		sendMail(mails.join(', '), 'Invoice: ' + invoice + ' Created', body, true, attachments)
+		sendMail(mails.join(', '), 'Invoice: ' + invoice.invoiceNumber, body, true, attachments, cc.join(', '))
 		.then(function (response) {
 			console.log('DONE Sending Mail: ', response)
 			deferred.resolve(response);
@@ -222,9 +225,9 @@ var sendInvoiceUpdate = function (invoice, mails, username) {
 	.then(function (body) {
 		var url = config.SERVER_URL;
 		body = body.replace('<emailUrl>', url);
-		body = body.replace('<invoiceNumber>', invoice);
+		body = body.replace('<invoiceNumber>', invoice.invoiceNumber);
 		body = body.replace('<client>', username);
-		sendMail(mails.join(', '), 'Invoice: ' + invoice + ' Updated', body, true)
+		sendMail(mails.join(', '), 'Invoice: ' + invoice.invoiceNumber + ' Updated', body, true)
 		.then(function (response) {
 			console.log('DONE Sending Mail: ', response)
 			deferred.resolve(response);
