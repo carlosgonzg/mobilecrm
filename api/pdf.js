@@ -9,6 +9,7 @@ var createInvoiceBody = function(obj){
 	//replacement of data
 	body = body.replace('<createdDate>', moment(obj.date).format('MM/DD/YYYY'));
 	body = body.replace('<invoiceNumber>', obj.invoiceNumber);
+	body = body.replace('<clientCompany>', obj.client.company.entity.name);
 	body = body.replace('<clientName>', obj.client.entity.fullName);
 	body = body.replace('<clientAddress>', obj.siteAddress.address1);
 	body = body.replace('<clientState>', obj.siteAddress.state.description + ' ' + obj.siteAddress.zipcode);
@@ -25,11 +26,11 @@ var createInvoiceBody = function(obj){
 	var tableItems = '';
 	for(var i = 0; i < obj.items.length; i++){
 		var item = obj.items[i];
-		tableItems += '<tr>';
+		tableItems += '<tr>';/*
 		tableItems += '<td style="text-align: center;border: thin solid black; border-top: none; border-right: none;">';
 		tableItems += item.code || '';
-		tableItems += '</td>';
-		tableItems += '<td colspan="4" style="border: thin solid black; border-top: none; border-right: none;">';
+		tableItems += '</td>';*/
+		tableItems += '<td colspan="5" style="border: thin solid black; border-top: none; border-right: none;">';
 		tableItems += item.description || '';
 		tableItems += '</td>';
 		tableItems += '<td style="text-align: right;border: thin solid black; border-top: none; border-right: none;">';

@@ -21,7 +21,7 @@ angular.module('MobileCRMApp')
 			type : 'date'
 		}, {
 			title : 'Invoice #',
-			name : 'invoiceNumber',
+			name : 'serviceOrderNumber',
 			type : 'text'
 		}, {
 			title : 'Customer',
