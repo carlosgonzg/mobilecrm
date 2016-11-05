@@ -168,10 +168,10 @@ var sendOrderServiceUpdate = function (invoice, mails, username) {
 	.then(function (body) {
 		var url = config.SERVER_URL;
 		body = body.replace('<emailUrl>', url);
-		body = body.replace('<invoiceNumber>', invoice);
+		body = body.replace('<invoiceNumber>', invoice.invoiceNumber);
 		body = body.replace('<client>', username);
 		console.log('sending mail')
-		var company = 'Company: ' + (invoice && invoice.client && invoice.client.company && invoice.client.company.entity ? invoice.client.company.name : 'Not Defined');
+		var company = 'Company: ' + (invoice && invoice.client && invoice.client.company && invoice.client.company.entity ? invoice.client.company.entity.name : 'Not Defined');
 		var branch = invoice && invoice.client && invoice.client.branch ? 'Branch: ' + invoice.client.branch.name : 'Client: ' + invoice.client.entity.fullName;
 		var subject = company + ' | ' + branch + ' | Service Order: ' + invoice.sor;
 		console.log('sending mail 2', subject)
