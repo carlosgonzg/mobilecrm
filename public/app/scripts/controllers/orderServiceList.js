@@ -12,6 +12,10 @@ angular.module('MobileCRMApp')
 	$scope.orderService = OrderService;
 
 	$scope.fields = [{
+			title : 'Branch',
+			name : 'client.branch.name',
+			type : 'text'
+		},{
 			title : 'Created Date',
 			name : 'createdDate',
 			type : 'date'
@@ -39,7 +43,7 @@ angular.module('MobileCRMApp')
 		'createdDate',
 		'invoiceNumber',
 		'sor',
-		'siteAddress.branch',
+		'client.branch',
 		'client.entity',
 		'client.entity.fullName',
 		'status.description',
