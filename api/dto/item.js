@@ -12,7 +12,7 @@ function Item(db, userLogged) {
 		properties : {
 			code : {
 				type : 'int',
-				required : true
+				required : false
 			},
 			description : {
 				type : 'string',
@@ -33,7 +33,7 @@ function Item(db, userLogged) {
 		}
 	};
 	this.crud.schema = this.schema;
-	this.crud.uniqueFields = [ 'code' ];
+	//this.crud.uniqueFields = [ 'code' ];
 }
 
 //Export
