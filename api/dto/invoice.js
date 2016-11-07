@@ -87,14 +87,15 @@ Invoice.prototype.insert = function (orderService, username, mail) {
 	}
 	orderService.total = total;
 	//Consigo el sequencial de invoice
-	util.getYearlySequence(_this.crud.db, 'Invoice')
+	var promise = orderService.invoiceNumber ? q.when(orderService.invoiceNumber) : util.getYearlySequence(_this.crud.db, 'Invoice');
+	promise
 	.then(function (sequence) {
 		orderService.invoiceNumber = sequence;
 		return _this.crud.insert(orderService);
 	})
 	//inserto
 	.then(function (obj) {
-		_this.sendInvoice(obj.data._id, username, mail);
+		//_this.sendInvoice(obj.data._id, username, mail);
 		d.resolve(obj);
 	})
 	.catch (function (err) {
@@ -130,7 +131,7 @@ Invoice.prototype.update = function (query, orderService, username, mail) {
 	return d.promise;
 };
 
-Invoice.prototype.sendInvoice = function(id, username, mail){
+Invoice.prototype.sendInvoice = function(id, username, mail, emails){
 	var d = q.defer();
 	var _this = this;
 	var orderService = {};
@@ -138,7 +139,6 @@ Invoice.prototype.sendInvoice = function(id, username, mail){
 	var urlPdf = '';
 	var fileName = '';
 	var fileNamePdf = '';
-	var emails = [];
 	var cc = [];
 	_this.crud.find({ _id: id })
 	.then(function(orderS){
@@ -146,7 +146,7 @@ Invoice.prototype.sendInvoice = function(id, username, mail){
 		return _this.user.getAdminUsers();
 	})
 	.then(function(users){
-		emails = [ orderService.client.account.email ];
+		emails = emails.concat([ orderService.client.account.email ]);
 		for(var i = 0; i < users.data.length; i++){
 			cc.push(users.data[i].account.email);
 		}

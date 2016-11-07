@@ -200,7 +200,7 @@ var sendInvoice = function (invoice, mails, cc, file, fileName) {
 		body = body.replace('<emailUrl>', url);
 		body = body.replace('<clientName>', invoice.client.entity.fullName);
 		body = body.replace('<pono>', invoice.pono);
-		body = body.replace('<invoiceNumber>', invoice.serviceOrderNumber || invoice.invoiceNumber);
+		body = body.replace('<invoiceNumber>', invoice.invoiceNumber);
 		var attachments = setAttachment(file, fileName)
 		sendMail(mails.join(', '), 'Invoice: ' + invoice.invoiceNumber, body, true, attachments, cc.join(', '))
 		.then(function (response) {

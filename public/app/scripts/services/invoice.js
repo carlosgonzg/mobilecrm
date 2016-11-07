@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('MobileCRMApp')
-.factory('Invoice', function (Base, Item, $rootScope, $location, $q,$http, toaster) {
+.factory('Invoice', function (Base, Item, $rootScope, $location, $q,$http, toaster, dialogs) {
 
 	// Variable que se utiliza para comprobar si un objeto tiene una propiedad
 	// var hasProp = Object.prototype.hasOwnProperty;
@@ -16,7 +16,6 @@ var a;
 		this.baseApiPath = "/api/invoice";
 		this.client = this.client || {};
 		this.invoiceNumber = this.invoiceNumber || '';
-		this.serviceOrderNumber = propValues ? (propValues.invoiceNumber || '') : ''
 		this.sor = this.sor || '';
 		this.pono = this.pono || '';
 		this.unitno = this.unitno || '';
@@ -101,16 +100,22 @@ var a;
 	    });
 	    return d.promise;
 	};
-	Invoice.prototype.sendInvoice = function(){
+	Invoice.prototype.sendInvoice = function(emails){
 		var d = $q.defer();
-		$http.post(this.baseApiPath + '/send', { id: this._id })
-		.success(function (data) {
-			toaster.success('The invoice has been sent!.');
-	    })
-	    .error(function (data, status, headers, config) {
-	    	toaster.error('There was an error sending the file, please try again')
-	        d.reject(data);
-	    });
+		var _this = this;
+		var email = _this.client ? _this.client.account.email : null;
+		var dialog = dialogs.create('views/emails.html', 'EmailsCtrl', { email: email});
+		dialog.result.then(function (emails) {
+			console.log(emails)
+			$http.post(_this.baseApiPath + '/send', { id: _this._id, emails: emails })
+			.success(function (data) {
+				toaster.success('The invoice has been sent!.');
+		    })
+		    .error(function (data, status, headers, config) {
+		    	toaster.error('There was an error sending the file, please try again')
+		        d.reject(data);
+		    });
+		});
 		return d.promise;
 	};
 	return Invoice;

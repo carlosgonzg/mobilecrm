@@ -23,7 +23,7 @@ module.exports = function (prefix, app, mail, dirname) {
 
 	app.post(prefix + '/send', function (req, res) {
 		var invoice = new Invoice(app.db, req.user, dirname);
-		invoice.sendInvoice(req.body.id, req.user.entity.fullName || req.user.entity.name, mail)
+		invoice.sendInvoice(req.body.id, req.user.entity.fullName || req.user.entity.name, mail, req.body.emails || [])
 		.then(util.success(res), util.error(res));
 	});
 	require('./crud')(prefix, app, Invoice);

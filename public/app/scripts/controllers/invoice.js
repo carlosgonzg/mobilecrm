@@ -145,7 +145,6 @@ angular.module('MobileCRMApp')
 	
 	$scope.save = function () {
 		delete $scope.invoice.client.account.password;
-		console.log($scope.invoice)
 		$scope.invoice.save()
 		.then(function (data) {
 			toaster.success('The Invoice was saved successfully');
