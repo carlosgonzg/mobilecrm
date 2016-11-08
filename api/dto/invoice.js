@@ -74,7 +74,7 @@ function Invoice(db, userLogged, dirname) {
 		}
 	};
 	this.crud.schema = this.schema;
-	this.crud.uniqueFields = ['invoiceNumber'];
+	//this.crud.uniqueFields = ['invoiceNumber'];
 }
 
 Invoice.prototype.insert = function (orderService, username, mail) {

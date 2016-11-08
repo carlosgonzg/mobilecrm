@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('MobileCRMApp')
-.factory('OrderService', function (Base, Item, $rootScope, $location, $q,$http, toaster) {
+.factory('OrderService', function (Base, Item, $rootScope, $location, $q,$http, toaster, dialogs) {
 
 	// Variable que se utiliza para comprobar si un objeto tiene una propiedad
 	// var hasProp = Object.prototype.hasOwnProperty;
@@ -114,6 +114,14 @@ var a;
 	        d.reject(data);
 	    });
 		return d.promise;
+	};
+
+	OrderService.prototype.showPicture = function(index){
+		console.log(this.photos.length)
+		var dialog = dialogs.create('views/photo.html', 'PhotoCtrl', { photos: this.photos, index: (index || 0) });
+		dialog.result
+		.then(function (res) {
+		}, function (res) {});
 	};
 	return OrderService;
 });

@@ -27,6 +27,9 @@ angular.module('MobileCRMApp')
 	},{
 		_id: 4,
 		description: 'Paid'
+	},{
+		_id: 5,
+		description: 'Cancelled'
 	}];
 
 	$scope.wsClass = User;
@@ -138,11 +141,8 @@ angular.module('MobileCRMApp')
 		})
 	}
 
-	$scope.showPicture = function(photo){
-		var dialog = dialogs.create('views/photo.html', 'PhotoCtrl', { photo: photo });
-		dialog.result
-		.then(function (res) {
-		}, function (res) {});
+	$scope.showPicture = function(index){
+		$scope.orderService.showPicture(index);
 	}
 
 	$scope.save = function () {

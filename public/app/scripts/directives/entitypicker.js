@@ -9,7 +9,7 @@ angular.module('MobileCRMApp')
 			wsClass : '=',
 			wsFields : '=', //There's a little change here in comparison to List or crudtypetable
 			wsLabel : '=?',
-			filterByOwner : '=?',
+			wsFilter : '=?',
 			goTo : '&?',
 			ngChange : '&?',
 			disable : '=',
@@ -19,12 +19,12 @@ angular.module('MobileCRMApp')
 		templateUrl : 'views/directives/entitypicker.html',
 		controller : function ($scope, $timeout, dialogs, toaster) {
 			$scope.wsLabel = $scope.wsLabel || 'entity.fullName';
-			console.log($scope.disable)
+			console.log($scope.wsFilter)
 			$scope.showModal = function () {
 				var dialog = dialogs.create('views/directives/entitypicker.modal.html', 'EntityPickerCtrl', {
 						wsClass : $scope.wsClass,
 						wsFields : $scope.wsFields,
-						filterByOwner : $scope.filterByOwner,
+						filter : angular.copy($scope.wsFilter),
 						list : $scope.wsList,
 					default:
 						$scope.wsDefault
@@ -81,8 +81,11 @@ angular.module('MobileCRMApp')
 			};
 			var searchFields = ['_id'];
 			$scope.filtro = {};
-			if (data.filterByOwner) {
-				$scope.filtro[data.filterByOwner] = ownerId;
+			console.log(data.filter)
+			if (data.filter) {
+				for(var i in data.filter){
+					$scope.filtro[i] = angular.copy(data.filter[i]);
+				}	
 			}
 			$scope.wsFields = data.wsFields;
 			//Setting searchFields
@@ -100,12 +103,8 @@ angular.module('MobileCRMApp')
 						wsClassHandler.distinct(field.field)
 						.then(function (data) {
 							field.data = data;
-							field.data.unshift('Seleccionar Todos');
-							if (field.field == 'branchId' && $scope.defaultObj && JSON.stringify($scope.defaultObj) != '{}') {
-								$scope.filtro[field.field] = angular.copy($scope.defaultObj._id);
-							} else {
-								$scope.filtro[field.field] != 'Seleccionar Todos'
-							}
+							field.data.unshift('Select All');
+							$scope.filtro[field.field] != 'Select All'
 						});
 					}
 				});
@@ -158,7 +157,7 @@ angular.module('MobileCRMApp')
 						var ent = $scope.list[i];
 					}
 				}, function (error) {
-					toaster.pop('error', '', 'No se pudo cargar los registros!', 5000);
+					toaster.pop('error', '', 'The registries couldn\'t be found!', 5000);
 				});
 				wsClassHandler.paginatedCount(pParams).then(function (res) {
 					res = res.count;
@@ -208,7 +207,7 @@ angular.module('MobileCRMApp')
 			};
 			$scope.filter = function (field, isDown, isSelect) {
 				for (var i in $scope.filtro) {
-					if ($scope.filtro[i] != '' && $scope.filtro[i] != 'Seleccionar Todos') {
+					if ($scope.filtro[i] != '' && $scope.filtro[i] != 'Select All') {
 						var fltr = angular.copy($scope.filtro[i]);
 						$scope.params.filter[i] = {
 							$regex : fltr,
@@ -217,11 +216,6 @@ angular.module('MobileCRMApp')
 					} else {
 						delete $scope.params.filter[i];
 					}
-				}
-				if (isDown == false && ($scope.filtro.branchId || $scope.defaultObj && JSON.stringify($scope.defaultObj) != '{}')) {
-					$scope.params.filter['branchId'] = ($scope.filtro.branchId) ? $scope.filtro.branchId : angular.copy($scope.defaultObj._id);
-				} else {
-					delete $scope.params.filter.branchId;
 				}
 				getPaginatedSearch($scope.params);
 			};

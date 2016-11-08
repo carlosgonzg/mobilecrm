@@ -125,7 +125,7 @@
 					<th style="width:10%">
 						Service Order
 					</th>
-					<th style="width:10%">
+					<th style="width:5%">
 						Invoice
 					</th>
 					<th style="width:20%">
@@ -145,6 +145,9 @@
 					</th>
 					<th style="width:5%">
 						Issue / Comment
+					</th>
+					<th style="width:5%">
+						Photos
 					</th>
 					<th style="width:10%">
 						Total Amount
@@ -184,6 +187,9 @@
 					</td>
 					<td>
 						<button class="btn btn-sm" ng-click="showComment(orderService)"><i class="fa fa-eye"></i></button>
+					</td>
+					<td>
+						<button class="btn btn-sm" ng-click="orderService.showPicture()"><i class="fa fa-picture-o" ng-disabled="orderService.photos.length <= 0"></i></button>
 					</td>
 					<td>
 						{{orderService.getTotal()|currency}}

@@ -45,6 +45,9 @@ angular.module('MobileCRMApp')
 	},{
 		_id: 4,
 		description: 'Paid'
+	},{
+		_id: 5,
+		description: 'Cancelled'
 	}];
 
 	$scope.filter = {

@@ -27,6 +27,9 @@ angular.module('MobileCRMApp')
 	},{
 		_id: 4,
 		description: 'Paid'
+	},{
+		_id: 5,
+		description: 'Cancelled'
 	}];
 
 
@@ -76,6 +79,16 @@ angular.module('MobileCRMApp')
 			show: true
 		}
 	];
+	$scope.filterOS = {
+		'status._id': {
+			$in: [1, 2, 3]
+		} 
+	};
+	$scope.filterC = {
+		'role._id': {
+			$ne: 1
+		} 
+	};
 
 	$scope.setInvoice = function(orderService){
 		$scope.invoice = new Invoice(orderService);

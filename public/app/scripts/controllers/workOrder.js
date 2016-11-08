@@ -23,10 +23,13 @@ angular.module('MobileCRMApp')
 		description: 'In Progress'
 	},{
 		_id: 3,
-		description: 'Done'
+		description: 'Completed'
 	},{
 		_id: 4,
 		description: 'Paid'
+	},{
+		_id: 5,
+		description: 'Cancelled'
 	}];
 
 	$scope.wsClass = User;

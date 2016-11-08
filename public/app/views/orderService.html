@@ -182,7 +182,7 @@
 					<label>Photos</label>
 				</div>
 				<div class="col-xs-3" ng-repeat="photo in orderService.photos">
-					<img class="img-rounded" style="width:120px" ng-src="{{photo}}"  ng-click="showPicture(photo)"/>
+					<img class="img-rounded" style="width:120px" ng-src="{{photo}}"  ng-click="showPicture($index)"/>
 				</div>
 			</div>
 		</div>
