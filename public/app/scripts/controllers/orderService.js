@@ -76,9 +76,11 @@ angular.module('MobileCRMApp')
 	$scope.addItem = function () {
 		$scope.orderService.items.push(new Item())
 	};
+
 	$scope.removeItem = function (index) {
 		$scope.orderService.items.splice(index, 1);
 	};
+
 	$scope.setItem = function(item, index) {
 		$scope.orderService.items[index] = new Item(item);
 	};
@@ -98,6 +100,7 @@ angular.module('MobileCRMApp')
 			}
 		} 
 	};
+
 	$scope.isChanged = function(field){
 		if($scope.orderService._id && $rootScope.userData.role._id == 1){
 			var isHere = false;
@@ -112,6 +115,7 @@ angular.module('MobileCRMApp')
 		}
 		return '';
 	};
+
 	$scope.isDisabled = function(){
 		return $rootScope.userData.role._id != 1 && $scope.orderService.status._id == 3;
 	};
@@ -139,11 +143,15 @@ angular.module('MobileCRMApp')
 			$scope.orderService.photos = $scope.orderService.photos || [];
 			$scope.orderService.photos = $scope.orderService.photos.concat(urls)
 		})
-	}
+	};
 
 	$scope.showPicture = function(index){
 		$scope.orderService.showPicture(index);
-	}
+	};
+
+	$scope.removePhoto = function(index){
+		$scope.orderService.photos.splice(index, 1);
+	};
 
 	$scope.save = function () {
 		delete $scope.orderService.client.account.password;
