@@ -41,6 +41,9 @@ angular.module('MobileCRMApp')
 					});
 				}
 			};
+			$scope.validate = function(){
+				return $scope.ngModel && ($scope.ngModel.address1 != '') && ($scope.ngModel.city && $scope.ngModel.city.id != '') && ($scope.ngModel.state && $scope.ngModel.state.id != '') && ($scope.ngModel.country && $scope.ngModel.country.id != '') && !!($scope.ngModel.zipcode != '');
+			}
 
 			function initAutocomplete() {
 				autocomplete = new google.maps.places.Autocomplete(

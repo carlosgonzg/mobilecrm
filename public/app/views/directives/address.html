@@ -1,31 +1,34 @@
+<div class="col-xs-12 col-md-12" ng-if="!validate()">
+	<b style="color: red">The address is not filled up correctly, please check it.</b>
+</div>
 <div class="col-xs-12 col-md-12">
 	<div class="form-group">
 		<label for="address">Address</label>
-		<input type="text" class="form-control" id="address1" ng-model="ngModel.address1" ng-focus="geoLocate()" />
+		<input type="text" class="form-control" id="address1" ng-model="ngModel.address1" ng-focus="geoLocate()" required/>
 	</div>
 </div>
 <div class="col-xs-12 col-md-6">
 	<div class="form-group">
 		<label for="city">City</label>
-		<input type="text" class="form-control" id="city" ng-model="ngModel.city.description" disabled="disabled"/>
+		<input type="text" class="form-control" id="city" ng-model="ngModel.city.description" disabled="disabled" required/>
 	</div>
 </div>
 <div class="col-xs-12 col-md-6">
 	<div class="form-group">
 		<label for="province">State</label>
-		<input type="text" class="form-control" id="state" ng-model="ngModel.state.description" disabled="disabled"/>
+		<input type="text" class="form-control" id="state" ng-model="ngModel.state.description" disabled="disabled" required/>
 	</div>
 </div>
 <div class="col-xs-12 col-md-6">
 	<div class="form-group">
 		<label for="address2">Zipcode</label>
-		<input type="text" class="form-control" id="zipcode" ng-model="ngModel.zipcode" disabled="disabled" />
+		<input type="text" class="form-control" id="zipcode" ng-model="ngModel.zipcode" disabled="disabled" required/>
 	</div>
 </div>
 <div class="col-xs-12 col-md-6">
 	<div class="form-group">
 		<label for="country">Country</label>
-		<input type="text" class="form-control" id="country" ng-model="ngModel.country.description" disabled="disabled"/>
+		<input type="text" class="form-control" id="country" ng-model="ngModel.country.description" disabled="disabled" required/>
 	</div>
 </div>
 

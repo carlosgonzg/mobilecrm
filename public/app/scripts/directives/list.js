@@ -59,8 +59,6 @@ angular.module('MobileCRMApp')
 				fieldFilter : {}
 			};
 
-      console.log($scope.excelTitle)
-
 			if ($scope.sortList == "-1") {
 				$scope.params.sort = {
 					_id : -1
@@ -233,7 +231,6 @@ angular.module('MobileCRMApp')
 				if (!_params.title){
           _params.title = $scope.excelTitle;
         }
-        console.log($scope.excelTitle)
 				_params.excelFields = _.filter(_params.excelFields, function (field) {
 						return (field.function  == undefined)
 					})

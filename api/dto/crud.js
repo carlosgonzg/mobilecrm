@@ -343,8 +343,10 @@ Crud.prototype.find = function (query, sort) {
 		query['createdBy._id'] = this.userLogged._id;
 	}
 
-	var sortObj = sort ? sort : [['_id', 'asc']];
-	console.log('lequq', query)
+	var sortObj = sort ? sort : 
+    { 
+        _id: 1
+    };
 	this.db.get(this.table).find(query, {
 		sort : sortObj
 	}, handleMongoResponse(deferred));

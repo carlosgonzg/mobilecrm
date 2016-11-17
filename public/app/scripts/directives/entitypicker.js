@@ -19,7 +19,6 @@ angular.module('MobileCRMApp')
 		templateUrl : 'views/directives/entitypicker.html',
 		controller : function ($scope, $timeout, dialogs, toaster) {
 			$scope.wsLabel = $scope.wsLabel || 'entity.fullName';
-			console.log($scope.wsFilter)
 			$scope.showModal = function () {
 				var dialog = dialogs.create('views/directives/entitypicker.modal.html', 'EntityPickerCtrl', {
 						wsClass : $scope.wsClass,
@@ -81,7 +80,6 @@ angular.module('MobileCRMApp')
 			};
 			var searchFields = ['_id'];
 			$scope.filtro = {};
-			console.log(data.filter)
 			if (data.filter) {
 				for(var i in data.filter){
 					$scope.filtro[i] = angular.copy(data.filter[i]);

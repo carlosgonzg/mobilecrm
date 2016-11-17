@@ -117,11 +117,39 @@ var a;
 	};
 
 	OrderService.prototype.showPicture = function(index){
-		console.log(this.photos.length)
 		var dialog = dialogs.create('views/photo.html', 'PhotoCtrl', { photos: this.photos, index: (index || 0) });
 		dialog.result
 		.then(function (res) {
 		}, function (res) {});
 	};
+
+	OrderService.prototype.filter = function(query, sort){
+		var deferred = $q.defer();
+		var _this = this.constructor;
+		$http.post(this.baseApiPath + '/filter', { query: query, sort: sort })
+		.success(function (data, status, headers, config) {
+			var response = {},
+			data = data.data;
+			//Create a new object of the current class (or an array of them) and return it (or them)
+			if (Array.isArray(data)) {
+				response.data = data.map(function (obj) {
+						return new _this(obj);
+					});
+				//Add "delete" method to results object to quickly delete objects and remove them from the results array
+				response.delete  = function (object) {
+					object.delete ().then(function () {
+						return response.data.splice(response.data.indexOf(object), 1);
+					});
+				};
+			} else {
+				response = new _this(data);
+			}
+			return deferred.resolve(response);
+		}).error(function (data, status, headers, config) {
+			return deferred.reject(data);
+		});
+		return deferred.promise;
+	};
+
 	return OrderService;
 });

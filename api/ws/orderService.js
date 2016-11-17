@@ -26,5 +26,17 @@ module.exports = function (prefix, app, mail, dirname) {
 		orderService.sendOrderService(req.body.id, req.user.entity.fullName || req.user.entity.name, mail)
 		.then(util.success(res), util.error(res));
 	});
+
+	app.post(prefix + '/filter', function (req, res) {
+		var orderService = new OrderService(app.db, req.user, dirname);
+		var sort = null;
+		if(req.body.sort){
+			sort = {};
+			sort[req.body.sort.field] = req.body.sort.order;
+		}
+		console.log(sort)
+		orderService.crud.find(req.body.query, sort)
+		.then(util.success(res), util.error(res));
+	});
 	require('./crud')(prefix, app, OrderService);
 }

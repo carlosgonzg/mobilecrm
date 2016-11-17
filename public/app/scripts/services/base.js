@@ -231,7 +231,6 @@ angular.module('MobileCRMApp')
 		delete data.baseApiPath;
 		if (_this.validate ? _this.validate() : validate()) {
 			var url = "" + this.baseApiPath;
-			console.log(_this._id)
 			if (_this._id != null && _this._id != undefined)
 				url = _this.baseApiPath;
 			if (_this._id != undefined) {

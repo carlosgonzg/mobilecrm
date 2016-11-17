@@ -130,12 +130,14 @@ var sendOrderService = function (invoice, mails, file, fileName) {
 		body = body.replace('<createdDate>', moment(invoice.date).format('MM/DD/YYYY'));
 		body = body.replace('<clientCompany>', invoice.client.company ? invoice.client.company.entity.name : 'None');
 		body = body.replace('<clientBranch>', invoice.client.branch ? invoice.client.branch.name : 'None');
+		body = body.replace('<customer>', invoice.customer || 'None');
+		body = body.replace('<customerPhone>', invoice.phone ? invoice.phone.number : 'None');
 		body = body.replace('<sor>', invoice.sor);
 		body = body.replace('<unitno>', invoice.unitno);
 		body = body.replace('<pono>', invoice.pono);
 		body = body.replace('<isono>', invoice.isono);
 		body = body.replace('<clientName>', invoice.client.entity.fullName);
-		body = body.replace('<clientPhone>', invoice.phone.number);
+		body = body.replace('<clientPhone>', invoice.client && invoice.client.branch && invoice.client.branch.phones && invoice.client.branch.phones.length > 0 ? invoice.client.branch.phones[0].number : 'None');
 		body = body.replace('<clientMail>', invoice.client.account.email);
 		body = body.replace('<clientAddress>', invoice.siteAddress.address1 + ', ' + invoice.siteAddress.city.description + ', ' + invoice.siteAddress.state.description + ' ' + invoice.siteAddress.zipcode);
 		body = body.replace('<comment>', invoice.comment);
@@ -144,8 +146,38 @@ var sendOrderService = function (invoice, mails, file, fileName) {
 		var company = 'Company: ' + (invoice && invoice.client && invoice.client.company && invoice.client.company.entity ? invoice.client.company.entity.name : 'Not Defined');
 		var branch = invoice && invoice.client && invoice.client.branch ? 'Branch: ' + invoice.client.branch.name : 'Client: ' + invoice.client.entity.fullName;
 		var subject = company + ' | ' + branch + ' | Service Order: ' + invoice.sor;
-		console.log('sending mail 2', subject)
-		sendMail(mails.join(', '), subject, body, true)
+		console.log('sending mail 2', subject);
+		var attachments = [];
+		if(invoice.photos){
+			for(var i = 0; i < invoice.photos.length; i++){
+				var b64 = invoice.photos[i].split("base64,")[0];
+				var data = b64.split(':')[1].split(';')[0]; //consigo la imagen
+				var fileExtension = '';
+				switch(data) {
+				    case 'image/gif':
+				        fileExtension = '.gif';
+				        break;
+				    case 'image/jpeg':
+				        fileExtension = '.jpg';
+				        break;
+				    case 'image/png':
+				        fileExtension = '.png';
+				        break;
+				    case 'application/pdf':
+				        fileExtension = '.pdf';
+				        break;
+				    default:
+				        fileExtension = '.jpg';
+				}
+				var fileName = i + fileExtension;
+				var content = invoice.photos[i].split("base64,")[1];
+				attachments.push({
+					path: invoice.photos[i]
+				});
+			}
+		}
+		
+		sendMail(mails.join(', '), subject, body, true, attachments)
 		.then(function (response) {
 			console.log('DONE Sending Mail: ', response)
 			deferred.resolve(response);
@@ -168,13 +200,12 @@ var sendOrderServiceUpdate = function (invoice, mails, username) {
 	.then(function (body) {
 		var url = config.SERVER_URL;
 		body = body.replace('<emailUrl>', url);
-		body = body.replace('<invoiceNumber>', invoice.invoiceNumber);
+		body = body.replace('<invoiceNumber>', invoice.sor);
 		body = body.replace('<client>', username);
 		console.log('sending mail')
 		var company = 'Company: ' + (invoice && invoice.client && invoice.client.company && invoice.client.company.entity ? invoice.client.company.entity.name : 'Not Defined');
 		var branch = invoice && invoice.client && invoice.client.branch ? 'Branch: ' + invoice.client.branch.name : 'Client: ' + invoice.client.entity.fullName;
 		var subject = company + ' | ' + branch + ' | Service Order: ' + invoice.sor;
-		console.log('sending mail 2', subject)
 		sendMail(mails.join(', '), subject, body, true)
 		.then(function (response) {
 			console.log('DONE Sending Mail: ', response)

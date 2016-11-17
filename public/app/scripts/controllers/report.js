@@ -13,6 +13,10 @@ angular.module('MobileCRMApp')
 			fullName: 'All'
 		}
 	});
+	$scope.sort = {
+		field: 'date',
+		order: 1
+	};
 
 	$scope.countryList = countries.data;
 	$scope.countryList.unshift({
@@ -58,9 +62,20 @@ angular.module('MobileCRMApp')
 		country: { _id: -1 },
 		state: { _id: -1 },
 		city: { _id: -1 },
-		isOpen: true
+		isOpen: true,
+		sort: $scope.sort
 	};
 
+	$scope.sortBy = function(field){
+		if($scope.sort.field == field){
+			$scope.sort.order = $scope.sort.order == 1 ? -1 : 1;
+		}
+		else {
+			$scope.sort.field = angular.copy(field);
+			$scope.sort.order = 1;
+		}
+		$scope.search();
+	}
 	$scope.showComment = function(orderService){
 		var dialog = dialogs.create('views/comment.html', 'CommentCtrl', { comment: orderService.comment });
 		dialog.result
@@ -303,7 +318,7 @@ angular.module('MobileCRMApp')
 		}
 		//ahora listado de order services
 		$scope.orderServices = [];
-		new OrderService().filter(query)
+		new OrderService().filter(query, $scope.sort)
 		.then(function(orderServices){
 			$scope.orderServices = orderServices.data;
 			if($scope.selectedTab != 'data')
