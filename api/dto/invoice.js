@@ -14,6 +14,8 @@ var fs = require('fs')
 
 function Invoice(db, userLogged, dirname) {
 	this.crud = new Crud(db, 'INVOICE', userLogged);
+	this.crudCompany = new Crud(db, 'COMPANY', userLogged);
+	this.crudBranch = new Crud(db, 'BRANCH', userLogged);
 	this.user = new User(db, '', userLogged);
 	this.dirname = dirname;
 	//DB Table Schema
@@ -77,21 +79,21 @@ function Invoice(db, userLogged, dirname) {
 	//this.crud.uniqueFields = ['invoiceNumber'];
 }
 
-Invoice.prototype.insert = function (orderService, username, mail) {
+Invoice.prototype.insert = function (invoice, username, mail) {
 	var d = q.defer();
 	var _this = this;
 	var total = 0;
 	//sumo el total
-	for (var i = 0; i < orderService.items.length; i++) {
-		total += orderService.items[i].quantity * orderService.items[i].price;
+	for (var i = 0; i < invoice.items.length; i++) {
+		total += invoice.items[i].quantity * invoice.items[i].price;
 	}
-	orderService.total = total;
+	invoice.total = total;
 	//Consigo el sequencial de invoice
-	var promise = orderService.invoiceNumber ? q.when(orderService.invoiceNumber) : util.getYearlySequence(_this.crud.db, 'Invoice');
+	var promise = invoice.invoiceNumber ? q.when(invoice.invoiceNumber) : util.getYearlySequence(_this.crud.db, 'Invoice');
 	promise
 	.then(function (sequence) {
-		orderService.invoiceNumber = sequence;
-		return _this.crud.insert(orderService);
+		invoice.invoiceNumber = sequence;
+		return _this.crud.insert(invoice);
 	})
 	//inserto
 	.then(function (obj) {
@@ -108,16 +110,16 @@ Invoice.prototype.insert = function (orderService, username, mail) {
 	return d.promise;
 };
 
-Invoice.prototype.update = function (query, orderService, username, mail) {
+Invoice.prototype.update = function (query, invoice, username, mail) {
 	var d = q.defer();
 	var _this = this;
 	var total = 0;
 	//sumo el total
-	for (var i = 0; i < orderService.items.length; i++) {
-		total += orderService.items[i].quantity * orderService.items[i].price;
+	for (var i = 0; i < invoice.items.length; i++) {
+		total += invoice.items[i].quantity * invoice.items[i].price;
 	}
-	orderService.total = total;
-	_this.crud.update(query, orderService)
+	invoice.total = total;
+	_this.crud.update(query, invoice)
 	.then(function (obj) {
 		_this.sendInvoiceUpdate(query._id, username, mail);
 		d.resolve(obj);
@@ -134,34 +136,40 @@ Invoice.prototype.update = function (query, orderService, username, mail) {
 Invoice.prototype.sendInvoice = function(id, username, mail, emails){
 	var d = q.defer();
 	var _this = this;
-	var orderService = {};
+	var invoice = {};
 	var url = '';
 	var urlPdf = '';
 	var fileName = '';
 	var fileNamePdf = '';
 	var cc = [];
+	var company = {};
+	var branch = {};
 	_this.crud.find({ _id: id })
-	.then(function(orderS){
-		orderService = orderS.data[0];
+	.then(function(invoiceS){
+		invoice = invoiceS.data[0];		
+		return _this.crudCompany.find({ _id: invoice.client.company._id });
+	})
+	//busco compañia
+	.then(function(companyS){
+		company = companyS.data[0];
+		return _this.crudBranch.find({ _id: invoice.client.branch._id });
+	})
+	//busco branch
+	.then(function(branchS){
+		branch = branchS.data[0];
 		return _this.user.getAdminUsers();
 	})
 	.then(function(users){
-		emails = emails.concat([ orderService.client.account.email ]);
+		emails = emails.concat([ invoice.client.account.email ]);
 		for(var i = 0; i < users.data.length; i++){
 			cc.push(users.data[i].account.email);
 		}
-		return _this.createInvoice(id, username);
-	})
-	.then(function(excel){
-		fileName = orderService.invoiceNumber + '.xlsx';
-		fileNamePdf = orderService.invoiceNumber + '.pdf';
-		url = _this.dirname + '/api/invoices/' + fileName; 
+		fileNamePdf = invoice.invoiceNumber + '.pdf';
 		urlPdf = _this.dirname + '/api/invoices/' + fileNamePdf; 
-		//return excel.workbook.xlsx.writeFile(url);
-		return pdf.createInvoice(orderService);
+		return pdf.createInvoice(invoice, company, branch);
 	})
 	.then(function(){
-		return mail.sendInvoice(orderService, emails, cc, urlPdf, fileNamePdf);
+		return mail.sendInvoice(invoice, emails, cc, urlPdf, fileNamePdf);
 	})
 	.then(function(){
 		d.resolve(true);
@@ -179,11 +187,11 @@ Invoice.prototype.sendInvoice = function(id, username, mail, emails){
 Invoice.prototype.sendInvoiceUpdate = function(id, username, mail){
 	var d = q.defer();
 	var _this = this;
-	var orderService = {};
+	var invoice = {};
 	var emails = [];
 	_this.crud.find({ _id: id })
-	.then(function(orderS){
-		orderService = orderS.data[0];
+	.then(function(invoiceS){
+		invoice = invoiceS.data[0];
 		return _this.user.getAdminUsers();
 	})
 	.then(function(users){
@@ -195,7 +203,7 @@ Invoice.prototype.sendInvoiceUpdate = function(id, username, mail){
 	})
 	.then(function(){
 		console.log('alo')
-		return mail.sendInvoiceUpdate(orderService, emails, username);
+		return mail.sendInvoiceUpdate(invoice, emails, username);
 	})
 	.then(function(){
 		d.resolve(true);
@@ -210,15 +218,22 @@ Invoice.prototype.sendInvoiceUpdate = function(id, username, mail){
 	return d.promise;
 };
 
-Invoice.prototype.createInvoice = function(id, username){
+Invoice.prototype.createInvoice = function(id){
 	var d = q.defer();
+	var invoice = {};
+	var company = {};
 	var _this = this;
 	var query = {
 		_id: id
 	};
 	_this.crud.find(query)
 	.then(function (result) {
-		return pdf.createInvoice(result.data[0]);
+		invoice = result.data[0];
+		return _this.crudCompany.find({ _id: invoice.client.company._id });
+	})
+	.then(function (result) {
+		company = result.data[0];
+		return pdf.createInvoice(invoice, company);
 	})
 	.then(function (data) {
 		d.resolve(data);
@@ -232,8 +247,8 @@ Invoice.prototype.createInvoice = function(id, username){
 	return d.promise;
 };
 
-Invoice.prototype.getInvoice = function(id, res, username){
-	this.createInvoice(id, username)
+Invoice.prototype.getInvoice = function(id, res){
+	this.createInvoice(id)
 	.then(function(obj){
 		fs.readFile(obj.path, function (err,data){
 			res.contentType("application/pdf");

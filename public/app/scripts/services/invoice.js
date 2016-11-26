@@ -69,11 +69,11 @@ var a;
 		$location.path('/invoice/' + this._id);
 	};
 
-	Invoice.prototype.getInvoice = function(){
+	Invoice.prototype.download = function(){
 		var d = $q.defer();
 		var _this = this;
 		$http({
-			url: this.baseApiPath + '/invoice',
+			url: this.baseApiPath + '/download',
 			method: "POST",
 			data: { id: _this._id }, //this is your json data string
 			headers: {
@@ -100,13 +100,13 @@ var a;
 	    });
 	    return d.promise;
 	};
-	Invoice.prototype.sendInvoice = function(emails){
+	Invoice.prototype.send = function(emails){
 		var d = $q.defer();
 		var _this = this;
 		var email = _this.client ? _this.client.account.email : null;
 		var dialog = dialogs.create('views/emails.html', 'EmailsCtrl', { email: email});
 		dialog.result.then(function (emails) {
-			console.log(emails)
+			toaster.warning('Sending the email');
 			$http.post(_this.baseApiPath + '/send', { id: _this._id, emails: emails })
 			.success(function (data) {
 				toaster.success('The invoice has been sent!.');

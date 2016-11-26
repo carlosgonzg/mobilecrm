@@ -95,22 +95,22 @@ angular
 			}
 		}
 	})
-	.when('/orderServiceList', {
-		templateUrl : 'views/orderServiceList.html',
-		controller : 'OrderServiceListCtrl'
+	.when('/serviceOrderList', {
+		templateUrl : 'views/serviceOrderList.html',
+		controller : 'ServiceOrderListCtrl'
 	})
-	.when('/orderService/:id?', {
-		templateUrl : 'views/orderService.html',
-		controller : 'OrderServiceCtrl',
+	.when('/serviceOrder/:id?', {
+		templateUrl : 'views/serviceOrder.html',
+		controller : 'ServiceOrderCtrl',
 		resolve:{
 			items : function (Item) {
 				return new Item().find({});
 			},
-			orderService : function (OrderService, $route) {
+			serviceOrder : function (ServiceOrder, $route) {
 				if ($route.current.params.id) {
-					return new OrderService().findById(parseInt($route.current.params.id));
+					return new ServiceOrder().findById(parseInt($route.current.params.id));
 				} else {
-					return new OrderService();
+					return new ServiceOrder();
 				}
 			}
 		}

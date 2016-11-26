@@ -8,12 +8,12 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-.controller('OrderServiceCtrl', function ($scope, $rootScope, $location, toaster, User, orderService, items, Item, dialogs, $q) {
-	$scope.orderService = orderService;
+.controller('ServiceOrderCtrl', function ($scope, $rootScope, $location, toaster, User, serviceOrder, items, Item, dialogs, $q) {
+	$scope.serviceOrder = serviceOrder;
 	$scope.items = [];
 	$scope.readOnly = $rootScope.userData.role._id != 1;
 	if($rootScope.userData.role._id != 1){
-		$scope.orderService.client = new User($rootScope.userData);
+		$scope.serviceOrder.client = new User($rootScope.userData);
 	}
 	$scope.listStatus = [{
 		_id: 1,
@@ -72,41 +72,49 @@ angular.module('MobileCRMApp')
 			}
 		}
 	};
+
+	$scope.addContact = function () {
+		$scope.serviceOrder.contacts.push({})
+	};
+
+	$scope.removeContact = function (index) {
+		$scope.serviceOrder.contacts.splice(index, 1);
+	};
 	
 	$scope.addItem = function () {
-		$scope.orderService.items.push(new Item())
+		$scope.serviceOrder.items.push(new Item())
 	};
 
 	$scope.removeItem = function (index) {
-		$scope.orderService.items.splice(index, 1);
+		$scope.serviceOrder.items.splice(index, 1);
 	};
 
 	$scope.setItem = function(item, index) {
-		$scope.orderService.items[index] = new Item(item);
+		$scope.serviceOrder.items[index] = new Item(item);
 	};
 
 	$scope.changed = function(field){
-		if($scope.orderService._id && $rootScope.userData.role._id != 1){
+		if($scope.serviceOrder._id && $rootScope.userData.role._id != 1){
 			var isHere = false;
-			$scope.orderService.fieldsChanged = $scope.orderService.fieldsChanged || [];
-			for(var i = 0; i < $scope.orderService.fieldsChanged.length; i++){
-				if($scope.orderService.fieldsChanged[i] == field){
+			$scope.serviceOrder.fieldsChanged = $scope.serviceOrder.fieldsChanged || [];
+			for(var i = 0; i < $scope.serviceOrder.fieldsChanged.length; i++){
+				if($scope.serviceOrder.fieldsChanged[i].field == field){
 					isHere = true;
 					break;
 				}
 			}
 			if(!isHere){
-				$scope.orderService.fieldsChanged.push(field);
+				$scope.serviceOrder.fieldsChanged.push({ field: field, by: $rootScope.userData._id });
 			}
 		} 
 	};
 
 	$scope.isChanged = function(field){
-		if($scope.orderService._id && $rootScope.userData.role._id == 1){
+		if($scope.serviceOrder._id && $rootScope.userData.role._id == 1){
 			var isHere = false;
-			$scope.orderService.fieldsChanged = $scope.orderService.fieldsChanged || [];
-			for(var i = 0; i < $scope.orderService.fieldsChanged.length; i++){
-				if($scope.orderService.fieldsChanged[i] == field){
+			$scope.serviceOrder.fieldsChanged = $scope.serviceOrder.fieldsChanged || [];
+			for(var i = 0; i < $scope.serviceOrder.fieldsChanged.length; i++){
+				if($scope.serviceOrder.fieldsChanged[i].field == field){
 					isHere = true;
 					break;
 				}
@@ -117,7 +125,7 @@ angular.module('MobileCRMApp')
 	};
 
 	$scope.isDisabled = function(){
-		return $rootScope.userData.role._id != 1 && $scope.orderService.status._id == 3;
+		return $rootScope.userData.role._id != 1 && $scope.serviceOrder.status._id == 3;
 	};
 
 	$scope.uploadFiles = function(files){
@@ -127,7 +135,12 @@ angular.module('MobileCRMApp')
 			var reader = new FileReader();
 			reader.readAsDataURL(file);
 			reader.onload = function () {
-				d.resolve(reader.result);
+				d.resolve({ 
+					url: reader.result,
+					name: file.name,
+					type: file.type,
+					isNew: true
+				});
 			};
 			reader.onerror = function (error) {
 				d.reject(error);
@@ -140,25 +153,25 @@ angular.module('MobileCRMApp')
 		}
 		$q.all(promises)
 		.then(function(urls){
-			$scope.orderService.photos = $scope.orderService.photos || [];
-			$scope.orderService.photos = $scope.orderService.photos.concat(urls)
+			$scope.serviceOrder.photos = $scope.serviceOrder.photos || [];
+			$scope.serviceOrder.photos = $scope.serviceOrder.photos.concat(urls)
 		})
 	};
 
 	$scope.showPicture = function(index){
-		$scope.orderService.showPicture(index);
+		$scope.serviceOrder.showPicture(index);
 	};
 
 	$scope.removePhoto = function(index){
-		$scope.orderService.photos.splice(index, 1);
+		$scope.serviceOrder.photos.splice(index, 1);
 	};
 
 	$scope.save = function () {
-		delete $scope.orderService.client.account.password;
-		$scope.orderService.save()
+		delete $scope.serviceOrder.client.account.password;
+		$scope.serviceOrder.save()
 		.then(function (data) {
 			toaster.success('The Order Service was saved successfully');
-			$location.path('orderServiceList')
+			$location.path('serviceOrderList')
 		},
 			function (error) {
 			console.log(error);
@@ -169,19 +182,19 @@ angular.module('MobileCRMApp')
 	$scope.delete = function(){
 		var dlg = dialogs.confirm('Warning','Are you sure you want to delete?');
 		dlg.result.then(function(btn){
-			$scope.orderService.remove()
+			$scope.serviceOrder.remove()
 			.then(function(){
 				toaster.success('The service order was deleted successfully');
-				$location.path('/orderServiceList')
+				$location.path('/serviceOrderList')
 			});
 		});
 	};
 
 	$scope.export = function(){
-		$scope.orderService.getInvoice();
+		$scope.serviceOrder.download();
 	};
 
 	$scope.send = function(){
-		$scope.orderService.sendInvoice();
+		$scope.serviceOrder.send();
 	};
 });

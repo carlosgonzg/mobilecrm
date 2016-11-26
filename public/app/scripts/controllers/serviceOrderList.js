@@ -8,8 +8,8 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-.controller('OrderServiceListCtrl', function ($scope, $rootScope, $location, OrderService) {
-	$scope.orderService = OrderService;
+.controller('ServiceOrderListCtrl', function ($scope, $rootScope, $location, ServiceOrder) {
+	$scope.serviceOrder = ServiceOrder;
 
 	$scope.fields = [{
 			title : 'Branch',
@@ -81,6 +81,6 @@ angular.module('MobileCRMApp')
 	$scope.filter = $rootScope.userData.role._id == 1 ? { } : { 'client._id': $rootScope.userData._id };
 
 	$scope.createNew = function () {
-		$location.path('orderService');
+		$location.path('serviceOrder');
 	};
 });

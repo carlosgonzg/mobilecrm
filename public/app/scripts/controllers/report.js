@@ -1,11 +1,11 @@
 'use strict';
 
 angular.module('MobileCRMApp')
-.controller('ReportCtrl', function ($scope, $rootScope, toaster, clients, countries, OrderService, $timeout, dialogs) {
+.controller('ReportCtrl', function ($scope, $rootScope, toaster, clients, countries, ServiceOrder, $timeout, dialogs) {
 	var today = new Date();
 	$scope.isClient = $rootScope.userData.role._id != 1;
 	$scope.selectedTab = 'data';
-	$scope.orderServices = [];
+	$scope.serviceOrders = [];
 	$scope.clientList = clients.data;
 	$scope.clientList.unshift({
 		_id: -1,
@@ -76,15 +76,15 @@ angular.module('MobileCRMApp')
 		}
 		$scope.search();
 	}
-	$scope.showComment = function(orderService){
-		var dialog = dialogs.create('views/comment.html', 'CommentCtrl', { comment: orderService.comment });
+	$scope.showComment = function(serviceOrder){
+		var dialog = dialogs.create('views/comment.html', 'CommentCtrl', { comment: serviceOrder.comment });
 		dialog.result
 		.then(function (res) {
 		}, function (res) {});
 	};
 
-	$scope.showYardComment = function(orderService){
-		var dialog = dialogs.create('views/comment.html', 'CommentCtrl', { comment: orderService.yardComment });
+	$scope.showYardComment = function(serviceOrder){
+		var dialog = dialogs.create('views/comment.html', 'CommentCtrl', { comment: serviceOrder.yardComment });
 		dialog.result
 		.then(function (res) {
 		}, function (res) {});
@@ -159,13 +159,13 @@ angular.module('MobileCRMApp')
 			count: [],
 			price: []
 		};
-		for(var i = 0; i < $scope.orderServices.length; i++){
-			var orderService = $scope.orderServices[i];
+		for(var i = 0; i < $scope.serviceOrders.length; i++){
+			var serviceOrder = $scope.serviceOrders[i];
 			// id, value y label
 			var isHere = false;
 			var status = {};
 			for(var j = 0; j < obj.status.length; j++){
-				if(obj.status[j]._id == orderService.status._id){
+				if(obj.status[j]._id == serviceOrder.status._id){
 					obj.status[j].value++;
 					isHere = true;
 					break;
@@ -174,15 +174,15 @@ angular.module('MobileCRMApp')
 			if(!isHere){
 				obj.status.push({
 					value: 1,
-					_id: orderService.status._id,
-					label: orderService.status.description
+					_id: serviceOrder.status._id,
+					label: serviceOrder.status.description
 				});
 			}
 
 			var isHere = false;
 			var client = {};
 			for(var j = 0; j < obj.count.length; j++){
-				if(obj.count[j]._id == orderService.client._id){
+				if(obj.count[j]._id == serviceOrder.client._id){
 					obj.count[j].value++;
 					isHere = true;
 					break;
@@ -191,24 +191,24 @@ angular.module('MobileCRMApp')
 			if(!isHere){
 				obj.count.push({
 					value: 1,
-					_id: orderService.client._id,
-					label: orderService.client.entity.fullName
+					_id: serviceOrder.client._id,
+					label: serviceOrder.client.entity.fullName
 				});
 			}
 
 			var isHere = false;
 			for(var j = 0; j < obj.price.length; j++){
-				if(obj.price[j]._id == orderService.client._id){
-					obj.price[j].value += orderService.total;
+				if(obj.price[j]._id == serviceOrder.client._id){
+					obj.price[j].value += serviceOrder.total;
 					isHere = true;
 					break;
 				}
 			}
 			if(!isHere){
 				obj.price.push({
-					value: orderService.total,
-					_id: orderService.client._id,
-					label: orderService.client.entity.fullName
+					value: serviceOrder.total,
+					_id: serviceOrder.client._id,
+					label: serviceOrder.client.entity.fullName
 				});
 			}
 		}
@@ -317,10 +317,10 @@ angular.module('MobileCRMApp')
 			});
 		}
 		//ahora listado de order services
-		$scope.orderServices = [];
-		new OrderService().filter(query, $scope.sort)
-		.then(function(orderServices){
-			$scope.orderServices = orderServices.data;
+		$scope.serviceOrders = [];
+		new ServiceOrder().filter(query, $scope.sort)
+		.then(function(serviceOrders){
+			$scope.serviceOrders = serviceOrders.data;
 			if($scope.selectedTab != 'data')
 				drawChart();
 		});

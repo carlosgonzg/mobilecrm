@@ -4,12 +4,16 @@ var moment = require('moment');
 var numeral = require('numeral');
 var q = require('q');
 
-var createInvoiceBody = function(obj){
+var createInvoiceBody = function(obj, company, branch){
 	var body = fs.readFileSync(__dirname + '/invoice.html', 'utf8').toString();
 	//replacement of data
 	body = body.replace(/<createdDate>/g, moment(obj.date).format('MM/DD/YYYY'));
 	body = body.replace(/<invoiceNumber>/g, obj.invoiceNumber);
-	body = body.replace(/<clientCompany>/g, obj.client.company.entity.name);
+	//Company
+	body = body.replace(/<companyName>/g, company.entity.name);
+	body = body.replace(/<companyAddress>/g, company.address.address1);
+	body = body.replace(/<companyState>/g, company.address.state.description + ' ' + company.address.zipcode);
+	//Cliente
 	body = body.replace(/<clientName>/g, obj.client.entity.fullName);
 	body = body.replace(/<clientAddress>/g, obj.siteAddress.address1);
 	body = body.replace(/<clientState>/g, obj.siteAddress.state.description + ' ' + obj.siteAddress.zipcode);
@@ -26,11 +30,11 @@ var createInvoiceBody = function(obj){
 	var tableItems = '';
 	for(var i = 0; i < obj.items.length; i++){
 		var item = obj.items[i];
-		tableItems += '<tr>';/*
+		tableItems += '<tr>';
 		tableItems += '<td style="text-align: center;border: thin solid black; border-top: none; border-right: none;">';
-		tableItems += item.code || '';
-		tableItems += '</td>';*/
-		tableItems += '<td colspan="5" style="border: thin solid black; border-top: none; border-right: none;">';
+		//tableItems += item.code || '';
+		tableItems += '</td>';
+		tableItems += '<td colspan="4" style="border: thin solid black; border-top: none; border-right: none;">';
 		tableItems += item.description || '';
 		tableItems += '</td>';
 		tableItems += '<td style="text-align: right;border: thin solid black; border-top: none; border-right: none;">';
@@ -56,7 +60,7 @@ var createInvoiceBody = function(obj){
 	return body;
 };
 
-var createInvoice = function(obj){
+var createInvoice = function(obj, company, branch){
     var d = q.defer();
 	var options = { 
 		format: 'Letter',
@@ -67,7 +71,7 @@ var createInvoice = function(obj){
 			left: '0.5in'
 		}
 	};
-	var body = createInvoiceBody(obj);
+	var body = createInvoiceBody(obj, company, branch);
 	pdf.create(body, options).toFile(__dirname + '/invoices/' + obj.invoiceNumber + '.pdf', function(err, res) {
         if (err) {
             d.reject(err)
@@ -81,8 +85,8 @@ var createInvoice = function(obj){
     return d.promise;
 };
 
-var createOrderServiceBody = function(obj){
-	var body = fs.readFileSync(__dirname + '/orderservice.html', 'utf8').toString();
+var createServiceOrderBody = function(obj){
+	var body = fs.readFileSync(__dirname + '/serviceorder.html', 'utf8').toString();
 	//replacement of data
 	body = body.replace('<createdDate>', moment(obj.date).format('MM/DD/YYYY'));
 	//body = body.replace('<invoiceNumber>', obj.invoiceNumber);
@@ -100,7 +104,7 @@ var createOrderServiceBody = function(obj){
 	return body;
 };
 
-var createOrderService = function(obj){
+var createServiceOrder = function(obj){
     var d = q.defer();
 	var options = { 
 		format: 'Letter',
@@ -111,15 +115,15 @@ var createOrderService = function(obj){
 			left: '0.5in'
 		}
 	};
-	var body = createOrderServiceBody(obj);
-	pdf.create(body, options).toFile(__dirname + '/orderservices/' + obj.invoiceNumber + '.pdf', function(err, res) {
+	var body = createServiceOrderBody(obj);
+	pdf.create(body, options).toFile(__dirname + '/serviceorders/' + obj.invoiceNumber + '.pdf', function(err, res) {
         if (err) {
             d.reject(err)
             console.log(err);
             return 
         }
         else {
-          d.resolve({ path: __dirname + '/orderservices/' + obj.invoiceNumber + '.pdf', fileName:  obj.invoiceNumber + '.pdf' });
+          d.resolve({ path: __dirname + '/serviceorders/' + obj.invoiceNumber + '.pdf', fileName:  obj.invoiceNumber + '.pdf' });
         }
 	});
     return d.promise;
@@ -127,4 +131,7 @@ var createOrderService = function(obj){
 
 
 exports.createInvoice = createInvoice;
-exports.createOrderService = createOrderService;
+exports.createServiceOrder = createServiceOrder;
+
+
+

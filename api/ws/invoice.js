@@ -6,24 +6,24 @@ var util = require('../dto/util');
 module.exports = function (prefix, app, mail, dirname) {
 	app.put(prefix, function (req, res) {
 		var invoice = new Invoice(app.db, req.user);
-		invoice.update(req.body.query, req.body.obj, req.user.entity.fullName || req.user.entity.name, mail)
+		invoice.update(req.body.query, req.body.obj, req.user, mail)
 		.then(util.success(res), util.error(res));
 	});
 
 	app.post(prefix, function (req, res) {
 		var invoice = new Invoice(app.db, req.user, dirname);
-		invoice.insert(req.body.obj, req.user.entity.fullName || req.user.entity.name, mail)
+		invoice.insert(req.body.obj, req.user, mail)
 		.then(util.success(res), util.error(res));
 	});
 
-	app.post(prefix + '/invoice', function (req, res) {
+	app.post(prefix + '/download', function (req, res) {
 		var invoice = new Invoice(app.db, req.user);
-		invoice.getInvoice(req.body.id, res, req.user.entity.fullName || req.user.entity.name)
+		invoice.getInvoice(req.body.id, res, req.user)
 	});
 
 	app.post(prefix + '/send', function (req, res) {
 		var invoice = new Invoice(app.db, req.user, dirname);
-		invoice.sendInvoice(req.body.id, req.user.entity.fullName || req.user.entity.name, mail, req.body.emails || [])
+		invoice.sendInvoice(req.body.id, req.user, mail, req.body.emails || [])
 		.then(util.success(res), util.error(res));
 	});
 	require('./crud')(prefix, app, Invoice);

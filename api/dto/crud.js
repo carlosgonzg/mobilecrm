@@ -481,7 +481,6 @@ Crud.prototype.paginatedSearch = function (query) {
         where.$and.push(obj);
       })
     }
-		console.log(JSON.stringify(where));
     this.db.get(this.table).find(where, pagination, handleMongoResponse(deferred));
 
   } catch (e) {

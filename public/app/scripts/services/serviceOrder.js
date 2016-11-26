@@ -1,19 +1,19 @@
 'use strict';
 
 angular.module('MobileCRMApp')
-.factory('OrderService', function (Base, Item, $rootScope, $location, $q,$http, toaster, dialogs) {
+.factory('ServiceOrder', function (Base, Item, $rootScope, $location, $q,$http, toaster, dialogs) {
 
 	// Variable que se utiliza para comprobar si un objeto tiene una propiedad
 	// var hasProp = Object.prototype.hasOwnProperty;
 
 	// Nombre de la clase
-	var OrderService;
+	var ServiceOrder;
 var a;
-	function OrderService(propValues) {
+	function ServiceOrder(propValues) {
 		a = document.createElement("a");
 			document.body.appendChild(a);
-		OrderService.super.constructor.apply(this, arguments);
-		this.baseApiPath = "/api/OrderService";
+		ServiceOrder.super.constructor.apply(this, arguments);
+		this.baseApiPath = "/api/ServiceOrder";
 		this.client = this.client || {};
 		this.invoiceNumber = this.invoiceNumber || '';
 		this.sor = this.sor || '';
@@ -26,6 +26,7 @@ var a;
 		this.status = this.status || { _id: 1, description: 'Pending' };
 		this.total = this.total || '';
 		this.items = this.items || [];
+		this.contacts = this.contacts || [{}, {}, {}];
 		for(var i = 0; i < this.items.length; i++){
 			this.items[i] = new Item(this.items[i]);
 		}
@@ -50,15 +51,15 @@ var a;
 		return child;
 	};
 	// Extender de la clase Base
-	extend(OrderService, Base);
+	extend(ServiceOrder, Base);
 
 	// Funcion que retorna las propiedades de una cuenta
-	OrderService.properties = function () {
+	ServiceOrder.properties = function () {
 		var at = {};
 		return at;
 	};
 	
-	OrderService.prototype.getTotal = function(){
+	ServiceOrder.prototype.getTotal = function(){
 		var total = 0;
 		for(var i = 0; i < this.items.length; i++){
 			total += this.items[i].getTotalPrice();
@@ -68,15 +69,15 @@ var a;
 	};
 	
 	
-	OrderService.prototype.goTo = function () {
-		$location.path('/orderService/' + this._id);
+	ServiceOrder.prototype.goTo = function () {
+		$location.path('/serviceOrder/' + this._id);
 	};
 
-	OrderService.prototype.getInvoice = function(){
+	ServiceOrder.prototype.download = function(){
 		var d = $q.defer();
 		var _this = this;
 		$http({
-			url: this.baseApiPath + '/invoice',
+			url: this.baseApiPath + '/download',
 			method: "POST",
 			data: { id: _this._id }, //this is your json data string
 			headers: {
@@ -103,8 +104,9 @@ var a;
 	    });
 	    return d.promise;
 	};
-	OrderService.prototype.sendInvoice = function(){
+	ServiceOrder.prototype.send = function(){
 		var d = $q.defer();
+		toaster.warning('Sending the email');
 		$http.post(this.baseApiPath + '/send', { id: this._id })
 		.success(function (data) {
 			toaster.success('The Service Order has been sent!.');
@@ -116,14 +118,14 @@ var a;
 		return d.promise;
 	};
 
-	OrderService.prototype.showPicture = function(index){
+	ServiceOrder.prototype.showPicture = function(index){
 		var dialog = dialogs.create('views/photo.html', 'PhotoCtrl', { photos: this.photos, index: (index || 0) });
 		dialog.result
 		.then(function (res) {
 		}, function (res) {});
 	};
 
-	OrderService.prototype.filter = function(query, sort){
+	ServiceOrder.prototype.filter = function(query, sort){
 		var deferred = $q.defer();
 		var _this = this.constructor;
 		$http.post(this.baseApiPath + '/filter', { query: query, sort: sort })
@@ -151,5 +153,5 @@ var a;
 		return deferred.promise;
 	};
 
-	return OrderService;
+	return ServiceOrder;
 });

@@ -131,44 +131,44 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr ng-repeat="orderService in orderServices track by $index">
+				<tr ng-repeat="serviceOrder in serviceOrders track by $index">
 					<td>
-						{{orderService.date|date:'MM/dd/yyyy'}}
+						{{serviceOrder.date|date:'MM/dd/yyyy'}}
 					</td>
 					<td>
-						{{orderService.originalShipDate|date:'MM/dd/yyyy'}}
+						{{serviceOrder.originalShipDate|date:'MM/dd/yyyy'}}
 					</td>
 					<td>
-						{{orderService.sor}}
+						{{serviceOrder.sor}}
 					</td>
 					<td>
-						{{orderService.invoiceNumber}}
+						{{serviceOrder.invoiceNumber}}
 					</td>
 					<td>
-						{{orderService.client.entity.fullName}}
+						{{serviceOrder.client.entity.fullName}}
 					</td>
 					<td>
-						{{orderService.status.description}}
+						{{serviceOrder.status.description}}
 					</td>
 					<td>
-						<i class="fa fa-times" ng-if="!orderService.clientResponsibleCharges"></i>
-						<i class="fa fa-check" ng-if="orderService.clientResponsibleCharges"></i>
+						<i class="fa fa-times" ng-if="!serviceOrder.clientResponsibleCharges"></i>
+						<i class="fa fa-check" ng-if="serviceOrder.clientResponsibleCharges"></i>
 					</td>
 					<td>
-						<i class="fa fa-times" ng-if="!orderService.partsFromTheYard"></i>
-						<i class="fa fa-check" ng-if="orderService.partsFromTheYard"></i>
+						<i class="fa fa-times" ng-if="!serviceOrder.partsFromTheYard"></i>
+						<i class="fa fa-check" ng-if="serviceOrder.partsFromTheYard"></i>
 					</td>
 					<td>
-						<button class="btn btn-sm" ng-click="showYardComment(orderService)"><i class="fa fa-eye"></i></button>
+						<button class="btn btn-sm" ng-click="showYardComment(serviceOrder)"><i class="fa fa-eye"></i></button>
 					</td>
 					<td>
-						<button class="btn btn-sm" ng-click="showComment(orderService)"><i class="fa fa-eye"></i></button>
+						<button class="btn btn-sm" ng-click="showComment(serviceOrder)"><i class="fa fa-eye"></i></button>
 					</td>
 					<td>
-						<button class="btn btn-sm" ng-click="orderService.showPicture()"><i class="fa fa-picture-o" ng-disabled="orderService.photos.length <= 0"></i></button>
+						<button class="btn btn-sm" ng-click="serviceOrder.showPicture()"><i class="fa fa-picture-o" ng-disabled="serviceOrder.photos.length <= 0"></i></button>
 					</td>
 					<td>
-						{{orderService.getTotal()|currency}}
+						{{serviceOrder.getTotal()|currency}}
 					</td>
 				</tr>
 			</tbody>

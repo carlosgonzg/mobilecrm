@@ -81,7 +81,7 @@ exports.getCredentials = function (req, ParentClass) {
 };
 
 var yearlySequencePrefix = {
-	OrderService: 'C'
+	ServiceOrder: 'C'
 }
 
 exports.getYearlySequence = function (db, name) {

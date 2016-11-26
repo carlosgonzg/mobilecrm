@@ -120,63 +120,50 @@ var sendForgotPasswordMail = function (to, link, urlServer) {
 	return deferred.promise;
 };
 
-var sendOrderService = function (invoice, mails, file, fileName) {
+var sendServiceOrder = function (serviceOrder, mails, dirname) {
 	var deferred = q.defer();
-	bringTemplateData('/orderservice.html')
+	bringTemplateData('/serviceOrder.html')
 	.then(function (body) {
 		console.log(mails)
 		var url = config.SERVER_URL;
 		body = body.replace('<emailUrl>', url);
-		body = body.replace('<createdDate>', moment(invoice.date).format('MM/DD/YYYY'));
-		body = body.replace('<clientCompany>', invoice.client.company ? invoice.client.company.entity.name : 'None');
-		body = body.replace('<clientBranch>', invoice.client.branch ? invoice.client.branch.name : 'None');
-		body = body.replace('<customer>', invoice.customer || 'None');
-		body = body.replace('<customerPhone>', invoice.phone ? invoice.phone.number : 'None');
-		body = body.replace('<sor>', invoice.sor);
-		body = body.replace('<unitno>', invoice.unitno);
-		body = body.replace('<pono>', invoice.pono);
-		body = body.replace('<isono>', invoice.isono);
-		body = body.replace('<clientName>', invoice.client.entity.fullName);
-		body = body.replace('<clientPhone>', invoice.client && invoice.client.branch && invoice.client.branch.phones && invoice.client.branch.phones.length > 0 ? invoice.client.branch.phones[0].number : 'None');
-		body = body.replace('<clientMail>', invoice.client.account.email);
-		body = body.replace('<clientAddress>', invoice.siteAddress.address1 + ', ' + invoice.siteAddress.city.description + ', ' + invoice.siteAddress.state.description + ' ' + invoice.siteAddress.zipcode);
-		body = body.replace('<comment>', invoice.comment);
-		//var attachments = setAttachment(file, fileName)
-		console.log('sending mail')
-		var company = 'Company: ' + (invoice && invoice.client && invoice.client.company && invoice.client.company.entity ? invoice.client.company.entity.name : 'Not Defined');
-		var branch = invoice && invoice.client && invoice.client.branch ? 'Branch: ' + invoice.client.branch.name : 'Client: ' + invoice.client.entity.fullName;
-		var subject = company + ' | ' + branch + ' | Service Order: ' + invoice.sor;
-		console.log('sending mail 2', subject);
+		body = body.replace('<createdDate>', moment(serviceOrder.date).format('MM/DD/YYYY'));
+		body = body.replace('<clientCompany>', serviceOrder.client.company ? serviceOrder.client.company.entity.name : 'None');
+		body = body.replace('<clientBranch>', serviceOrder.client.branch ? serviceOrder.client.branch.name : 'None');
+		body = body.replace('<customer>', serviceOrder.customer || 'None');
+		body = body.replace('<customerPhone>', serviceOrder.phone ? serviceOrder.phone.number : 'None');
+		body = body.replace('<sor>', serviceOrder.sor);
+		body = body.replace('<unitno>', serviceOrder.unitno);
+		body = body.replace('<pono>', serviceOrder.pono);
+		body = body.replace('<isono>', serviceOrder.isono);
+		body = body.replace('<clientName>', serviceOrder.client.entity.fullName);
+		body = body.replace('<clientPhone>', serviceOrder.client && serviceOrder.client.branch && serviceOrder.client.branch.phones && serviceOrder.client.branch.phones.length > 0 ? serviceOrder.client.branch.phones[0].number : 'None');
+		body = body.replace('<clientMail>', serviceOrder.client.account.email);
+		body = body.replace('<clientAddress>', serviceOrder.siteAddress.address1 + ', ' + serviceOrder.siteAddress.city.description + ', ' + serviceOrder.siteAddress.state.description + ' ' + serviceOrder.siteAddress.zipcode);
+		body = body.replace('<issue>', serviceOrder.issue || 'None');
+		body = body.replace('<comment>', serviceOrder.comment || 'None');
+		var contacts = '';
+		for(var i = 0; i < serviceOrder.contacts.length; i++){
+			contacts += '<b>Contact #' + (i+1) + ':&nbsp;</b>' +  serviceOrder.contacts[i].name + '.&nbsp;<b>Phone(' + serviceOrder.contacts[i].phoneType.description + '):</b>&nbsp;' + serviceOrder.contacts[i].number + '<br/>';
+		}
+		body = body.replace('<contacts>', contacts || '');
+		var company = 'Company: ' + (serviceOrder && serviceOrder.client && serviceOrder.client.company && serviceOrder.client.company.entity ? serviceOrder.client.company.entity.name : 'Not Defined');
+		var branch = serviceOrder && serviceOrder.client && serviceOrder.client.branch ? 'Branch: ' + serviceOrder.client.branch.name : 'Client: ' + serviceOrder.client.entity.fullName;
+		var subject = company + ' | ' + branch + ' | Service Order: ' + serviceOrder.sor;
+		
 		var attachments = [];
-		if(invoice.photos){
-			for(var i = 0; i < invoice.photos.length; i++){
-				var b64 = invoice.photos[i].split("base64,")[0];
-				var data = b64.split(':')[1].split(';')[0]; //consigo la imagen
-				var fileExtension = '';
-				switch(data) {
-				    case 'image/gif':
-				        fileExtension = '.gif';
-				        break;
-				    case 'image/jpeg':
-				        fileExtension = '.jpg';
-				        break;
-				    case 'image/png':
-				        fileExtension = '.png';
-				        break;
-				    case 'application/pdf':
-				        fileExtension = '.pdf';
-				        break;
-				    default:
-				        fileExtension = '.jpg';
-				}
-				var fileName = i + fileExtension;
-				var content = invoice.photos[i].split("base64,")[1];
+		if(serviceOrder.photos){
+			for(var i = 0; i < serviceOrder.photos.length; i++){
+				var photoDir = dirname + '/public/app' + serviceOrder.photos[i].url;
 				attachments.push({
-					path: invoice.photos[i]
+					filename: serviceOrder.photos[i].name,
+					content: fs.readFileSync(photoDir),
+					contentType: serviceOrder.photos[i].type,
+					path: photoDir
 				});
 			}
 		}
-		
+		console.log('sending mail', subject);
 		sendMail(mails.join(', '), subject, body, true, attachments)
 		.then(function (response) {
 			console.log('DONE Sending Mail: ', response)
@@ -194,18 +181,49 @@ var sendOrderService = function (invoice, mails, file, fileName) {
 	return deferred.promise;
 };
 
-var sendOrderServiceUpdate = function (invoice, mails, username) {
+var sendServiceOrderUpdate = function (serviceOrder, mails, user) {
 	var deferred = q.defer();
-	bringTemplateData('/email/templateOrderServiceUpdate.html')
+	bringTemplateData('/email/templateServiceOrderUpdate.html')
 	.then(function (body) {
 		var url = config.SERVER_URL;
 		body = body.replace('<emailUrl>', url);
-		body = body.replace('<invoiceNumber>', invoice.sor);
-		body = body.replace('<client>', username);
-		console.log('sending mail')
-		var company = 'Company: ' + (invoice && invoice.client && invoice.client.company && invoice.client.company.entity ? invoice.client.company.entity.name : 'Not Defined');
-		var branch = invoice && invoice.client && invoice.client.branch ? 'Branch: ' + invoice.client.branch.name : 'Client: ' + invoice.client.entity.fullName;
-		var subject = company + ' | ' + branch + ' | Service Order: ' + invoice.sor;
+		body = body.replace('<createdDate>', moment(serviceOrder.date).format('MM/DD/YYYY'));
+		body = body.replace('<clientCompany>', serviceOrder.client.company ? serviceOrder.client.company.entity.name : 'None');
+		body = body.replace('<clientBranch>', serviceOrder.client.branch ? serviceOrder.client.branch.name : 'None');
+		body = body.replace('<customer>', serviceOrder.customer || 'None');
+		body = body.replace('<customerPhone>', serviceOrder.phone ? serviceOrder.phone.number : 'None');
+		body = body.replace('<sor>', serviceOrder.sor);
+		body = body.replace('<unitno>', serviceOrder.unitno);
+		body = body.replace('<pono>', serviceOrder.pono);
+		body = body.replace('<isono>', serviceOrder.isono);
+		body = body.replace('<clientName>', serviceOrder.client.entity.fullName);
+		body = body.replace('<clientPhone>', serviceOrder.client && serviceOrder.client.branch && serviceOrder.client.branch.phones && serviceOrder.client.branch.phones.length > 0 ? serviceOrder.client.branch.phones[0].number : 'None');
+		body = body.replace('<clientMail>', serviceOrder.client.account.email);
+		body = body.replace('<clientAddress>', serviceOrder.siteAddress.address1 + ', ' + serviceOrder.siteAddress.city.description + ', ' + serviceOrder.siteAddress.state.description + ' ' + serviceOrder.siteAddress.zipcode);
+		body = body.replace('<issue>', serviceOrder.issue || 'None');
+		body = body.replace('<comment>', serviceOrder.comment || 'None');
+		var changesByUser = '';
+		changesByUser += (user.entity.fullName || user.entity.name) + ', Changes: ';
+		var fieldsChanged = '';
+		for(var i = 0; i < serviceOrder.fieldsChanged.length; i++){
+			if(serviceOrder.fieldsChanged[i].by != user._id)
+				continue;
+			fieldsChanged += serviceOrder.fieldsChanged[i].field;
+			if(i != serviceOrder.fieldsChanged.length - 1){
+				fieldsChanged += ', ';
+			}
+		}
+		changesByUser += fieldsChanged == '' ? 'None' : fieldsChanged;
+		body = body.replace('<client>', changesByUser);
+		var contacts = '';
+		for(var i = 0; i < serviceOrder.contacts.length; i++){
+			contacts += '<b>Contact #' + (i+1) + ':&nbsp;</b>' +  serviceOrder.contacts[i].name + '.&nbsp;<b>Phone(' + serviceOrder.contacts[i].phoneType.description + '):</b>&nbsp;' + serviceOrder.contacts[i].number + '<br/>';
+		}
+		body = body.replace('<contacts>', contacts || '');
+		var company = 'Company: ' + (serviceOrder && serviceOrder.client && serviceOrder.client.company && serviceOrder.client.company.entity ? serviceOrder.client.company.entity.name : 'Not Defined');
+		var branch = serviceOrder && serviceOrder.client && serviceOrder.client.branch ? 'Branch: ' + serviceOrder.client.branch.name : 'Client: ' + serviceOrder.client.entity.fullName;
+		var subject = company + ' | ' + branch + ' | Service Order: ' + serviceOrder.sor;
+		console.log('sending mail', subject);
 		sendMail(mails.join(', '), subject, body, true)
 		.then(function (response) {
 			console.log('DONE Sending Mail: ', response)
@@ -250,14 +268,14 @@ var sendInvoice = function (invoice, mails, cc, file, fileName) {
 	return deferred.promise;
 };
 
-var sendInvoiceUpdate = function (invoice, mails, username) {
+var sendInvoiceUpdate = function (invoice, mails, user) {
 	var deferred = q.defer();
 	bringTemplateData('/email/templateInvoiceUpdate.html')
 	.then(function (body) {
 		var url = config.SERVER_URL;
 		body = body.replace('<emailUrl>', url);
 		body = body.replace('<invoiceNumber>', invoice.invoiceNumber);
-		body = body.replace('<client>', username);
+		body = body.replace('<client>', user.entity.fullName || user.entity.name);
 		sendMail(mails.join(', '), 'Invoice: ' + invoice.invoiceNumber + ' Updated', body, true)
 		.then(function (response) {
 			console.log('DONE Sending Mail: ', response)
@@ -303,8 +321,8 @@ exports.sendConfirmateMail = function (email, password) {
 
 exports.sendInvoice = sendInvoice;
 exports.sendInvoiceUpdate = sendInvoiceUpdate;
-exports.sendOrderService = sendOrderService;
-exports.sendOrderServiceUpdate = sendOrderServiceUpdate;
+exports.sendServiceOrder = sendServiceOrder;
+exports.sendServiceOrderUpdate = sendServiceOrderUpdate;
 exports.init = init;
 exports.sendMail = sendMail;
 exports.sendActivationEmail = sendActivationEmail;

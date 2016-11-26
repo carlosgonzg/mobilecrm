@@ -8,7 +8,7 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-.controller('InvoiceCtrl', function ($scope, $rootScope, $location, toaster, User, invoice, items, Item, OrderService, dialogs, Invoice) {
+.controller('InvoiceCtrl', function ($scope, $rootScope, $location, toaster, User, invoice, items, Item, ServiceOrder, dialogs, Invoice) {
 	$scope.invoice = invoice;
 	$scope.items = [];
 	$scope.readOnly = $rootScope.userData.role._id != 1;
@@ -33,7 +33,7 @@ angular.module('MobileCRMApp')
 	}];
 
 
-	$scope.wsClassOS = OrderService;
+	$scope.wsClassOS = ServiceOrder;
 	$scope.wsFieldsOS = [{
 			label : 'SOR/Service Order #',
 			field : 'sor',
@@ -90,8 +90,8 @@ angular.module('MobileCRMApp')
 		} 
 	};
 
-	$scope.setInvoice = function(orderService){
-		$scope.invoice = new Invoice(orderService);
+	$scope.setInvoice = function(serviceOrder){
+		$scope.invoice = new Invoice(serviceOrder);
 		delete $scope.invoice._id;
 	};
 
@@ -179,10 +179,10 @@ angular.module('MobileCRMApp')
 		});
 	};
 	$scope.export = function(){
-		$scope.invoice.getInvoice();
+		$scope.invoice.download();
 	};
 
 	$scope.send = function(){
-		$scope.invoice.sendInvoice();
+		$scope.invoice.send();
 	};
 });
