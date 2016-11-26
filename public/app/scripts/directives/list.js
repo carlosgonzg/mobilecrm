@@ -27,7 +27,7 @@ angular.module('MobileCRMApp')
 			$scope.maxPage = 0;
 			$scope.orderBy = {
 				sort : {
-					'_id' : 1
+					'createdDate' : -1
 				},
 				reverse : false,
 				field : '_id'
