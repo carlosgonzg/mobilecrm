@@ -138,6 +138,10 @@ angular.module('MobileCRMApp')
 				var distance = google.maps.geometry.spherical.computeDistanceBetween(p1, p2);
 				return parseFloat((distance * 0.00062137).toFixed(2));
 			};
+			$scope.reset = function(){
+				$scope.ngModel = new Address({});
+			};
+
     }
   };
 });

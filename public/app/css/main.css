@@ -149,3 +149,13 @@ input{
 .changed{
 	border: 1px solid red;
 }
+
+.fixed-top{
+	position: fixed; 
+	top: 70px;
+	background-color: white;
+	z-index: 9999;
+}
+.fixed-content{
+	margin-top:110px;
+}

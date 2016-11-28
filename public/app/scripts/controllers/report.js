@@ -55,6 +55,9 @@ angular.module('MobileCRMApp')
 	},{
 		_id: 6,
 		description: 'Scheduled'
+	},{
+		_id: 7,
+		description: 'Completed Under Warranty'
 	}];
 
 	$scope.filter = {
