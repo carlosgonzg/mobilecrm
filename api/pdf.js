@@ -86,9 +86,9 @@ var createInvoice = function(obj, company, branch){
 };
 
 var createServiceOrderBody = function(serviceOrder){
+	console.log(__dirname);
 	var body = fs.readFileSync(__dirname + '/serviceorder.html', 'utf8').toString();
 	//replacement of data
-	body = body.replace('<emailUrl>', url);
 	body = body.replace('<createdDate>', moment(serviceOrder.date).format('MM/DD/YYYY'));
 	body = body.replace('<clientCompany>', serviceOrder.client.company ? serviceOrder.client.company.entity.name : 'None');
 	body = body.replace('<clientBranch>', serviceOrder.client.branch ? serviceOrder.client.branch.name : 'None');
