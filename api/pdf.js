@@ -85,22 +85,30 @@ var createInvoice = function(obj, company, branch){
     return d.promise;
 };
 
-var createServiceOrderBody = function(obj){
+var createServiceOrderBody = function(serviceOrder){
 	var body = fs.readFileSync(__dirname + '/serviceorder.html', 'utf8').toString();
 	//replacement of data
-	body = body.replace('<createdDate>', moment(obj.date).format('MM/DD/YYYY'));
-	//body = body.replace('<invoiceNumber>', obj.invoiceNumber);
-	body = body.replace('<clientName>', obj.client.entity.fullName);
-	body = body.replace('<clientAddress>', obj.siteAddress.address1 + ', ' + obj.siteAddress.city.description + ', ' + obj.siteAddress.state.description + ' ' + obj.siteAddress.zipcode);
-	//body = body.replace('<clientState>', obj.siteAddress.state.description + ' ' + obj.siteAddress.zipcode);
-	body = body.replace('<clientPhone>', obj.phone.number);
-	body = body.replace('<clientMail>', obj.client.account.email);
-	body = body.replace('<comment>', obj.comment);
-	body = body.replace('<pono>', obj.pono);
-	body = body.replace('<unitno>', obj.unitno);
-	body = body.replace('<isono>', obj.isono);
-	//body = body.replace('<clientCity>', obj.siteAddress.city.description);
-	body = body.replace('<sor>', obj.sor);
+	body = body.replace('<emailUrl>', url);
+	body = body.replace('<createdDate>', moment(serviceOrder.date).format('MM/DD/YYYY'));
+	body = body.replace('<clientCompany>', serviceOrder.client.company ? serviceOrder.client.company.entity.name : 'None');
+	body = body.replace('<clientBranch>', serviceOrder.client.branch ? serviceOrder.client.branch.name : 'None');
+	body = body.replace('<customer>', serviceOrder.customer || 'None');
+	body = body.replace('<customerPhone>', serviceOrder.phone ? serviceOrder.phone.number : 'None');
+	body = body.replace('<sor>', serviceOrder.sor);
+	body = body.replace('<unitno>', serviceOrder.unitno);
+	body = body.replace('<pono>', serviceOrder.pono);
+	body = body.replace('<isono>', serviceOrder.isono);
+	body = body.replace('<clientName>', serviceOrder.client.entity.fullName);
+	body = body.replace('<clientPhone>', serviceOrder.client && serviceOrder.client.branch && serviceOrder.client.branch.phones && serviceOrder.client.branch.phones.length > 0 ? serviceOrder.client.branch.phones[0].number : 'None');
+	body = body.replace('<clientMail>', serviceOrder.client.account.email);
+	body = body.replace('<clientAddress>', serviceOrder.siteAddress.address1 + ', ' + serviceOrder.siteAddress.city.description + ', ' + serviceOrder.siteAddress.state.description + ' ' + serviceOrder.siteAddress.zipcode);
+	body = body.replace('<issue>', serviceOrder.issue || 'None');
+	body = body.replace('<comment>', serviceOrder.comment || 'None');
+	var contacts = '';
+	for(var i = 0; i < serviceOrder.contacts.length; i++){
+		contacts += '<b>Contact #' + (i+1) + ':&nbsp;</b>' +  serviceOrder.contacts[i].name + '.&nbsp;<b>Phone(' + serviceOrder.contacts[i].phoneType.description + '):</b>&nbsp;' + serviceOrder.contacts[i].number + '<br/>';
+	}
+	body = body.replace('<contacts>', contacts || '');
 	return body;
 };
 

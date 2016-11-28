@@ -124,7 +124,6 @@ var sendServiceOrder = function (serviceOrder, mails, dirname) {
 	var deferred = q.defer();
 	bringTemplateData('/serviceorder.html')
 	.then(function (body) {
-		console.log(mails)
 		var url = config.SERVER_URL;
 		body = body.replace('<emailUrl>', url);
 		body = body.replace('<createdDate>', moment(serviceOrder.date).format('MM/DD/YYYY'));
