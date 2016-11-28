@@ -122,7 +122,7 @@ var sendForgotPasswordMail = function (to, link, urlServer) {
 
 var sendServiceOrder = function (serviceOrder, mails, dirname) {
 	var deferred = q.defer();
-	bringTemplateData('/serviceOrder.html')
+	bringTemplateData('/serviceorder.html')
 	.then(function (body) {
 		console.log(mails)
 		var url = config.SERVER_URL;
@@ -170,12 +170,12 @@ var sendServiceOrder = function (serviceOrder, mails, dirname) {
 			deferred.resolve(response);
 		},
 			function (err) {
-			console.log('error', err)
+			console.log('error?', err)
 			deferred.reject(err);
 		});
 	},
 		function (err) {
-			console.log('error', err)
+			console.log('error!', err)
 		deferred.reject(err);
 	});
 	return deferred.promise;

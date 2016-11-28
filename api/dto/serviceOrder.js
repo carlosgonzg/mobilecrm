@@ -117,7 +117,6 @@ ServiceOrder.prototype.savePhotos = function(serviceOrder){
 };
 
 ServiceOrder.prototype.insert = function (serviceOrder, user, mail) {
-	console.log('?')
 	var d = q.defer();
 	var _this = this;
 	var total = 0;
