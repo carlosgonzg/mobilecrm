@@ -106,7 +106,8 @@ var createServiceOrderBody = function(serviceOrder){
 	body = body.replace('<comment>', serviceOrder.comment || 'None');
 	var contacts = '';
 	for(var i = 0; i < serviceOrder.contacts.length; i++){
-		contacts += '<b>Contact #' + (i+1) + ':&nbsp;</b>' +  serviceOrder.contacts[i].name + '.&nbsp;<b>Phone(' + serviceOrder.contacts[i].phoneType.description + '):</b>&nbsp;' + serviceOrder.contacts[i].number + '<br/>';
+		if(serviceOrder.contacts[i].name)
+			contacts += '<b>Contact #' + (i+1) + ':&nbsp;</b>' +  serviceOrder.contacts[i].name + '.&nbsp;<b>Phone(' + serviceOrder.contacts[i].phoneType.description + '):</b>&nbsp;' + serviceOrder.contacts[i].number + '<br/>';
 	}
 	body = body.replace('<contacts>', contacts || '');
 	return body;
