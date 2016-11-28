@@ -122,9 +122,12 @@ var sendForgotPasswordMail = function (to, link, urlServer) {
 
 var sendServiceOrder = function (serviceOrder, mails, dirname) {
 	var deferred = q.defer();
+	console.log('1')
 	bringTemplateData('/serviceorder.html')
 	.then(function (body) {
+		console.log('2')
 		var url = config.SERVER_URL;
+		console.log(url)
 		body = body.replace('<emailUrl>', url);
 		body = body.replace('<createdDate>', moment(serviceOrder.date).format('MM/DD/YYYY'));
 		body = body.replace('<clientCompany>', serviceOrder.client.company ? serviceOrder.client.company.entity.name : 'None');
@@ -142,6 +145,8 @@ var sendServiceOrder = function (serviceOrder, mails, dirname) {
 		body = body.replace('<issue>', serviceOrder.issue || 'None');
 		body = body.replace('<comment>', serviceOrder.comment || 'None');
 		var contacts = '';
+		console.log('3')
+
 		for(var i = 0; i < serviceOrder.contacts.length; i++){
 			contacts += '<b>Contact #' + (i+1) + ':&nbsp;</b>' +  serviceOrder.contacts[i].name + '.&nbsp;<b>Phone(' + serviceOrder.contacts[i].phoneType.description + '):</b>&nbsp;' + serviceOrder.contacts[i].number + '<br/>';
 		}
@@ -149,6 +154,7 @@ var sendServiceOrder = function (serviceOrder, mails, dirname) {
 		var company = 'Company: ' + (serviceOrder && serviceOrder.client && serviceOrder.client.company && serviceOrder.client.company.entity ? serviceOrder.client.company.entity.name : 'Not Defined');
 		var branch = serviceOrder && serviceOrder.client && serviceOrder.client.branch ? 'Branch: ' + serviceOrder.client.branch.name : 'Client: ' + serviceOrder.client.entity.fullName;
 		var subject = company + ' | ' + branch + ' | Service Order: ' + serviceOrder.sor;
+		console.log('4')
 		
 		var attachments = [];
 		if(serviceOrder.photos){
