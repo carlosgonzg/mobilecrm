@@ -160,10 +160,10 @@ var sendServiceOrder = function (serviceOrder, mails, dirname) {
 		if(serviceOrder.photos){
 			for(var i = 0; i < serviceOrder.photos.length; i++){
 				var photoDir = dirname + '/public/app' + serviceOrder.photos[i].url;
-				console.log(photoDir)
+				//console.log(photoDir)
 				attachments.push({
 					filename: serviceOrder.photos[i].name,
-					content: fs.readFileSync(photoDir),
+					//content: fs.readFileSync(photoDir),
 					contentType: serviceOrder.photos[i].type,
 					path: photoDir
 				});
