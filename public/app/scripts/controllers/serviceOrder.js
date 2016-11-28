@@ -197,4 +197,8 @@ angular.module('MobileCRMApp')
 	$scope.send = function(){
 		$scope.serviceOrder.send();
 	};
+
+	if(serviceOrder.client){
+		$scope.clientChanged(serviceOrder.client);
+	}
 });
