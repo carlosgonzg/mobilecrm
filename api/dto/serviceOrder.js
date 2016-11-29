@@ -235,7 +235,10 @@ ServiceOrder.prototype.sendServiceOrderUpdate = function(id, user, mail){
 		for(var i = 0; i < users.data.length; i++){
 			emails.push(users.data[i].account.email);
 		}
-		return mail.sendServiceOrderUpdate(serviceOrder, emails, user);
+		if(user.role._id != 1)
+			return mail.sendServiceOrderUpdate(serviceOrder, emails, user);
+		else
+			q.when();
 	})
 	.then(function(){
 		d.resolve(true);

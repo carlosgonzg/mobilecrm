@@ -154,7 +154,7 @@ angular.module('MobileCRMApp')
 		delete $scope.serviceOrder.client.account.password;
 		$scope.serviceOrder.save()
 		.then(function (data) {
-			toaster.success('The Order Service was saved successfully');
+			toaster.success('The Service Order was saved successfully');
 			$location.path('serviceOrderList')
 		},
 			function (error) {
