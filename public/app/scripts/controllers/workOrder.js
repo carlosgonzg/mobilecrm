@@ -8,35 +8,14 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-.controller('WorkOrderCtrl', function ($scope, $rootScope, $location, toaster, User, workOrder, items, Item) {
+.controller('WorkOrderCtrl', function ($scope, $rootScope, $location, toaster, User, workOrder, items, Item, statusList) {
 	$scope.workOrder = workOrder;
 	$scope.items = items.data;
 	$scope.readOnly = $rootScope.userData.role._id != 1;
 	if($rootScope.userData.role._id != 1){
 		$scope.workOrder.client = new User($rootScope.userData);
 	}
-	$scope.listStatus = [{
-		_id: 1,
-		description: 'Pending'
-	},{
-		_id: 2,
-		description: 'In Progress'
-	},{
-		_id: 3,
-		description: 'Completed'
-	},{
-		_id: 4,
-		description: 'Paid'
-	},{
-		_id: 5,
-		description: 'Cancelled'
-	},{
-		_id: 6,
-		description: 'Scheduled'
-	},{
-		_id: 7,
-		description: 'Completed Under Warranty'
-	}];
+	$scope.listStatus = statusList;
 
 	$scope.wsClass = User;
 	$scope.wsFields = [{

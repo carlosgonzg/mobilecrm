@@ -8,35 +8,14 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-.controller('InvoiceCtrl', function ($scope, $rootScope, $location, toaster, User, invoice, items, Item, ServiceOrder, dialogs, Invoice) {
+.controller('InvoiceCtrl', function ($scope, $rootScope, $location, toaster, User, invoice, items, statusList, Item, ServiceOrder, dialogs, Invoice) {
 	$scope.invoice = invoice;
 	$scope.items = [];
 	$scope.readOnly = $rootScope.userData.role._id != 1;
 	if($rootScope.userData.role._id != 1){
 		$scope.invoice.client = new User($rootScope.userData);
 	}
-	$scope.listStatus = [{
-		_id: 1,
-		description: 'Pending'
-	},{
-		_id: 2,
-		description: 'In Progress'
-	},{
-		_id: 3,
-		description: 'Completed'
-	},{
-		_id: 4,
-		description: 'Paid'
-	},{
-		_id: 5,
-		description: 'Cancelled'
-	},{
-		_id: 6,
-		description: 'Scheduled'
-	},{
-		_id: 7,
-		description: 'Completed Under Warranty'
-	}];
+	$scope.listStatus = statusList;
 
 
 	$scope.wsClassOS = ServiceOrder;

@@ -8,26 +8,40 @@ function List(db) {
 	//Listados
 	this.phoneType = [{
 		_id: 1,
-		type: 'Home'
+		description: 'Home'
 	},{
 		_id: 2,
-		type: 'Mobile'
+		description: 'Mobile'
 	},{
 		_id: 3,
-		type: 'Work'
+		description: 'Work'
 	},{
 		_id: 4,
-		type: 'Other'
+		description: 'Other'
 	}
 	];
-	this.serviceStatus = [
+	this.status = [
 		{
 			_id: 1,
 			description: 'Pending'
-		},
-		{
+		},{
 			_id: 2,
+			description: 'In Progress'
+		},{
+			_id: 3,
+			description: 'Completed'
+		},{
+			_id: 4,
 			description: 'Paid'
+		},{
+			_id: 5,
+			description: 'Cancelled'
+		},{
+			_id: 6,
+			description: 'Scheduled'
+		},{
+			_id: 7,
+			description: 'Completed Under Warranty'
 		}
 	];
 };

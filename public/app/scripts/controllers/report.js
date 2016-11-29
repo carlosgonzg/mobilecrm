@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('MobileCRMApp')
-.controller('ReportCtrl', function ($scope, $rootScope, toaster, clients, countries, ServiceOrder, $timeout, dialogs) {
+.controller('ReportCtrl', function ($scope, $rootScope, toaster, clients, countries, ServiceOrder, $timeout, dialogs, statusList) {
 	var today = new Date();
 	$scope.isClient = $rootScope.userData.role._id != 1;
 	$scope.selectedTab = 'data';
@@ -34,31 +34,7 @@ angular.module('MobileCRMApp')
 		description: '--------'
 	}];
 
-	$scope.statusList = [{
-		_id: -1,
-		description: 'All'
-	},{
-		_id: 1,
-		description: 'Pending'
-	},{
-		_id: 2,
-		description: 'In Progress'
-	},{
-		_id: 3,
-		description: 'Completed'
-	},{
-		_id: 4,
-		description: 'Paid'
-	},{
-		_id: 5,
-		description: 'Cancelled'
-	},{
-		_id: 6,
-		description: 'Scheduled'
-	},{
-		_id: 7,
-		description: 'Completed Under Warranty'
-	}];
+	$scope.statusList = statusList;
 
 	$scope.filter = {
 		fromDate: new Date(today.getFullYear(), today.getMonth(), 1),

@@ -106,6 +106,9 @@ angular
 			items : function (Item) {
 				return new Item().find({});
 			},
+			statusList: function(List){
+				return List.get('status');
+			},
 			serviceOrder : function (ServiceOrder, $route) {
 				if ($route.current.params.id) {
 					return new ServiceOrder().findById(parseInt($route.current.params.id));
@@ -125,6 +128,9 @@ angular
 		resolve:{
 			items : function (Item) {
 				return new Item().find({});
+			},
+			statusList: function(List){
+				return List.get('status');
 			},
 			invoice : function (Invoice, $route) {
 				if ($route.current.params.id) {
@@ -146,6 +152,9 @@ angular
 			items : function (Item) {
 				return new Item().find({});
 			},
+			statusList: function(List){
+				return List.get('status');
+			},
 			workOrder : function (WorkOrder, $route) {
 				if ($route.current.params.id) {
 					return new WorkOrder().findById(parseInt($route.current.params.id));
@@ -164,6 +173,9 @@ angular
 			},
 			countries : function (Country) {
 				return new Country().find();
+			},
+			statusList: function(List){
+				return List.get('status');
 			}
 		}
 	})

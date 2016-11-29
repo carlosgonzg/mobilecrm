@@ -7,26 +7,17 @@ angular.module('MobileCRMApp')
 			ngModel : '=',
 			hideLabels: '='
 		},
-		controller : function ($scope) {
+		controller : function ($scope, List) {
 			$scope.ngModel = $scope.ngModel || {};
 			var Phone = function(phone){
 				this.phoneType = phone.phoneType || {};
 				this.number = phone.number || '';
 			};
-			$scope.phoneTypes = [{
-					_id : 1,
-					description : 'Home'
-				}, {
-					_id : 2,
-					description : 'Mobile'
-				}, {
-					_id : 3,
-					description : 'Work'
-				}, {
-					_id : 4,
-					description : 'Other'
-				}
-			];
+			$scope.phoneTypes = [];
+			List.get('phoneType')
+			.then(function(res){
+				$scope.phoneTypes = res;
+			});
 			$scope.ngModel = new Phone($scope.ngModel);
 		}
 	};
