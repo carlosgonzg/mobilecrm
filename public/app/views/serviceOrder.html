@@ -1,11 +1,11 @@
-<form class="form" id="userForm" name="userForm" novalidate angular-validator angular-validator-submit='save()'>
+<form class="form" id="serviceOrderForm" name="serviceOrderForm">
 	<div class="row">
 		<div class="col-xs-12">
 			<h1 class="pull-left">
 				<i class="fa fa-lg fa-calculator"></i> <span> Service Order</span>
 			</h1>
 			<div class="btn-group pull-right" style="margin-top: 20px;" role="group" aria-label="...">
-				<button type="submit" form="userForm" class="btn btn-primary update">
+				<button type="submit" form="userForm" class="btn btn-primary update" validation-submit="serviceOrderForm" ng-click="save()">
 					<i class="fa fa-save"></i>&nbsp;<span>Save</span>
 				</button>
 				<button type="button" class="btn btn-danger" ng-click="delete()" ng-if="serviceOrder._id && userData.role._id == 1">
@@ -53,32 +53,32 @@
 				<div class="col-xs-6">
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
-							<label for="date">Customer</label>
-							<input type="text" class="form-control" ng-model="serviceOrder.customer" ng-class="isChanged('customer')" ng-change="changed('customer')" ng-disabled="isDisabled()">
+							<label for="customer">Customer</label>
+							<input type="text" name="customer" class="form-control" ng-model="serviceOrder.customer" ng-class="isChanged('customer')" ng-change="changed('customer')" ng-disabled="isDisabled()" validator="required">
 						</div>
 					</div>
 				</div>
 				<div class="col-xs-6">
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
-							<label for="date">SOR/Service order #</label>
-							<input type="text" class="form-control" ng-model="serviceOrder.sor" ng-class="isChanged('sor')" ng-change="changed('sor')" ng-disabled="isDisabled()" required>
+							<label for="sor">SOR/Service order #</label>
+							<input type="text" name="sor" class="form-control" ng-model="serviceOrder.sor" ng-class="isChanged('sor')" ng-change="changed('sor')" ng-disabled="isDisabled()" validator="required">
 						</div>
 					</div>
 				</div>
 				<div class="col-xs-6">
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
-							<label for="date">Invoice #</label>
-							<input type="text" class="form-control" ng-model="serviceOrder.invoiceNumber" ng-class="isChanged('invoiceNumber')" ng-change="changed('invoiceNumber')" ng-disabled="isDisabled() || userData.role._id != 1">
+							<label for="invoiceNumber">Invoice #</label>
+							<input type="text" name="invoiceNumber" class="form-control" ng-model="serviceOrder.invoiceNumber" ng-class="isChanged('invoiceNumber')" ng-change="changed('invoiceNumber')" ng-disabled="isDisabled() || userData.role._id != 1">
 						</div>
 					</div>
 				</div>
 				<div class="col-xs-6">
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
-							<label for="pono">Status</label>
-							<select class="form-control" ng-model="serviceOrder.status" ng-class="isChanged('status')" ng-change="changed('status')" ng-options="status as status.description for status in listStatus track by status._id" ng-disabled="isDisabled() || userData.role._id != 1" required></select>
+							<label for="status">Status</label>
+							<select class="form-control" name="status" ng-model="serviceOrder.status" ng-class="isChanged('status')" ng-change="changed('status')" ng-options="status as status.description for status in listStatus track by status._id" ng-disabled="isDisabled() || userData.role._id != 1" validator="required"></select>
 						</div>
 					</div>
 				</div>
@@ -93,7 +93,7 @@
 				<div class="col-xs-6">
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
-							<label for="date">Completed Date</label>
+							<label for="originalShipDate">Completed Date</label>
 							<sc-datepicker ng-model="serviceOrder.originalShipDate" ng-class="isChanged('originalShipDate')" ng-change="changed('originalShipDate')" ng-disabled="userData.role._id != 1"></sc-datepicker>
 						</div>
 					</div>
@@ -189,8 +189,8 @@
 				<div class="col-xs-6">
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
-							<label for="date">Service Miles (Miles)</label>
-							<input type="text" class="form-control" ng-model="serviceOrder.siteAddress.distanceFrom" required required-message= "'Address is incorrect, please fill it correctly'">
+							<label for="distanceFrom">Service Miles (Miles)</label>
+							<input type="text" name="distanceFrom" class="form-control" ng-model="serviceOrder.siteAddress.distanceFrom" validator="required">
 						</div>
 					</div>
 				</div>
@@ -209,109 +209,109 @@
 			</div>
 		</div>
 	</div>
-	<div class="row">
-		<div class="col-xs-12">
-			<table class="table table-striped table-hover" width="960" style="margin: 0 auto">
-				<thead>
-					<tr>
-						<th width="140">
-							Item
-						</th>
-						<th width="100">
-							Code
-						</th>
-						<th width="1400">
-							Description
-						</th>
-						<th width="80">
-							Quantity
-						</th>
-						<th width="100">
-							Price
-						</th>
-						<th width="150">
+</form>
+<div class="row">
+	<div class="col-xs-12">
+		<table class="table table-striped table-hover" width="960" style="margin: 0 auto">
+			<thead>
+				<tr>
+					<th width="140">
+						Item
+					</th>
+					<th width="100">
+						Code
+					</th>
+					<th width="1400">
+						Description
+					</th>
+					<th width="80">
+						Quantity
+					</th>
+					<th width="100">
+						Price
+					</th>
+					<th width="150">
+						Total
+					</th>
+					<th width="150">
+						Comment
+					</th>
+					<th width="70">
+						<button type="button" class="btn btn-sm btn-primary update" ng-click="addItem()" ng-if="userData.role._id == 1">
+							<i class="fa fa-plus"></i>
+						</button>
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="item in serviceOrder.items track by $index">
+					<td>
+						<ui-select ng-model="serviceOrder.items[$index]" theme="bootstrap" ng-disabled="isDisabled()">
+			            	<ui-select-match placeholder="Select the item you want on the list...">
+        						{{$select.selected.code}}&nbsp;-&nbsp;{{$select.selected.description}}
+			            	</ui-select-match>
+			            	<ui-select-choices repeat="i in items | filter: $select.search track by i._id">
+		              			<div ng-bind-html="i.description | highlight: $select.search"></div>
+			              		<small ng-bind-html="i.code | highlight: $select.search"></small>
+			            	</ui-select-choices>
+			          	</ui-select>
+					</td>
+					<td>
+						<input type="text" class="form-control" ng-model="item.code"  ng-disabled="isDisabled()">
+					</td>
+					<td>
+						<input type="text" class="form-control" ng-model="item.description"  ng-disabled="isDisabled()">
+					</td>
+					<td>
+						<input type="number" class="form-control" ng-model="item.quantity"  ng-disabled="isDisabled()">
+					</td>
+					<td>
+						<input type="number" class="form-control" ng-model="item.price"  ng-disabled="isDisabled()">
+					</td>
+					<td>
+						{{item.getTotalPrice() | currency }}
+					</td>
+					<td>
+						<textarea id="partComment" ng-model="item.comment" class="form-control">
+						</textarea> 
+					</td>
+					<td>
+						<button type="button" class="btn btn-sm btn-danger update" ng-click="removeItem()">
+							<i class="fa fa-times"></i>
+						</button>
+					</td>
+				</tr>
+			</tbody>
+			<tfoot>
+				<tr>
+					<th colspan="3">
+						<span class="pull-right">
 							Total
-						</th>
-						<th width="150">
-							Comment
-						</th>
-						<th width="70">
-							<button type="button" class="btn btn-sm btn-primary update" ng-click="addItem()">
-								<i class="fa fa-plus"></i>
-							</button>
-						</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr ng-repeat="item in serviceOrder.items track by $index">
-						<td>
-							<ui-select ng-model="serviceOrder.items[$index]" theme="bootstrap" ng-disabled="isDisabled()">
-				            	<ui-select-match placeholder="Select the item you want on the list...">
-            						{{$select.selected.code}}&nbsp;-&nbsp;{{$select.selected.description}}
-				            	</ui-select-match>
-				            	<ui-select-choices repeat="i in items | filter: $select.search track by i._id">
-			              			<div ng-bind-html="i.description | highlight: $select.search"></div>
-				              		<small ng-bind-html="i.code | highlight: $select.search"></small>
-				            	</ui-select-choices>
-				          	</ui-select>
-						</td>
-						<td>
-							<input type="text" class="form-control" ng-model="item.code"  ng-disabled="isDisabled()">
-						</td>
-						<td>
-							<input type="text" class="form-control" ng-model="item.description"  ng-disabled="isDisabled()" required>
-						</td>
-						<td>
-							<input type="number" class="form-control" ng-model="item.quantity"  ng-disabled="isDisabled()" required>
-						</td>
-						<td>
-							<input type="number" class="form-control" ng-model="item.price"  ng-disabled="isDisabled()" required>
-						</td>
-						<td>
-							{{item.getTotalPrice() | currency }}
-						</td>
-						<td>
-							<textarea id="partComment" ng-model="item.comment" class="form-control">
-							</textarea> 
-						</td>
-						<td>
-							<button type="button" class="btn btn-sm btn-danger update" ng-click="removeItem()">
-								<i class="fa fa-times"></i>
-							</button>
-						</td>
-					</tr>
-				</tbody>
-				<tfoot>
-					<tr>
-						<th colspan="3">
-							<span class="pull-right">
-								Total
-							</span>
-						</th>
-						<th colspan="3">
-							<span class="pull-left">
-								{{serviceOrder.getTotal() | currency}}
-							</span>
-						</th>
-					</tr>
-				</tfoot>
-			</table>
-		</div>
+						</span>
+					</th>
+					<th colspan="3">
+						<span class="pull-left">
+							{{serviceOrder.getTotal() | currency}}
+						</span>
+					</th>
+				</tr>
+			</tfoot>
+		</table>
 	</div>
-	<div class="row">
-		<div class="col-xs-12">
-			<div class="col-xs-4 pull-left">
-				<div class="form-group">
-					<label for="comment">Issue</label>
-					<textarea id="comment" ng-model="serviceOrder.issue" class="form-control">
-					</textarea> 
-				</div>
-				<div class="form-group">
-					<label for="comment">Comment</label>
-					<textarea id="comment" ng-model="serviceOrder.comment" class="form-control">
-					</textarea> 
-				</div>
+</div>
+<div class="row">
+	<div class="col-xs-12">
+		<div class="col-xs-4 pull-left">
+			<div class="form-group">
+				<label for="comment">Issue</label>
+				<textarea id="comment" ng-model="serviceOrder.issue" class="form-control">
+				</textarea> 
+			</div>
+			<div class="form-group">
+				<label for="comment">Comment</label>
+				<textarea id="comment" ng-model="serviceOrder.comment" class="form-control">
+				</textarea> 
 			</div>
 		</div>
 	</div>
-</form>
+</div>

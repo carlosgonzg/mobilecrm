@@ -55,7 +55,7 @@ angular.module('MobileCRMApp')
 	];
 	$scope.filterDate = 'createdDate';
 
-	$scope.excelFields = [å{
+	$scope.excelFields = [{
 			title : 'Created Date',
 			name : 'createdDate',
 			type : 'date'

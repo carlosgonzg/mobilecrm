@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('MobileCRMApp')
-.controller('ReportCtrl', function ($scope, $rootScope, toaster, clients, countries, ServiceOrder, $timeout, dialogs, statusList) {
+.controller('ReportCtrl', function ($scope, $rootScope, toaster, clients, countries, ServiceOrder, $timeout, dialogs, statusList, Loading) {
 	var today = new Date();
 	$scope.isClient = $rootScope.userData.role._id != 1;
 	$scope.selectedTab = 'data';
@@ -131,6 +131,7 @@ angular.module('MobileCRMApp')
 
 	$scope.selectTab = function(tab){
 		$scope.selectedTab = tab;
+		Loading.show();
 		if($scope.selectedTab != 'data')
 			drawChart();
 	};
@@ -197,6 +198,7 @@ angular.module('MobileCRMApp')
 		return obj;
 	};
 	var drawChart = function(){
+		Loading.hide();
 		$timeout(function(){
 			var chartType = ['totalPriceByClient', 'countByClient'].indexOf($scope.selectedTab) != -1 ? 'column' : 'pie';
 			var data = chartData();
@@ -300,9 +302,11 @@ angular.module('MobileCRMApp')
 		}
 		//ahora listado de order services
 		$scope.serviceOrders = [];
+		Loading.show();
 		new ServiceOrder().filter(query, $scope.sort)
 		.then(function(serviceOrders){
 			$scope.serviceOrders = serviceOrders.data;
+			Loading.hide();
 			if($scope.selectedTab != 'data')
 				drawChart();
 		});

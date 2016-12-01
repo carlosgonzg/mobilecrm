@@ -12,6 +12,10 @@ angular.module('MobileCRMApp')
 	$scope.serviceOrder = ServiceOrder;
 
 	$scope.fields = [{
+			title : 'Company',
+			name : 'client.company.entity.name',
+			type : 'text'
+		},{
 			title : 'Branch',
 			name : 'client.branch.name',
 			type : 'text'
@@ -48,6 +52,7 @@ angular.module('MobileCRMApp')
 		'invoiceNumber',
 		'sor',
 		'client.branch',
+		'client.company',
 		'client.entity',
 		'client.entity.fullName',
 		'status.description',

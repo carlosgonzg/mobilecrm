@@ -13,7 +13,8 @@ angular
 		'toaster',
 		'ui.bootstrap',
 		'dialogs.main',
-		'angularValidator',
+		'validation',
+		'validation.rule',
 		'ui.select',
 		'ngFileUpload'
 	])

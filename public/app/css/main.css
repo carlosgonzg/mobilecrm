@@ -159,3 +159,7 @@ input{
 .fixed-content{
 	margin-top:110px;
 }
+.validation-invalid{
+	font-weight: bold;
+	color: #ff0000;
+}
