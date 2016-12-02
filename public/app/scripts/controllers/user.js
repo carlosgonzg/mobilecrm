@@ -8,7 +8,7 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-.controller('UserCtrl', function ($scope, $rootScope, $window, $location, toaster, user, companies, roles, $timeout, Branch) {
+.controller('UserCtrl', function ($scope, $rootScope, $window, $location, toaster, dialogs, user, companies, roles, $timeout, Branch) {
 	$scope.user = user;
 	$scope.roles = roles.data || [];
 	$scope.companies = companies.data || [];
@@ -49,6 +49,17 @@ angular.module('MobileCRMApp')
 				toaster.error(error.message);
 			});
 		}
+	};
+
+	$scope.delete = function(){
+		var dlg = dialogs.confirm('Warning','Are you sure you want to remove?');
+		dlg.result.then(function(btn){
+			$scope.user.remove()
+			.then(function(){
+				toaster.success('The user was removed successfully');
+				$location.path('/userList')
+			});
+		});
 	};
 	if($scope.user.company){
 		$scope.getBranches($scope.user.company)
