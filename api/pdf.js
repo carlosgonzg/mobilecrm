@@ -193,6 +193,7 @@ var createWorkOrder = function(obj){
 
 exports.createInvoice = createInvoice;
 exports.createServiceOrder = createServiceOrder;
+exports.createWorkOrder = createWorkOrder;
 
 
 
