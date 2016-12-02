@@ -86,7 +86,6 @@ var createInvoice = function(obj, company, branch){
 };
 
 var createServiceOrderBody = function(serviceOrder){
-	console.log(__dirname);
 	var body = fs.readFileSync(__dirname + '/serviceorder.html', 'utf8').toString();
 	//replacement of data
 	body = body.replace('<createdDate>', moment(serviceOrder.date).format('MM/DD/YYYY'));
@@ -139,7 +138,6 @@ var createServiceOrder = function(obj){
 };
 
 var createWorkOrderBody = function(workOrder){
-	console.log(__dirname);
 	var body = fs.readFileSync(__dirname + '/workorder.html', 'utf8').toString();
 	//replacement of data
 	body = body.replace('<createdDate>', moment(workOrder.date).format('MM/DD/YYYY'));
@@ -177,7 +175,7 @@ var createWorkOrder = function(obj){
 			left: '0.5in'
 		}
 	};
-	var body = createServiceOrderBody(obj);
+	var body = createWorkOrderBody(obj);
 	pdf.create(body, options).toFile(__dirname + '/workorders/' + obj.invoiceNumber + '.pdf', function(err, res) {
         if (err) {
             d.reject(err)
