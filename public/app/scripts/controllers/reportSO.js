@@ -131,7 +131,6 @@ angular.module('MobileCRMApp')
 
 	$scope.selectTab = function(tab){
 		$scope.selectedTab = tab;
-		Loading.show();
 		if($scope.selectedTab != 'data')
 			drawChart();
 	};
