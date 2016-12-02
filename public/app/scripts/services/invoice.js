@@ -117,5 +117,19 @@ var a;
 		});
 		return d.promise;
 	};
+	Invoice.prototype.getMonthlyStatement = function(query){
+		var d = $q.defer();
+		var _this = this;
+		$http.post(_this.baseApiPath + '/monthlyStatement', { query: query })
+		.success(function (data) {
+			d.resolve(data)
+	    })
+	    .error(function (data) {
+	    	console.log(data);
+	    	toaster.error('There was an error, please try again');
+	        d.reject(data);
+	    });
+		return d.promise;
+	};
 	return Invoice;
 });

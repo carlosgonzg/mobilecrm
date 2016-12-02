@@ -1,0 +1,155 @@
+<div class="row">
+	<div class="col-xs-12">
+		<h1 class="pull-left">
+			<i class="fa fa-lg fa-calendar"></i> <span> Monthly Statement</span>
+		</h1>
+		<div class="btn-group pull-right" style="margin-top: 20px;" role="group" aria-label="...">
+			<button type="submit" form="userForm" class="btn btn-primary" ng-click="search(params)">
+				<i class="fa fa-save"></i>&nbsp;<span>Search</span>
+			</button>
+			<!--
+			<button type="button" class="btn btn-default" ng-click="export()">
+				<i class="fa fa-download"></i>&nbsp;<span>Download</span>-->
+			</button>
+			<back-button></back-button>
+		</div>
+		<hr />
+	</div>
+</div>
+<div class="row">
+	<div class="col-xs-6">
+		<div class="form-group">
+			<label for="searchBy">Search by:</label>
+			<select class="form-control" name="searchBy" ng-change="getList(params.searchBy.code)" ng-model="params.searchBy" ng-options="o as o.description for o in searchList track by o.code" ng-disabled="userData.role._id != 1"></select>
+		</div> 
+	</div>
+	<div class="col-xs-6">
+		<div class="form-group" ng-if="params.searchBy.code != 'MobileOne'">
+			<label for="searchWho">{{params.searchBy.description}}:</label>
+			<select class="form-control" name="searchWho" ng-model="params.searchWho" ng-options="o._id as o.entity.fullName for o in searchWhoList" ng-disabled="userData.role._id != 1" ng-show="params.searchBy.code == 'User'"></select>
+			<select class="form-control" name="searchWho" ng-model="params.searchWho" ng-options="o._id as o.entity.name for o in searchWhoList" ng-disabled="userData.role._id != 1" ng-show="params.searchBy.code == 'Company'"></select>
+			<select class="form-control" name="searchWho" ng-model="params.searchWho" ng-options="o._id as o.name for o in searchWhoList" ng-disabled="userData.role._id != 1" ng-show="params.searchBy.code == 'Branch'"></select>
+		</div> 
+	</div>
+</div>
+<ul class="nav nav-pills">
+	<li role="presentation" ng-class="{ active: getActiveTab('month') }" ng-click="selectTab('month')"><a>Monthly Statement</a></li>
+	<li role="presentation" ng-class="{ active: getActiveTab('detail') }" ng-click="selectTab('detail')"><a>Detail</a></li>
+</ul>
+<div class="row" ng-if="getActiveTab('month')">
+	<div class="col-xs-12" ng-if="invoices.length > 0">
+		<table cellspacing="0" class="table table-hover tableNoBottom table-condensed" style="border-bottom: 1px solid #dddddd;">
+			<thead>
+				<tr>
+					<th width="20%">Year</th>
+					<th width="20%">Month</th>
+					<th width="20%">Paid</th>
+					<th width="20%">Pending</th>
+					<th width="20%">Total</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="date in months track by $index">
+					<td>
+						{{date.year}}
+					</td>
+					<td>
+						{{date.month}}
+					</td>
+					<td>
+						{{getPaid(date.year, date.month)|currency}}
+					</td>
+					<td>
+						{{getPending(date.year, date.month)|currency}}
+					</td>
+					<td>
+						<b>{{getTotal(date.year, date.month)|currency}}</b>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+<div class="row" ng-if="getActiveTab('detail')">
+	<div class="col-xs-12">
+		<table cellspacing="0" class="table table-hover tableNoBottom table-condensed" style="border-bottom: 1px solid #dddddd;">
+			<thead>
+				<tr>
+					<th width="10%">
+						Customer
+					</th>
+					<th width="10%">
+						Date
+					</th>
+					<th width="10%">
+						Unit Number
+					</th>
+					<th width="10%">
+						PO Number
+					</th>
+					<th width="10%">
+						Amount
+					</th>
+					<th width="10%">
+						Status
+					</th>
+					<th width="10%">
+						Year
+					</th>
+					<th width="10%">
+						Month
+					</th>
+					<th width="10%">
+						Branch
+					</th>
+					<th width="10%">
+						Company
+					</th>
+				</tr>
+			</thead>
+		</table>
+		<table cellspacing="0" class="table table-hover tableNoBottom table-condensed" style="border-bottom: 1px solid #dddddd;" ng-repeat="group in invoices track by $index">
+			<thead>
+				<tr>
+					<th colspan="10">
+						{{ group.month }}&nbsp;-&nbsp;{{ group.year }} ({{group.status.description}})
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="invoice in group.invoices track by $index">
+					<td width="10%">
+						{{invoice.client.name}}
+					</td>
+					<td width="10%">
+						{{invoice.data|date:'MM/dd/YYYY'}}
+					</td>
+					<td width="10%">
+						{{invoice.unitno}}
+					</td>
+					<td width="10%">
+						{{invoice.pono}}
+					</td>
+					<td width="10%">
+						{{invoice.total|currency}}
+					</td>
+					<td width="10%">
+						{{invoice.status.description}}
+					</td>
+					<td width="10%">
+						{{invoice.year}}
+					</td>
+					<td width="10%">
+						{{invoice.month}}
+					</td>
+					<td width="10%">
+						{{invoice.branch.name}}
+					</td>
+					<td width="10%">
+						{{invoice.company.name}}
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>

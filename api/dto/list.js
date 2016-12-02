@@ -44,6 +44,21 @@ function List(db) {
 			description: 'Completed Under Warranty'
 		}
 	];
+	this.search = [
+		{
+			code: 'MobileOne',
+			description: 'MobileOne'
+		},{
+			code: 'User',
+			description: 'Customer'
+		},{
+			code: 'Company',
+			description: 'Company'
+		},{
+			code: 'Branch',
+			description: 'Branch'
+		}
+	];
 };
 
 List.prototype.getList = function(list){

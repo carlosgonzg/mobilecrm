@@ -257,5 +257,126 @@ Invoice.prototype.getInvoice = function(id, res){
 	});
 };
 
+Invoice.prototype.getMonthlyStatement = function(params, user){
+	var d = q.defer();
+	var _this = this;
+	var today = new Date();
+	var fromDate = params.from ? new Date(params.from) : new Date(today.getFullYear(), 0, 1, 0, 0, 0, 0);
+	var toDate = params.to ? new Date(params.to) : new Date(today.getFullYear(), 11, 31, 23, 59, 59, 999);
+
+	var pipeline = [];
+
+	var project = {
+		$project: {
+			_id: 1,
+			client: {
+				_id: '$client._id',
+				name: '$client.entity.fullName'
+			},
+			date: 1,
+			unitno: 1,
+			pono: 1,
+			invoiceNumber: 1,
+			total: 1,
+			status: {
+				_id: '$status._id',
+				description: '$status._id'
+			},
+			statusPaid: {
+				_id: {
+					$cond: [{ $eq: ['$status._id', 4] }, 4, 1]
+				},
+				description: {
+					$cond: [{ $eq: ['$status._id', 4] }, 'Paid', 'Pending']
+				}
+			},
+			year: {
+				$year: '$date'
+			},
+			month: {
+				$month: '$date'
+			},
+			branch: {
+				_id: '$client.branch._id',
+				name: '$client.branch.name'
+			},
+			company: {
+				_id: '$client.company._id',
+				name: '$client.company.entity.name',
+				address: '$client.company.address'
+			}
+		}
+	};
+
+	var sort = {
+		$sort: {
+			date: 1
+		}
+	}
+
+	var query = {
+		$match: {}
+	};
+	if(params.clientId){
+		query.$match['client._id'] = Number(params.clientId);
+	}
+	if(params.companyId){
+		query.$match['company._id'] = Number(params.companyId);
+	}
+	if(params.branchId){
+		query.$match['branch._id'] = Number(params.branchId);
+	}
+
+	var group = {
+		$group: {
+			_id: {
+				year: '$year',
+				month: '$month',
+				status: '$statusPaid'
+			},
+			total: {
+				$sum: '$total'
+			},
+			invoices: {
+				$push: '$$ROOT'
+			}
+		}
+	};
+
+	var project2 = {
+		$project: {
+			_id: 0,
+			year: '$_id.year',
+			month: '$_id.month',
+			status: '$_id.status',
+			total: '$total',
+			invoices: '$invoices'
+		}
+	};
+
+	var sort1 = {
+		$sort: {
+			year: 1,
+			month: 1
+		}
+	};
+	console.log(query)
+	pipeline.push(project);
+	pipeline.push(sort);
+	pipeline.push(query);
+	pipeline.push(group);
+	pipeline.push(project2);
+	pipeline.push(sort1);
+
+	_this.crud.db.get('INVOICE').aggregate(pipeline, function(error, data){
+		if(error){
+			d.reject(error);
+			throw new Error("Error happened: ", error);
+		}
+		d.resolve(data);
+	});
+	return d.promise;
+};
+
 
 module.exports = Invoice;

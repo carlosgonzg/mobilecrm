@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('MobileCRMApp')
-.factory('Loading', function (Base, Item, $rootScope, $location, dialogs) {
+.factory('Loading', function ($timeout, $rootScope, dialogs) {
 	var Loading = function(){
 		this.dialog = null;
 	}
@@ -10,7 +10,9 @@ angular.module('MobileCRMApp')
 		this.dialog = dialogs.wait('Wait', 'Please wait. Loading...', 50);
 	};
 	Loading.hide = function(){
-		$rootScope.$broadcast('dialogs.wait.complete');
+		$timeout(function(){
+			$rootScope.$broadcast('dialogs.wait.complete');
+		}, 200);
 	};
 	return Loading;
 });

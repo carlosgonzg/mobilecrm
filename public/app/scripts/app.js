@@ -235,6 +235,24 @@ angular
 			}
 		}
 	})
+	.when('/monthlyStatement', {
+		templateUrl : 'views/monthlyStatement.html',
+		controller : 'MonthlyStatementCtrl',
+		resolve:{
+			searchList: function(List){
+				return List.get('search');
+			},
+			userList: function(User){
+				return new User().filter({ 'role._id': { $ne: 1 } });
+			},
+			companyList: function(Company){
+				return new Company().filter({});
+			},
+			branchList: function(Branch){
+				return new Branch().filter({ });
+			}
+		}
+	})
 	.when('/noaccess', {
 		templateUrl : 'views/noaccess.html'
 	})
