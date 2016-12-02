@@ -165,9 +165,9 @@ angular
 			}
 		}
 	})
-	.when('/report', {
-		templateUrl : 'views/report.html',
-		controller : 'ReportCtrl',
+	.when('/reportSO', {
+		templateUrl : 'views/reportSO.html',
+		controller : 'ReportSOCtrl',
 		resolve:{
 			clients : function (User) {
 				return new User().filter({ 'role._id': { $ne: 1} });
@@ -177,6 +177,24 @@ angular
 			},
 			statusList: function(List){
 				return List.get('status');
+			}
+		}
+	})
+	.when('/reportWO', {
+		templateUrl : 'views/reportWO.html',
+		controller : 'ReportWOCtrl',
+		resolve:{
+			clients : function (User) {
+				return new User().filter({ 'role._id': { $ne: 1} });
+			},
+			countries : function (Country) {
+				return new Country().find();
+			},
+			statusList: function(List){
+				return List.get('status');
+			},
+			items: function(Item){
+				return new Item().filter({});
 			}
 		}
 	})

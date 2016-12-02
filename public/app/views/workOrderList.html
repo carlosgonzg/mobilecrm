@@ -1,11 +1,11 @@
 <div class="row">
     <div class="col-xs-12">
         <h1 class="pull-left">
-            <i class="fa fa-lg fa-money"></i> <span>Work Order</span>
+            <i class="fa fa-lg fa-calculator"></i> <span>Work Orders</span>
         </h1>
         <div class="btn-group pull-right" style="margin-top: 20px;" role="group" aria-label="...">
             <back-button></back-button>
-            <button type="button" class="btn btn-primary new" ng-click="createNew()">
+            <button type="button" class="btn btn-primary new" ng-click="createNew()"  ng-if="userData.getAccessOfView('/workOrder', true).write">
                 <i class="fa fa-plus"></i>&nbsp;<span>Create New</span>
             </button>
         </div>
@@ -13,7 +13,7 @@
     </div>
 </div>
 <div class="row">
-	<div class="col-xs-12">
-		<list clase="workOrder" fields="fields" showid="false" search-fields="search" filter-field="filter" list="list" filter-date="'createdDate'" excel-fields="excelFields" excel-title="'Invoices'"></list>
-	</div>
+    <div class="col-xs-12">
+        <list clase="workOrder" fields="fields" showid="false" search-fields="search" filter-field="filter" list="list" filter-date="filterDate" excel-fields="excelFields" excel-title="'Service Order'"></list>
+    </div>
 </div>

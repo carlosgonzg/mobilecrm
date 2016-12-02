@@ -61,7 +61,8 @@ d.run(function () {
 	require('./api/ws/city')('/api/city', app);
 	require('./api/ws/serviceOrder')('/api/serviceOrder', app, mail, __dirname);
 	require('./api/ws/invoice')('/api/invoice', app, mail, __dirname);
-	require('./api/ws/workOrder')('/api/workOrder', app);
+	require('./api/ws/workOrder')('/api/workOrder', app, mail, __dirname);
+	//require('./api/ws/report')('/api/report', app, mail, __dirname);
 	require('./api/ws/item')('/api/item', app);
 	require('./api/ws/company')('/api/company', app);
 	require('./api/ws/branch')('/api/branch', app);

@@ -1,19 +1,19 @@
 'use strict';
 
 angular.module('MobileCRMApp')
-.factory('WorkOrder', function (Base, Item, $rootScope, $location, $q,$http, toaster, dialogs) {
+.factory('ServiceOrder', function (Base, Item, $rootScope, $location, $q,$http, toaster, dialogs) {
 
 	// Variable que se utiliza para comprobar si un objeto tiene una propiedad
 	// var hasProp = Object.prototype.hasOwnProperty;
 
 	// Nombre de la clase
-	var WorkOrder;
-	var a;
-	function WorkOrder(propValues) {
+	var ServiceOrder;
+var a;
+	function ServiceOrder(propValues) {
 		a = document.createElement("a");
 			document.body.appendChild(a);
-		WorkOrder.super.constructor.apply(this, arguments);
-		this.baseApiPath = "/api/WorkOrder";
+		ServiceOrder.super.constructor.apply(this, arguments);
+		this.baseApiPath = "/api/ServiceOrder";
 		this.client = this.client || {};
 		this.invoiceNumber = this.invoiceNumber || '';
 		this.sor = this.sor || '';
@@ -51,15 +51,15 @@ angular.module('MobileCRMApp')
 		return child;
 	};
 	// Extender de la clase Base
-	extend(WorkOrder, Base);
+	extend(ServiceOrder, Base);
 
 	// Funcion que retorna las propiedades de una cuenta
-	WorkOrder.properties = function () {
+	ServiceOrder.properties = function () {
 		var at = {};
 		return at;
 	};
 	
-	WorkOrder.prototype.getTotal = function(){
+	ServiceOrder.prototype.getTotal = function(){
 		var total = 0;
 		for(var i = 0; i < this.items.length; i++){
 			total += this.items[i].getTotalPrice();
@@ -69,11 +69,11 @@ angular.module('MobileCRMApp')
 	};
 	
 	
-	WorkOrder.prototype.goTo = function () {
-		$location.path('/workOrder/' + this._id);
+	ServiceOrder.prototype.goTo = function () {
+		$location.path('/serviceOrder/' + this._id);
 	};
 
-	WorkOrder.prototype.download = function(){
+	ServiceOrder.prototype.download = function(){
 		var d = $q.defer();
 		var _this = this;
 		$http({
@@ -104,12 +104,12 @@ angular.module('MobileCRMApp')
 	    });
 	    return d.promise;
 	};
-	WorkOrder.prototype.send = function(){
+	ServiceOrder.prototype.send = function(){
 		var d = $q.defer();
 		toaster.warning('Sending the email');
 		$http.post(this.baseApiPath + '/send', { id: this._id })
 		.success(function (data) {
-			toaster.success('The Work Order has been sent!.');
+			toaster.success('The Service Order has been sent!.');
 	    })
 	    .error(function (data, status, headers, config) {
 	    	toaster.error('There was an error sending the file, please try again')
@@ -118,14 +118,14 @@ angular.module('MobileCRMApp')
 		return d.promise;
 	};
 
-	WorkOrder.prototype.showPicture = function(index){
+	ServiceOrder.prototype.showPicture = function(index){
 		var dialog = dialogs.create('views/photo.html', 'PhotoCtrl', { photos: this.photos, index: (index || 0) });
 		dialog.result
 		.then(function (res) {
 		}, function (res) {});
 	};
 
-	WorkOrder.prototype.filter = function(query, sort){
+	ServiceOrder.prototype.filter = function(query, sort){
 		var deferred = $q.defer();
 		var _this = this.constructor;
 		$http.post(this.baseApiPath + '/filter', { query: query, sort: sort })
@@ -152,7 +152,6 @@ angular.module('MobileCRMApp')
 		});
 		return deferred.promise;
 	};
-	
-	return WorkOrder;
 
+	return ServiceOrder;
 });

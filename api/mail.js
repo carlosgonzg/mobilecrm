@@ -122,10 +122,8 @@ var sendForgotPasswordMail = function (to, link, urlServer) {
 
 var sendServiceOrder = function (serviceOrder, mails, dirname) {
 	var deferred = q.defer();
-	console.log('1')
 	bringTemplateData('/serviceorder.html')
 	.then(function (body) {
-		console.log('2')
 		var url = config.SERVER_URL;
 		console.log(url)
 		body = body.replace('<emailUrl>', url);
@@ -145,7 +143,6 @@ var sendServiceOrder = function (serviceOrder, mails, dirname) {
 		body = body.replace('<issue>', serviceOrder.issue || 'None');
 		body = body.replace('<comment>', serviceOrder.comment || 'None');
 		var contacts = '';
-		console.log('3')
 
 		for(var i = 0; i < serviceOrder.contacts.length; i++){
 			if(serviceOrder.contacts[i].name)
@@ -155,7 +152,6 @@ var sendServiceOrder = function (serviceOrder, mails, dirname) {
 		var company = 'Company: ' + (serviceOrder && serviceOrder.client && serviceOrder.client.company && serviceOrder.client.company.entity ? serviceOrder.client.company.entity.name : 'Not Defined');
 		var branch = serviceOrder && serviceOrder.client && serviceOrder.client.branch ? 'Branch: ' + serviceOrder.client.branch.name : 'Client: ' + serviceOrder.client.entity.fullName;
 		var subject = company + ' | ' + branch + ' | Service Order: ' + serviceOrder.sor;
-		console.log('4')
 		
 		var attachments = [];
 		if(serviceOrder.photos){
@@ -324,12 +320,137 @@ exports.sendConfirmateMail = function (email, password) {
 	return token;
 };
 
+var sendWorkOrder = function (workOrder, mails, dirname) {
+	var deferred = q.defer();
+	bringTemplateData('/workorder.html')
+	.then(function (body) {
+		var url = config.SERVER_URL;
+		console.log(url)
+		body = body.replace('<emailUrl>', url);
+		body = body.replace('<createdDate>', moment(workOrder.date).format('MM/DD/YYYY'));
+		body = body.replace('<clientCompany>', workOrder.client.company ? workOrder.client.company.entity.name : 'None');
+		body = body.replace('<clientBranch>', workOrder.client.branch ? workOrder.client.branch.name : 'None');
+		body = body.replace('<customer>', workOrder.customer || 'None');
+		body = body.replace('<customerPhone>', workOrder.phone ? workOrder.phone.number : 'None');
+		body = body.replace('<wor>', workOrder.wor);
+		body = body.replace('<unitno>', workOrder.unitno);
+		body = body.replace('<pono>', workOrder.pono);
+		body = body.replace('<isono>', workOrder.isono);
+		body = body.replace('<clientName>', workOrder.client.entity.fullName);
+		body = body.replace('<clientPhone>', workOrder.client && workOrder.client.branch && workOrder.client.branch.phones && workOrder.client.branch.phones.length > 0 ? workOrder.client.branch.phones[0].number : 'None');
+		body = body.replace('<clientMail>', workOrder.client.account.email);
+		body = body.replace('<clientAddress>', workOrder.siteAddress.address1 + ', ' + workOrder.siteAddress.city.description + ', ' + workOrder.siteAddress.state.description + ' ' + workOrder.siteAddress.zipcode);
+		body = body.replace('<issue>', workOrder.issue || 'None');
+		body = body.replace('<comment>', workOrder.comment || 'None');
+		var contacts = '';
+
+		for(var i = 0; i < workOrder.contacts.length; i++){
+			if(workOrder.contacts[i].name)
+				contacts += '<b>Contact #' + (i+1) + ':&nbsp;</b>' +  workOrder.contacts[i].name + '.&nbsp;<b>Phone(' + workOrder.contacts[i].phoneType.description + '):</b>&nbsp;' + workOrder.contacts[i].number + '<br/>';
+		}
+		body = body.replace('<contacts>', contacts || '');
+		var company = 'Company: ' + (workOrder && workOrder.client && workOrder.client.company && workOrder.client.company.entity ? workOrder.client.company.entity.name : 'Not Defined');
+		var branch = workOrder && workOrder.client && workOrder.client.branch ? 'Branch: ' + workOrder.client.branch.name : 'Client: ' + workOrder.client.entity.fullName;
+		var subject = company + ' | ' + branch + ' | Work Order: ' + workOrder.wor;
+		
+		var attachments = [];
+		if(workOrder.photos){
+			for(var i = 0; i < workOrder.photos.length; i++){
+				var photoDir = dirname + '/public/app' + workOrder.photos[i].url;
+				//console.log(photoDir)
+				attachments.push({
+					filename: workOrder.photos[i].name,
+					//content: fs.readFileSync(photoDir),
+					contentType: workOrder.photos[i].type,
+					path: photoDir
+				});
+			}
+		}
+		console.log('sending mail', subject);
+		sendMail(mails.join(', '), subject, body, true, attachments)
+		.then(function (response) {
+			console.log('DONE Sending Mail: ', response)
+			deferred.resolve(response);
+		},
+			function (err) {
+			console.log('error?', err)
+			deferred.reject(err);
+		});
+	},
+		function (err) {
+			console.log('error!', err)
+		deferred.reject(err);
+	});
+	return deferred.promise;
+};
+
+var sendWorkOrderUpdate = function (workOrder, mails, user) {
+	var deferred = q.defer();
+	bringTemplateData('/email/templateWorkOrderUpdate.html')
+	.then(function (body) {
+		var url = config.SERVER_URL;
+		body = body.replace('<emailUrl>', url);
+		body = body.replace('<createdDate>', moment(workOrder.date).format('MM/DD/YYYY'));
+		body = body.replace('<clientCompany>', workOrder.client.company ? workOrder.client.company.entity.name : 'None');
+		body = body.replace('<clientBranch>', workOrder.client.branch ? workOrder.client.branch.name : 'None');
+		body = body.replace('<customer>', workOrder.customer || 'None');
+		body = body.replace('<customerPhone>', workOrder.phone ? workOrder.phone.number : 'None');
+		body = body.replace('<wor>', workOrder.wor);
+		body = body.replace('<unitno>', workOrder.unitno);
+		body = body.replace('<pono>', workOrder.pono);
+		body = body.replace('<isono>', workOrder.isono);
+		body = body.replace('<clientName>', workOrder.client.entity.fullName);
+		body = body.replace('<clientPhone>', workOrder.client && workOrder.client.branch && workOrder.client.branch.phones && workOrder.client.branch.phones.length > 0 ? workOrder.client.branch.phones[0].number : 'None');
+		body = body.replace('<clientMail>', workOrder.client.account.email);
+		body = body.replace('<clientAddress>', workOrder.siteAddress.address1 + ', ' + workOrder.siteAddress.city.description + ', ' + workOrder.siteAddress.state.description + ' ' + workOrder.siteAddress.zipcode);
+		body = body.replace('<issue>', workOrder.issue || 'None');
+		body = body.replace('<comment>', workOrder.comment || 'None');
+		var changesByUser = '';
+		changesByUser += (user.entity.fullName || user.entity.name) + ', Changes: ';
+		var fieldsChanged = '';
+		for(var i = 0; i < workOrder.fieldsChanged.length; i++){
+			if(workOrder.fieldsChanged[i].by != user._id)
+				continue;
+			fieldsChanged += workOrder.fieldsChanged[i].field;
+			if(i != workOrder.fieldsChanged.length - 1){
+				fieldsChanged += ', ';
+			}
+		}
+		changesByUser += fieldsChanged == '' ? 'None' : fieldsChanged;
+		body = body.replace('<client>', changesByUser);
+		var contacts = '';
+		for(var i = 0; i < workOrder.contacts.length; i++){
+			contacts += '<b>Contact #' + (i+1) + ':&nbsp;</b>' +  workOrder.contacts[i].name + '.&nbsp;<b>Phone(' + workOrder.contacts[i].phoneType.description + '):</b>&nbsp;' + workOrder.contacts[i].number + '<br/>';
+		}
+		body = body.replace('<contacts>', contacts || '');
+		var company = 'Company: ' + (workOrder && workOrder.client && workOrder.client.company && workOrder.client.company.entity ? workOrder.client.company.entity.name : 'Not Defined');
+		var branch = workOrder && workOrder.client && workOrder.client.branch ? 'Branch: ' + workOrder.client.branch.name : 'Client: ' + workOrder.client.entity.fullName;
+		var subject = company + ' | ' + branch + ' | Work Order: ' + workOrder.wor;
+		console.log('sending mail', subject);
+		sendMail(mails.join(', '), subject, body, true)
+		.then(function (response) {
+			console.log('DONE Sending Mail: ', response)
+			deferred.resolve(response);
+		},
+			function (err) {
+			console.log('error', err)
+			deferred.reject(err);
+		});
+	},
+		function (err) {
+			console.log('error', err)
+		deferred.reject(err);
+	});
+	return deferred.promise;
+};
 
 
 exports.sendInvoice = sendInvoice;
 exports.sendInvoiceUpdate = sendInvoiceUpdate;
 exports.sendServiceOrder = sendServiceOrder;
 exports.sendServiceOrderUpdate = sendServiceOrderUpdate;
+exports.sendWorkOrder = sendWorkOrder;
+exports.sendWorkOrderUpdate = sendWorkOrderUpdate;
 exports.init = init;
 exports.sendMail = sendMail;
 exports.sendActivationEmail = sendActivationEmail;

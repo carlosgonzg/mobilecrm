@@ -1,7 +1,7 @@
 <div class="row">
 	<div class="col-xs-12">
 		<h1 class="pull-left">
-			<i class="fa fa-lg fa-area-chart"></i> <span> Reports</span>
+			<i class="fa fa-lg fa-area-chart"></i> <span> Reports (Work Order)</span>
 		</h1>
 		<div class="btn-group pull-right" style="margin-top: 20px;" role="group" aria-label="...">
 			<back-button></back-button>
@@ -45,6 +45,22 @@
 								<div class="form-group">
 								    <label for="client">Client:</label>
 								    <select class="form-control" ng-model="filter.client" ng-options="o as o.entity.fullName for o in clientList track by o._id" ng-disabled="isClient"></select>
+						  		</div>
+				  			</div>
+				  		</div>
+			  		</div>
+			  		<div class="row">
+						<div class="col-xs-12">
+							<div class="col-xs-6">
+								<div class="form-group">
+								    <label for="status">Item:</label>
+								    <select class="form-control" ng-model="filter.item" ng-options="o as ( '(' + o.code + ') ' + o.description ) for o in itemList track by o._id"></select>
+						  		</div>
+				  			</div>
+				  			<div class="col-xs-6">
+								<div class="form-group">
+								    <label for="client">Quantity:</label>
+								    <input class="form-control" type="number" ng-model="filter.itemQuantity"></select>
 						  		</div>
 				  			</div>
 				  		</div>
@@ -99,12 +115,12 @@
 						Completed Date <span ng-if="sort.field == 'originalShipDate' && sort.order == 1">^</span><span ng-if="sort.field == 'originalShipDate' && sort.order == -1">v</span>
 					</th>
 					<th style="width:10%" ng-click="sortBy('sor')">
-						Service Order <span ng-if="sort.field == 'sor' && sort.order == 1">^</span><span ng-if="sort.field == 'sor' && sort.order == -1">v</span>
+						Work Order <span ng-if="sort.field == 'sor' && sort.order == 1">^</span><span ng-if="sort.field == 'sor' && sort.order == -1">v</span>
 					</th>
 					<th style="width:5%" ng-click="sortBy('invoiceNumber')">
 						Invoice <span ng-if="sort.field == 'invoiceNumber' && sort.order == 1">^</span><span ng-if="sort.field == 'invoiceNumber' && sort.order == -1">v</span>
 					</th>
-					<th style="width:20%" ng-click="sortBy('client.entity.fullName')">
+					<th style="width:15%" ng-click="sortBy('client.entity.fullName')">
 						Customer <span ng-if="sort.field == 'client.entity.fullName' && sort.order == 1">^</span><span ng-if="sort.field == 'client.entity.fullName' && sort.order == -1">v</span>
 					</th>
 					<th style="width:5%" ng-click="sortBy('status.description')">
@@ -115,6 +131,9 @@
 					</th>
 					<th style="width:5%" ng-click="sortBy('partsFromTheYard')">
 						Mat. from the Yard <span ng-if="sort.field =='partsFromTheYard' && sort.order == 1">^</span><span ng-if="sort.field == 'partsFromTheYard' && sort.order == -1">v</span>
+					</th>
+					<th style="width:5%">
+						Items
 					</th>
 					<th style="width:5%">
 						Parts from the Yard
@@ -131,44 +150,47 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr ng-repeat="serviceOrder in serviceOrders track by $index">
+				<tr ng-repeat="workOrder in workOrders track by $index">
 					<td>
-						{{serviceOrder.date|date:'MM/dd/yyyy'}}
+						{{workOrder.date|date:'MM/dd/yyyy'}}
 					</td>
 					<td>
-						{{serviceOrder.originalShipDate|date:'MM/dd/yyyy'}}
+						{{workOrder.originalShipDate|date:'MM/dd/yyyy'}}
 					</td>
 					<td>
-						{{serviceOrder.sor}}
+						{{workOrder.wor}}
 					</td>
 					<td>
-						{{serviceOrder.invoiceNumber}}
+						{{workOrder.invoiceNumber}}
 					</td>
 					<td>
-						{{serviceOrder.client.entity.fullName}}
+						{{workOrder.client.entity.fullName}}
 					</td>
 					<td>
-						{{serviceOrder.status.description}}
+						{{workOrder.status.description}}
 					</td>
 					<td>
-						<i class="fa fa-times" ng-if="!serviceOrder.clientResponsibleCharges"></i>
-						<i class="fa fa-check" ng-if="serviceOrder.clientResponsibleCharges"></i>
+						<i class="fa fa-times" ng-if="!workOrder.clientResponsibleCharges"></i>
+						<i class="fa fa-check" ng-if="workOrder.clientResponsibleCharges"></i>
 					</td>
 					<td>
-						<i class="fa fa-times" ng-if="!serviceOrder.partsFromTheYard"></i>
-						<i class="fa fa-check" ng-if="serviceOrder.partsFromTheYard"></i>
+						<i class="fa fa-times" ng-if="!workOrder.partsFromTheYard"></i>
+						<i class="fa fa-check" ng-if="workOrder.partsFromTheYard"></i>
 					</td>
 					<td>
-						<button class="btn btn-sm" ng-click="showYardComment(serviceOrder)"><i class="fa fa-eye"></i></button>
+						<button class="btn btn-sm" ng-click="showItems(workOrder)"><i class="fa fa-eye"></i></button>
 					</td>
 					<td>
-						<button class="btn btn-sm" ng-click="showComment(serviceOrder)"><i class="fa fa-eye"></i></button>
+						<button class="btn btn-sm" ng-click="showYardComment(workOrder)"><i class="fa fa-eye"></i></button>
 					</td>
 					<td>
-						<button class="btn btn-sm" ng-click="serviceOrder.showPicture()"><i class="fa fa-picture-o" ng-disabled="serviceOrder.photos.length <= 0"></i></button>
+						<button class="btn btn-sm" ng-click="showComment(workOrder)"><i class="fa fa-eye"></i></button>
 					</td>
 					<td>
-						{{serviceOrder.getTotal()|currency}}
+						<button class="btn btn-sm" ng-click="workOrder.showPicture()"><i class="fa fa-picture-o" ng-disabled="workOrder.photos.length <= 0"></i></button>
+					</td>
+					<td>
+						{{workOrder.getTotal()|currency}}
 					</td>
 				</tr>
 			</tbody>

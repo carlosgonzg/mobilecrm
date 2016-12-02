@@ -1,11 +1,11 @@
 'use strict';
 
 angular.module('MobileCRMApp')
-.controller('ReportCtrl', function ($scope, $rootScope, toaster, clients, countries, ServiceOrder, $timeout, dialogs, statusList, Loading) {
+.controller('ReportWOCtrl', function ($scope, $rootScope, toaster, clients, countries, WorkOrder, $timeout, dialogs, statusList, items, Loading) {
 	var today = new Date();
 	$scope.isClient = $rootScope.userData.role._id != 1;
 	$scope.selectedTab = 'data';
-	$scope.serviceOrders = [];
+	$scope.workOrders = [];
 	$scope.clientList = clients.data;
 	$scope.clientList.unshift({
 		_id: -1,
@@ -13,6 +13,13 @@ angular.module('MobileCRMApp')
 			fullName: 'All'
 		}
 	});
+
+	$scope.itemList = items.data;
+	$scope.itemList.unshift({
+		_id: -1,
+		description: 'All'
+	});
+
 	$scope.sort = {
 		field: 'date',
 		order: 1
@@ -40,6 +47,7 @@ angular.module('MobileCRMApp')
 		fromDate: new Date(today.getFullYear(), today.getMonth(), 1),
 		toDate: today,
 		client: $rootScope.userData.role._id != 1 ? { _id: $rootScope.userData._id } : { _id: -1 },
+		item: { _id: -1 },
 		status: { _id: -1 },
 		country: { _id: -1 },
 		state: { _id: -1 },
@@ -58,15 +66,26 @@ angular.module('MobileCRMApp')
 		}
 		$scope.search();
 	}
-	$scope.showComment = function(serviceOrder){
-		var dialog = dialogs.create('views/comment.html', 'CommentCtrl', { comment: serviceOrder.comment });
+	$scope.showComment = function(workOrder){
+		var dialog = dialogs.create('views/comment.html', 'CommentCtrl', { comment: workOrder.comment });
 		dialog.result
 		.then(function (res) {
 		}, function (res) {});
 	};
 
-	$scope.showYardComment = function(serviceOrder){
-		var dialog = dialogs.create('views/comment.html', 'CommentCtrl', { comment: serviceOrder.yardComment });
+	$scope.showYardComment = function(workOrder){
+		var dialog = dialogs.create('views/comment.html', 'CommentCtrl', { comment: workOrder.yardComment });
+		dialog.result
+		.then(function (res) {
+		}, function (res) {});
+	};
+
+	$scope.showItems = function(workOrder){
+		var comment = '';
+		for(var i = 0; i < workOrder.items.length; i++){
+			comment +=  '(' + workOrder.items[i].code + ') ' + workOrder.items[i].description + ', Quantity: ' + workOrder.items[i].quantity.toString() + '\n';
+		}
+		var dialog = dialogs.create('views/comment.html', 'CommentCtrl', { comment: comment });
 		dialog.result
 		.then(function (res) {
 		}, function (res) {});
@@ -142,13 +161,13 @@ angular.module('MobileCRMApp')
 			count: [],
 			price: []
 		};
-		for(var i = 0; i < $scope.serviceOrders.length; i++){
-			var serviceOrder = $scope.serviceOrders[i];
+		for(var i = 0; i < $scope.workOrders.length; i++){
+			var workOrder = $scope.workOrders[i];
 			// id, value y label
 			var isHere = false;
 			var status = {};
 			for(var j = 0; j < obj.status.length; j++){
-				if(obj.status[j]._id == serviceOrder.status._id){
+				if(obj.status[j]._id == workOrder.status._id){
 					obj.status[j].value++;
 					isHere = true;
 					break;
@@ -157,15 +176,15 @@ angular.module('MobileCRMApp')
 			if(!isHere){
 				obj.status.push({
 					value: 1,
-					_id: serviceOrder.status._id,
-					label: serviceOrder.status.description
+					_id: workOrder.status._id,
+					label: workOrder.status.description
 				});
 			}
 
 			var isHere = false;
 			var client = {};
 			for(var j = 0; j < obj.count.length; j++){
-				if(obj.count[j]._id == serviceOrder.client._id){
+				if(obj.count[j]._id == workOrder.client._id){
 					obj.count[j].value++;
 					isHere = true;
 					break;
@@ -174,24 +193,24 @@ angular.module('MobileCRMApp')
 			if(!isHere){
 				obj.count.push({
 					value: 1,
-					_id: serviceOrder.client._id,
-					label: serviceOrder.client.entity.fullName
+					_id: workOrder.client._id,
+					label: workOrder.client.entity.fullName
 				});
 			}
 
 			var isHere = false;
 			for(var j = 0; j < obj.price.length; j++){
-				if(obj.price[j]._id == serviceOrder.client._id){
-					obj.price[j].value += serviceOrder.total;
+				if(obj.price[j]._id == workOrder.client._id){
+					obj.price[j].value += workOrder.total;
 					isHere = true;
 					break;
 				}
 			}
 			if(!isHere){
 				obj.price.push({
-					value: serviceOrder.total,
-					_id: serviceOrder.client._id,
-					label: serviceOrder.client.entity.fullName
+					value: workOrder.total,
+					_id: workOrder.client._id,
+					label: workOrder.client.entity.fullName
 				});
 			}
 		}
@@ -300,12 +319,23 @@ angular.module('MobileCRMApp')
 				'clientResponsibleCharges': $scope.filter.clientResponsibleCharges
 			});
 		}
+		//item
+		if($scope.filter.item){
+			query.$and.push({
+				'items.code': $scope.filter.item.code
+			});
+			if($scope.filter.itemQuantity > 0){
+				query.$and.push({
+					'items.quantity': $scope.filter.itemQuantity
+				});
+			}
+		}
 		//ahora listado de order services
-		$scope.serviceOrders = [];
+		$scope.workOrders = [];
 		Loading.show();
-		new ServiceOrder().filter(query, $scope.sort)
-		.then(function(serviceOrders){
-			$scope.serviceOrders = serviceOrders.data;
+		new WorkOrder().filter(query, $scope.sort)
+		.then(function(workOrders){
+			$scope.workOrders = workOrders.data;
 			Loading.hide();
 			if($scope.selectedTab != 'data')
 				drawChart();

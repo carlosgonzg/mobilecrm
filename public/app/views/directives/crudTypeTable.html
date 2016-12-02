@@ -16,7 +16,7 @@
                 </button>
             </div>
         </div>
-        <form role="form" id="myForm" name="myForm" novalidate angular-validator angular-validator-submit="save()">
+        <form role="form" id="myForm" name="myForm">
 
             <table cellspacing="0" class="table table-crud  tableNoBottom crudTable table-condensed table-hover">
                 <thead>
@@ -113,7 +113,7 @@
                             <i class="fa fa-undo"></i>
                         </button>
                         <!-- Guardar Elemento -->
-                        <button ng-if="objeto.edit" class="btn btn-sm ta_right btn-primary" type="submit" name="save" value="crt">
+                        <button ng-if="objeto.edit" class="btn btn-sm ta_right btn-primary" type="submit" name="save" value="crt" validation-submit="myForm" ng-click="save()">
                             <i class="fa fa-check"></i>
                         </button>
                     </td>
@@ -222,7 +222,7 @@
                             <i class="fa fa-undo"></i>
                         </button>
                         <!-- Guardar Elemento -->
-                        <button type="submit" ng-if="elem.edit" class="btn btn-sm ta_right btn-primary" name="save" value="crtr">
+                        <button type="submit" ng-if="elem.edit" class="btn btn-sm ta_right btn-primary" name="save" value="crtr" validation-submit="myForm" ng-click="save()">
                             <i class="fa fa-check"></i>
                         </button>
                     </td>

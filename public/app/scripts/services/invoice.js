@@ -16,7 +16,6 @@ var a;
 		this.baseApiPath = "/api/invoice";
 		this.client = this.client || {};
 		this.invoiceNumber = this.invoiceNumber || '';
-		this.sor = this.sor || '';
 		this.pono = this.pono || '';
 		this.unitno = this.unitno || '';
 		this.isono = this.isono || '';

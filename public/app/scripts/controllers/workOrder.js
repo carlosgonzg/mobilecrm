@@ -8,16 +8,16 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-.controller('WorkOrderCtrl', function ($scope, $rootScope, $location, toaster, User, workOrder, items, Item, statusList) {
+.controller('WorkOrderCtrl', function ($scope, $rootScope, $location, toaster, User, statusList, workOrder, items, Item, dialogs, $q) {
 	$scope.workOrder = workOrder;
-	$scope.items = items.data;
+	$scope.items = [];
 	$scope.readOnly = $rootScope.userData.role._id != 1;
 	if($rootScope.userData.role._id != 1){
 		$scope.workOrder.client = new User($rootScope.userData);
 	}
 	$scope.listStatus = statusList;
-
 	$scope.wsClass = User;
+	$scope.wsFilter = { 'role._id': { $ne: 1 }};
 	$scope.wsFields = [{
 			field : 'entity.fullName',
 			label : 'Name',
@@ -28,30 +28,134 @@ angular.module('MobileCRMApp')
 			label : 'Email',
 			type : 'text',
 			show: true
+		}, {
+			field : 'company.entity.name',
+			label : 'Company',
+			type : 'text',
+			show: true
+		}, {
+			field : 'branch.name',
+			label : 'Branch',
+			type : 'text',
+			show: true
 		}
 	];
+
+	$scope.clientChanged = function(client){
+		$scope.items = [];
+		for(var i = 0; i < items.data.length; i++){
+			if(!items.data[i].clients){
+				$scope.items.push(items.data[i]);
+			}
+			else {
+				for(var j = 0; j < items.data[i].clients.length; j++){
+					if(items.data[i].clients[j]._id == client._id){
+						$scope.items.push(items.data[i]);
+						break;
+					}
+				}
+			}
+		}
+	};
+
+	$scope.addContact = function () {
+		$scope.workOrder.contacts.push({})
+	};
+
+	$scope.removeContact = function (index) {
+		$scope.workOrder.contacts.splice(index, 1);
+	};
 	
 	$scope.addItem = function () {
 		$scope.workOrder.items.push(new Item())
 	};
+
 	$scope.removeItem = function (index) {
 		$scope.workOrder.items.splice(index, 1);
 	};
+
 	$scope.setItem = function(item, index) {
 		$scope.workOrder.items[index] = new Item(item);
 	};
 
-	
+	$scope.changed = function(field){
+		if($scope.workOrder._id && $rootScope.userData.role._id != 1){
+			var isHere = false;
+			$scope.workOrder.fieldsChanged = $scope.workOrder.fieldsChanged || [];
+			for(var i = 0; i < $scope.workOrder.fieldsChanged.length; i++){
+				if($scope.workOrder.fieldsChanged[i].field == field){
+					isHere = true;
+					break;
+				}
+			}
+			if(!isHere){
+				$scope.workOrder.fieldsChanged.push({ field: field, by: $rootScope.userData._id });
+			}
+		} 
+	};
+
+	$scope.isChanged = function(field){
+		if($scope.workOrder._id && $rootScope.userData.role._id == 1){
+			var isHere = false;
+			$scope.workOrder.fieldsChanged = $scope.workOrder.fieldsChanged || [];
+			for(var i = 0; i < $scope.workOrder.fieldsChanged.length; i++){
+				if($scope.workOrder.fieldsChanged[i].field == field){
+					isHere = true;
+					break;
+				}
+			}
+			return isHere ? 'changed' : '';
+		}
+		return '';
+	};
+
 	$scope.isDisabled = function(){
 		return $rootScope.userData.role._id != 1 && $scope.workOrder.status._id == 3;
 	};
 
-	
+	$scope.uploadFiles = function(files){
+		$scope.files = angular.copy(files)
+		function getBase64(file) {
+			var d = $q.defer();
+			var reader = new FileReader();
+			reader.readAsDataURL(file);
+			reader.onload = function () {
+				d.resolve({ 
+					url: reader.result,
+					name: file.name,
+					type: file.type,
+					isNew: true
+				});
+			};
+			reader.onerror = function (error) {
+				d.reject(error);
+			};
+			return d.promise;
+		}
+		var promises = [];
+		for(var i = 0; i < files.length; i++){
+			promises.push(getBase64(files[i]))
+		}
+		$q.all(promises)
+		.then(function(urls){
+			$scope.workOrder.photos = $scope.workOrder.photos || [];
+			$scope.workOrder.photos = $scope.workOrder.photos.concat(urls)
+		})
+	};
+
+	$scope.showPicture = function(index){
+		$scope.workOrder.showPicture(index);
+	};
+
+	$scope.removePhoto = function(index){
+		$scope.workOrder.photos.splice(index, 1);
+	};
+
 	$scope.save = function () {
 		delete $scope.workOrder.client.account.password;
 		$scope.workOrder.save()
 		.then(function (data) {
-			toaster.success('The invoice was saved successfully');
+			toaster.success('The Work Order was saved successfully');
 			$location.path('workOrderList')
 		},
 			function (error) {
@@ -59,4 +163,27 @@ angular.module('MobileCRMApp')
 			toaster.error(error.message);
 		});
 	};
+
+	$scope.delete = function(){
+		var dlg = dialogs.confirm('Warning','Are you sure you want to delete?');
+		dlg.result.then(function(btn){
+			$scope.workOrder.remove()
+			.then(function(){
+				toaster.success('The work order was deleted successfully');
+				$location.path('/workOrderList')
+			});
+		});
+	};
+
+	$scope.export = function(){
+		$scope.workOrder.download();
+	};
+
+	$scope.send = function(){
+		$scope.workOrder.send();
+	};
+
+	if(workOrder.client){
+		$scope.clientChanged(workOrder.client);
+	}
 });

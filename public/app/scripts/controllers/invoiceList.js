@@ -12,6 +12,10 @@ angular.module('MobileCRMApp')
 	$scope.invoice = Invoice;
 
 	$scope.fields = [{
+			title : 'Company',
+			name : 'client.company.entity.name',
+			type : 'text'
+		},{
 			title : 'Branch',
 			name : 'client.branch.name',
 			type : 'text'
@@ -45,7 +49,9 @@ angular.module('MobileCRMApp')
 		'createdDate',
 		'invoiceNumber',
 		'sor',
+		'wor',
 		'client.branch',
+		'client.company',
 		'client.entity',
 		'client.entity.fullName',
 		'status.description',

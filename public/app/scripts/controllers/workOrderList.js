@@ -12,6 +12,10 @@ angular.module('MobileCRMApp')
 	$scope.workOrder = WorkOrder;
 
 	$scope.fields = [{
+			title : 'Company',
+			name : 'client.company.entity.name',
+			type : 'text'
+		},{
 			title : 'Branch',
 			name : 'client.branch.name',
 			type : 'text'
@@ -24,8 +28,8 @@ angular.module('MobileCRMApp')
 			name : 'invoiceNumber',
 			type : 'text'
 		}, {
-			title : 'SOR/Service Order #',
-			name : 'sor',
+			title : 'WOR/Work Order #',
+			name : 'wor',
 			type : 'text'
 		}, {
 			title : 'Customer',
@@ -46,8 +50,9 @@ angular.module('MobileCRMApp')
 		'_id',
 		'createdDate',
 		'invoiceNumber',
-		'sor',
+		'wor',
 		'client.branch',
+		'client.company',
 		'client.entity',
 		'client.entity.fullName',
 		'status.description',
@@ -55,32 +60,32 @@ angular.module('MobileCRMApp')
 	];
 	$scope.filterDate = 'createdDate';
 
-	$scope.excelFields = [{
-			title : 'Created Date',
-			name : 'createdDate',
-			type : 'date'
-		}, {
-			title : 'SOR',
-			name : 'sor',
-			type : 'text'
-		}, {
-			title : 'Invoice #',
-			name : 'invoiceNumber',
-			type : 'text'
-		}, {
-			title : 'Customer',
-			name : 'client.entity.fullName',
-			type : 'text'
-		}, {
-			title : 'Status',
-			name : 'status.description',
-			type : 'text'
-		}, {
-			title : 'Total Amount',
-			name : 'total',
-			type : 'currency'
-		}
-	];
+  $scope.excelFields = [{
+      title : 'Created Date',
+      name : 'createdDate',
+      type : 'date'
+    }, {
+      title : 'WOR/Work Order #',
+      name : 'wor',
+      type : 'text'
+    }, {
+      title : 'Invoice #',
+      name : 'invoiceNumber',
+      type : 'text'
+    }, {
+      title : 'Customer',
+      name : 'client.entity.fullName',
+      type : 'text'
+    }, {
+      title : 'Status',
+      name : 'status.description',
+      type : 'text'
+    }, {
+      title : 'Total Amount',
+      name : 'total',
+      type : 'currency'
+    }
+  ];
 
 	$scope.filter = $rootScope.userData.role._id == 1 ? { } : { 'client._id': $rootScope.userData._id };
 

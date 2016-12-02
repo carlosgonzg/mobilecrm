@@ -8,7 +8,7 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-.controller('InvoiceCtrl', function ($scope, $rootScope, $location, toaster, User, invoice, items, statusList, Item, ServiceOrder, dialogs, Invoice) {
+.controller('InvoiceCtrl', function ($scope, $rootScope, $location, toaster, User, invoice, items, statusList, Item, ServiceOrder, WorkOrder, dialogs, Invoice) {
 	$scope.invoice = invoice;
 	$scope.items = [];
 	$scope.readOnly = $rootScope.userData.role._id != 1;
@@ -22,6 +22,29 @@ angular.module('MobileCRMApp')
 	$scope.wsFieldsOS = [{
 			label : 'SOR/Service Order #',
 			field : 'sor',
+			type : 'text',
+			show: true
+		}, {
+			label : 'Customer',
+			field : 'client.entity.fullName',
+			type : 'text',
+			show: true
+		}, {
+			label : 'Status',
+			field : 'status.description',
+			type : 'text',
+			show: true
+		}, {
+			label : 'Total Amount',
+			field : 'total',
+			type : 'currency',
+			show: true
+		}
+	];
+	$scope.wsClassWO = WorkOrder;
+	$scope.wsFieldsWO = [{
+			label : 'WOR/Work Order #',
+			field : 'wor',
 			type : 'text',
 			show: true
 		}, {
@@ -65,6 +88,11 @@ angular.module('MobileCRMApp')
 		}
 	];
 	$scope.filterOS = {
+		'status._id': {
+			$in: [1, 2, 3]
+		} 
+	};
+	$scope.filterWO = {
 		'status._id': {
 			$in: [1, 2, 3]
 		} 

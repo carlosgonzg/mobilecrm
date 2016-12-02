@@ -138,6 +138,58 @@ var createServiceOrder = function(obj){
     return d.promise;
 };
 
+var createWorkOrderBody = function(workOrder){
+	console.log(__dirname);
+	var body = fs.readFileSync(__dirname + '/workorder.html', 'utf8').toString();
+	//replacement of data
+	body = body.replace('<createdDate>', moment(workOrder.date).format('MM/DD/YYYY'));
+	body = body.replace('<clientCompany>', workOrder.client.company ? workOrder.client.company.entity.name : 'None');
+	body = body.replace('<clientBranch>', workOrder.client.branch ? workOrder.client.branch.name : 'None');
+	body = body.replace('<customer>', workOrder.customer || 'None');
+	body = body.replace('<customerPhone>', workOrder.phone ? workOrder.phone.number : 'None');
+	body = body.replace('<wor>', workOrder.wor);
+	body = body.replace('<unitno>', workOrder.unitno);
+	body = body.replace('<pono>', workOrder.pono);
+	body = body.replace('<isono>', workOrder.isono);
+	body = body.replace('<clientName>', workOrder.client.entity.fullName);
+	body = body.replace('<clientPhone>', workOrder.client && workOrder.client.branch && workOrder.client.branch.phones && workOrder.client.branch.phones.length > 0 ? workOrder.client.branch.phones[0].number : 'None');
+	body = body.replace('<clientMail>', workOrder.client.account.email);
+	body = body.replace('<clientAddress>', workOrder.siteAddress.address1 + ', ' + workOrder.siteAddress.city.description + ', ' + workOrder.siteAddress.state.description + ' ' + workOrder.siteAddress.zipcode);
+	body = body.replace('<issue>', workOrder.issue || 'None');
+	body = body.replace('<comment>', workOrder.comment || 'None');
+	var contacts = '';
+	for(var i = 0; i < workOrder.contacts.length; i++){
+		if(workOrder.contacts[i].name)
+			contacts += '<b>Contact #' + (i+1) + ':&nbsp;</b>' +  workOrder.contacts[i].name + '.&nbsp;<b>Phone(' + workOrder.contacts[i].phoneType.description + '):</b>&nbsp;' + workOrder.contacts[i].number + '<br/>';
+	}
+	body = body.replace('<contacts>', contacts || '');
+	return body;
+};
+
+var createWorkOrder = function(obj){
+    var d = q.defer();
+	var options = { 
+		format: 'Letter',
+		border: {
+			top: '0.5in',
+			right: '0.5in',
+			bottom: '0.5in',
+			left: '0.5in'
+		}
+	};
+	var body = createServiceOrderBody(obj);
+	pdf.create(body, options).toFile(__dirname + '/workorders/' + obj.invoiceNumber + '.pdf', function(err, res) {
+        if (err) {
+            d.reject(err)
+            console.log(err);
+            return 
+        }
+        else {
+          d.resolve({ path: __dirname + '/workorders/' + obj.invoiceNumber + '.pdf', fileName:  obj.invoiceNumber + '.pdf' });
+        }
+	});
+    return d.promise;
+};
 
 exports.createInvoice = createInvoice;
 exports.createServiceOrder = createServiceOrder;
