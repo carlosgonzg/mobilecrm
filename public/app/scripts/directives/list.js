@@ -18,7 +18,7 @@ angular.module('MobileCRMApp')
 			advanced : '=',
 			sortList : '='
 		},
-		controller : function ($scope, $rootScope, $timeout, dialogs, toaster) {
+		controller : function ($scope, $rootScope, $timeout, dialogs, toaster, Loading) {
 			$scope.list = [];
 			$scope.currentElement = {};
 			$scope.objeto = new $scope.clase();
@@ -199,6 +199,7 @@ angular.module('MobileCRMApp')
 						end: new Date($scope.filterDateOptions.toDate)
 					};
 				}
+				Loading.show();
 				$scope.objeto.paginatedSearch(pParams).then(function (result) {
 					if (result.data.length == 0) {
 						toaster.pop('error', 'Information', 'Couldn\'t load the items');
@@ -212,12 +213,14 @@ angular.module('MobileCRMApp')
 							setFieldLimit();
 						});
 					}
+					Loading.hice();
 				}, function (error) {
 					toaster.pop('error', 'Information', 'Couldn\'t load the items');
 					if (error == 'error') {
 						$scope.list = [];
 						listBk = [];
 						$scope.loaded = true;
+						Loading.hide();
 					}
 					console.log(error, 'error');
 				});
