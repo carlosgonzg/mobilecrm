@@ -27,7 +27,7 @@ angular.module('MobileCRMApp')
         $scope.frontData = $scope.ngModel ? new Date($scope.ngModel) || '' : '';
         $scope.days = $scope.dpDays || ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
         $scope.daysAbbr = $scope.dpDaysAbbr || ['Su', 'M', 'Tu', 'W', 'Th', 'F', 'Sa'];
-        $scope.monthsAbbr = $scope.dpMonths || ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DIC'];
+        $scope.monthsAbbr = $scope.dpMonths || ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
         $scope.months = $scope.dpMonthsAbbr || ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
         // $scope.ngModel = angular.isDate($scope.ngModel) ? $scope.ngModel : new Date($scope.ngModel) == 'Invalid Date' ? new Date() : new Date($scope.ngModel);
         $scope.selectedDate = $scope.ngModel ? new Date($scope.ngModel) || new Date() : new Date();

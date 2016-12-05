@@ -212,31 +212,34 @@
 	</div>
 	<div class="row">
 		<div class="col-xs-12">
-			<table class="table table-striped table-hover" width="960" style="margin: 0 auto">
+			<table class="table table-striped table-hover" width="960px" style="margin: 0 auto">
 				<thead>
 					<tr>
-						<th width="140">
+						<th width="120px">
 							Item
 						</th>
-						<th width="100">
+						<th width="100px">
 							Code
 						</th>
-						<th width="1400">
+						<th width="140px">
 							Description
 						</th>
-						<th width="80">
+						<th width="80px">
 							Quantity
 						</th>
-						<th width="100">
+						<th width="100px">
 							Price
 						</th>
-						<th width="150">
+						<th width="150px">
 							Total
 						</th>
-						<th width="150">
+						<th width="150px">
+							Part
+						</th>
+						<th width="150px">
 							Comment
 						</th>
-						<th width="70">
+						<th width="70px">
 							<button type="button" class="btn btn-sm btn-primary update" ng-click="addItem()">
 								<i class="fa fa-plus"></i>
 							</button>
@@ -270,6 +273,9 @@
 						</td>
 						<td>
 							{{item.getTotalPrice() | currency }}
+						</td>
+						<td>
+							<input type="text" name="part{{$index}}" class="form-control" ng-model="item.part"  ng-disabled="isDisabled()">
 						</td>
 						<td>
 							<textarea id="partComment" ng-model="item.comment" class="form-control">
