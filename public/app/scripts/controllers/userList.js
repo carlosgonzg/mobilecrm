@@ -12,6 +12,14 @@ angular.module('MobileCRMApp')
 	$scope.wsUser = User;
 
 	$scope.fields = [{
+			title : 'Company',
+			name : 'company.entity.name',
+			type : 'text'
+		},{
+			title : 'Branch',
+			name : 'branch.name',
+			type : 'text'
+		},{
 			title : 'Name',
 			name : 'entity.fullName',
 			type : 'text'
@@ -31,7 +39,9 @@ angular.module('MobileCRMApp')
 		'entity',
 		'entity.fullName',
 		'account.email',
-		'role.description'
+		'role.description',
+		'company.entity.name',
+		'branch.name'
 	];
 
 	$scope.createNew = function () {
