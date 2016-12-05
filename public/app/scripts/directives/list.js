@@ -213,7 +213,7 @@ angular.module('MobileCRMApp')
 							setFieldLimit();
 						});
 					}
-					Loading.hice();
+					Loading.hide();
 				}, function (error) {
 					toaster.pop('error', 'Information', 'Couldn\'t load the items');
 					if (error == 'error') {
