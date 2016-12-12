@@ -62,11 +62,10 @@ d.run(function () {
 	require('./api/ws/serviceOrder')('/api/serviceOrder', app, mail, __dirname);
 	require('./api/ws/invoice')('/api/invoice', app, mail, __dirname);
 	require('./api/ws/workOrder')('/api/workOrder', app, mail, __dirname);
-	//require('./api/ws/report')('/api/report', app, mail, __dirname);
 	require('./api/ws/item')('/api/item', app);
+	require('./api/ws/itemCollection')('/api/itemCollection', app);
 	require('./api/ws/company')('/api/company', app);
 	require('./api/ws/branch')('/api/branch', app);
-
 	//Inicializando Server
 	http.createServer(app).listen(config.APP_PORT, function () {
 		console.log("\n[*] Server Listening on port %d", config.APP_PORT);

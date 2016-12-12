@@ -96,6 +96,26 @@ angular
 			}
 		}
 	})
+	.when('/itemCollection/:id?', {
+		templateUrl : 'views/itemCollection.html',
+		controller : 'ItemCollectionCtrl',
+		resolve : {
+			itemCollection : function (ItemCollection, $route) {
+				if ($route.current.params.id) {
+					return new ItemCollection().findById(parseInt($route.current.params.id));
+				} else {
+					return new ItemCollection();
+				}
+			},
+			items: function(Item){
+				return new Item().find();
+			}
+		}
+	})
+	.when('/itemCollectionList', {
+		templateUrl : 'views/itemCollectionList.html',
+		controller : 'ItemCollectionListCtrl'
+	})
 	.when('/serviceOrderList', {
 		templateUrl : 'views/serviceOrderList.html',
 		controller : 'ServiceOrderListCtrl'

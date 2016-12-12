@@ -1,0 +1,72 @@
+<form class="form" id="itemCollectionForm" name="itemCollectionForm">
+	<div class="row">
+		<div class="col-xs-12">
+			<h1 class="pull-left">
+				<i class="fa fa-lg fa-list"></i> <span> Item Collection</span>
+			</h1>
+			<div class="btn-group pull-right" style="margin-top: 20px;" role="group" aria-label="...">
+				<button type="submit" class="btn btn-primary update" validation-submit="itemCollectionForm" ng-click="save()">
+					<i class="fa fa-save"></i>&nbsp;<span>Save</span>
+				</button>
+				<button type="button" class="btn btn-danger" ng-click="delete()" ng-if="invoice._id && userData.role._id == 1">
+					<i class="fa fa-trash"></i>&nbsp;<span>Delete</span>
+				</button>
+				<back-button></back-button>
+			</div>
+			<hr />
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-8">
+			<div class="col-xs-12">
+				<div class="form-group">
+					<label for="description">Description</label>
+					<input name="description" type="text" class="form-control" ng-model="itemCollection.description" validator="required"/>
+				</div>
+			</div>
+			<div class="col-xs-12">
+				<table class="table table-striped table-hover">
+					<thead>
+						<tr>
+							<th width="80%">
+								Item
+							</th>
+							<th width="20%">
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>
+								<ui-select ng-model="params.item" theme="bootstrap">
+					            	<ui-select-match placeholder="Select the item you want on the list...">
+		        						{{$select.selected.code}}&nbsp;-&nbsp;{{$select.selected.description}}
+					            	</ui-select-match>
+					            	<ui-select-choices repeat="i in items | filter: $select.search track by i._id">
+				              			<div ng-bind-html="i.description | highlight: $select.search"></div>
+					              		<small ng-bind-html="i.code | highlight: $select.search"></small>
+					            	</ui-select-choices>
+					          	</ui-select>
+							</td>
+							<td>
+								<button type="button" class="btn btn-sm btn-primary" ng-click="addItem(params.item)">
+									<i class="fa fa-plus"></i>
+								</button>
+							</td>
+						</tr>
+						<tr ng-repeat="item in itemCollection.items track by $index">
+							<td>
+								{{getItem(item).code}}&nbsp;-&nbsp;{{getItem(item).description}}
+							</td>
+							<td>
+								<button type="button" class="btn btn-sm btn-danger update" ng-click="removeItem($index)">
+									<i class="fa fa-remove"></i>
+								</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</form>
