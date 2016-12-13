@@ -183,6 +183,7 @@ angular.module('MobileCRMApp')
           } else {
             $scope.selectedDate = angular.copy(date);
             $scope.setDate();
+            $scope.closedp();
           }
         };
 

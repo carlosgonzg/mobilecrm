@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('MobileCRMApp')
-.factory('Invoice', function (Base, Item, $rootScope, $location, $q,$http, toaster, dialogs) {
+.factory('Invoice', function (Base, Item, $rootScope, $location, $q,$http, toaster, dialogs, Loading) {
 
 	// Variable que se utiliza para comprobar si un objeto tiene una propiedad
 	// var hasProp = Object.prototype.hasOwnProperty;
@@ -135,6 +135,7 @@ var a;
 	Invoice.prototype.exportMonthlyStatement = function(query, format){
 		var d = $q.defer();
 		var _this = this;
+		Loading.show();
 		$http({
 			url: this.baseApiPath + '/monthlyStatement/export',
 			method: "POST",
@@ -155,9 +156,11 @@ var a;
 			a.download = 'monthlyStatement.' + format;
 			a.click();
 			window.URL.revokeObjectURL(url);
+			Loading.hide();
 			d.resolve(url);
 	    })
 	    .error(function (data, status, headers, config) {
+	    	Loading.hide();
 	    	toaster.error('There was an error exporting the file, please try again')
 	        d.reject(data);
 	    });

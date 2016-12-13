@@ -61,7 +61,8 @@ var createMonthlyStatement = function(invoices, whoIs, user){
 		{ key: 'g', width: 27 },
 		{ key: 'h', width: 27 },
 		{ key: 'i', width: 27 },
-		{ key: 'j', width: 27 }
+		{ key: 'j', width: 27 },
+		{ key: 'k', width: 27 }
 	];
 	//header
 	excel.worksheet.addRow(['Monthly Statement -', '', whoIs.name, '', 'MOBILE ONE']);
@@ -89,16 +90,15 @@ var createMonthlyStatement = function(invoices, whoIs, user){
 		excel.worksheet.getCell('E' + (i + 4).toString()).numFmt = '$ #,###,###,##0.00';
 	}
 	//detail
-	excel.worksheetDetail.addRow(['Customer', 'Date', 'Unit Number', 'PO Number', 'Amount', 'Status', 'Year', 'Month', 'Branch', 'Company']);
+	excel.worksheetDetail.addRow(['Customer', 'Date', 'Invoice Number', 'Unit Number', 'PO Number', 'Amount', 'Status', 'Year', 'Month', 'Branch', 'Company']);
 	excel.worksheetDetail.lastRow.font = boldFont;
 	//first of all i'm showing the month/year
 	for(var i = 0; i < invoices.length; i++){
-		excel.worksheetDetail.addRow([invoices[i].month + ' - ' + invoices[i].year + '(' + invoices[i].status.description + ')', '', '', '', '', '', '', '', '', '']);
-		excel.worksheetDetail.lastRow.font = boldFont;
+		excel.worksheetDetail.addRow([invoices[i].month + ' - ' + invoices[i].year + '(' + invoices[i].status.description + ')', '', '', '', '', '', '', '', '', '', '']);
 		excel.worksheetDetail.lastRow.font = boldFont;
 		for(var j = 0; j < invoices[i].invoices.length; j++){
 			var invoice = invoices[i].invoices[j];
-			excel.worksheetDetail.addRow([invoice.client.name, moment(invoice.date).format('MM/DD/YYYY'), invoice.unitno, invoice.pono, invoice.total, invoice.status.description, invoice.year, invoice.month, invoice.branch.name, invoice.company.name]);
+			excel.worksheetDetail.addRow([invoice.client.name, moment(invoice.date).format('MM/DD/YYYY'), invoice.invoiceNumber, invoice.unitno, invoice.pono, invoice.total, invoice.status.description, invoice.year, invoice.month, invoice.branch.name, invoice.company.name]);
 			excel.worksheetDetail.lastRow.font = normalFont;
 		}
 	}

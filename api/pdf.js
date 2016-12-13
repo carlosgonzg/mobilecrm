@@ -238,7 +238,7 @@ var createMonthlyStatementBody = function(invoices, whoIs){
 	body = body.replace('<tableMSItems>', tableMSItems);
 	for(var i = 0; i < invoices.length; i++){
 		tableDItems += '<tr>';
-		tableDItems += '<td colspan="10" style="border-bottom: solid 1px #333333"><b>';
+		tableDItems += '<td colspan="11" style="border-bottom: solid 1px #333333"><b>';
 		tableDItems +=   invoices[i].month + ' - ' + invoices[i].year + '(' + invoices[i].status.description + ')';
 		tableDItems += '</b></td>';
 		tableDItems += '<tr>';	
@@ -250,6 +250,9 @@ var createMonthlyStatementBody = function(invoices, whoIs){
 			tableDItems += '</td>';
 			tableDItems += '<td>';
 			tableDItems +=  moment(invoice.date).format('MM/DD/YYYY');
+			tableDItems += '</td>';
+			tableDItems += '<td>';
+			tableDItems += invoice.invoiceNumber;
 			tableDItems += '</td>';
 			tableDItems += '<td>';
 			tableDItems += invoice.unitno;
