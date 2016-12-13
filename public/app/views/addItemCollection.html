@@ -1,0 +1,70 @@
+<div class="modal-header modal-header-color dialog-header-confirm">
+  <button type="button" class="close" ng-click="close()"><i class="fa fa-times"></i></button>
+  <h4 class="modal-title">
+		Item Collections:
+  </h4>
+</div>
+<div class="modal-body">
+	<div class="row">
+		<div class="col-xs-12">
+			<div class="form-group">
+				<label for="search">Search by description:</label>
+				<ui-select ng-model="params.itemCollection" theme="bootstrap" on-select="getItems(params.itemCollection)">
+	            	<ui-select-match placeholder="Select the item collection you want on the list...">
+						{{$select.selected.description}}
+	            	</ui-select-match>
+	            	<ui-select-choices repeat="i in itemCollections | filter: $select.search track by i._id">
+              			<div ng-bind-html="i.description | highlight: $select.search"></div>
+	              		<small ng-bind-html="i.code | highlight: $select.search"></small>
+	            	</ui-select-choices>
+	          	</ui-select>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12">
+			<table class="table table-striped table-hover" width="100%" style="margin: 0 auto">
+				<thead>
+					<tr>
+						<th width="25%">
+							Code
+						</th>
+						<th width="30%">
+							Description
+						</th>
+						<th width="25%">
+							Part
+						</th>
+						<th width="20%">
+							Import
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="item in items track by $index">
+						<td>
+							{{item.code}}
+						</td>
+						<td>
+							{{item.description}}
+						</td>
+						<td>
+							{{item.part}}
+						</td>
+						<td>
+							<div class="checkbox">
+							    <label>
+							      <input type="checkbox" ng-model="item.import">
+								</label>
+						  	</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+<div class="modal-footer">
+	<button class="btn btn-primary" type="button" ng-click="set()"><i class="fa fa-disk"></i>&nbsp;Assign</button>
+  <button class="btn btn-default" type="button" ng-click="close()"><i class="fa fa-times"></i>&nbsp;Close</button>
+</div>

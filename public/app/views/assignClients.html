@@ -23,7 +23,7 @@
 				<tbody>
 					<tr ng-repeat="client in clients track by $index">
 						<td>
-							<select class="form-control" ng-model="client._id" ng-options="o._id as o.entity.fullName for o in clientList track by o._id" />
+							<select class="form-control" ng-model="client._id" ng-options="o._id as o.entity.fullName for o in clientList" />
 						</td>
 						<td>
 							<button type="button" class="btn btn-sm btn-danger" ng-click="remove($index)">

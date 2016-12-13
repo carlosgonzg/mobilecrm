@@ -3,14 +3,20 @@
 		<h1 class="pull-left">
 			<i class="fa fa-lg fa-calendar"></i> <span> Monthly Statement</span>
 		</h1>
-		<div class="btn-group pull-right" style="margin-top: 20px;" role="group" aria-label="...">
-			<button type="submit" form="userForm" class="btn btn-primary" ng-click="search(params)">
-				<i class="fa fa-save"></i>&nbsp;<span>Search</span>
+		<div class="pull-right" style="margin-top: 20px;" >
+			<button type="submit" form="userForm" class="btn btn-primary pull-left" ng-click="search(params)">
+				<i class="fa fa-search"></i>&nbsp;<span>Search</span>
 			</button>
-			<!--
-			<button type="button" class="btn btn-default" ng-click="export()">
-				<i class="fa fa-download"></i>&nbsp;<span>Download</span>-->
-			</button>
+			<div class="dropdown pull-left">
+				<button type="button" class="btn btn-default dropdown-toggle" id="dpDownload" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+					<i class="fa fa-download"></i>&nbsp;<span>Download</span>
+					<span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu" aria-labelledby="dpDownload">
+					<li class="pointer"><a ng-click="export(params, 'pdf')">as PDF</a></li>
+					<li class="pointer"><a ng-click="export(params, 'xls')">as Excel</a></li>
+				</ul>
+			</div>
 			<back-button></back-button>
 		</div>
 		<hr />

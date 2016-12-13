@@ -78,6 +78,31 @@ angular.module('MobileCRMApp')
 		$scope.workOrder.items[index] = new Item(item);
 	};
 
+	$scope.addItemCollection = function(){
+		var dialog = dialogs.create('views/addItemCollection.html', 'AddItemCollectionCtrl', { client: $scope.workOrder.client });
+		dialog.result
+		.then(function (res) {
+			//add items to collection workOrder.items
+			for(var i = 0; i < res.length; i++){
+				var isHere = -1;
+				for(var j = 0; j < $scope.workOrder.items.length; j++){
+					if(res[i]._id == $scope.workOrder.items[j]._id){
+						isHere = j;
+						break;
+					}
+				}
+				if(isHere != -1){
+					$scope.workOrder.items[isHere].quantity++;
+				}
+				else {
+					$scope.workOrder.items.push(res[i]);
+				}
+			}
+			
+		}, function (error) {
+		});
+	};
+
 	$scope.changed = function(field){
 		if($scope.workOrder._id && $rootScope.userData.role._id != 1){
 			var isHere = false;

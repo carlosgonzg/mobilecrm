@@ -79,7 +79,7 @@ angular.module('MobileCRMApp')
 		$scope.params.searchWho = null;
 		Loading.hide();
 	};
-	$scope.search = function(params){
+	var generateQuery = function(params){
 		if(params.searchBy.code != 'MobileOne' && !params.searchWho){
 			toaster.error('', params.searchBy.description + ' is required.');
 			throw new Error('Not enough params');
@@ -97,6 +97,10 @@ angular.module('MobileCRMApp')
 		
 		query.from = new Date(today.getFullYear(), 0, 1, 0, 0, 0, 0);
 		query.to = new Date(today.getFullYear(), 11, 31, 23, 59, 59, 999);
+		return query;
+	};
+	$scope.search = function(params){
+		var query = generateQuery(params);
 		Loading.show();
 		$scope.invoices = [];
 		new Invoice().getMonthlyStatement(query)
@@ -105,5 +109,9 @@ angular.module('MobileCRMApp')
 			$scope.invoices = result;
 			Loading.hide();
 		})
+	};
+	$scope.export = function(params, format){
+		var query = generateQuery(params);
+		new Invoice().exportMonthlyStatement(query, format);
 	};
 });

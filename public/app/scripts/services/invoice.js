@@ -131,5 +131,37 @@ var a;
 	    });
 		return d.promise;
 	};
+
+	Invoice.prototype.exportMonthlyStatement = function(query, format){
+		var d = $q.defer();
+		var _this = this;
+		$http({
+			url: this.baseApiPath + '/monthlyStatement/export',
+			method: "POST",
+			data: { query: query, format: format },
+			headers: {
+			'Content-type': 'application/json'
+			},
+			responseType: 'arraybuffer'
+		})
+		.success(function (data, status, headers, config) {
+			var json = JSON.stringify(data);
+			var blob = new Blob([data], {
+				type: format == 'pdf' ? 'application/pdf' : 'application/vnd.ms-excel'
+			});
+			var url = window.URL.createObjectURL(blob);
+			
+			a.href = url;
+			a.download = _this.invoiceNumber + '.' + format;
+			a.click();
+			window.URL.revokeObjectURL(url);
+			d.resolve(url);
+	    })
+	    .error(function (data, status, headers, config) {
+	    	toaster.error('There was an error exporting the file, please try again')
+	        d.reject(data);
+	    });
+	    return d.promise;
+	};
 	return Invoice;
 });

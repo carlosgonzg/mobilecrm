@@ -1,3 +1,4 @@
+
 var obj = result.data[0]
 		var excel = new Excel(obj.invoiceNumber, null, obj.invoiceNumber);
 		var headerFont = {

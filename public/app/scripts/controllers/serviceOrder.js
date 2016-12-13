@@ -152,6 +152,31 @@ angular.module('MobileCRMApp')
 		$scope.serviceOrder.photos.splice(index, 1);
 	};
 
+	$scope.addItemCollection = function(){
+		var dialog = dialogs.create('views/addItemCollection.html', 'AddItemCollectionCtrl', { client: $scope.serviceOrder.client });
+		dialog.result
+		.then(function (res) {
+			//add items to collection serviceOrder.items
+			for(var i = 0; i < res.length; i++){
+				var isHere = -1;
+				for(var j = 0; j < $scope.serviceOrder.items.length; j++){
+					if(res[i]._id == $scope.serviceOrder.items[j]._id){
+						isHere = j;
+						break;
+					}
+				}
+				if(isHere != -1){
+					$scope.serviceOrder.items[isHere].quantity++;
+				}
+				else {
+					$scope.serviceOrder.items.push(res[i]);
+				}
+			}
+			
+		}, function (error) {
+		});
+	};
+
 	$scope.save = function () {
 		delete $scope.serviceOrder.client.account.password;
 		$scope.serviceOrder.save()

@@ -6,7 +6,7 @@ var Address = require('./address');
 var Item = require('./item');
 var _ = require('underscore');
 var util = require('./util');
-var Excel = require('./excel');
+var excel = require('../excel');
 var moment = require('moment');
 var User = require('./user');
 var pdf = require('../pdf');
@@ -280,7 +280,7 @@ Invoice.prototype.getMonthlyStatement = function(params, user){
 			total: 1,
 			status: {
 				_id: '$status._id',
-				description: '$status._id'
+				description: '$status.description'
 			},
 			statusPaid: {
 				_id: {
@@ -360,7 +360,6 @@ Invoice.prototype.getMonthlyStatement = function(params, user){
 			month: 1
 		}
 	};
-	console.log(query)
 	pipeline.push(project);
 	pipeline.push(sort);
 	pipeline.push(query);
@@ -378,5 +377,53 @@ Invoice.prototype.getMonthlyStatement = function(params, user){
 	return d.promise;
 };
 
+Invoice.prototype.createMonthlyStatement = function(params, format, user){
+	var d = q.defer();
+	var _this = this;
+	var whoIs = {};
+	var promise = params.clientId ? _this.user.crud.find({ _id: Number(params.clientId) }) : 
+	           	  params.companyId ? _this.crudCompany.find({ _id: Number(params.companyId) }) : 
+	           	  params.branchId ? _this.crudBranch.find({ _id: Number(params.branchId) }) :
+	           	  q.when({ data: [{ _id: -1, name: 'MobileOne'}] });
+	promise
+	.then(function(res){
+		var obj = res.data[0] || {};
+		if(params.clientId){
+			whoIs = {
+				_id: obj._id,
+				name: obj.entity.fullName
+			};
+		}
+		else if(params.companyId){
+			whoIs = {
+				_id: obj._id,
+				name: obj.entity.name
+			};
+		}
+		else if(params.branchId){
+			whoIs = {
+				_id: obj._id,
+				name: obj.name
+			};
+		}
+		else {
+			whoIs = {
+				_id: obj._id,
+				name: obj.name
+			};
+		}
+		return _this.getMonthlyStatement(params, user);
+	})
+	.then(function(data){
+		return format == 'pdf' ? pdf.createMonthlyStatement(data, whoIs, user) : excel.createMonthlyStatement(data, whoIs, user);
+	})
+	.then(function(data){
+		d.resolve(data);
+	})
+	.fail(function(error){
+		d.reject(error);
+	});
+	return d.promise;
+};
 
 module.exports = Invoice;

@@ -154,7 +154,7 @@ input{
 	position: fixed; 
 	top: 70px;
 	background-color: white;
-	z-index: 9999;
+	z-index: 1024;
 }
 .fixed-content{
 	margin-top:110px;
@@ -162,4 +162,7 @@ input{
 .validation-invalid{
 	font-weight: bold;
 	color: #ff0000;
+}
+.pointer{
+	cursor: pointer;
 }

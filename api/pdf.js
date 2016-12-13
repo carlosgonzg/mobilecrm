@@ -3,6 +3,23 @@ var fs =  require('fs');
 var moment = require('moment');
 var numeral = require('numeral');
 var q = require('q');
+var _ = require('underscore');
+
+var getPaid = function(invoices, year, month){
+	return _.reduce(invoices, function(memo, value){
+		return memo + (year == value.year && month == value.month && value.status._id == 4 ? value.total : 0);
+	}, 0);
+};
+var getPending = function(invoices, year, month){
+	return _.reduce(invoices, function(memo, value){
+		return memo + (year == value.year && month == value.month && value.status._id != 4 ? value.total : 0);
+	}, 0);
+};
+var getTotal = function(invoices, year, month){
+	return _.reduce(invoices, function(memo, value){
+		return memo + (year == value.year && month == value.month ? value.total : 0);
+	}, 0);
+};
 
 var createInvoiceBody = function(obj, company, branch){
 	var body = fs.readFileSync(__dirname + '/invoice.html', 'utf8').toString();
@@ -189,9 +206,111 @@ var createWorkOrder = function(obj){
     return d.promise;
 };
 
+var createMonthlyStatementBody = function(invoices, whoIs){
+	var body = fs.readFileSync(__dirname + '/monthlystatement.html', 'utf8').toString();
+	//replacement of data
+	body = body.replace(/<createdDate>/g, moment().format('MM/DD/YYYY'));
+	body = body.replace(/<whoIs>/g, whoIs.name);
+	//Inserting table of items
+	var tableMSItems = '';
+	var tableDItems = '';
+	var months = ['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+	var today = new Date();
+	for(var i = 1; i <= 12; i++){
+		tableMSItems += '<tr>';
+		tableMSItems += '<td style="text-align: center;border: thin solid black; border-top: none; border-right: none;">';
+		tableMSItems +=  today.getFullYear();
+		tableMSItems += '</td>';
+		tableMSItems += '<td style="border: thin solid black; border-top: none; border-right: none;">';
+		tableMSItems += months[i];
+		tableMSItems += '</td>';
+		tableMSItems += '<td style="text-align: right;border: thin solid black; border-top: none; border-right: none;">';
+		tableMSItems += numeral(getPaid(invoices, today.getFullYear(), i)).format('$0,0.00');
+		tableMSItems += '</td>';
+		tableMSItems += '<td style="text-align: right;border: thin solid black; border-top: none; border-right: none;">';
+		tableMSItems += numeral(getPending(invoices, today.getFullYear(), i)).format('$0,0.00');
+		tableMSItems += '</td>';
+		tableMSItems += '<td style="text-align: right;border: thin solid black; border-top: none;">';
+		tableMSItems += numeral(getTotal(invoices, today.getFullYear(), i)).format('$0,0.00');
+		tableMSItems += '</td>';
+		tableMSItems += '</tr>';
+	}
+	body = body.replace('<tableMSItems>', tableMSItems);
+	for(var i = 0; i < invoices.length; i++){
+		tableDItems += '<tr>';
+		tableDItems += '<td colspan="10" style="border-bottom: solid 1px #333333"><b>';
+		tableDItems +=   invoices[i].month + ' - ' + invoices[i].year + '(' + invoices[i].status.description + ')';
+		tableDItems += '</b></td>';
+		tableDItems += '<tr>';	
+		for(var j = 0; j < invoices[i].invoices.length; j++){
+			var invoice = invoices[i].invoices[j];
+			tableDItems += '<tr>';
+			tableDItems += '<td>';
+			tableDItems +=  invoice.client.name;
+			tableDItems += '</td>';
+			tableDItems += '<td>';
+			tableDItems +=  moment(invoice.date).format('MM/DD/YYYY');
+			tableDItems += '</td>';
+			tableDItems += '<td>';
+			tableDItems += invoice.unitno;
+			tableDItems += '</td>';
+			tableDItems += '<td>';
+			tableDItems += invoice.pono;
+			tableDItems += '</td>';
+			tableDItems += '<td style="text-align: right;">';
+			tableDItems += numeral(invoice.total).format('$0,0.00');
+			tableDItems += '</td>';
+			tableDItems += '<td>';
+			tableDItems += invoice.status.description;
+			tableDItems += '</td>';
+			tableDItems += '<td>';
+			tableDItems += invoice.year;
+			tableDItems += '</td>';
+			tableDItems += '<td>';
+			tableDItems += invoice.month;
+			tableDItems += '</td>';
+			tableDItems += '<td>';
+			tableDItems += invoice.branch.name;
+			tableDItems += '</td>';
+			tableDItems += '<td>';
+			tableDItems += invoice.company.name;
+			tableDItems += '</td>';
+			tableDItems += '</tr>';
+		}
+	}
+	body = body.replace('<tableDItems>', tableDItems);
+	return body;
+};
+
+var createMonthlyStatement = function(invoices, whoIs){
+    var d = q.defer();
+	var options = { 
+		format: 'Letter',
+		border: {
+			top: '0.5in',
+			right: '0.5in',
+			bottom: '0.5in',
+			left: '0.5in'
+		}
+	};
+	var body = createMonthlyStatementBody(invoices, whoIs);
+	var fname = moment().format('MM-DD-YYYY hh:mm') + '.pdf';
+	pdf.create(body, options).toFile(__dirname + '/monthlystatement/' + fname, function(err, res) {
+        if (err) {
+            d.reject(err)
+            console.log(err);
+            return 
+        }
+        else {
+          d.resolve({ path: __dirname + '/monthlystatement/' + fname, fileName: fname});
+        }
+	});
+    return d.promise;
+};
+
 exports.createInvoice = createInvoice;
 exports.createServiceOrder = createServiceOrder;
 exports.createWorkOrder = createWorkOrder;
-
+exports.createMonthlyStatement = createMonthlyStatement;
 
 
