@@ -147,12 +147,12 @@ var a;
 		.success(function (data, status, headers, config) {
 			var json = JSON.stringify(data);
 			var blob = new Blob([data], {
-				type: format == 'pdf' ? 'application/pdf' : 'application/vnd.ms-excel'
+				type: format == 'pdf' ? 'application/pdf' : 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 			});
 			var url = window.URL.createObjectURL(blob);
 			
 			a.href = url;
-			a.download = _this.invoiceNumber + '.' + format;
+			a.download = 'monthlyStatement.' + format;
 			a.click();
 			window.URL.revokeObjectURL(url);
 			d.resolve(url);

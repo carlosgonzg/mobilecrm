@@ -107,7 +107,7 @@ var createMonthlyStatement = function(invoices, whoIs, user){
 	var filePath = __dirname + relPath;
 	excel.workbook.xlsx.writeFile(filePath)
 	.then(function(){
-		d.resolve({ path: relPath });
+		d.resolve({ path: filePath });
 	});
 	return d.promise;
 };

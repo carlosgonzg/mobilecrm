@@ -202,7 +202,6 @@ Invoice.prototype.sendInvoiceUpdate = function(id, username, mail){
 		return _this.createInvoice(id, username);
 	})
 	.then(function(){
-		console.log('alo')
 		return mail.sendInvoiceUpdate(invoice, emails, username);
 	})
 	.then(function(){
@@ -424,6 +423,16 @@ Invoice.prototype.createMonthlyStatement = function(params, format, user){
 		d.reject(error);
 	});
 	return d.promise;
+};
+
+Invoice.prototype.getMonthlyStatementFile = function(params, format, user, res){
+	this.createMonthlyStatement(params, format, user)
+	.then(function(obj){
+		fs.readFile(obj.path, function (err,data){
+			res.contentType(format == 'pdf' ? 'application/pdf' : 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+			res.send(data);
+		});
+	});
 };
 
 module.exports = Invoice;

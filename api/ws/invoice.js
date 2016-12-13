@@ -35,8 +35,7 @@ module.exports = function (prefix, app, mail, dirname) {
 
 	app.post(prefix + '/monthlyStatement/export', function (req, res) {
 		var invoice = new Invoice(app.db, req.user, dirname);
-		invoice.createMonthlyStatement(req.body.query, req.body.format, req.user)
-		.then(util.success(res), util.error(res));
+		invoice.getMonthlyStatementFile(req.body.query, req.body.format, req.user, res);
 	});
 	require('./crud')(prefix, app, Invoice);
 }

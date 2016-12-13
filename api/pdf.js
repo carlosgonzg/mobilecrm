@@ -295,6 +295,7 @@ var createMonthlyStatement = function(invoices, whoIs){
 	};
 	var body = createMonthlyStatementBody(invoices, whoIs);
 	var fname = moment().format('MM-DD-YYYY hh:mm') + '.pdf';
+	var relPath = '/monthlystatement/ms-' + fname;
 	pdf.create(body, options).toFile(__dirname + '/monthlystatement/' + fname, function(err, res) {
         if (err) {
             d.reject(err)
