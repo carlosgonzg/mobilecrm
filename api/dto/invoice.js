@@ -313,7 +313,8 @@ Invoice.prototype.getMonthlyStatement = function(params, user){
 		$sort: {
 			date: 1,
 			'company._id': 1,
-			'branch._id': 1
+			'branch._id': 1,
+			'client._id': 1
 		}
 	}
 
@@ -361,8 +362,7 @@ Invoice.prototype.getMonthlyStatement = function(params, user){
 	var sort1 = {
 		$sort: {
 			year: 1,
-			month: 1,
-
+			month: 1
 		}
 	};
 	pipeline.push(project);
