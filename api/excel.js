@@ -98,7 +98,7 @@ var createMonthlyStatement = function(invoices, whoIs, user){
 		excel.worksheetDetail.lastRow.font = boldFont;
 		for(var j = 0; j < invoices[i].invoices.length; j++){
 			var invoice = invoices[i].invoices[j];
-			excel.worksheetDetail.addRow([invoice.client.name, moment(invoice.date).format('MM/DD/YYYY'), invoice.invoiceNumber, invoice.unitno, invoice.pono, invoice.total, invoice.status.description, invoice.year, invoice.month, invoice.branch.name, invoice.company.name]);
+			excel.worksheetDetail.addRow([invoice.client.name, moment(invoice.date).format('MM/DD/YYYY'), invoice.invoiceNumber, invoice.unitno, invoice.pono, invoice.total, invoice.status.description, invoice.year, invoice.month, invoice.branch ? invoice.branch.name : '', invoice.company ? invoice.company.name: '']);
 			excel.worksheetDetail.lastRow.font = normalFont;
 		}
 	}
