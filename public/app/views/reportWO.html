@@ -150,7 +150,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr ng-repeat="workOrder in workOrders track by $index">
+				<tr ng-repeat="workOrder in workOrders track by $index" ng-dblclick="workOrder.goTo()">
 					<td>
 						{{workOrder.date|date:'MM/dd/yyyy'}}
 					</td>

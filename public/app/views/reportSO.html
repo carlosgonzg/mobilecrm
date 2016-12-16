@@ -131,7 +131,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr ng-repeat="serviceOrder in serviceOrders track by $index">
+				<tr ng-repeat="serviceOrder in serviceOrders track by $index" ng-dblclick="serviceOrder.goTo()">
 					<td>
 						{{serviceOrder.date|date:'MM/dd/yyyy'}}
 					</td>

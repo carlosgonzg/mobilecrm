@@ -23,6 +23,10 @@ angular.module('MobileCRMApp')
 			title : 'Created Date',
 			name : 'createdDate',
 			type : 'date'
+		},{
+			title : 'Completed Date',
+			name : 'completedDate',
+			type : 'date'
 		}, {
 			title : 'Invoice #',
 			name : 'invoiceNumber',
@@ -71,6 +75,10 @@ angular.module('MobileCRMApp')
 		},{
 			title : 'Created Date',
 			name : 'createdDate',
+			type : 'date'
+		},{
+			title : 'Completed Date',
+			name : 'completedDate',
 			type : 'date'
 		}, {
 			title : 'Invoice #',
