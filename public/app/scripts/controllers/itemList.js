@@ -8,7 +8,7 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-.controller('ItemListCtrl', function ($scope, items, clients, Item, $q, toaster, dialogs) {
+.controller('ItemListCtrl', function ($scope, items, companies, Item, $q, toaster, dialogs) {
 	$scope.items = items.data;
 	$scope.add = function(){
 		var item = new Item();
@@ -40,11 +40,11 @@ angular.module('MobileCRMApp')
 		});
 	};
 
-	$scope.assignClients = function(item){
-		var itemClients = item.clients || [];
-		var dialog = dialogs.create('views/assignClients.html', 'AssignClientsCtrl', { clientList: clients.data, clients: itemClients });
+	$scope.assignCompanies = function(item){
+		var itemCompanies = item.companies || [];
+		var dialog = dialogs.create('views/assignCompanies.html', 'AssignCompaniesCtrl', { companyList: companies.data, companies: itemCompanies });
 		dialog.result.then(function (res) {
-			item.clients = res.clients;
+			item.companies = res.companies;
 		});
 	};
 });

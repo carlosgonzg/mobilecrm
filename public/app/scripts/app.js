@@ -91,8 +91,8 @@ angular
 			items : function (Item) {
 				return new Item().find({});
 			},
-			clients : function (User) {
-				return new User().filter({ 'role._id': { $ne: 1} });
+			companies : function (Company) {
+				return new Company().filter({ });
 			}
 		}
 	})

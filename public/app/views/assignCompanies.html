@@ -1,7 +1,7 @@
 <div class="modal-header modal-header-color dialog-header-confirm">
   <button type="button" class="close" ng-click="close()"><i class="fa fa-times"></i></button>
   <h4 class="modal-title">
-		Assign Clients:
+		Assign Companies:
   </h4>
 </div>
 <div class="modal-body">
@@ -21,9 +21,9 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr ng-repeat="client in clients track by $index">
+					<tr ng-repeat="company in companies track by $index">
 						<td>
-							<select class="form-control" ng-model="client._id" ng-options="o._id as o.entity.fullName for o in clientList" />
+							<select class="form-control" ng-model="company._id" ng-options="o._id as o.entity.name for o in companyList" />
 						</td>
 						<td>
 							<button type="button" class="btn btn-sm btn-danger" ng-click="remove($index)">
