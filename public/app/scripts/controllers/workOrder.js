@@ -55,7 +55,7 @@ angular.module('MobileCRMApp')
 					}
 				}
 				for(var j = 0; j < items.data[i].companies.length; j++){
-					if(items.data[i].companies[j]._id == client.company._id){
+					if(items.data[i].companies[j]._id ==  (client && client.company ? client.company._id : -1)){
 						$scope.items.push(items.data[i]);
 						break;
 					}
