@@ -148,7 +148,8 @@ WorkOrder.prototype.insert = function (workOrder, user, mail) {
 		return _this.crud.update({ _id: workOrder._id }, workOrder)
 	})
 	.then(function (photos) {
-		_this.sendWorkOrder(workOrder._id, user, mail);
+		var mails = [ workOrder.client.account.email ];
+		_this.sendWorkOrder(workOrder._id,mails , user, mail);
 		d.resolve(workOrder);
 	})
 	.catch (function (err) {
