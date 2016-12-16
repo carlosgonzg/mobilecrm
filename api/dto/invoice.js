@@ -16,6 +16,8 @@ function Invoice(db, userLogged, dirname) {
 	this.crud = new Crud(db, 'INVOICE', userLogged);
 	this.crudCompany = new Crud(db, 'COMPANY', userLogged);
 	this.crudBranch = new Crud(db, 'BRANCH', userLogged);
+	this.crudServiceOrder = new Crud(db, 'SERVICEORDER', userLogged);
+	this.crudWorkOrder = new Crud(db, 'WORKORDER', userLogged);
 	this.user = new User(db, '', userLogged);
 	this.dirname = dirname;
 	//DB Table Schema
@@ -309,12 +311,15 @@ Invoice.prototype.getMonthlyStatement = function(params, user){
 
 	var sort = {
 		$sort: {
-			date: 1
+			date: 1,
+			'company._id': 1,
+			'branch._id': 1
 		}
 	}
 
 	var query = {
-		$match: {}
+		$match: {
+		}
 	};
 	if(params.clientId){
 		query.$match['client._id'] = Number(params.clientId);
@@ -356,7 +361,8 @@ Invoice.prototype.getMonthlyStatement = function(params, user){
 	var sort1 = {
 		$sort: {
 			year: 1,
-			month: 1
+			month: 1,
+
 		}
 	};
 	pipeline.push(project);
@@ -365,13 +371,39 @@ Invoice.prototype.getMonthlyStatement = function(params, user){
 	pipeline.push(group);
 	pipeline.push(project2);
 	pipeline.push(sort1);
-
-	_this.crud.db.get('INVOICE').aggregate(pipeline, function(error, data){
-		if(error){
-			d.reject(error);
-			throw new Error("Error happened: ", error);
+	var results = [];
+	_this.crudServiceOrder.find({
+		invoiceNumber: {
+				$ne: ''
 		}
-		d.resolve(data);
+	})
+	.then(function(result){
+		results = results.concat(result.data);
+		return _this.crudWorkOrder.find({
+			invoiceNumber: {
+					$ne: ''
+			}
+		});
+	})
+	.then(function(result){
+		results = results.concat(result.data);
+		return _this.crud.db.get('REPORT').remove({});
+	})
+	.then(function(){
+		var promise = [];
+		for(var i = 0; i < results.length; i++){
+			promise.push(_this.crud.db.get('REPORT').insert(results[i]));
+		}
+		q.all(promise);
+	})
+	.then(function(){
+		_this.crud.db.get('REPORT').aggregate(pipeline, function(error, data){
+			if(error){
+				d.reject(error);
+				throw new Error("Error happened: ", error);
+			}
+			d.resolve(data);
+		});
 	});
 	return d.promise;
 };
