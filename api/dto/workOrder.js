@@ -14,7 +14,9 @@ var fs = require('fs')
 
 function WorkOrder(db, userLogged, dirname) {
 	this.crud = new Crud(db, 'WORKORDER', userLogged);
-	this.user = new User(db, '', userLogged);
+	this.user = new User(db, 'USER', userLogged);
+	this.crudCompany = new Crud(db, 'COMPANY', userLogged);
+	this.crudBranch = new Crud(db, 'BRANCH', userLogged);
 	this.dirname = dirname;
 	//DB Table Schema
 	this.schema = {
@@ -186,7 +188,7 @@ WorkOrder.prototype.update = function (query, workOrder, user, mail) {
 	return d.promise;
 };
 
-WorkOrder.prototype.sendWorkOrder = function(id, user, mail){
+WorkOrder.prototype.sendWorkOrder = function(id, emails, user, mail){
 	var d = q.defer();
 	var _this = this;
 	var workOrder = {};
@@ -194,18 +196,21 @@ WorkOrder.prototype.sendWorkOrder = function(id, user, mail){
 	var urlPdf = '';
 	var fileName = '';
 	var fileNamePdf = '';
-	var emails = [];
+	emails = emails || [];
 	_this.crud.find({ _id: id })
-	.then(function(orderS){
-		workOrder = orderS.data[0];
+	.then(function(workOrderS){
+		workOrder = workOrderS.data[0];
 		return _this.user.getAdminUsers();
 	})
 	.then(function(users){
-		emails = [ ];
+		emails = emails.concat([ workOrder.client.account.email ]);
 		for(var i = 0; i < users.data.length; i++){
 			emails.push(users.data[i].account.email);
 		}
-		return mail.sendWorkOrder(workOrder, emails, _this.dirname);
+		return _this.createWorkOrder(id, user);
+	})
+	.then(function(data){
+		return mail.sendWorkOrder(workOrder, emails, _this.dirname, data.path, data.fileName);
 	})
 	.then(function(){
 		d.resolve(true);
@@ -256,12 +261,20 @@ WorkOrder.prototype.sendWorkOrderUpdate = function(id, user, mail){
 WorkOrder.prototype.createWorkOrder = function(id, user){
 	var d = q.defer();
 	var _this = this;
+	var workOrder = {};
+	var company = {};
+	var branch = {};
 	var query = {
 		_id: id
 	};
 	_this.crud.find(query)
-	.then(function (result) {
-		return pdf.createWorkOrder(result.data[0]);
+	.then(function (workOrderS) {
+		workOrder = workOrderS.data[0];
+		return _this.crudCompany.find({ _id: workOrder.client.company._id });
+	})
+	.then(function (companyS) {
+		company = companyS.data[0];
+		return pdf.createWorkOrder(workOrder, company);
 	})
 	.then(function (data) {
 		d.resolve(data);

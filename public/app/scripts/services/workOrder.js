@@ -103,17 +103,22 @@ angular.module('MobileCRMApp')
 	    });
 	    return d.promise;
 	};
-	WorkOrder.prototype.send = function(){
+	WorkOrder.prototype.send = function(emails){
 		var d = $q.defer();
-		toaster.warning('Sending the email');
-		$http.post(this.baseApiPath + '/send', { id: this._id })
-		.success(function (data) {
-			toaster.success('The Work Order has been sent!.');
-	    })
-	    .error(function (data, status, headers, config) {
-	    	toaster.error('There was an error sending the file, please try again')
-	        d.reject(data);
-	    });
+		var _this = this;
+		var email = _this.client ? _this.client.account.email : null;
+		var dialog = dialogs.create('views/emails.html', 'EmailsCtrl', { email: email});
+		dialog.result.then(function (emails) {
+			toaster.warning('Sending the email');
+			$http.post(_this.baseApiPath + '/send', { id: _this._id, emails: emails })
+			.success(function (data) {
+				toaster.success('The work order has been sent!.');
+		    })
+		    .error(function (data, status, headers, config) {
+		    	toaster.error('There was an error sending the file, please try again')
+		        d.reject(data);
+		    });
+		});
 		return d.promise;
 	};
 

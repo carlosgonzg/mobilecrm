@@ -320,53 +320,21 @@ exports.sendConfirmateMail = function (email, password) {
 	return token;
 };
 
-var sendWorkOrder = function (workOrder, mails, dirname) {
+var sendWorkOrder = function (workOrder, mails, dirname, file, fileName) {
 	var deferred = q.defer();
-	bringTemplateData('/workorder.html')
+	bringTemplateData('/email/templateWorkOrder.html')
 	.then(function (body) {
 		var url = config.SERVER_URL;
 		console.log(url)
 		body = body.replace('<emailUrl>', url);
-		body = body.replace('<createdDate>', moment(workOrder.date).format('MM/DD/YYYY'));
 		body = body.replace('<clientCompany>', workOrder.client.company ? workOrder.client.company.entity.name : 'None');
 		body = body.replace('<clientBranch>', workOrder.client.branch ? workOrder.client.branch.name : 'None');
-		body = body.replace('<customer>', workOrder.customer || 'None');
-		body = body.replace('<customerPhone>', workOrder.phone ? workOrder.phone.number : 'None');
 		body = body.replace('<wor>', workOrder.wor);
-		body = body.replace('<unitno>', workOrder.unitno);
-		body = body.replace('<pono>', workOrder.pono);
-		body = body.replace('<isono>', workOrder.isono);
-		body = body.replace('<clientName>', workOrder.client.entity.fullName);
-		body = body.replace('<clientPhone>', workOrder.client && workOrder.client.branch && workOrder.client.branch.phones && workOrder.client.branch.phones.length > 0 ? workOrder.client.branch.phones[0].number : 'None');
-		body = body.replace('<clientMail>', workOrder.client.account.email);
-		body = body.replace('<clientAddress>', workOrder.siteAddress.address1 + ', ' + workOrder.siteAddress.city.description + ', ' + workOrder.siteAddress.state.description + ' ' + workOrder.siteAddress.zipcode);
-		body = body.replace('<issue>', workOrder.issue || 'None');
-		body = body.replace('<comment>', workOrder.comment || 'None');
-		var contacts = '';
-
-		for(var i = 0; i < workOrder.contacts.length; i++){
-			if(workOrder.contacts[i].name)
-				contacts += '<b>Contact #' + (i+1) + ':&nbsp;</b>' +  workOrder.contacts[i].name + '.&nbsp;<b>Phone(' + workOrder.contacts[i].phoneType.description + '):</b>&nbsp;' + workOrder.contacts[i].number + '<br/>';
-		}
-		body = body.replace('<contacts>', contacts || '');
 		var company = 'Company: ' + (workOrder && workOrder.client && workOrder.client.company && workOrder.client.company.entity ? workOrder.client.company.entity.name : 'Not Defined');
 		var branch = workOrder && workOrder.client && workOrder.client.branch ? 'Branch: ' + workOrder.client.branch.name : 'Client: ' + workOrder.client.entity.fullName;
 		var subject = company + ' | ' + branch + ' | Work Order: ' + workOrder.wor;
-		
-		var attachments = [];
-		if(workOrder.photos){
-			for(var i = 0; i < workOrder.photos.length; i++){
-				var photoDir = dirname + '/public/app' + workOrder.photos[i].url;
-				//console.log(photoDir)
-				attachments.push({
-					filename: workOrder.photos[i].name,
-					//content: fs.readFileSync(photoDir),
-					contentType: workOrder.photos[i].type,
-					path: photoDir
-				});
-			}
-		}
-		console.log('sending mail', subject);
+		var attachments = setAttachment(file, fileName)
+		console.log('sending mail');
 		sendMail(mails.join(', '), subject, body, true, attachments)
 		.then(function (response) {
 			console.log('DONE Sending Mail: ', response)

@@ -154,34 +154,67 @@ var createServiceOrder = function(obj){
     return d.promise;
 };
 
-var createWorkOrderBody = function(workOrder){
+var createWorkOrderBody = function(workOrder, company){
 	var body = fs.readFileSync(__dirname + '/workorder.html', 'utf8').toString();
 	//replacement of data
-	body = body.replace('<createdDate>', moment(workOrder.date).format('MM/DD/YYYY'));
-	body = body.replace('<clientCompany>', workOrder.client.company ? workOrder.client.company.entity.name : 'None');
-	body = body.replace('<clientBranch>', workOrder.client.branch ? workOrder.client.branch.name : 'None');
-	body = body.replace('<customer>', workOrder.customer || 'None');
-	body = body.replace('<customerPhone>', workOrder.phone ? workOrder.phone.number : 'None');
-	body = body.replace('<wor>', workOrder.wor);
-	body = body.replace('<unitno>', workOrder.unitno);
-	body = body.replace('<pono>', workOrder.pono);
-	body = body.replace('<isono>', workOrder.isono);
-	body = body.replace('<clientName>', workOrder.client.entity.fullName);
-	body = body.replace('<clientPhone>', workOrder.client && workOrder.client.branch && workOrder.client.branch.phones && workOrder.client.branch.phones.length > 0 ? workOrder.client.branch.phones[0].number : 'None');
-	body = body.replace('<clientMail>', workOrder.client.account.email);
-	body = body.replace('<clientAddress>', workOrder.siteAddress.address1 + ', ' + workOrder.siteAddress.city.description + ', ' + workOrder.siteAddress.state.description + ' ' + workOrder.siteAddress.zipcode);
-	body = body.replace('<issue>', workOrder.issue || 'None');
-	body = body.replace('<comment>', workOrder.comment || 'None');
-	var contacts = '';
-	for(var i = 0; i < workOrder.contacts.length; i++){
-		if(workOrder.contacts[i].name)
-			contacts += '<b>Contact #' + (i+1) + ':&nbsp;</b>' +  workOrder.contacts[i].name + '.&nbsp;<b>Phone(' + workOrder.contacts[i].phoneType.description + '):</b>&nbsp;' + workOrder.contacts[i].number + '<br/>';
+	body = body.replace(/<createdDate>/g, moment(workOrder.date).format('MM/DD/YYYY'));
+	body = body.replace(/<wor>/g, workOrder.wor);
+
+	//Company
+	body = body.replace(/<companyName>/g, company.entity.name);
+	body = body.replace(/<companyAddress>/g, company.address.address1);
+	body = body.replace(/<companyState>/g, company.address.state.description + ' ' + company.address.zipcode);
+
+	//Cliente
+	body = body.replace(/<clientName>/g, workOrder.client.entity.fullName);
+	body = body.replace(/<clientAddress>/g, workOrder.siteAddress.address1);
+	body = body.replace(/<clientState>/g, workOrder.siteAddress.state.description + ' ' + workOrder.siteAddress.zipcode);
+	body = body.replace(/<clientPhone>/g, workOrder.phone.number);
+	body = body.replace(/<clientMail>/g, workOrder.client.account.email);
+
+	body = body.replace(/<comment>/g, workOrder.comment);
+	body = body.replace(/<pono>/g, workOrder.pono);
+	body = body.replace(/<unitno>/g, workOrder.unitno);
+	body = body.replace(/<isono>/g, workOrder.isono);
+	body = body.replace(/<clientCity>/g, workOrder.siteAddress.city.description);
+
+	//Inserting table of items
+	var total = 0;
+	var tableItems = '';
+	for(var i = 0; i < workOrder.items.length; i++){
+		var item = workOrder.items[i];
+		tableItems += '<tr>';
+		tableItems += '<td style="text-align: center;border: thin solid black; border-top: none; border-right: none;">';
+		//tableItems += item.code || '';
+		tableItems += '</td>';
+		tableItems += '<td colspan="4" style="border: thin solid black; border-top: none; border-right: none;">';
+		tableItems += item.description || '';
+		tableItems += '</td>';
+		tableItems += '<td style="text-align: right;border: thin solid black; border-top: none; border-right: none;">';
+		tableItems += item.part || '';
+		tableItems += '</td>';
+		tableItems += '<td style="text-align: right;border: thin solid black; border-top: none; border-right: none;">';
+		tableItems += numeral(item.price).format('$0,0.00');
+		tableItems += '</td>';
+		tableItems += '<td style="text-align: right;border: thin solid black; border-top: none; border-right: none;">';
+		tableItems += item.quantity;
+		tableItems += '</td>';
+		tableItems += '<td style="text-align: right;border: thin solid black; border-top: none;">';
+		tableItems += numeral(item.price * item.quantity).format('$0,0.00');
+		tableItems += '</td>';
+		total += item.price * item.quantity;
+		tableItems += '</tr>';
 	}
-	body = body.replace('<contacts>', contacts || '');
+	
+	body = body.replace('<tableItems>', tableItems);
+
+	body = body.replace('<subtotal>', numeral(total).format('$0,0.00'));
+	body = body.replace('<total>', numeral(total).format('$0,0.00'));
+
 	return body;
 };
 
-var createWorkOrder = function(obj){
+var createWorkOrder = function(obj, company){
     var d = q.defer();
 	var options = { 
 		format: 'Letter',
@@ -192,15 +225,16 @@ var createWorkOrder = function(obj){
 			left: '0.5in'
 		}
 	};
-	var body = createWorkOrderBody(obj);
-	pdf.create(body, options).toFile(__dirname + '/workorders/' + obj.invoiceNumber + '.pdf', function(err, res) {
+	var body = createWorkOrderBody(obj, company);
+
+	pdf.create(body, options).toFile(__dirname + '/workorders/' + obj.wor + '.pdf', function(err, res) {
         if (err) {
             d.reject(err)
             console.log(err);
             return 
         }
         else {
-          d.resolve({ path: __dirname + '/workorders/' + obj.invoiceNumber + '.pdf', fileName:  obj.invoiceNumber + '.pdf' });
+          d.resolve({ path: __dirname + '/workorders/' + obj.wor + '.pdf', fileName:  obj.wor + '.pdf' });
         }
 	});
     return d.promise;

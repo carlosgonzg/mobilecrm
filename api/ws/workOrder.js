@@ -23,7 +23,7 @@ module.exports = function (prefix, app, mail, dirname) {
 
 	app.post(prefix + '/send', function (req, res) {
 		var workOrder = new WorkOrder(app.db, req.user, dirname);
-		workOrder.sendWorkOrder(req.body.id, req.user, mail)
+		workOrder.sendWorkOrder(req.body.id,req.body.emails, req.user, mail)
 		.then(util.success(res), util.error(res));
 	});
 
