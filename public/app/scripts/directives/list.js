@@ -41,8 +41,8 @@ angular.module('MobileCRMApp')
 			searchByFields = ['_id'],
 			x,
 			message = '',
-			filtro = $scope.filterField ? { $or:[ $scope.filterField ] } : {},
-			filtroOrBackup = $scope.filterField && $scope.filterField.$or ? $scope.filterField.$or : [];
+			filtro = $scope.filterField ? { $and:[ $scope.filterField ] } : {},
+			filtroOrBackup = $scope.filterField && $scope.filterField.$and ? $scope.filterField.$and : [];
 
 			$scope.params = {
 				filter : filtro,
@@ -176,7 +176,7 @@ angular.module('MobileCRMApp')
 			//Obtener los registros de la tabla paginados.
 			$scope.getPaginatedSearch = function (pParams) {
 				if (filtroOrBackup) {
-					pParams.filter.$or = angular.copy(filtroOrBackup);
+					pParams.filter.$and = angular.copy(filtroOrBackup);
 				}
 				$scope.fields.forEach(function (field) {
 					if (field.type == 'select') {
@@ -187,7 +187,7 @@ angular.module('MobileCRMApp')
 								$in : values
 							};
 
-							pParams.filter.$or.push(temp);
+							pParams.filter.$and.push(temp);
 						}
 					}
 				});
@@ -238,7 +238,7 @@ angular.module('MobileCRMApp')
 						return (field.function  == undefined)
 					})
 					console.warn(_params.excelFields);
-				_params.filter.$or = angular.copy(filtroOrBackup);
+				_params.filter.$and = angular.copy(filtroOrBackup);
 				$scope.objeto.excel(_params)
 				.then(function (result) {
 					toaster.pop('success', 'Information', 'File downloaded');
