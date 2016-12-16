@@ -129,6 +129,14 @@ angular.module('MobileCRMApp')
 		return tab == $scope.selectedTab;
 	};
 
+	$scope.getTotal = function(){
+		var total = 0;
+		for(var i = 0; i<serviceOrders.length; i++){
+			total += serviceOrders[i].getTotal();
+		}
+		return total;
+	};
+
 	$scope.selectTab = function(tab){
 		$scope.selectedTab = tab;
 		if($scope.selectedTab != 'data')
