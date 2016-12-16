@@ -51,3 +51,5 @@ node_modules
 api/invoices/*
 api/serviceorders/*
 log/*
+
+*.pdf
