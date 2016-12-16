@@ -446,6 +446,7 @@ Invoice.prototype.createMonthlyStatement = function(params, format, user){
 		return _this.getMonthlyStatement(params, user);
 	})
 	.then(function(data){
+		console.log(data.length)
 		return format == 'pdf' ? pdf.createMonthlyStatement(data, whoIs, user) : excel.createMonthlyStatement(data, whoIs, user);
 	})
 	.then(function(data){
