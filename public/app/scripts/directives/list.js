@@ -41,8 +41,8 @@ angular.module('MobileCRMApp')
 			searchByFields = ['_id'],
 			x,
 			message = '',
-			filtro = $scope.filterField ? { $and:[ $scope.filterField ] } : {},
-			filtroOrBackup = $scope.filterField && $scope.filterField.$and ? $scope.filterField.$and : [];
+			filtro = $scope.filterField ? $scope.filterField : {},
+			//filtroOrBackup = $scope.filterField && $scope.filterField.$and ? $scope.filterField.$and : [];
 
 			$scope.params = {
 				filter : filtro,
@@ -175,30 +175,6 @@ angular.module('MobileCRMApp')
 
 			//Obtener los registros de la tabla paginados.
 			$scope.getPaginatedSearch = function (pParams) {
-				if (filtroOrBackup) {
-					pParams.filter.$and = angular.copy(filtroOrBackup);
-				}
-				$scope.fields.forEach(function (field) {
-					if (field.type == 'select') {
-						var values = getFieldValues(pParams.search, field.options);
-						if (values.length) {
-							var temp = {};
-							temp[field.name] = {
-								$in : values
-							};
-
-							pParams.filter.$and.push(temp);
-						}
-					}
-				});
-				if($scope.filterDate){
-					var queryDate = {};
-					pParams.dateRange = {
-						fields: [ $scope.filterDate ],
-						start: new Date($scope.filterDateOptions.fromDate),
-						end: new Date($scope.filterDateOptions.toDate)
-					};
-				}
 				Loading.show();
 				$scope.objeto.paginatedSearch(pParams).then(function (result) {
 					if (result.data.length == 0) {
@@ -238,7 +214,6 @@ angular.module('MobileCRMApp')
 						return (field.function  == undefined)
 					})
 					console.warn(_params.excelFields);
-				_params.filter.$and = angular.copy(filtroOrBackup);
 				$scope.objeto.excel(_params)
 				.then(function (result) {
 					toaster.pop('success', 'Information', 'File downloaded');
