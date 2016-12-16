@@ -41,7 +41,7 @@ angular.module('MobileCRMApp')
 			searchByFields = ['_id'],
 			x,
 			message = '',
-			filtro = $scope.filterField ? $scope.filterField : {},
+			filtro = $scope.filterField ? { $or:[ $scope.filterField ] } : {},
 			filtroOrBackup = $scope.filterField && $scope.filterField.$or ? $scope.filterField.$or : [];
 
 			$scope.params = {

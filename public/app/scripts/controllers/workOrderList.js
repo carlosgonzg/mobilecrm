@@ -87,7 +87,7 @@ angular.module('MobileCRMApp')
     }
   ];
 
-	$scope.filter = $rootScope.userData.role._id == 1 ? { } : { 'client._id': $rootScope.userData._id };
+	$scope.filter = $rootScope.userData.role._id == 1 ? { } : {'client._id': $rootScope.userData._id };
 
 	$scope.createNew = function () {
 		$location.path('workOrder');
