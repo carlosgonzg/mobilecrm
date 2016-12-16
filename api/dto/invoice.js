@@ -285,10 +285,10 @@ Invoice.prototype.getMonthlyStatement = function(params, user){
 			},
 			statusPaid: {
 				_id: {
-					$cond: [{ $eq: ['$status._id', 4] }, 4, 1]
+					$cond: [{ $eq: ['$status._id', 4] }, 4, {$cond:[{ $eq: ['$status._id', 3] }, 3, 1] }]
 				},
 				description: {
-					$cond: [{ $eq: ['$status._id', 4] }, 'Paid', 'Pending']
+					$cond: [{ $eq: ['$status._id', 4] }, 'Paid', {$cond:[{ $eq: ['$status._id', 3] }, 'Pending to Pay', 'Pending'] }]
 				}
 			},
 			year: {
