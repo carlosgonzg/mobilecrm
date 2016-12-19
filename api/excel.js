@@ -8,9 +8,14 @@ var getPaid = function(invoices, year, month){
 		return memo + (year == value.year && month == value.month && value.status._id == 4 ? value.total : 0);
 	}, 0);
 };
+var getPendingPay = function(invoices, year, month){
+	return _.reduce(invoices, function(memo, value){
+		return memo + (year == value.year && month == value.month && value.status._id == 3 ? value.total : 0);
+	}, 0);
+};
 var getPending = function(invoices, year, month){
 	return _.reduce(invoices, function(memo, value){
-		return memo + (year == value.year && month == value.month && value.status._id != 4 ? value.total : 0);
+		return memo + (year == value.year && month == value.month && value.status._id == 1 ? value.total : 0);
 	}, 0);
 };
 var getTotal = function(invoices, year, month){
@@ -65,29 +70,30 @@ var createMonthlyStatement = function(invoices, whoIs, user){
 		{ key: 'k', width: 27 }
 	];
 	//header
-	excel.worksheet.addRow(['Monthly Statement -', '', whoIs.name, '', 'MOBILE ONE']);
+	excel.worksheet.addRow(['Monthly Statement -', '', whoIs.name,'',  '', 'MOBILE ONE']);
 	excel.worksheet.mergeCells('A1:B1');
-	excel.worksheet.mergeCells('C1:D1');
+	excel.worksheet.mergeCells('C1:E1');
 	excel.worksheet.lastRow.font = headerFont;
 	//sub header
-	excel.worksheet.addRow(['Restoration LLC', '', '', '', moment().format('MM/DD/YYYY')]);
+	excel.worksheet.addRow(['Restoration LLC', '', '', '', '', moment().format('MM/DD/YYYY')]);
 	excel.worksheet.mergeCells('A2:B2');
-	excel.worksheet.mergeCells('C2:D2');
+	excel.worksheet.mergeCells('C2:E2');
 	excel.worksheet.lastRow.font = boldFont;
 	//space!
-	excel.worksheet.addRow(['', '', '', '', '']);
-	excel.worksheet.mergeCells('A3:E3');
+	excel.worksheet.addRow(['', '', '', '', '', '']);
+	excel.worksheet.mergeCells('A3:F3');
 	//table header
-	excel.worksheet.addRow(['Year', 'Month', 'Paid', 'Pending', 'Total']);
+	excel.worksheet.addRow(['Year', 'Month', 'Paid', 'Pending to Pay', 'Pending', 'Total']);
 	excel.worksheet.lastRow.font = boldFont;
 	//info
 	var today = new Date();
 	var months = ['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 	for(var i = 1; i <= 12; i++){
-		excel.worksheet.addRow([today.getFullYear(), months[i], getPaid(invoices, today.getFullYear(), i), getPending(invoices, today.getFullYear(), i), getTotal(invoices, today.getFullYear(), i)]);
+		excel.worksheet.addRow([today.getFullYear(), months[i], getPaid(invoices, today.getFullYear(), i), getPendingPay(invoices, today.getFullYear()), getPending(invoices, today.getFullYear(), i), getTotal(invoices, today.getFullYear(), i)]);
 		excel.worksheet.getCell('C' + (i + 4).toString()).numFmt = '$ #,###,###,##0.00';
 		excel.worksheet.getCell('D' + (i + 4).toString()).numFmt = '$ #,###,###,##0.00';
 		excel.worksheet.getCell('E' + (i + 4).toString()).numFmt = '$ #,###,###,##0.00';
+		excel.worksheet.getCell('F' + (i + 4).toString()).numFmt = '$ #,###,###,##0.00';
 	}
 	//detail
 	excel.worksheetDetail.addRow(['Customer', 'Date', 'Invoice Number', 'Unit Number', 'PO Number', 'Amount', 'Status', 'Year', 'Month', 'Branch', 'Company']);

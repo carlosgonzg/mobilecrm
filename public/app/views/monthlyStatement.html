@@ -50,6 +50,7 @@
 					<th width="20%">Year</th>
 					<th width="20%">Month</th>
 					<th width="20%">Paid</th>
+					<th width="20%">Pending To Pay</th>
 					<th width="20%">Pending</th>
 					<th width="20%">Total</th>
 				</tr>
@@ -64,6 +65,9 @@
 					</td>
 					<td>
 						{{getPaid(date.year, date.month)|currency}}
+					</td>
+					<td>
+						{{getPendingPay(date.year, date.month)|currency}}
 					</td>
 					<td>
 						{{getPending(date.year, date.month)|currency}}

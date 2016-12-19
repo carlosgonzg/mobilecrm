@@ -10,9 +10,14 @@ var getPaid = function(invoices, year, month){
 		return memo + (year == value.year && month == value.month && value.status._id == 4 ? value.total : 0);
 	}, 0);
 };
+var getPendingPay = function(invoices, year, month){
+	return _.reduce(invoices, function(memo, value){
+		return memo + (year == value.year && month == value.month && value.status._id == 3 ? value.total : 0);
+	}, 0);
+};
 var getPending = function(invoices, year, month){
 	return _.reduce(invoices, function(memo, value){
-		return memo + (year == value.year && month == value.month && value.status._id != 4 ? value.total : 0);
+		return memo + (year == value.year && month == value.month && value.status._id ==  1 ? value.total : 0);
 	}, 0);
 };
 var getTotal = function(invoices, year, month){
@@ -242,17 +247,14 @@ var createWorkOrder = function(obj, company){
 
 var createMonthlyStatementBody = function(invoices, whoIs){
 	var body = fs.readFileSync(__dirname + '/monthlystatement.html', 'utf8').toString();
-	console.log('1a')
 	//replacement of data
 	body = body.replace(/<createdDate>/g, moment().format('MM/DD/YYYY'));
 	body = body.replace(/<whoIs>/g, whoIs.name);
-	console.log('1b')
 	//Inserting table of items
 	var tableMSItems = '';
 	var tableDItems = '';
 	var months = ['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 	var today = new Date();
-	console.log('1c')
 	for(var i = 1; i <= 12; i++){
 		tableMSItems += '<tr>';
 		tableMSItems += '<td style="text-align: center;border: thin solid black; border-top: none; border-right: none;">';
@@ -265,6 +267,9 @@ var createMonthlyStatementBody = function(invoices, whoIs){
 		tableMSItems += numeral(getPaid(invoices, today.getFullYear(), i)).format('$0,0.00');
 		tableMSItems += '</td>';
 		tableMSItems += '<td style="text-align: right;border: thin solid black; border-top: none; border-right: none;">';
+		tableMSItems += numeral(getPendingPay(invoices, today.getFullYear(), i)).format('$0,0.00');
+		tableMSItems += '</td>';
+		tableMSItems += '<td style="text-align: right;border: thin solid black; border-top: none; border-right: none;">';
 		tableMSItems += numeral(getPending(invoices, today.getFullYear(), i)).format('$0,0.00');
 		tableMSItems += '</td>';
 		tableMSItems += '<td style="text-align: right;border: thin solid black; border-top: none;">';
@@ -272,7 +277,6 @@ var createMonthlyStatementBody = function(invoices, whoIs){
 		tableMSItems += '</td>';
 		tableMSItems += '</tr>';
 	}
-	console.log('1d')
 	body = body.replace('<tableMSItems>', tableMSItems);
 	for(var i = 0; i < invoices.length; i++){
 		tableDItems += '<tr>';
@@ -319,7 +323,6 @@ var createMonthlyStatementBody = function(invoices, whoIs){
 			tableDItems += '</tr>';
 		}
 	}
-	console.log('1e')
 	body = body.replace('<tableDItems>', tableDItems);
 	return body;
 };

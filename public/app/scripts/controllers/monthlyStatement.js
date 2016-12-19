@@ -54,7 +54,12 @@ angular.module('MobileCRMApp')
 	};
 	$scope.getPending = function(year, month){
 		return _.reduce($scope.invoices, function(memo, value){
-			return memo + (year == value.year && month == value.month && value.status._id != 4 ? value.total : 0);
+			return memo + (year == value.year && month == value.month && value.status._id == 1 ? value.total : 0);
+		}, 0);
+	};
+	$scope.getPendingPay = function(year, month){
+		return _.reduce($scope.invoices, function(memo, value){
+			return memo + (year == value.year && month == value.month && value.status._id == 3 ? value.total : 0);
 		}, 0);
 	};
 	$scope.getTotal = function(year, month){
