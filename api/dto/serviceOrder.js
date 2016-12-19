@@ -6,7 +6,7 @@ var Address = require('./address');
 var Item = require('./item');
 var _ = require('underscore');
 var util = require('./util');
-var Excel = require('./excel');
+var excel = require('../excel');
 var moment = require('moment');
 var User = require('./user');
 var pdf = require('../pdf');
@@ -280,6 +280,35 @@ ServiceOrder.prototype.getServiceOrder = function(id, res, user){
 	.then(function(obj){
 		fs.readFile(obj.path, function (err,data){
 			res.contentType("application/pdf");
+			res.send(data);
+		});
+	});
+};
+
+ServiceOrder.prototype.createReport = function(query){
+	var d = q.defer();
+	var _this = this;
+	_this.crud.find(query)
+	.then(function (result) {
+		return excel.createReport(result.data, 'ServiceOrder');
+	})
+	.then(function (data) {
+		d.resolve(data);
+	})
+	.catch (function (err) {
+		d.reject({
+			result : 'Not ok',
+			errors : err
+		});
+	});
+	return d.promise;
+};
+
+ServiceOrder.prototype.getReport = function(query, res){
+	this.createReport(query)
+	.then(function(obj){
+		fs.readFile(obj.path, function (err,data){
+			res.contentType('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 			res.send(data);
 		});
 	});

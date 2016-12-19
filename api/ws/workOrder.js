@@ -21,6 +21,11 @@ module.exports = function (prefix, app, mail, dirname) {
 		workOrder.getWorkOrder(req.body.id, res, req.user)
 	});
 
+	app.post(prefix + '/report', function (req, res) {
+		var workOrder = new WorkOrder(app.db, req.user, dirname);
+		workOrder.getReport(req.body.query, res);
+	});
+
 	app.post(prefix + '/send', function (req, res) {
 		var workOrder = new WorkOrder(app.db, req.user, dirname);
 		workOrder.sendWorkOrder(req.body.id,req.body.emails, req.user, mail)

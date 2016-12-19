@@ -15,6 +15,7 @@ angular.module('MobileCRMApp')
 		this.description = this.description || '';
 		this.clientId = this.clientId || null;
 		this.items = this.items || [];
+		this.itemsQuantity = this.itemsQuantity || {};
 	}
 	var extend = function (child, parent) {
 		var key;

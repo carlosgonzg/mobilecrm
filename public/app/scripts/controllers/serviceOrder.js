@@ -173,7 +173,7 @@ angular.module('MobileCRMApp')
 					}
 				}
 				if(isHere != -1){
-					$scope.serviceOrder.items[isHere].quantity++;
+					$scope.serviceOrder.items[isHere].quantity += res[i].quantity;
 				}
 				else {
 					$scope.serviceOrder.items.push(res[i]);

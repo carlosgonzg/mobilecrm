@@ -104,6 +104,37 @@ var a;
 	    });
 	    return d.promise;
 	};
+	ServiceOrder.prototype.getReport = function(query){
+		var d = $q.defer();
+		var _this = this;
+		$http({
+			url: this.baseApiPath + '/report',
+			method: "POST",
+			data: { query: query },
+			headers: {
+			'Content-type': 'application/json'
+			},
+			responseType: 'arraybuffer'
+		})
+		.success(function (data, status, headers, config) {
+			var json = JSON.stringify(data);
+			var blob = new Blob([data], {
+				type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+			});
+			var url = window.URL.createObjectURL(blob);
+			
+			a.href = url;
+			a.download =  'report.xlsx';
+			a.click();
+			window.URL.revokeObjectURL(url);
+			d.resolve(url);
+	    })
+	    .error(function (data, status, headers, config) {
+	    	toaster.error('There was an error exporting the file, please try again')
+	        d.reject(data);
+	    });
+	    return d.promise;
+	};
 	ServiceOrder.prototype.send = function(){
 		var d = $q.defer();
 		toaster.warning('Sending the email');

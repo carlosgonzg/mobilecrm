@@ -252,61 +252,65 @@ angular.module('MobileCRMApp')
 		    });
 		});
 	};
-	//Search function
-	$scope.search = function(){
-		$scope.filter.isOpen = false;
+	var setQuery = function(params){
 		var query = {
 			$and: []
 		};
 		//primero las fechas (siempre son obligatorias)
 		query.$and.push({
 			date: {
-				$gte: $scope.filter.fromDate,
-				$lte: $scope.filter.toDate
+				$gte: params.fromDate,
+				$lte: params.toDate
 			}
 		});
 		//ahora el cliente
-		if($scope.filter.client._id != -1){
+		if(params.client._id != -1){
 			query.$and.push({
-				'client._id': $scope.filter.client._id
+				'client._id': params.client._id
 			});
 		}
 		//ahora el status
-		if($scope.filter.status._id != -1){
+		if(params.status._id != -1){
 			query.$and.push({
-				'status._id': $scope.filter.status._id
+				'status._id': params.status._id
 			});
 		}
 		//ahora el pais
-		if($scope.filter.country._id != -1){
+		if(params.country._id != -1){
 			query.$and.push({
-				'siteAddress.country._id': $scope.filter.country._id
+				'siteAddress.country._id': params.country._id
 			});
 		}
 		//ahora el estado
-		if($scope.filter.state._id != -1){
+		if(params.state._id != -1){
 			query.$and.push({
-				'siteAddress.state._id': $scope.filter.state._id
+				'siteAddress.state._id': params.state._id
 			});
 		}
 		//ahora la ciudad
-		if($scope.filter.city._id != -1){
+		if(params.city._id != -1){
 			query.$and.push({
-				'siteAddress.city._id': $scope.filter.city._id
+				'siteAddress.city._id': params.city._id
 			});
 		}
 		//ahora customer y parts from the yard
-		if($scope.filter.partsFromTheYard){
+		if(params.partsFromTheYard){
 			query.$and.push({
-				'partsFromTheYard': $scope.filter.partsFromTheYard
+				'partsFromTheYard': params.partsFromTheYard
 			});
 		}
 		//ahora la ciudad
-		if($scope.filter.clientResponsibleCharges){
+		if(params.clientResponsibleCharges){
 			query.$and.push({
-				'clientResponsibleCharges': $scope.filter.clientResponsibleCharges
+				'clientResponsibleCharges': params.clientResponsibleCharges
 			});
 		}
+		return query;
+	}
+	//Search function
+	$scope.search = function(){
+		$scope.filter.isOpen = false;
+		var query = setQuery($scope.filter);
 		//ahora listado de order services
 		$scope.serviceOrders = [];
 		Loading.show();
@@ -318,7 +322,9 @@ angular.module('MobileCRMApp')
 				drawChart();
 		});
 	};
-
+	$scope.export = function(){
+		var query = setQuery($scope.filter);
+		new ServiceOrder().getReport(query);
+	};
 	$scope.search();
-
 });

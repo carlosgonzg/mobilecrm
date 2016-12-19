@@ -16,6 +16,7 @@ angular.module('MobileCRMApp')
 			$scope.items = res.data;
 			for(var i in $scope.items){
 				$scope.items[i].import = true;
+				$scope.items[i].quantity = itemCollection.itemsQuantity[$scope.items[i]._id] || 1;
 			}
 		});
 	};

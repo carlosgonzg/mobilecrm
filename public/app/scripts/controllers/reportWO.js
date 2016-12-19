@@ -270,9 +270,7 @@ angular.module('MobileCRMApp')
 		}
 		return total;
 	};
-	//Search function
-	$scope.search = function(){
-		$scope.filter.isOpen = false;
+	var setQuery = function(params){
 		var query = {
 			$and: []
 		};
@@ -336,6 +334,13 @@ angular.module('MobileCRMApp')
 				});
 			}
 		}
+		return query;
+	};
+
+	//Search function
+	$scope.search = function(){
+		$scope.filter.isOpen = false;
+		var query = setQuery($scope.filter);
 		//ahora listado de order services
 		$scope.workOrders = [];
 		Loading.show();
@@ -347,7 +352,10 @@ angular.module('MobileCRMApp')
 				drawChart();
 		});
 	};
-
+	$scope.export = function(){
+		var query = setQuery($scope.filter);
+		new WorkOrder().getReport(query);
+	};
 	$scope.search();
 
 });

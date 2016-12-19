@@ -118,4 +118,86 @@ var createMonthlyStatement = function(invoices, whoIs, user){
 	return d.promise;
 };
 
+var createReport = function(objs, whoIs, user){
+	var d = q.defer();
+  	var excel = new Excel('Report', null, 'Report');
+  	//fonts
+	var headerFont = {
+		name: "Calibri (Body)",
+	 	family: 4,
+	  	size: 36,
+	  	bold: true
+	};
+	var normalFont = {
+		name: "Calibri (Body)",
+	 	family: 4,
+	  	size: 14,
+	  	bold: false
+	};
+	var boldFont = {
+		name: "Calibri (Body)",
+	 	family: 4,
+	  	size: 14,
+	  	bold: true
+	};
+	//setting columns
+	excel.worksheet.columns = [
+		{ key: 'a', width: 27 },
+		{ key: 'b', width: 27 },
+		{ key: 'c', width: 27 },
+		{ key: 'd', width: 27 },
+		{ key: 'e', width: 27 },
+		{ key: 'f', width: 27 },
+		{ key: 'g', width: 27 },
+		{ key: 'h', width: 27 },
+		{ key: 'i', width: 27 },
+		{ key: 'j', width: 27 },
+		{ key: 'k', width: 27 }
+	];
+	//header
+	excel.worksheet.addRow(['Report - MOBILE ONE', '', '', '', '', '', '', '', '', '', '']);
+	excel.worksheet.mergeCells('A1:D1');
+	excel.worksheet.mergeCells('E1:K1');
+	excel.worksheet.lastRow.font = headerFont;
+	//sub header
+	excel.worksheet.addRow(['Restoration LLC', '', '', '', '', '', '', '', '', '', moment().format('MM/DD/YYYY')]);
+	excel.worksheet.mergeCells('A2:B2');
+	excel.worksheet.mergeCells('C2:J2');
+	excel.worksheet.lastRow.font = boldFont;
+	//space!
+	excel.worksheet.addRow(['', '', '', '', '', '', '', '', '', '', '']);
+	excel.worksheet.mergeCells('A3:K3');
+	//table header
+	excel.worksheet.addRow(['Created Date', 'Completed Date', (whoIs == 'ServiceOrder' ? 'Service' : 'Work') + ' Order #', 'Invoice', 'Customer', 'Status', 'Responsible for Charges', 'Materials from the Yard', 'Parts from the Yard', 'Issue / Comment', 'Total Amount']);
+	excel.worksheet.lastRow.font = boldFont;
+	//Now the data
+	var total = 0;
+	for(var i = 0; i < objs.length; i++){
+		var obj = objs[i];
+		var subTotal = 0;
+		for(var j = 0; j < obj.items.length; j++){
+			subTotal += obj.items[j].price * obj.items[j].quantity;
+		}
+		total += subTotal;
+		excel.worksheet.addRow([moment(obj.date).format('MM-DD-YYYY'), moment(obj.originalShipDate).format('MM-DD-YYYY'), whoIs == 'ServiceOrder' ? obj.sor : obj.wor, obj.invoiceNumber, obj.client.entity.fullName, obj.status.description, obj.clientResponsibleCharges ? 'x' : '', obj.partsFromTheYard ? 'x' : '', obj.yardComment || '', obj.comment || '', subTotal]);
+		excel.worksheet.lastRow.font = normalFont;
+		excel.worksheet.getCell('K' + (i + 5).toString()).numFmt = '$ #,###,###,##0.00';	
+	}
+	var key = (objs.length + 5).toString();
+	excel.worksheet.addRow(['', '', '', '', '', '', '', '', '', 'Total', total]);
+	excel.worksheet.getCell('K' + key).numFmt = '$ #,###,###,##0.00';
+	excel.worksheet.mergeCells('A' + key + ':I' + key);
+	excel.worksheet.lastRow.font = boldFont;
+
+	//saving file
+	var relPath =  '/report/r-' + moment().format('MM-DD-YYYY hh:mm') + '.xlsx';
+	var filePath = __dirname + relPath;
+	excel.workbook.xlsx.writeFile(filePath)
+	.then(function(){
+		d.resolve({ path: filePath });
+	});
+	return d.promise;
+};
+
 exports.createMonthlyStatement = createMonthlyStatement;
+exports.createReport = createReport;

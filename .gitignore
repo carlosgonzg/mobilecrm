@@ -53,3 +53,5 @@ api/serviceorders/*
 log/*
 
 *.pdf
+
+*.xlsx

@@ -21,6 +21,11 @@ module.exports = function (prefix, app, mail, dirname) {
 		serviceOrder.getServiceOrder(req.body.id, res, req.user)
 	});
 
+	app.post(prefix + '/report', function (req, res) {
+		var serviceOrder = new ServiceOrder(app.db, req.user, dirname);
+		serviceOrder.getReport(req.body.query, res);
+	});
+
 	app.post(prefix + '/send', function (req, res) {
 		var serviceOrder = new ServiceOrder(app.db, req.user, dirname);
 		serviceOrder.sendServiceOrder(req.body.id, req.user, mail)

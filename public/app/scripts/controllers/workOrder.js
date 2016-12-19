@@ -99,7 +99,7 @@ angular.module('MobileCRMApp')
 					}
 				}
 				if(isHere != -1){
-					$scope.workOrder.items[isHere].quantity++;
+					$scope.workOrder.items[isHere].quantity += res[i].quantity;
 				}
 				else {
 					$scope.workOrder.items.push(res[i]);
