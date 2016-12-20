@@ -328,5 +328,37 @@ WorkOrder.prototype.getReport = function(query, res){
 	});
 };
 
+WorkOrder.prototype.changeStatus = function(id){
+	var d = q.defer();
+	var _this = this;
+	_this.crud.find({ _id: Number(id) })
+	.then(function (result) {
+		var obj = result.data[0];
+		if(obj.status._id == 3){
+			obj.status = {
+				_id: 4,
+				description: 'Paid'
+			};
+		}
+		else{
+			obj.status = {
+				_id: 3,
+				description: 'Completed'
+			};
+		}
+		return _this.crud.update({_id: Number(id)}, obj);
+	})
+	.then(function (result) {
+		d.resolve(true);
+	})
+	.catch (function (err) {
+		d.reject({
+			result : 'Not ok',
+			errors : err
+		});
+	});
+	return d.promise;
+};
+
 
 module.exports = WorkOrder;

@@ -119,4 +119,13 @@ angular.module('MobileCRMApp')
 		var query = generateQuery(params);
 		new Invoice().exportMonthlyStatement(query, format);
 	};
+	$scope.goTo = function(invoice){
+		invoice.goTo();
+	};
+	$scope.changeStatus = function(invoice){
+		invoice.changeStatus()
+		.then(function(res){
+			$scope.search($scope.params);
+		});
+	};
 });

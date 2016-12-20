@@ -1,14 +1,14 @@
 'use strict';
 
 angular.module('MobileCRMApp')
-.factory('Invoice', function (Base, Item, $rootScope, $location, $q,$http, toaster, dialogs, Loading) {
+.factory('Invoice', function (Base, Item, $rootScope, $location, $q,$http, toaster, dialogs, Loading, ServiceOrder, WorkOrder) {
 
 	// Variable que se utiliza para comprobar si un objeto tiene una propiedad
 	// var hasProp = Object.prototype.hasOwnProperty;
 
 	// Nombre de la clase
 	var Invoice;
-var a;
+	var a;
 	function Invoice(propValues) {
 		a = document.createElement("a");
 			document.body.appendChild(a);
@@ -122,6 +122,16 @@ var a;
 		var _this = this;
 		$http.post(_this.baseApiPath + '/monthlyStatement', { query: query })
 		.success(function (data) {
+			for(var i = 0; i < data.length; i++){
+				for(var j = 0; j < data[i].invoices.length; j++){
+					if(data[i].invoices[j].itemType == 'ServiceOrder'){
+						data[i].invoices[j] = new ServiceOrder(angular.copy(data[i].invoices[j]));
+					}
+					else if(data[i].invoices[j].itemType == 'WorkOrder'){
+						data[i].invoices[j] = new WorkOrder(angular.copy(data[i].invoices[j]));
+					}
+				}
+			}
 			d.resolve(data)
 	    })
 	    .error(function (data) {

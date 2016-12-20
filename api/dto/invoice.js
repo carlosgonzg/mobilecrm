@@ -305,7 +305,8 @@ Invoice.prototype.getMonthlyStatement = function(params, user){
 				_id: '$client.company._id',
 				name: '$client.company.entity.name',
 				address: '$client.company.address'
-			}
+			},
+			itemType: 1
 		}
 	};
 
@@ -374,19 +375,31 @@ Invoice.prototype.getMonthlyStatement = function(params, user){
 	var results = [];
 	_this.crudServiceOrder.find({
 		invoiceNumber: {
-				$ne: ''
-		}
+			$ne: ''
+		}/*,
+		'status._id': {
+			$in:[3, 4, 7]
+		}*/
 	})
 	.then(function(result){
-		results = results.concat(result.data);
+		var array = _.map(result.data, function(element) { 
+		     return _.extend({}, element, { itemType: 'ServiceOrder'});
+		});
+		results = results.concat(array);
 		return _this.crudWorkOrder.find({
 			invoiceNumber: {
 					$ne: ''
-			}
+			}/*,
+			'status._id': {
+				$in:[3, 4, 7]
+			}*/
 		});
 	})
 	.then(function(result){
-		results = results.concat(result.data);
+		var array = _.map(result.data, function(element) { 
+		     return _.extend({}, element, { itemType: 'WorkOrder'});
+		});
+		results = results.concat(array);
 		return _this.crud.db.get('REPORT').remove({});
 	})
 	.then(function(){

@@ -184,5 +184,19 @@ var a;
 		return deferred.promise;
 	};
 
+	ServiceOrder.prototype.changeStatus = function(){
+		var d = $q.defer();
+		$http.post(this.baseApiPath + '/status', { id: this._id })
+		.success(function(res){
+			toaster.success('The status has been changed!.');
+			d.resolve(true);
+		})
+		.error(function(error){
+			toaster.error('There was an error changing the status, please try again');
+			d.reject(error)
+		});
+		return d.promise;
+	};
+
 	return ServiceOrder;
 });

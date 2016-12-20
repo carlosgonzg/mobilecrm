@@ -42,5 +42,11 @@ module.exports = function (prefix, app, mail, dirname) {
 		workOrder.crud.find(req.body.query, sort)
 		.then(util.success(res), util.error(res));
 	});
+
+	app.post(prefix + '/status', function (req, res) {
+		var workOrder = new WorkOrder(app.db, req.user, dirname);
+		workOrder.changeStatus(req.body.id, req.user)
+		.then(util.success(res), util.error(res));
+	});
 	require('./crud')(prefix, app, WorkOrder);
 }
