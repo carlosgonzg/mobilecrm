@@ -83,17 +83,17 @@ var createMonthlyStatement = function(invoices, whoIs, user){
 	excel.worksheet.addRow(['', '', '', '', '', '']);
 	excel.worksheet.mergeCells('A3:F3');
 	//table header
-	excel.worksheet.addRow(['Year', 'Month', 'Paid', 'Pending to Pay', 'Pending', 'Total']);
+	excel.worksheet.addRow(['Year', 'Month', 'Paid', 'Pending to Pay', /*'Pending',*/ 'Total', '']);
 	excel.worksheet.lastRow.font = boldFont;
 	//info
 	var today = new Date();
 	var months = ['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 	for(var i = 1; i <= 12; i++){
-		excel.worksheet.addRow([today.getFullYear(), months[i], getPaid(invoices, today.getFullYear(), i), getPendingPay(invoices, today.getFullYear()), getPending(invoices, today.getFullYear(), i), getTotal(invoices, today.getFullYear(), i)]);
+		excel.worksheet.addRow([today.getFullYear(), months[i], getPaid(invoices, today.getFullYear(), i), getPendingPay(invoices, today.getFullYear())/*, getPending(invoices, today.getFullYear(), i)*/, getTotal(invoices, today.getFullYear(), i), '']);
 		excel.worksheet.getCell('C' + (i + 4).toString()).numFmt = '$ #,###,###,##0.00';
 		excel.worksheet.getCell('D' + (i + 4).toString()).numFmt = '$ #,###,###,##0.00';
 		excel.worksheet.getCell('E' + (i + 4).toString()).numFmt = '$ #,###,###,##0.00';
-		excel.worksheet.getCell('F' + (i + 4).toString()).numFmt = '$ #,###,###,##0.00';
+		//excel.worksheet.getCell('F' + (i + 4).toString()).numFmt = '$ #,###,###,##0.00';
 	}
 	//detail
 	excel.worksheetDetail.addRow(['Customer', 'Date', 'Invoice Number', 'Unit Number', 'PO Number', 'Amount', 'Status', 'Year', 'Month', 'Branch', 'Company']);

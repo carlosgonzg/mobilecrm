@@ -269,9 +269,10 @@ var createMonthlyStatementBody = function(invoices, whoIs){
 		tableMSItems += '<td style="text-align: right;border: thin solid black; border-top: none; border-right: none;">';
 		tableMSItems += numeral(getPendingPay(invoices, today.getFullYear(), i)).format('$0,0.00');
 		tableMSItems += '</td>';
+		/*
 		tableMSItems += '<td style="text-align: right;border: thin solid black; border-top: none; border-right: none;">';
 		tableMSItems += numeral(getPending(invoices, today.getFullYear(), i)).format('$0,0.00');
-		tableMSItems += '</td>';
+		tableMSItems += '</td>'; */
 		tableMSItems += '<td style="text-align: right;border: thin solid black; border-top: none;">';
 		tableMSItems += numeral(getTotal(invoices, today.getFullYear(), i)).format('$0,0.00');
 		tableMSItems += '</td>';
