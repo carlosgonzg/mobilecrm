@@ -28,8 +28,20 @@
 				<table class="table table-striped table-hover">
 					<thead>
 						<tr>
-							<th width="60%">
-								Item
+							<th width="10%">
+								Code
+							</th>
+							<th width="20%">
+								Description
+							</th>
+							<th width="10%">
+								Part #
+							</th>
+							<th width="10%">
+								Unit of measure
+							</th>
+							<th width="10%">
+								Price
 							</th>
 							<th width="20%">
 								Quantity
@@ -40,7 +52,7 @@
 					</thead>
 					<tbody>
 						<tr>
-							<td>
+							<td colspan="5">
 								<ui-select ng-model="params.item" theme="bootstrap">
 					            	<ui-select-match placeholder="Select the item you want on the list...">
 		        						{{$select.selected.code}}&nbsp;-&nbsp;{{$select.selected.description}}
@@ -62,7 +74,19 @@
 						</tr>
 						<tr ng-repeat="item in itemCollection.items track by $index">
 							<td>
-								{{getItem(item).code}}&nbsp;-&nbsp;{{getItem(item).description}}
+								{{getItem(item).code}}
+							</td>
+							<td>
+								{{getItem(item).description}}
+							</td>
+							<td>
+								{{getItem(item).part}}
+							</td>
+							<td>
+								{{getItem(item).unitOfMeasure}}
+							</td>
+							<td>
+								{{getItem(item).price}}
 							</td>
 							<td>
 								{{itemCollection.itemsQuantity[item] || 1}}
