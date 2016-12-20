@@ -41,10 +41,13 @@
 								Unit of measure
 							</th>
 							<th width="10%">
+								Quantity
+							</th>
+							<th width="10%">
 								Price
 							</th>
-							<th width="20%">
-								Quantity
+							<th width="10%">
+								Total
 							</th>
 							<th width="20%">
 							</th>
@@ -52,7 +55,7 @@
 					</thead>
 					<tbody>
 						<tr>
-							<td colspan="5">
+							<td colspan="4">
 								<ui-select ng-model="params.item" theme="bootstrap">
 					            	<ui-select-match placeholder="Select the item you want on the list...">
 		        						{{$select.selected.code}}&nbsp;-&nbsp;{{$select.selected.description}}
@@ -66,6 +69,7 @@
 							<td>
 								<input type="number" ng-model="params.quantity" class="form-control" />
 							</td>
+							<td colspan="2"></td>
 							<td>
 								<button type="button" class="btn btn-sm btn-primary" ng-click="addItem(params.item, params.quantity)">
 									<i class="fa fa-plus"></i>
@@ -86,15 +90,28 @@
 								{{getItem(item).unitOfMeasure}}
 							</td>
 							<td>
-								{{getItem(item).price}}
+								{{itemCollection.itemsQuantity[item] || 1}}
 							</td>
 							<td>
-								{{itemCollection.itemsQuantity[item] || 1}}
+								{{getItem(item).price | currency}}
+							</td>
+							<td>
+								<b>{{getItem(item).price * (itemCollection.itemsQuantity[item] || 1) | currency}}</b>
 							</td>
 							<td>
 								<button type="button" class="btn btn-sm btn-danger update" ng-click="removeItem($index)">
 									<i class="fa fa-remove"></i>
 								</button>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="6" class="text-right">
+								<b>Total</b>
+							</td>
+							<td>
+								<b>{{itemCollection.total|currency}}</b>
+							</td>
+							<td>
 							</td>
 						</tr>
 					</tbody>

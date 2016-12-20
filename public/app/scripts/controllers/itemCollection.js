@@ -21,6 +21,7 @@ angular.module('MobileCRMApp')
 		if($scope.itemCollection.items.indexOf(item._id) == -1){
 			$scope.itemCollection.items.push(item._id);
 			$scope.itemCollection.itemsQuantity[item._id] = quantity || 1;
+			$scope.itemCollection.setTotal(items.data);
 		}
 		else {
 			toaster.warning('The item is already in here');
@@ -53,4 +54,6 @@ angular.module('MobileCRMApp')
 			toaster.error(error.message);
 		});
 	};
+
+	$scope.itemCollection.setTotal(items.data);
 });

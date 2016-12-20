@@ -19,13 +19,18 @@ angular.module('MobileCRMApp')
 			title : 'Created Date',
 			name : 'createdDate',
 			type : 'date'
+		},{
+			title : 'Total',
+			name : 'total',
+			type : 'currency'
 		}
 	];
 
 	$scope.search = [
 		'_id',
 		'createdDate',
-		'description'
+		'description',
+		'total'
 	];
 	$scope.filterDate = 'createdDate';
 
@@ -37,6 +42,10 @@ angular.module('MobileCRMApp')
 			title : 'Created Date',
 			name : 'createdDate',
 			type : 'date'
+		},{
+			title : 'Total',
+			name : 'total',
+			type : 'currency'
 		}
 	];
 
