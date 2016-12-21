@@ -74,7 +74,9 @@ angular.module('MobileCRMApp')
 			$scope.maxPage = 0;
 			var wsClassHandler = new data.wsClass();
 			$scope.orderBy = {
-				sort : {},
+				sort : {
+					'createdDate' : -1
+				},
 				reverse : false,
 				field : '_id'
 			};

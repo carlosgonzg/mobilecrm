@@ -24,6 +24,16 @@ angular.module('MobileCRMApp')
 			field : 'sor',
 			type : 'text',
 			show: true
+		},{
+			label : 'Created Date',
+			field : 'createdDate',
+			type : 'date',
+			show: true
+		},{
+			label : 'Completed Date',
+			field : 'originalShipDate',
+			type : 'date',
+			show: true
 		}, {
 			label : 'Customer',
 			field : 'client.entity.fullName',
@@ -46,6 +56,16 @@ angular.module('MobileCRMApp')
 			label : 'WOR/Work Order #',
 			field : 'wor',
 			type : 'text',
+			show: true
+		},{
+			label : 'Created Date',
+			field : 'createdDate',
+			type : 'date',
+			show: true
+		},{
+			label : 'Completed Date',
+			field : 'originalShipDate',
+			type : 'date',
 			show: true
 		}, {
 			label : 'Customer',
