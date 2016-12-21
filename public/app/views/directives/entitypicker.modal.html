@@ -32,8 +32,8 @@
 				<tbody>
 					<tr ng-repeat="ent in list track by ent._id" ng-click="selectEntity(ent)">
 						<td ng-repeat="field in wsFields track by $index" ng-if="field.show" ng-click="selectPerson(ent)">
-							<span ng-if="field.type == 'date'">{{ getData(ent, field.field | date:'MMM/dd/yyyy') }}</span>
-							<span ng-if="field.type != 'date'">{{ getData(ent, field.field | date:'MMM/dd/yyyy') }}</span>
+							<span ng-if="field.type == 'date'">{{ getData(ent, field.field)| date:'MMM/dd/yyyy' }}</span>
+							<span ng-if="field.type != 'date'">{{ getData(ent, field.field) }}</span>
 						</td>
 					</tr>
 				</tbody>
