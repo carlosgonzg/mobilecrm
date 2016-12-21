@@ -84,7 +84,7 @@
             <!-- Campos Numericos -->
             <span ng-if="!field.config && field.type !='date' && field.decimalsOnly == 'decimals-only' && !matching(inception(elem, field.name)) && field.type !='object'">{{inception(elem, field.name) | limitTo: field.limit}}{{(inception(elem, field.name).length > field.limit) ? '...' : ''}}</span>
             <!-- Campos Fecha -->
-            <span ng-if="field.type=='date'">{{inception(elem, field.name) | date:'dd/MMM/yyyy'}}</span>
+            <span ng-if="field.type=='date'">{{inception(elem, field.name) | date:'MMM/dd/yyyy'}}</span>
             <!-- Campos Objetos (Vienen de la BD) -->
             <span ng-if="field.type=='object'">{{resolve(field.routeInDb, elem, field.function, field.def) | limitTo: field.limit}}{{(resolve(field.routeInDb, elem, field.function, field.def).length > field.limit) ? '...' : ''}}</span>
             <!-- Campos Select (Solo viene el ID) -->
