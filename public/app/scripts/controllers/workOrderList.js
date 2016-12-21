@@ -53,6 +53,7 @@ angular.module('MobileCRMApp')
 	$scope.search = [
 		'_id',
 		'createdDate',
+		'originalShipDate',
 		'invoiceNumber',
 		'wor',
 		'client.branch',
