@@ -25,7 +25,7 @@ angular.module('MobileCRMApp')
 			type : 'date'
 		},{
 			title : 'Completed Date',
-			name : 'completedDate',
+			name : 'originalShipDate',
 			type : 'date'
 		}, {
 			title : 'Invoice #',
@@ -78,7 +78,7 @@ angular.module('MobileCRMApp')
 			type : 'date'
 		},{
 			title : 'Completed Date',
-			name : 'completedDate',
+			name : 'originalShipDate',
 			type : 'date'
 		}, {
 			title : 'Invoice #',

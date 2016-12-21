@@ -23,6 +23,10 @@ angular.module('MobileCRMApp')
 			title : 'Created Date',
 			name : 'createdDate',
 			type : 'date'
+		},{
+			title : 'Completed Date',
+			name : 'originalShipDate',
+			type : 'date'
 		}, {
 			title : 'Invoice #',
 			name : 'invoiceNumber',
@@ -35,6 +39,10 @@ angular.module('MobileCRMApp')
 			title : 'Status',
 			name : 'status.description',
 			type : 'text'
+		}, {
+			title : 'Total Amount',
+			name : 'total',
+			type : 'currency'
 		}
 	];
 	if($rootScope.userData.role._id == 1){
