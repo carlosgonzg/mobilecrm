@@ -78,37 +78,65 @@ angular.module('MobileCRMApp')
 			 			subpostal: ''
 			 		}
 			 	};
-			 	for(var i = 0; i < place.address_components.length; i++){
-			 		//Getting all data
-			 		if(place.address_components[i].types.indexOf('street_number') != -1){
-			 			data.streetNumber = place.address_components[i].long_name
-			 		}
-			 		else if(place.address_components[i].types.indexOf('route') != -1){
-			 			data.route = place.address_components[i].long_name
-			 		}
-			 		else if(place.address_components[i].types.indexOf('locality') != -1){
-			 			data.city.id = place.address_components[i].short_name
-			 			data.city.description = place.address_components[i].long_name
-			 		}
-			 		else if(place.address_components[i].types.indexOf('administrative_area_level_2') != -1){
-			 			data.county.id = place.address_components[i].short_name
-			 			data.county.description = place.address_components[i].long_name
-			 		}
-			 		else if(place.address_components[i].types.indexOf('administrative_area_level_1') != -1){
-			 			data.state.id = place.address_components[i].short_name
-			 			data.state.description = place.address_components[i].long_name
-			 		}
-			 		else if(place.address_components[i].types.indexOf('country') != -1){
-			 			data.country.id = place.address_components[i].short_name
-			 			data.country.description = place.address_components[i].long_name
-			 		}
-			 		else if(place.address_components[i].types.indexOf('postal_code') != -1){
-			 			data.zipcode.postal = place.address_components[i].long_name
-			 		}
-			 		else if(place.address_components[i].types.indexOf('postal_code_suffix') != -1){
-			 			data.zipcode.subpostal = place.address_components[i].long_name
-			 		}
-			 	}
+			 	if(place.address_components){
+				 	for(var i = 0; i < place.address_components.length; i++){
+				 		//Getting all data
+				 		if(place.address_components[i].types.indexOf('street_number') != -1){
+				 			data.streetNumber = place.address_components[i].long_name
+				 		}
+				 		else if(place.address_components[i].types.indexOf('route') != -1){
+				 			data.route = place.address_components[i].long_name
+				 		}
+				 		else if(place.address_components[i].types.indexOf('locality') != -1){
+				 			data.city.id = place.address_components[i].short_name
+				 			data.city.description = place.address_components[i].long_name
+				 		}
+				 		else if(place.address_components[i].types.indexOf('administrative_area_level_2') != -1){
+				 			data.county.id = place.address_components[i].short_name
+				 			data.county.description = place.address_components[i].long_name
+				 		}
+				 		else if(place.address_components[i].types.indexOf('administrative_area_level_1') != -1){
+				 			data.state.id = place.address_components[i].short_name
+				 			data.state.description = place.address_components[i].long_name
+				 		}
+				 		else if(place.address_components[i].types.indexOf('country') != -1){
+				 			data.country.id = place.address_components[i].short_name
+				 			data.country.description = place.address_components[i].long_name
+				 		}
+				 		else if(place.address_components[i].types.indexOf('postal_code') != -1){
+				 			data.zipcode.postal = place.address_components[i].long_name
+				 		}
+				 		else if(place.address_components[i].types.indexOf('postal_code_suffix') != -1){
+				 			data.zipcode.subpostal = place.address_components[i].long_name
+				 		}
+				 	}
+				 }
+				 else {
+ 				 	var data = {
+				 		streetNumber: '',
+				 		route: place.name,
+				 		city:{
+				 			id: 0,
+				 			description: 'N/A'
+				 		},
+				 		county:{
+				 			id: 0,
+				 			description: 'N/A'
+				 		},
+				 		state:{
+				 			id: 0,
+				 			description: 'N/A'
+				 		},
+				 		country: {
+				 			id: 0,
+				 			description: 'N/A'
+				 		},
+				 		zipcode: {
+				 			postal: 'N/A',
+				 			subpostal: 'N/A'
+				 		}
+				 	};
+				 }
 			 	$scope.ngModel.address1 = data.streetNumber + ' ' + data.route;
 				$scope.ngModel.address2 = '';
 				$scope.ngModel.city = data.city;
