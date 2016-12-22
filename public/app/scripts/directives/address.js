@@ -146,9 +146,9 @@ angular.module('MobileCRMApp')
 				$scope.ngModel.state.country = data.country.id;
 				$scope.ngModel.country = data.country;
 				$scope.ngModel.zipcode = data.zipcode.postal;
-				$scope.ngModel.latitude = place.geometry.location.lat();
-				$scope.ngModel.longitude = place.geometry.location.lng();
-				$scope.ngModel.distanceFrom = getDistance($scope.ngModel, originPoint);
+				$scope.ngModel.latitude = place.geometry ? place.geometry.location.lat() : 0;
+				$scope.ngModel.longitude = place.geometry ? place.geometry.location.lng() : 0;
+				$scope.ngModel.distanceFrom = place.geometry ? getDistance($scope.ngModel, originPoint) : 0;
 				$scope.$apply();
 			}
 			$timeout(function(){
