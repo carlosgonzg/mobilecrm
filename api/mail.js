@@ -134,7 +134,7 @@ var sendServiceOrder = function (serviceOrder, mails, dirname) {
 		body = body.replace('<customerPhone>', serviceOrder.phone ? serviceOrder.phone.number : 'None');
 		body = body.replace('<sor>', serviceOrder.sor);
 		body = body.replace('<unitno>', serviceOrder.unitno);
-		body = body.replace('<pono>', serviceOrder.pono);
+		body = body.replace('<pono>', serviceOrder.pono || 'Attached invoice C00.... without po number. Please provide po number for this Service Order.');
 		body = body.replace('<isono>', serviceOrder.isono);
 		body = body.replace('<clientName>', serviceOrder.client.entity.fullName);
 		body = body.replace('<clientPhone>', serviceOrder.client && serviceOrder.client.branch && serviceOrder.client.branch.phones && serviceOrder.client.branch.phones.length > 0 ? serviceOrder.client.branch.phones[0].number : 'None');
@@ -197,7 +197,7 @@ var sendServiceOrderUpdate = function (serviceOrder, mails, user) {
 		body = body.replace('<customerPhone>', serviceOrder.phone ? serviceOrder.phone.number : 'None');
 		body = body.replace('<sor>', serviceOrder.sor);
 		body = body.replace('<unitno>', serviceOrder.unitno);
-		body = body.replace('<pono>', serviceOrder.pono);
+		body = body.replace('<pono>', serviceOrder.pono || 'Attached invoice C00.... without po number. Please provide po number for this Service Order.');
 		body = body.replace('<isono>', serviceOrder.isono);
 		body = body.replace('<clientName>', serviceOrder.client.entity.fullName);
 		body = body.replace('<clientPhone>', serviceOrder.client && serviceOrder.client.branch && serviceOrder.client.branch.phones && serviceOrder.client.branch.phones.length > 0 ? serviceOrder.client.branch.phones[0].number : 'None');
@@ -251,7 +251,7 @@ var sendInvoice = function (invoice, mails, cc, file, fileName) {
 		var url = config.SERVER_URL;
 		body = body.replace('<emailUrl>', url);
 		body = body.replace('<clientName>', invoice.client.entity.fullName);
-		body = body.replace('<pono>', invoice.pono);
+		body = body.replace('<pono>', invoice.pono || 'Attached invoice C00.... without po number. Please provide po number for this Invoice.');
 		body = body.replace('<invoiceNumber>', invoice.invoiceNumber);
 		var attachments = setAttachment(file, fileName)
 		sendMail(mails.join(', '), 'Invoice: ' + invoice.invoiceNumber, body, true, attachments, cc.join(', '))
@@ -330,6 +330,12 @@ var sendWorkOrder = function (workOrder, mails, dirname, file, fileName) {
 		body = body.replace('<clientCompany>', workOrder.client.company ? workOrder.client.company.entity.name : 'None');
 		body = body.replace('<clientBranch>', workOrder.client.branch ? workOrder.client.branch.name : 'None');
 		body = body.replace('<wor>', workOrder.wor);
+		if(!workOrder.pono){
+			body = body.replace('<pono>', 'Attached invoice C00.... without po number. Please provide po number for this Service Order.')
+		}
+		else {
+			body = body.replace('<pono>', '');
+		}
 		var company = 'Company: ' + (workOrder && workOrder.client && workOrder.client.company && workOrder.client.company.entity ? workOrder.client.company.entity.name : 'Not Defined');
 		var branch = workOrder && workOrder.client && workOrder.client.branch ? 'Branch: ' + workOrder.client.branch.name : 'Client: ' + workOrder.client.entity.fullName;
 		var subject = company + ' | ' + branch + ' | Work Order: ' + workOrder.wor;
@@ -363,7 +369,7 @@ var sendWorkOrderUpdate = function (workOrder, mails, user, company) {
 		body = body.replace('<clientBranch>', workOrder.client.branch ? workOrder.client.branch.name : 'None');
 		body = body.replace('<wor>', workOrder.wor);
 		body = body.replace('<unitno>', workOrder.unitno);
-		body = body.replace('<pono>', workOrder.pono);
+		body = body.replace('<pono>', workOrder.pono || 'Attached invoice C00.... without po number. Please provide po number for this Work Order.');
 		body = body.replace('<isono>', workOrder.isono);
 		body = body.replace('<clientName>', workOrder.client.entity.fullName);
 		body = body.replace('<clientPhone>', workOrder.client && workOrder.client.branch && workOrder.client.branch.phones && workOrder.client.branch.phones.length > 0 ? workOrder.client.branch.phones[0].number : 'None');
