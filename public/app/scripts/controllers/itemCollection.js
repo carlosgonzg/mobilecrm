@@ -19,7 +19,7 @@ angular.module('MobileCRMApp')
 			throw new Error('validation: item');
 		}
 		if($scope.itemCollection.items.indexOf(item._id) == -1){
-			$scope.itemCollection.items.push(item._id);
+			$scope.itemCollection.items.unshift(item._id);
 			$scope.itemCollection.itemsQuantity[item._id] = quantity || 1;
 			$scope.itemCollection.itemsPrice[item._id] = item.price || 1;
 			$scope.itemCollection.setTotal(items.data);
