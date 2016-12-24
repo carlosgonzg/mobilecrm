@@ -172,16 +172,15 @@ var createWorkOrderBody = function(workOrder, company){
 
 	//Cliente
 	body = body.replace(/<clientName>/g, workOrder.client.entity.fullName);
-	body = body.replace(/<clientAddress>/g, workOrder.siteAddress.address1);
-	body = body.replace(/<clientState>/g, workOrder.siteAddress.state.description + ' ' + workOrder.siteAddress.zipcode);
-	body = body.replace(/<clientPhone>/g, workOrder.phone.number);
+	body = body.replace(/<clientAddress>/g, company.address.address1);
+	body = body.replace(/<clientState>/g, company.address.state.description + ' ' + company.address.zipcode);
 	body = body.replace(/<clientMail>/g, workOrder.client.account.email);
 
 	body = body.replace(/<comment>/g, workOrder.comment);
 	body = body.replace(/<pono>/g, workOrder.pono);
 	body = body.replace(/<unitno>/g, workOrder.unitno);
 	body = body.replace(/<isono>/g, workOrder.isono);
-	body = body.replace(/<clientCity>/g, workOrder.siteAddress.city.description);
+	body = body.replace(/<clientCity>/g, company.address.city.description);
 
 	//Inserting table of items
 	var total = 0;
@@ -210,12 +209,10 @@ var createWorkOrderBody = function(workOrder, company){
 		total += item.price * item.quantity;
 		tableItems += '</tr>';
 	}
-	
 	body = body.replace('<tableItems>', tableItems);
 
 	body = body.replace('<subtotal>', numeral(total).format('$0,0.00'));
 	body = body.replace('<total>', numeral(total).format('$0,0.00'));
-
 	return body;
 };
 

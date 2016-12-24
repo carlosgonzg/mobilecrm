@@ -45,17 +45,10 @@ angular.module('MobileCRMApp')
 	$scope.clientChanged = function(client){
 		$scope.items = [];
 		for(var i = 0; i < items.data.length; i++){
-			if(!items.data[i].clients || !items.data[i].companies){
+			if(!items.data[i].clients && !items.data[i].companies){
 				$scope.items.push(items.data[i]);
 			}
 			else {
-				/*
-				for(var j = 0; j < items.data[i].clients.length; j++){
-					if(items.data[i].clients[j]._id == client._id){
-						$scope.items.push(items.data[i]);
-						break;
-					}
-				}*/
 				for(var j = 0; j < items.data[i].companies.length; j++){
 					if(items.data[i].companies[j]._id == (client && client.company ? client.company._id : -1)){
 						$scope.items.push(items.data[i]);
@@ -172,7 +165,7 @@ angular.module('MobileCRMApp')
 						break;
 					}
 				}
-				if(isHere != -1){
+				if(isHere != -1 && $scope.serviceOrder.items[isHere].price == res[i].price){
 					$scope.serviceOrder.items[isHere].quantity += res[i].quantity;
 				}
 				else {

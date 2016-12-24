@@ -241,8 +241,11 @@ WorkOrder.prototype.sendWorkOrderUpdate = function(id, user, mail){
 		for(var i = 0; i < users.data.length; i++){
 			emails.push(users.data[i].account.email);
 		}
-		if(user.role._id != 1)
-			return mail.sendWorkOrderUpdate(workOrder, emails, user);
+		return _this.crudCompany.find({ _id: workOrder.client.company._id });
+	})
+	.then(function(companies){
+		if(user.role._id == 1)
+			return mail.sendWorkOrderUpdate(workOrder, emails, user, companies.data[0]);
 		else
 			q.when();
 	})

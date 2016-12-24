@@ -103,7 +103,8 @@ angular.module('MobileCRMApp')
 		var d = $q.defer();
 		var _this = this;
 		var email = _this.client ? _this.client.account.email : null;
-		var dialog = dialogs.create('views/emails.html', 'EmailsCtrl', { email: email});
+
+		var dialog = dialogs.create('views/emails.html', 'EmailsCtrl', { email: email });
 		dialog.result.then(function (emails) {
 			toaster.warning('Sending the email');
 			$http.post(_this.baseApiPath + '/send', { id: _this._id, emails: emails })
@@ -111,10 +112,24 @@ angular.module('MobileCRMApp')
 				toaster.success('The invoice has been sent!.');
 		    })
 		    .error(function (data, status, headers, config) {
-		    	toaster.error('There was an error sending the file, please try again')
+		    	toaster.error('There was an error sending the email, please try again')
 		        d.reject(data);
 		    });
 		});
+		return d.promise;
+	};
+	Invoice.prototype.sendTo = function(emails){
+		var d = $q.defer();
+		var _this = this;
+		toaster.warning('Sending the email');
+		$http.post(_this.baseApiPath + '/send', { id: _this._id, emails: emails })
+		.success(function (data) {
+			toaster.success('The invoice has been sent!.');
+	    })
+	    .error(function (data, status, headers, config) {
+	    	toaster.error('There was an error sending the email, please try again')
+	        d.reject(data);
+	    });
 		return d.promise;
 	};
 	Invoice.prototype.getMonthlyStatement = function(query){

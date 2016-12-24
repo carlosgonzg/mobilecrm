@@ -11,6 +11,7 @@ angular.module('MobileCRMApp')
 .controller('WorkOrderCtrl', function ($scope, $rootScope, $location, toaster, User, statusList, workOrder, items, Item, dialogs, $q) {
 	$scope.workOrder = workOrder;
 	$scope.items = [];
+	$scope.params = {};
 	$scope.readOnly = $rootScope.userData.role._id != 1;
 	if($rootScope.userData.role._id != 1){
 		$scope.workOrder.client = new User($rootScope.userData);
@@ -44,17 +45,10 @@ angular.module('MobileCRMApp')
 	$scope.clientChanged = function(client){
 		$scope.items = [];
 		for(var i = 0; i < items.data.length; i++){
-			if(!items.data[i].clients || !items.data[i].companies){
+			if(!items.data[i].clients && !items.data[i].companies){
 				$scope.items.push(items.data[i]);
 			}
 			else {
-				/*
-				for(var j = 0; j < items.data[i].clients.length; j++){
-					if(items.data[i].clients[j]._id == client._id){
-						$scope.items.push(items.data[i]);
-						break;
-					}
-				} */
 				for(var j = 0; j < items.data[i].companies.length; j++){
 					if(items.data[i].companies[j]._id ==  (client && client.company ? client.company._id : -1)){
 						$scope.items.push(items.data[i]);
@@ -63,6 +57,8 @@ angular.module('MobileCRMApp')
 				}
 			}
 		}
+		if(client.company)
+			$scope.workOrder.siteAddress = angular.copy(client.company.address);
 	};
 
 	$scope.addContact = function () {
@@ -73,8 +69,9 @@ angular.module('MobileCRMApp')
 		$scope.workOrder.contacts.splice(index, 1);
 	};
 	
-	$scope.addItem = function () {
-		$scope.workOrder.items.push(new Item())
+	$scope.addItem = function (item) {
+		$scope.workOrder.items.push(item);
+		$scope.params.item = {};
 	};
 
 	$scope.removeItem = function (index) {
@@ -98,7 +95,7 @@ angular.module('MobileCRMApp')
 						break;
 					}
 				}
-				if(isHere != -1){
+				if(isHere != -1 && $scope.workOrder.items[isHere].price == res[i].price){
 					$scope.workOrder.items[isHere].quantity += res[i].quantity;
 				}
 				else {

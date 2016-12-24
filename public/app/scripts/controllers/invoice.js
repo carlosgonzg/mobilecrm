@@ -131,7 +131,7 @@ angular.module('MobileCRMApp')
 	$scope.clientChanged = function(client){
 		$scope.items = [];
 		for(var i = 0; i < items.data.length; i++){
-			if(!items.data[i].clients || !items.data[i].companies){
+			if(!items.data[i].clients && !items.data[i].companies){
 				$scope.items.push(items.data[i]);
 			}
 			else {
@@ -207,6 +207,54 @@ angular.module('MobileCRMApp')
 			toaster.error(error.message);
 		});
 	};
+	$scope.saveBranch = function () {
+		delete $scope.invoice.client.account.password;
+		$scope.invoice.save()
+		.then(function (data) {
+			new User().filter({ 'branch._id': $scope.invoice.client.branch._id })
+			.then(function (result) {
+				var emails = _.map(result.data, function(obj){
+					return obj.account.email;
+				});
+				$scope.invoice.sendTo(emails);
+			})
+		},
+		function (error) {
+			console.log(error);
+			toaster.error(error.message);
+		});
+	};
+	$scope.saveCompany = function () {
+		delete $scope.invoice.client.account.password;
+		$scope.invoice.save()
+		.then(function (data) {
+			new User().filter({ 'company._id': $scope.invoice.client.company._id })
+			.then(function (result) {
+				var emails = _.map(result.data, function(obj){
+					return obj.account.email;
+				});
+				$scope.invoice.sendTo(emails);
+			})
+		},
+		function (error) {
+			console.log(error);
+			toaster.error(error.message);
+		});
+	};
+	$scope.saveSend = function () {
+		delete $scope.invoice.client.account.password;
+		$scope.invoice.save()
+		.then(function (data) {
+			toaster.success('The Invoice was saved successfully');
+			$scope.invoice.send();
+		},
+		function (error) {
+			console.log(error);
+			toaster.error(error.message);
+		});
+	};
+
+
 	$scope.delete = function(){
 		var dlg = dialogs.confirm('Warning','Are you sure you want to delete?');
 		dlg.result.then(function(btn){

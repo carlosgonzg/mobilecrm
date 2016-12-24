@@ -16,6 +16,7 @@ angular.module('MobileCRMApp')
 		this.clientId = this.clientId || null;
 		this.items = this.items || [];
 		this.itemsQuantity = this.itemsQuantity || {};
+		this.itemsPrice = this.itemsPrice || {};
 		this.total = this.total || 0;
 	}
 	var extend = function (child, parent) {
@@ -43,19 +44,12 @@ angular.module('MobileCRMApp')
 		return at;
 	};
 
-	ItemCollection.prototype.setTotal = function(items){
+	ItemCollection.prototype.setTotal = function(){
 		var _this = this;
-		items = items || [];
-		var promise = $q.when({ data: items });
-		if(items.length <= 0){
-			promise = _this.filter({ });
-		}
-		promise.then(function(result){
-			_this.total = _.reduce(_this.items, function(memo, data){
-				var item = _.filter(result.data, function(obj){ return obj._id == data; })[0] || { price: 0 };
-				return memo + item.price * (_this.itemsQuantity[data] || 1);
-			}, 0);
-		});
+		_this.total = _.reduce(_this.items, function(memo, data){
+			return memo + ((_this.itemsPrice[data] || 1) * (_this.itemsQuantity[data] || 1));
+		}, 0);
+		return _this.total;
 	};
 
 	ItemCollection.prototype.goTo = function () {
