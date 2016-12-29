@@ -129,7 +129,7 @@ WorkOrder.prototype.insert = function (workOrder, user, mail) {
 	workOrder.total = total;
 	var photos = workOrder.photos;
 	//Consigo el sequencial de invoice
-	var promise = workOrder.invoiceNumber ? q.when(workOrder.invoiceNumber) : util.getYearlySequence(_this.crud.db, 'WorkOrder');
+	var promise = workOrder.invoiceNumber ? q.when(workOrder.invoiceNumber) : q.when('')//util.getYearlySequence(_this.crud.db, 'WorkOrder');
 	promise
 	.then(function (sequence) {
 		workOrder.invoiceNumber = sequence;

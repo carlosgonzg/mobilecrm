@@ -166,3 +166,6 @@ input{
 .pointer{
 	cursor: pointer;
 }
+.form-group{
+	height:70px
+}

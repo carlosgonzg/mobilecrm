@@ -11,6 +11,7 @@ angular.module('MobileCRMApp')
 .controller('ServiceOrderCtrl', function ($scope, $rootScope, $location, toaster, User, statusList, serviceOrder, items, Item, dialogs, $q) {
 	$scope.serviceOrder = serviceOrder;
 	$scope.items = [];
+	$scope.params = {};
 	$scope.readOnly = $rootScope.userData.role._id != 1;
 	if($rootScope.userData.role._id != 1){
 		$scope.serviceOrder.client = new User($rootScope.userData);
@@ -67,8 +68,9 @@ angular.module('MobileCRMApp')
 		$scope.serviceOrder.contacts.splice(index, 1);
 	};
 	
-	$scope.addItem = function () {
-		$scope.serviceOrder.items.push(new Item())
+	$scope.addItem = function (item) {
+		$scope.serviceOrder.items.unshift(item);
+		$scope.params.item = {};
 	};
 
 	$scope.removeItem = function (index) {
@@ -169,7 +171,7 @@ angular.module('MobileCRMApp')
 					$scope.serviceOrder.items[isHere].quantity += res[i].quantity;
 				}
 				else {
-					$scope.serviceOrder.items.push(res[i]);
+					$scope.serviceOrder.items.unshift(res[i]);
 				}
 			}
 			

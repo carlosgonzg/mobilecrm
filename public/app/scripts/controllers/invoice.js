@@ -8,7 +8,7 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-.controller('InvoiceCtrl', function ($scope, $rootScope, $location, toaster, User, invoice, items, statusList, Item, ServiceOrder, WorkOrder, dialogs, Invoice) {
+.controller('InvoiceCtrl', function ($scope, $rootScope, $location, toaster, User, invoice, items, statusList, Item, ServiceOrder, WorkOrder, dialogs, Invoice, Company) {
 	$scope.invoice = invoice;
 	$scope.items = [];
 	$scope.readOnly = $rootScope.userData.role._id != 1;
@@ -228,11 +228,12 @@ angular.module('MobileCRMApp')
 		delete $scope.invoice.client.account.password;
 		$scope.invoice.save()
 		.then(function (data) {
-			new User().filter({ 'company._id': $scope.invoice.client.company._id })
+			new Company().filter({ _id: $scope.invoice.client.company._id })
 			.then(function (result) {
 				var emails = _.map(result.data, function(obj){
-					return obj.account.email;
+					return obj.accountPayableEmail;
 				});
+				emails.push($scope.invoice.client.account.email);
 				$scope.invoice.sendTo(emails);
 			})
 		},

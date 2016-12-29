@@ -18,6 +18,10 @@ angular.module('MobileCRMApp')
 				$scope.items[i].import = true;
 				$scope.items[i].quantity = itemCollection.itemsQuantity[$scope.items[i]._id] || 1;
 				$scope.items[i].price = itemCollection.itemsPrice[$scope.items[i]._id] || 1;
+				$scope.items[i].itemCollection = {
+					_id: itemCollection._id,
+					description: itemCollection.description
+				};
 			}
 		});
 	};

@@ -70,7 +70,7 @@ angular.module('MobileCRMApp')
 	};
 	
 	$scope.addItem = function (item) {
-		$scope.workOrder.items.push(item);
+		$scope.workOrder.items.unshift(item);
 		$scope.params.item = {};
 	};
 
@@ -99,10 +99,9 @@ angular.module('MobileCRMApp')
 					$scope.workOrder.items[isHere].quantity += res[i].quantity;
 				}
 				else {
-					$scope.workOrder.items.push(res[i]);
+					$scope.workOrder.items.unshift(res[i]);
 				}
 			}
-			
 		}, function (error) {
 		});
 	};
