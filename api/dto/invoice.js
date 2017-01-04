@@ -60,7 +60,7 @@ function Invoice(db, userLogged, dirname) {
 			siteAddress : new Address().schema,
 			phone : {
 				type : 'object',
-				required : true
+				required : false
 			},
 			items : {
 				type : 'array',
