@@ -232,7 +232,7 @@
 							<input type="number" name="quantity{{$index}}" class="form-control" ng-model="item.quantity"  ng-disabled="isDisabled()" validator="required, number">
 						</td>
 						<td>
-							<input type="number" name="price{{$index}}" class="form-control" ng-model="item.price"  ng-disabled="isDisabled()" validator="required">
+							<input type="number" name="price{{$index}}" class="form-control" ng-model="item.price"  ng-disabled="isDisabled()">
 						</td>
 						<td>
 							{{item.getTotalPrice() | currency }}
