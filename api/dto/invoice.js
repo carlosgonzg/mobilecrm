@@ -39,7 +39,11 @@ function Invoice(db, userLogged, dirname) {
 			},
 			sor : {
 				type : 'string',
-				required : true
+				required : false
+			},
+			wor : {
+				type : 'string',
+				required : false
 			},
 			pono : {
 				type : 'string',
