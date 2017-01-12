@@ -251,10 +251,15 @@ var sendInvoice = function (invoice, mails, cc, file, fileName) {
 		var url = config.SERVER_URL;
 		body = body.replace('<emailUrl>', url);
 		body = body.replace('<clientName>', invoice.client.entity.fullName);
-		body = body.replace('<pono>', invoice.pono || 'Attached invoice C00.... without po number. Please provide po number for this Invoice.');
+		body = body.replace('<pono>', invoice.pono ? 'With PO Number: ' + invoice.pono : 'Without PO Number. Please provide PO Number for this Invoice.');
 		body = body.replace('<invoiceNumber>', invoice.invoiceNumber);
 		var attachments = setAttachment(file, fileName)
-		sendMail(mails.join(', '), 'Invoice: ' + invoice.invoiceNumber, body, true, attachments, cc.join(', '))
+		var subject = 'Invoice: ' + invoice.invoiceNumber;
+		if(!invoice.pono){
+			subject += ' Without po number';
+		}
+		subject += ' – MobileOne Restoration LLC';
+		sendMail(mails.join(', '), subject, body, true, attachments, cc.join(', '))
 		.then(function (response) {
 			console.log('DONE Sending Mail: ', response)
 			deferred.resolve(response);
