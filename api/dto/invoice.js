@@ -268,7 +268,10 @@ Invoice.prototype.getMonthlyStatement = function(params, user){
 	var today = new Date();
 	var fromDate = params.from ? new Date(params.from) : new Date(today.getFullYear(), 0, 1, 0, 0, 0, 0);
 	var toDate = params.to ? new Date(params.to) : new Date(today.getFullYear(), 11, 31, 23, 59, 59, 999);
-
+	var queryDate = {
+		$gte: fromDate,
+		$lte: toDate
+	};
 	var pipeline = [];
 
 	var project = {
@@ -325,6 +328,10 @@ Invoice.prototype.getMonthlyStatement = function(params, user){
 
 	var query = {
 		$match: {
+			date: {
+				$gte: fromDate,
+				$lte: toDate
+			}
 		}
 	};
 	if(params.clientId){
@@ -377,13 +384,25 @@ Invoice.prototype.getMonthlyStatement = function(params, user){
 	pipeline.push(project2);
 	pipeline.push(sort1);
 	var results = [];
-	_this.crudServiceOrder.find({
-		invoiceNumber: {
-			$ne: ''
-		}/*,
-		'status._id': {
-			$in:[3, 4, 7]
-		}*/
+	var invoices = [];
+	_this.crud.find({
+		date: queryDate
+	})
+	.then(function(result){
+		invoices = _.map(result.data, function(obj){
+			return obj.invoiceNumber;
+		});
+		var array = _.map(result.data, function(element) { 
+		     return _.extend({}, element, { itemType: 'Invoice'});
+		});
+		results = results.concat(array);
+		console.log(invoices);
+		return _this.crudServiceOrder.find({
+			invoiceNumber: {
+				$ne: invoices
+			},
+			date: queryDate
+		});
 	})
 	.then(function(result){
 		var array = _.map(result.data, function(element) { 
@@ -392,11 +411,9 @@ Invoice.prototype.getMonthlyStatement = function(params, user){
 		results = results.concat(array);
 		return _this.crudWorkOrder.find({
 			invoiceNumber: {
-					$ne: ''
-			}/*,
-			'status._id': {
-				$in:[3, 4, 7]
-			}*/
+					$ne: invoices
+			},
+			date: queryDate
 		});
 	})
 	.then(function(result){

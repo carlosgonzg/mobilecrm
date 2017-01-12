@@ -94,7 +94,7 @@ var a;
 			var url = window.URL.createObjectURL(blob);
 			
 			a.href = url;
-			a.download = _this.invoiceNumber + '.pdf';
+			a.download = _this.sor + '.pdf';
 			a.click();
 			window.URL.revokeObjectURL(url);
 			d.resolve(url);

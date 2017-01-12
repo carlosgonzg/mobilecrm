@@ -38,6 +38,14 @@
 		</div> 
 	</div>
 </div>
+<div class="row">
+	<div class="col-xs-6">
+		<div class="form-group">
+	    	<label for="year">Year:</label>
+		    <select class="form-control" name="years" ng-model="params.year" ng-options="o as o for o in years track by o"></select>
+  		</div>
+	</div>
+</div>
 <ul class="nav nav-pills">
 	<li role="presentation" ng-class="{ active: getActiveTab('month') }" ng-click="selectTab('month')"><a>Monthly Statement</a></li>
 	<li role="presentation" ng-class="{ active: getActiveTab('detail') }" ng-click="selectTab('detail')"><a>Detail</a></li>
@@ -92,6 +100,9 @@
 						Date
 					</th>
 					<th width="10%">
+						Type
+					</th>
+					<th width="10%">
 						Invoice Number
 					</th>
 					<th width="10%">
@@ -136,6 +147,9 @@
 					</td>
 					<td width="10%">
 						{{invoice.data|date:'MM/dd/YYYY'}}
+					</td>
+					<td width="10%">
+						{{invoice.itemType}}
 					</td>
 					<td width="10%">
 						{{invoice.invoiceNumber}}

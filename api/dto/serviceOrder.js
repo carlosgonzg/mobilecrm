@@ -31,7 +31,7 @@ function ServiceOrder(db, userLogged, dirname) {
 			},
 			invoiceNumber : {
 				type : 'string',
-				required : true
+				required : false
 			},
 			sor : {
 				type : 'string',

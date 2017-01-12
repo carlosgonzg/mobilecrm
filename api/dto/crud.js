@@ -281,14 +281,17 @@ Crud.prototype.update = function (qry, obj) {
   _this.validate(obj)
 	.then(function () {
 		delete obj.baseApiPath;
-		delete obj.errors
+		delete obj.errors;
+    delete obj.ok;
+    delete obj.nModified;
+    delete obj.n;
 		return checkUniqueFields(obj, _this);
 	})
 	.then(function (data) {
 			if (!data.exists) {
 				return _this.db.get(_this.table).update(query, {
 					$set : obj
-				});
+				}, { multi: true });
 			} else {
 				throw new Error('This object already exists');
 			}

@@ -1,8 +1,10 @@
 'use strict';
 
 var Crud = require('./crud');
+var User = require('./user');
 
 function Company(db, userLogged) {
+	this.user = new User(db, '', userLogged);
 	this.crud = new Crud(db, 'COMPANY', userLogged);
 
 	//DB Table Schema

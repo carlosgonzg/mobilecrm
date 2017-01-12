@@ -134,7 +134,7 @@ var sendServiceOrder = function (serviceOrder, mails, dirname) {
 		body = body.replace('<customerPhone>', serviceOrder.phone ? serviceOrder.phone.number : 'None');
 		body = body.replace('<sor>', serviceOrder.sor);
 		body = body.replace('<unitno>', serviceOrder.unitno);
-		body = body.replace('<pono>', serviceOrder.pono || 'Attached invoice C00.... without po number. Please provide po number for this Service Order.');
+		body = body.replace('<pono>', serviceOrder.pono || '');
 		body = body.replace('<isono>', serviceOrder.isono);
 		body = body.replace('<clientName>', serviceOrder.client.entity.fullName);
 		body = body.replace('<clientPhone>', serviceOrder.client && serviceOrder.client.branch && serviceOrder.client.branch.phones && serviceOrder.client.branch.phones.length > 0 ? serviceOrder.client.branch.phones[0].number : 'None');
@@ -206,7 +206,7 @@ var sendServiceOrderUpdate = function (serviceOrder, mails, user) {
 		body = body.replace('<issue>', serviceOrder.issue || 'None');
 		body = body.replace('<comment>', serviceOrder.comment || 'None');
 		var changesByUser = '';
-		changesByUser += (user.entity.fullName || user.entity.name) + ', Changes: ';
+		changesByUser += (user.entity.fullName || user.entity.name) + '<br/> Changes: ';
 		var fieldsChanged = '';
 		for(var i = 0; i < serviceOrder.fieldsChanged.length; i++){
 			if(serviceOrder.fieldsChanged[i].by != user._id)
@@ -257,6 +257,9 @@ var sendInvoice = function (invoice, mails, cc, file, fileName) {
 		var subject = 'Invoice: ' + invoice.invoiceNumber;
 		if(!invoice.pono){
 			subject += ' Without po number';
+		}
+		else {
+			subject += '  with po number ' + invoice.pono;
 		}
 		subject += ' – MobileOne Restoration LLC';
 		sendMail(mails.join(', '), subject, body, true, attachments, cc.join(', '))

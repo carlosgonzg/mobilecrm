@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('MobileCRMApp')
-.controller('ReportWOCtrl', function ($scope, $rootScope, toaster, clients, countries, WorkOrder, $timeout, dialogs, statusList, items, Loading) {
+.controller('ReportWOCtrl', function ($scope, $rootScope, toaster, clients, countries, WorkOrder, $timeout, dialogs, statusList, companyList, items, Loading, Branch) {
 	var today = new Date();
 	$scope.isClient = $rootScope.userData.role._id != 1;
 	$scope.selectedTab = 'data';
@@ -42,6 +42,31 @@ angular.module('MobileCRMApp')
 	}];
 
 	$scope.statusList = statusList;
+	$scope.statusList.unshift({
+		_id: -1,
+		description: 'All'
+	});
+
+	$scope.companyList = companyList.data;
+	$scope.companyList.unshift({
+		_id: -1,
+		entity: {
+			name: 'All'
+		}
+	});
+
+	$scope.setBranches = function(company){
+		$scope.branchList = [{
+			_id: -1,
+			code: 'All',
+			name: 'All'
+		}];
+		new Branch().filter({ 'company._id': company._id })
+		.then(function(result){
+			$scope.filter.branch._id = -1;
+			$scope.branchList = $scope.branchList.concat(result.data);
+		});
+	};
 
 	$scope.filter = {
 		fromDate: new Date(today.getFullYear(), today.getMonth(), 1),
@@ -52,6 +77,8 @@ angular.module('MobileCRMApp')
 		country: { _id: -1 },
 		state: { _id: -1 },
 		city: { _id: -1 },
+		company: { _id: -1 },
+		branch: { _id: -1 },
 		isOpen: true,
 		sort: $scope.sort
 	};
@@ -83,7 +110,7 @@ angular.module('MobileCRMApp')
 	$scope.showItems = function(workOrder){
 		var comment = '';
 		for(var i = 0; i < workOrder.items.length; i++){
-			comment +=  '(' + workOrder.items[i].code + ') ' + workOrder.items[i].description + ', Quantity: ' + workOrder.items[i].quantity.toString() + '\n';
+			comment +=  '(' + workOrder.items[i].code + ') ' + workOrder.items[i].description + ', Quantity: ' + workOrder.items[i].quantity.toString() + '<br/>';
 		}
 		var dialog = dialogs.create('views/comment.html', 'CommentCtrl', { comment: comment });
 		dialog.result
@@ -317,10 +344,22 @@ angular.module('MobileCRMApp')
 				'partsFromTheYard': $scope.filter.partsFromTheYard
 			});
 		}
-		//ahora la ciudad
+		//ahora la client responsible
 		if($scope.filter.clientResponsibleCharges){
 			query.$and.push({
 				'clientResponsibleCharges': $scope.filter.clientResponsibleCharges
+			});
+		}
+		//ahora company
+		if($scope.filter.company._id != -1){
+			query.$and.push({
+				'client.company._id': $scope.filter.company._id
+			});
+		}
+		//ahora el branch
+		if($scope.filter.branch._id != -1){
+			query.$and.push({
+				'client.branch._id': $scope.filter.branch._id
 			});
 		}
 		//item

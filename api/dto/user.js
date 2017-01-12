@@ -15,6 +15,9 @@ var md5 = require('md5')
 
 function User(db, secret, userLogged) {
 	this.crud = new Crud(db, 'USER', userLogged );
+	this.crudSO = new Crud(db, 'SERVICEORDER', userLogged );
+	this.crudWO = new Crud(db, 'WORKORDER', userLogged );
+	this.crudInv = new Crud(db, 'INVOICE', userLogged );
 	this.secret = secret;
 	//DB Table Schema
 	var accountSchema = {
@@ -354,4 +357,38 @@ User.prototype.getAdminUsers = function(){
 	});
 	return d.promise;
 };
+
+User.prototype.update = function(query, user, userLogged){
+	var d = q.defer();
+	var _this = this;
+	var obj = {};
+	_this.crud.update(query, user)
+	.then(function(result){
+		return _this.crud.find({ '_id': user._id });
+	})
+	.then(function(result){
+		obj = result.data[0];
+		return _this.crudSO.update({ 'client._id': obj._id }, { client: obj });
+	})
+	.then(function(result){
+		console.log(result)
+		return _this.crudWO.update({ 'client._id': obj._id }, { client: obj });
+	})
+	.then(function(result){
+		console.log(result)
+
+		return _this.crudInv.update({ 'client._id': obj._id }, { client: obj });
+	})
+	.then(function(result){
+		console.log(result)
+
+		d.resolve(obj);
+	})
+	.catch(function(err){
+		console.log(err)
+		d.reject(err);
+	});
+	return d.promise;
+};
+
 module.exports = User;

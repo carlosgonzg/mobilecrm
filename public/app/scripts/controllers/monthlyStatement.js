@@ -14,12 +14,18 @@ angular.module('MobileCRMApp')
 	$scope.searchWhoList = [];
 	$scope.selectedTab = 'month';
 
-	$scope.months = [];
-	for(var i = 1; i <= 12; i++){
-		$scope.months.push({
-			year: today.getFullYear(),
-			month: i
-		});
+	var setMonths = function(year){
+		$scope.months = [];
+		for(var i = 1; i <= 12; i++){
+			$scope.months.push({
+				year: year,
+				month: i
+			});
+		}
+	};
+	$scope.years = [];
+	for(var i = today.getFullYear(); i >= 2015; i--){
+		$scope.years.push(i);
 	}
 
 	$scope.params = {
@@ -27,17 +33,9 @@ angular.module('MobileCRMApp')
 			code: 'MobileOne',
 			description: 'MobileOne'
 		},
-		searchWho: null
+		searchWho: null,
+		year: today.getFullYear()
 	};
-
-	if($rootScope.userData.role._id != 1){
-		$scope.getList('User');
-		$scope.params.searchBy = {
-			code: 'User',
-			description: 'Customer'
-		};
-		$scope.params.searchWho = $rootScope.userData._id
-	}
 
 	$scope.getActiveTab = function(tab){
 		return tab == $scope.selectedTab;
@@ -59,7 +57,7 @@ angular.module('MobileCRMApp')
 	};
 	$scope.getPendingPay = function(year, month){
 		return _.reduce($scope.invoices, function(memo, value){
-			return memo + (year == value.year && month == value.month && value.status._id == 3 ? value.total : 0);
+			return memo + (year == value.year && month == value.month && value.status._id != 4 ? value.total : 0);
 		}, 0);
 	};
 	$scope.getTotal = function(year, month){
@@ -100,8 +98,8 @@ angular.module('MobileCRMApp')
 			query.branchId = params.searchWho;
 		}
 		
-		query.from = new Date(today.getFullYear(), 0, 1, 0, 0, 0, 0);
-		query.to = new Date(today.getFullYear(), 11, 31, 23, 59, 59, 999);
+		query.from = new Date(params.year, 0, 1, 0, 0, 0, 0);
+		query.to = new Date(params.year, 11, 31, 23, 59, 59, 999);
 		return query;
 	};
 	$scope.search = function(params){
@@ -110,7 +108,7 @@ angular.module('MobileCRMApp')
 		$scope.invoices = [];
 		new Invoice().getMonthlyStatement(query)
 		.then(function(result){
-			console.log(result);
+			setMonths($scope.params.year);
 			$scope.invoices = result;
 			Loading.hide();
 		})
@@ -128,4 +126,14 @@ angular.module('MobileCRMApp')
 			$scope.search($scope.params);
 		});
 	};
+
+	if($rootScope.userData.role._id != 1){
+		$scope.getList('User');
+		$scope.params.searchBy = {
+			code: 'User',
+			description: 'Customer'
+		};
+		$scope.params.searchWho = $rootScope.userData._id
+	}
+	setMonths($scope.params.year);
 });

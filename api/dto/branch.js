@@ -3,6 +3,7 @@
 var Crud = require('./crud');
 var Address = require('./address');
 var Phone = require('./phone');
+var User = require('./user');
 
 function Branch(db, userLogged) {
 	this.crud = new Crud(db, 'BRANCH', userLogged);

@@ -32,6 +32,10 @@ angular.module('MobileCRMApp')
 			name : 'invoiceNumber',
 			type : 'text'
 		}, {
+			title : 'Unit #',
+			name : 'unitno',
+			type : 'text'
+		}, {
 			title : 'Customer',
 			name : 'client.entity.fullName',
 			type : 'text'
@@ -59,6 +63,7 @@ angular.module('MobileCRMApp')
 		'invoiceNumber',
 		'sor',
 		'wor',
+		'unitno',
 		'client.branch',
 		'client.company',
 		'client.entity',
@@ -81,6 +86,10 @@ angular.module('MobileCRMApp')
       name : 'invoiceNumber',
       type : 'text'
     }, {
+		title : 'Unit #',
+		name : 'unitno',
+		type : 'text'
+	}, {
       title : 'Customer',
       name : 'client.entity.fullName',
       type : 'text'

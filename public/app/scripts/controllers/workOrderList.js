@@ -32,8 +32,12 @@ angular.module('MobileCRMApp')
 			name : 'invoiceNumber',
 			type : 'text'
 		}, {
-			title : 'WOR/Work Order #',
+			title : 'Work Order #',
 			name : 'wor',
+			type : 'text'
+		}, {
+			title : 'Unit #',
+			name : 'unitno',
 			type : 'text'
 		}, {
 			title : 'Customer',
@@ -56,6 +60,7 @@ angular.module('MobileCRMApp')
 		'originalShipDate',
 		'invoiceNumber',
 		'wor',
+		'unitno',
 		'client.branch',
 		'client.company',
 		'client.entity',
@@ -86,8 +91,12 @@ angular.module('MobileCRMApp')
 			name : 'invoiceNumber',
 			type : 'text'
 		}, {
-			title : 'WOR/Work Order #',
+			title : 'Work Order #',
 			name : 'wor',
+			type : 'text'
+		}, {
+			title : 'Unit #',
+			name : 'unitno',
 			type : 'text'
 		}, {
 			title : 'Customer',

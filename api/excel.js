@@ -152,7 +152,8 @@ var createReport = function(objs, whoIs, user){
 		{ key: 'h', width: 27 },
 		{ key: 'i', width: 27 },
 		{ key: 'j', width: 27 },
-		{ key: 'k', width: 27 }
+		{ key: 'k', width: 27 },
+		{ key: 'l', width: 27 }
 	];
 	//header
 	excel.worksheet.addRow(['Report - MOBILE ONE', '', '', '', '', '', '', '', '', '', '']);
@@ -168,7 +169,7 @@ var createReport = function(objs, whoIs, user){
 	excel.worksheet.addRow(['', '', '', '', '', '', '', '', '', '', '']);
 	excel.worksheet.mergeCells('A3:K3');
 	//table header
-	excel.worksheet.addRow(['Created Date', 'Completed Date', (whoIs == 'ServiceOrder' ? 'Service' : 'Work') + ' Order #', 'Invoice', 'Customer', 'Status', 'Responsible for Charges', 'Materials from the Yard', 'Parts from the Yard', 'Issue / Comment', 'Total Amount']);
+	excel.worksheet.addRow(['Created Date', 'Completed Date', (whoIs == 'ServiceOrder' ? 'Service' : 'Work') + ' Order #', 'Invoice', 'Customer', 'Status', 'Unit #', 'Responsible for Charges', 'Materials from the Yard', 'Parts from the Yard', 'Issue / Comment', 'Total Amount']);
 	excel.worksheet.lastRow.font = boldFont;
 	//Now the data
 	var total = 0;
@@ -179,14 +180,14 @@ var createReport = function(objs, whoIs, user){
 			subTotal += obj.items[j].price * obj.items[j].quantity;
 		}
 		total += subTotal;
-		excel.worksheet.addRow([moment(obj.date).format('MM-DD-YYYY'), moment(obj.originalShipDate).format('MM-DD-YYYY'), whoIs == 'ServiceOrder' ? obj.sor : obj.wor, obj.invoiceNumber, obj.client.entity.fullName, obj.status.description, obj.clientResponsibleCharges ? 'x' : '', obj.partsFromTheYard ? 'x' : '', obj.yardComment || '', obj.comment || '', subTotal]);
+		excel.worksheet.addRow([moment(obj.date).format('MM-DD-YYYY'), moment(obj.originalShipDate).format('MM-DD-YYYY'), whoIs == 'ServiceOrder' ? obj.sor : obj.wor, obj.invoiceNumber, obj.client.entity.fullName, obj.status.description, obj.unitno, obj.clientResponsibleCharges ? 'x' : '', obj.partsFromTheYard ? 'x' : '', obj.yardComment || '', obj.comment || '', subTotal]);
 		excel.worksheet.lastRow.font = normalFont;
-		excel.worksheet.getCell('K' + (i + 5).toString()).numFmt = '$ #,###,###,##0.00';	
+		excel.worksheet.getCell('L' + (i + 5).toString()).numFmt = '$ #,###,###,##0.00';	
 	}
 	var key = (objs.length + 5).toString();
-	excel.worksheet.addRow(['', '', '', '', '', '', '', '', '', 'Total', total]);
-	excel.worksheet.getCell('K' + key).numFmt = '$ #,###,###,##0.00';
-	excel.worksheet.mergeCells('A' + key + ':I' + key);
+	excel.worksheet.addRow(['', '', '', '', '', '', '','', '', '', 'Total', total]);
+	excel.worksheet.getCell('L' + key).numFmt = '$ #,###,###,##0.00';
+	excel.worksheet.mergeCells('A' + key + ':J' + key);
 	excel.worksheet.lastRow.font = boldFont;
 
 	//saving file

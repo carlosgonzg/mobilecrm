@@ -197,6 +197,9 @@ angular
 			},
 			statusList: function(List){
 				return List.get('status');
+			},
+			companyList: function(Company){
+				return new Company().filter({});
 			}
 		}
 	})
@@ -215,6 +218,9 @@ angular
 			},
 			items: function(Item){
 				return new Item().filter({});
+			},
+			companyList: function(Company){
+				return new Company().filter({});
 			}
 		}
 	})

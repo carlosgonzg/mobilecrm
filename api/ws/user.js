@@ -60,9 +60,15 @@ module.exports = function (prefix, app, secret, config) {
 		.then(util.success(res), util.error(res));
 	});
 	
-	require('./crud')(prefix, app, User);
-	
 	app.post(prefix, function(req, res){
 		res.json({ message: 'Not happening bruh' })
 	});
+
+	app.put(prefix, function (req, res) {
+		var user = new User(app.db, secret, req.user);
+		user.update(req.body.query, req.body.obj, req.user)
+		.then(util.success(res), util.error(res));
+	});
+
+	require('./crud')(prefix, app, User);
 };

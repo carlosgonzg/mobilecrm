@@ -12,7 +12,7 @@ var getPaid = function(invoices, year, month){
 };
 var getPendingPay = function(invoices, year, month){
 	return _.reduce(invoices, function(memo, value){
-		return memo + (year == value.year && month == value.month && value.status._id == 3 ? value.total : 0);
+		return memo + (year == value.year && month == value.month && value.status._id != 4 ? value.total : 0);
 	}, 0);
 };
 var getPending = function(invoices, year, month){
@@ -28,33 +28,28 @@ var getTotal = function(invoices, year, month){
 
 var createInvoiceBody = function(obj, company, branch){
 	var body = fs.readFileSync(__dirname + '/invoice.html', 'utf8').toString();
-	console.log('1')
 	//replacement of data
 	body = body.replace(/<createdDate>/g, moment(obj.date).format('MM/DD/YYYY'));
-	body = body.replace(/<invoiceNumber>/g, obj.invoiceNumber);
+	body = body.replace(/<invoiceNumber>/g, obj.invoiceNumber || '');
 	//Company
-	console.log('2')
 
-	body = body.replace(/<companyName>/g, company.entity.name);
-	body = body.replace(/<companyAddress>/g, company.address.address1);
-	body = body.replace(/<companyState>/g, company.address.state.description + ' ' + company.address.zipcode);
+	body = body.replace(/<companyName>/g, company.entity.name || '');
+	body = body.replace(/<companyAddress>/g, company.address.address1 || '');
+	body = body.replace(/<companyState>/g, (company.address.state.description + ' ' + company.address.zipcode) || '');
 	//Cliente
-	console.log('3')
-
-	body = body.replace(/<clientName>/g, obj.client.entity.fullName);
-	body = body.replace(/<clientAddress>/g, company.address.address1);
-	body = body.replace(/<clientState>/g, company.address.state.description + ' ' + company.address.zipcode);
-	body = body.replace(/<clientPhone>/g, obj.phone.number);
-	body = body.replace(/<clientMail>/g, obj.client.account.email);
-	body = body.replace(/<comment>/g, obj.comment);
-	body = body.replace(/<pono>/g, obj.pono);
-	body = body.replace(/<unitno>/g, obj.unitno);
-	body = body.replace(/<isono>/g, obj.isono);
-	body = body.replace(/<clientCity>/g, company.address.city.description);
-	body = body.replace(/<sor>/g, obj.sor || obj.wor);
+	body = body.replace(/<clientName>/g, obj.client.entity.fullName || '');
+	body = body.replace(/<clientAddress>/g, company.address.address1 || '');
+	body = body.replace(/<clientState>/g, company.address.state.description + ' ' + company.address.zipcode || '');
+	body = body.replace(/<clientPhone>/g, obj.phone.number || '');
+	body = body.replace(/<clientMail>/g, obj.client.account.email || '');
+	body = body.replace(/<comment>/g, obj.comment || '');
+	body = body.replace(/<pono>/g, obj.pono || '');
+	body = body.replace(/<unitno>/g, obj.unitno || '');
+	body = body.replace(/<isono>/g, obj.isono || '');
+	body = body.replace(/<clientCity>/g, company.address.city.description || '');
+	body = body.replace(/<labelDocument>/g, obj.sor ? 'SOR:' : (obj.wor ? 'WOR:' : ''));
+	body = body.replace(/<sor>/g, obj.sor ? obj.sor : obj.wor ? obj.wor : '');
 	//Inserting table of items
-	console.log('4')
-
 	var total = 0;
 	var tableItems = '';
 	for(var i = 0; i < obj.items.length; i++){
@@ -70,26 +65,20 @@ var createInvoiceBody = function(obj, company, branch){
 		tableItems += item.part || '';
 		tableItems += '</td>';
 		tableItems += '<td style="text-align: right;border: thin solid black; border-top: none; border-right: none;">';
-		tableItems += numeral(item.price).format('$0,0.00');
+		tableItems += numeral(item.price || 0).format('$0,0.00');
 		tableItems += '</td>';
 		tableItems += '<td style="text-align: right;border: thin solid black; border-top: none; border-right: none;">';
-		tableItems += item.quantity;
+		tableItems += item.quantity || 1;
 		tableItems += '</td>';
 		tableItems += '<td style="text-align: right;border: thin solid black; border-top: none;">';
-		tableItems += numeral(item.price * item.quantity).format('$0,0.00');
+		tableItems += numeral((item.price || 0) * (item.quantity || 1)).format('$0,0.00');
 		tableItems += '</td>';
-		total += item.price * item.quantity;
+		total += (item.price || 0) * (item.quantity || 1);
 		tableItems += '</tr>';
 	}
-	console.log('5')
-	
-	body = body.replace('<tableItems>', tableItems);
-	console.log('6')
-
-	body = body.replace('<subtotal>', numeral(total).format('$0,0.00'));
-	body = body.replace('<total>', numeral(total).format('$0,0.00'));
-	console.log('7')
-
+	body = body.replace('<tableItems>', tableItems || '');
+	body = body.replace('<subtotal>', numeral(total || 0).format('$0,0.00'));
+	body = body.replace('<total>', numeral(total || 0).format('$0,0.00'));
 	return body;
 };
 
@@ -124,24 +113,24 @@ var createServiceOrderBody = function(serviceOrder){
 	var body = fs.readFileSync(__dirname + '/serviceorder.html', 'utf8').toString();
 	//replacement of data
 	body = body.replace('<createdDate>', moment(serviceOrder.date).format('MM/DD/YYYY'));
-	body = body.replace('<clientCompany>', serviceOrder.client.company ? serviceOrder.client.company.entity.name : 'None');
-	body = body.replace('<clientBranch>', serviceOrder.client.branch ? serviceOrder.client.branch.name : 'None');
+	body = body.replace('<clientCompany>', serviceOrder.client.company ? (serviceOrder.client.company.entity.name || '') : 'None');
+	body = body.replace('<clientBranch>', serviceOrder.client.branch ? (serviceOrder.client.branch.name || '') : 'None');
 	body = body.replace('<customer>', serviceOrder.customer || 'None');
-	body = body.replace('<customerPhone>', serviceOrder.phone ? serviceOrder.phone.number : 'None');
-	body = body.replace('<sor>', serviceOrder.sor);
-	body = body.replace('<unitno>', serviceOrder.unitno);
-	body = body.replace('<pono>', serviceOrder.pono);
-	body = body.replace('<isono>', serviceOrder.isono);
-	body = body.replace('<clientName>', serviceOrder.client.entity.fullName);
+	body = body.replace('<customerPhone>', serviceOrder.phone ? (serviceOrder.phone.number || '') : 'None');
+	body = body.replace('<sor>', serviceOrder.sor || '');
+	body = body.replace('<unitno>', serviceOrder.unitno || '');
+	body = body.replace('<pono>', serviceOrder.pono || '');
+	body = body.replace('<isono>', serviceOrder.isono || '');
+	body = body.replace('<clientName>', serviceOrder.client.entity.fullName || '');
 	body = body.replace('<clientPhone>', serviceOrder.client && serviceOrder.client.branch && serviceOrder.client.branch.phones && serviceOrder.client.branch.phones.length > 0 ? serviceOrder.client.branch.phones[0].number : 'None');
-	body = body.replace('<clientMail>', serviceOrder.client.account.email);
-	body = body.replace('<clientAddress>', serviceOrder.siteAddress.address1 + ', ' + serviceOrder.siteAddress.city.description + ', ' + serviceOrder.siteAddress.state.description + ' ' + serviceOrder.siteAddress.zipcode);
+	body = body.replace('<clientMail>', serviceOrder.client.account.email || '');
+	body = body.replace('<clientAddress>', (serviceOrder.siteAddress.address1 || '') + ', ' + (serviceOrder.siteAddress.city.description || '') + ', ' + (serviceOrder.siteAddress.state.description || '') + ' ' + (serviceOrder.siteAddress.zipcode || ''));
 	body = body.replace('<issue>', serviceOrder.issue || 'None');
 	body = body.replace('<comment>', serviceOrder.comment || 'None');
 	var contacts = '';
 	for(var i = 0; i < serviceOrder.contacts.length; i++){
 		if(serviceOrder.contacts[i].name)
-			contacts += '<b>Contact #' + (i+1) + ':&nbsp;</b>' +  serviceOrder.contacts[i].name + '.&nbsp;<b>Phone(' + serviceOrder.contacts[i].phoneType.description + '):</b>&nbsp;' + serviceOrder.contacts[i].number + '<br/>';
+			contacts += '<b>Contact #' + (i+1) + ':&nbsp;</b>' +  (serviceOrder.contacts[i].name || '') + '.&nbsp;<b>Phone(' + (serviceOrder.contacts[i].phoneType.description || '') + '):</b>&nbsp;' + (serviceOrder.contacts[i].number || '') + '<br/>';
 	}
 	body = body.replace('<contacts>', contacts || '');
 	return body;
@@ -180,24 +169,24 @@ var createWorkOrderBody = function(workOrder, company){
 	var body = fs.readFileSync(__dirname + '/workorder.html', 'utf8').toString();
 	//replacement of data
 	body = body.replace(/<createdDate>/g, moment(workOrder.date).format('MM/DD/YYYY'));
-	body = body.replace(/<wor>/g, workOrder.wor);
+	body = body.replace(/<wor>/g, workOrder.wor || '');
 
 	//Company
-	body = body.replace(/<companyName>/g, company.entity.name);
-	body = body.replace(/<companyAddress>/g, company.address.address1);
-	body = body.replace(/<companyState>/g, company.address.state.description + ' ' + company.address.zipcode);
+	body = body.replace(/<companyName>/g, company.entity.name || '');
+	body = body.replace(/<companyAddress>/g, company.address.address1 || '');
+	body = body.replace(/<companyState>/g, (company.address.state.description || '') + ' ' + (company.address.zipcode || ''));
 
 	//Cliente
-	body = body.replace(/<clientName>/g, workOrder.client.entity.fullName);
-	body = body.replace(/<clientAddress>/g, company.address.address1);
-	body = body.replace(/<clientState>/g, company.address.state.description + ' ' + company.address.zipcode);
-	body = body.replace(/<clientMail>/g, workOrder.client.account.email);
+	body = body.replace(/<clientName>/g, workOrder.client.entity.fullName || '');
+	body = body.replace(/<clientAddress>/g, company.address.address1 || '');
+	body = body.replace(/<clientState>/g, (company.address.state.description || '') + ' ' + (company.address.zipcode || ''));
+	body = body.replace(/<clientMail>/g, workOrder.client.account.email || '');
 
-	body = body.replace(/<comment>/g, workOrder.comment);
-	body = body.replace(/<pono>/g, workOrder.pono);
-	body = body.replace(/<unitno>/g, workOrder.unitno);
-	body = body.replace(/<isono>/g, workOrder.isono);
-	body = body.replace(/<clientCity>/g, company.address.city.description);
+	body = body.replace(/<comment>/g, workOrder.comment || '');
+	body = body.replace(/<pono>/g, workOrder.pono || '');
+	body = body.replace(/<unitno>/g, workOrder.unitno || '');
+	body = body.replace(/<isono>/g, workOrder.isono || '');
+	body = body.replace(/<clientCity>/g, company.address.city.description || '');
 
 	//Inserting table of items
 	var total = 0;
@@ -215,18 +204,18 @@ var createWorkOrderBody = function(workOrder, company){
 		tableItems += item.part || '';
 		tableItems += '</td>';
 		tableItems += '<td style="text-align: right;border: thin solid black; border-top: none; border-right: none;">';
-		tableItems += numeral(item.price).format('$0,0.00');
+		tableItems += numeral(item.price || 0).format('$0,0.00');
 		tableItems += '</td>';
 		tableItems += '<td style="text-align: right;border: thin solid black; border-top: none; border-right: none;">';
-		tableItems += item.quantity;
+		tableItems += item.quantity || 1;
 		tableItems += '</td>';
 		tableItems += '<td style="text-align: right;border: thin solid black; border-top: none;">';
-		tableItems += numeral(item.price * item.quantity).format('$0,0.00');
+		tableItems += numeral((item.price || 0) * (item.quantity || 1)).format('$0,0.00');
 		tableItems += '</td>';
-		total += item.price * item.quantity;
+		total += (item.price || 0) * (item.quantity || 1);
 		tableItems += '</tr>';
 	}
-	body = body.replace('<tableItems>', tableItems);
+	body = body.replace('<tableItems>', tableItems || '');
 
 	body = body.replace('<subtotal>', numeral(total).format('$0,0.00'));
 	body = body.replace('<total>', numeral(total).format('$0,0.00'));
