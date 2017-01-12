@@ -242,9 +242,6 @@
 						<th width="15%">
 							Part
 						</th>
-						<th width="15%">
-							Comment
-						</th>
 						<th width="10%">
 							<button type="button" class="btn btn-sm btn-primary update" ng-click="addItem()" ng-if="userData.role._id == 1">
 								<i class="fa fa-plus"></i>
@@ -254,7 +251,7 @@
 				</thead>
 				<tbody>
 					<tr>
-						<td colspan="6">
+						<td colspan="5">
 							<ui-select ng-model="params.item" theme="bootstrap">
 				            	<ui-select-match placeholder="Select the item you want on the list...">
 	        						{{$select.selected.code}}&nbsp;-&nbsp;{{$select.selected.description}}
@@ -302,10 +299,6 @@
 							<input type="text" name="part{{$index}}" class="form-control" ng-model="item.part"  ng-disabled="isDisabled()">
 						</td>
 						<td>
-							<textarea id="partComment" ng-model="item.comment" class="form-control">
-							</textarea> 
-						</td>
-						<td>
 							<button type="button" class="btn btn-sm btn-danger update" ng-click="removeItem()" ng-if="userData.role._id == 1">
 								<i class="fa fa-times"></i>
 							</button>
@@ -314,7 +307,7 @@
 				</tbody>
 				<tfoot>
 					<tr>
-						<th colspan="5">
+						<th colspan="4">
 							<span class="pull-right">
 								Total
 							</span>

@@ -140,31 +140,28 @@
 	</div>
 	<div class="row">
 		<div class="col-xs-12">
-			<table class="table table-striped table-hover" width="960" style="margin: 0 auto">
+			<table class="table table-striped table-hover" width="100%" style="margin: 0 auto">
 				<thead>
 					<tr>
-						<th width="140">
+						<th width="20%">
 							Item
 						</th>
-						<th width="100">
+						<th width="10%">
 							Code
 						</th>
-						<th width="1400">
+						<th width="20%">
 							Description
 						</th>
-						<th width="80">
+						<th width="10%">
 							Quantity
 						</th>
-						<th width="100">
+						<th width="15%">
 							Price
 						</th>
-						<th width="150">
+						<th width="15%">
 							Total
 						</th>
-						<th width="150">
-							Comment
-						</th>
-						<th width="70">
+						<th width="10%">
 							<button type="button" class="btn btn-sm btn-primary update" ng-click="addItem()">
 								<i class="fa fa-plus"></i>
 							</button>
@@ -200,10 +197,6 @@
 							{{item.getTotalPrice() | currency }}
 						</td>
 						<td>
-							<textarea id="partComment" ng-model="item.comment" class="form-control">
-							</textarea> 
-						</td>
-						<td>
 							<button type="button" class="btn btn-sm btn-danger update" ng-click="removeItem()">
 								<i class="fa fa-times"></i>
 							</button>
@@ -217,7 +210,7 @@
 								Total
 							</span>
 						</th>
-						<th colspan="3">
+						<th colspan="4">
 							<span class="pull-left">
 								{{invoice.getTotal() | currency}}
 							</span>
