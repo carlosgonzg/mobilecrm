@@ -82,6 +82,8 @@ angular.module('MobileCRMApp')
 	};
 
 	$scope.removeItem = function (index) {
+		console.log($scope.workOrder.items)
+		console.log(index)
 		$scope.workOrder.items.splice(index, 1);
 	};
 

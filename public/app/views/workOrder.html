@@ -241,7 +241,7 @@
 							<input type="text" name="part{{$index}}" class="form-control" ng-model="item.part"  ng-disabled="isDisabled()">
 						</td>
 						<td>
-							<button type="button" class="btn btn-sm btn-danger update" ng-click="removeItem()">
+							<button type="button" class="btn btn-sm btn-danger update" ng-click="removeItem($index)">
 								<i class="fa fa-times"></i>
 							</button>
 						</td>
