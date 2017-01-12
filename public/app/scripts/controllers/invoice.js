@@ -152,7 +152,7 @@ angular.module('MobileCRMApp')
 	};
 	
 	$scope.addItem = function () {
-		$scope.invoice.items.push(new Item())
+		$scope.invoice.items.unshift(new Item())
 	};
 	$scope.removeItem = function (index) {
 		$scope.invoice.items.splice(index, 1);

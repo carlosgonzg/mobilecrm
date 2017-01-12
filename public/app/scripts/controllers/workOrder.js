@@ -8,7 +8,7 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-.controller('WorkOrderCtrl', function ($scope, $rootScope, $location, toaster, User, statusList, workOrder, items, Item, dialogs, $q) {
+.controller('WorkOrderCtrl', function ($scope, $rootScope, $location, toaster, User, statusList, workOrder, items, Item, dialogs, $q, Company) {
 	$scope.workOrder = workOrder;
 	$scope.items = [];
 	$scope.params = {};
@@ -57,8 +57,15 @@ angular.module('MobileCRMApp')
 				}
 			}
 		}
-		if(client.company)
-			$scope.workOrder.siteAddress = angular.copy(client.company.address);
+		if(client && client.company){
+			new Company().filter({ _id: client.company._id})
+			.then(function(result){
+				$scope.workOrder.siteAddress = angular.copy(result.data[0].address);
+			})
+			.catch(function(){
+				$scope.workOrder.siteAddress = angular.copy(client.company.address);
+			})
+		}
 	};
 
 	$scope.addContact = function () {

@@ -75,6 +75,8 @@ angular.module('MobileCRMApp')
 	WorkOrder.prototype.download = function(){
 		var d = $q.defer();
 		var _this = this;
+		toaster.warning('Generating the document');
+		
 		$http({
 			url: this.baseApiPath + '/download',
 			method: "POST",

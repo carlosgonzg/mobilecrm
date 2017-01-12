@@ -21,7 +21,7 @@ exports.reject = function (result) {
 
 exports.success = function (res) {
 	return function (f) {
-		res.send(200, f);
+		res.status(200).send(f);
 	};
 }
 

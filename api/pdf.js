@@ -28,26 +28,33 @@ var getTotal = function(invoices, year, month){
 
 var createInvoiceBody = function(obj, company, branch){
 	var body = fs.readFileSync(__dirname + '/invoice.html', 'utf8').toString();
+	console.log('1')
 	//replacement of data
 	body = body.replace(/<createdDate>/g, moment(obj.date).format('MM/DD/YYYY'));
 	body = body.replace(/<invoiceNumber>/g, obj.invoiceNumber);
 	//Company
+	console.log('2')
+
 	body = body.replace(/<companyName>/g, company.entity.name);
 	body = body.replace(/<companyAddress>/g, company.address.address1);
 	body = body.replace(/<companyState>/g, company.address.state.description + ' ' + company.address.zipcode);
 	//Cliente
+	console.log('3')
+
 	body = body.replace(/<clientName>/g, obj.client.entity.fullName);
-	body = body.replace(/<clientAddress>/g, obj.siteAddress.address1);
-	body = body.replace(/<clientState>/g, obj.siteAddress.state.description + ' ' + obj.siteAddress.zipcode);
+	body = body.replace(/<clientAddress>/g, company.address.address1);
+	body = body.replace(/<clientState>/g, company.address.state.description + ' ' + company.address.zipcode);
 	body = body.replace(/<clientPhone>/g, obj.phone.number);
 	body = body.replace(/<clientMail>/g, obj.client.account.email);
 	body = body.replace(/<comment>/g, obj.comment);
 	body = body.replace(/<pono>/g, obj.pono);
 	body = body.replace(/<unitno>/g, obj.unitno);
 	body = body.replace(/<isono>/g, obj.isono);
-	body = body.replace(/<clientCity>/g, obj.siteAddress.city.description);
-	body = body.replace(/<sor>/g, obj.sor);
+	body = body.replace(/<clientCity>/g, company.address.city.description);
+	body = body.replace(/<sor>/g, obj.sor || obj.wor);
 	//Inserting table of items
+	console.log('4')
+
 	var total = 0;
 	var tableItems = '';
 	for(var i = 0; i < obj.items.length; i++){
@@ -74,11 +81,15 @@ var createInvoiceBody = function(obj, company, branch){
 		total += item.price * item.quantity;
 		tableItems += '</tr>';
 	}
+	console.log('5')
 	
 	body = body.replace('<tableItems>', tableItems);
+	console.log('6')
 
 	body = body.replace('<subtotal>', numeral(total).format('$0,0.00'));
 	body = body.replace('<total>', numeral(total).format('$0,0.00'));
+	console.log('7')
+
 	return body;
 };
 
@@ -91,17 +102,19 @@ var createInvoice = function(obj, company, branch){
 			right: '0.5in',
 			bottom: '0.5in',
 			left: '0.5in'
-		}
+		},
+		timeout: 60000
 	};
+	var fileName = obj.invoiceNumber + '.pdf';
+	var url = __dirname + '/invoices/' + fileName;
 	var body = createInvoiceBody(obj, company, branch);
-	pdf.create(body, options).toFile(__dirname + '/invoices/' + obj.invoiceNumber + '.pdf', function(err, res) {
+	pdf.create(body, options).toFile(url, function(err, res) {
         if (err) {
+        	console.log(err);
             d.reject(err)
-            console.log(err);
-            return 
         }
         else {
-          d.resolve({ path: __dirname + '/invoices/' + obj.invoiceNumber + '.pdf', fileName:  obj.invoiceNumber + '.pdf' });
+          d.resolve({ path: url, fileName:  fileName });
         }
 	});
     return d.promise;
@@ -143,17 +156,21 @@ var createServiceOrder = function(obj){
 			right: '0.5in',
 			bottom: '0.5in',
 			left: '0.5in'
-		}
+		},
+		timeout: 60000
 	};
 	var body = createServiceOrderBody(obj);
-	pdf.create(body, options).toFile(__dirname + '/serviceorders/' + obj.invoiceNumber + '.pdf', function(err, res) {
+	var fileName = obj.sor + '.pdf';
+	var url = __dirname + '/serviceorders/' + fileName;
+	console.log(url)
+	pdf.create(body, options).toFile(url, function(err, res) {
+		console.log(err, res)
         if (err) {
-            d.reject(err)
             console.log(err);
-            return 
+            d.reject(err); 
         }
         else {
-          d.resolve({ path: __dirname + '/serviceorders/' + obj.invoiceNumber + '.pdf', fileName:  obj.invoiceNumber + '.pdf' });
+          d.resolve({ path: url, fileName:  fileName });
         }
 	});
     return d.promise;
@@ -225,18 +242,21 @@ var createWorkOrder = function(obj, company){
 			right: '0.5in',
 			bottom: '0.5in',
 			left: '0.5in'
-		}
+		},
+		timeout: 60000
 	};
 	var body = createWorkOrderBody(obj, company);
-
-	pdf.create(body, options).toFile(__dirname + '/workorders/' + obj.wor + '.pdf', function(err, res) {
+	var fileName = obj.wor + '.pdf';
+	var url = __dirname + '/workorders/' + fileName;
+	console.log(url)
+	pdf.create(body, options).toFile(url, function(err, res) {
+		console.log(err, res)
         if (err) {
+        	console.log(err);
             d.reject(err)
-            console.log(err);
-            return 
         }
         else {
-          d.resolve({ path: __dirname + '/workorders/' + obj.wor + '.pdf', fileName:  obj.wor + '.pdf' });
+          d.resolve({ path: url, fileName:  fileName });
         }
 	});
     return d.promise;
