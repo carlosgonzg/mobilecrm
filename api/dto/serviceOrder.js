@@ -74,7 +74,7 @@ function ServiceOrder(db, userLogged, dirname) {
 		}
 	};
 	this.crud.schema = this.schema;
-	//this.crud.uniqueFields = ['invoiceNumber'];
+	this.crud.uniqueFields = ['sor'];
 }
 
 ServiceOrder.prototype.savePhotos = function(serviceOrder){

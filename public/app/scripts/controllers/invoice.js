@@ -204,7 +204,7 @@ angular.module('MobileCRMApp')
 		},
 			function (error) {
 			console.log(error);
-			toaster.error(error.message);
+			toaster.error('The Invoice couldn\'t be saved, please check if some required field is empty or if its duplicated');
 		});
 	};
 	$scope.saveBranch = function () {
@@ -221,7 +221,7 @@ angular.module('MobileCRMApp')
 		},
 		function (error) {
 			console.log(error);
-			toaster.error(error.message);
+			toaster.error('The Invoice couldn\'t be saved and/or sent, please check if some required field is empty or if its duplicated');
 		});
 	};
 	$scope.saveCompany = function () {
@@ -239,7 +239,7 @@ angular.module('MobileCRMApp')
 		},
 		function (error) {
 			console.log(error);
-			toaster.error(error.message);
+			toaster.error('The Invoice couldn\'t be saved and/or sent, please check if some required field is empty or if its duplicated');
 		});
 	};
 	$scope.saveSend = function () {
@@ -251,7 +251,7 @@ angular.module('MobileCRMApp')
 		},
 		function (error) {
 			console.log(error);
-			toaster.error(error.message);
+			toaster.error('The Invoice couldn\'t be saved and/or sent, please check if some required field is empty or if its duplicated');
 		});
 	};
 

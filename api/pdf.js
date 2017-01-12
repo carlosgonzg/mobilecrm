@@ -46,7 +46,7 @@ var createInvoiceBody = function(obj, company, branch){
 	body = body.replace(/<pono>/g, obj.pono || '');
 	body = body.replace(/<unitno>/g, obj.unitno || '');
 	body = body.replace(/<isono>/g, obj.isono || '');
-	body = body.replace(/<clientCity>/g, company.address.city.description || '');
+	body = body.replace(/<clientCity>/g, obj.client && obj.client.branch ? (obj.client.branch.name || '') : '');
 	body = body.replace(/<labelDocument>/g, obj.sor ? 'SOR:' : (obj.wor ? 'WOR:' : ''));
 	body = body.replace(/<sor>/g, obj.sor ? obj.sor : obj.wor ? obj.wor : '');
 	//Inserting table of items

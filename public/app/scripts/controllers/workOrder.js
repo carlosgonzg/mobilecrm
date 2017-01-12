@@ -195,7 +195,7 @@ angular.module('MobileCRMApp')
 		},
 			function (error) {
 			console.log(error);
-			toaster.error(error.message);
+			toaster.error('The Work Order couldn\'t be saved, please check if some required field is empty or if its duplicated');
 		});
 	};
 

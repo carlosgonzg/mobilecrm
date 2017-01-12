@@ -76,7 +76,7 @@ function WorkOrder(db, userLogged, dirname) {
 		}
 	};
 	this.crud.schema = this.schema;
-	//this.crud.uniqueFields = ['invoiceNumber'];
+	this.crud.uniqueFields = ['wor'];
 }
 
 WorkOrder.prototype.savePhotos = function(workOrder){
