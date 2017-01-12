@@ -1,13 +1,16 @@
 'use strict';
 
-function Address() {
+function Address(required) {
+	if(required == undefined){
+		required = true
+	}
 	this.schema = {
 		id : '/Address',
 		type : 'object',
 		properties : {
 			address1 : {
 				type : 'string',
-				required : true
+				required : required
 			},
 			address2 : {
 				type : 'string',
@@ -15,15 +18,15 @@ function Address() {
 			},
 			city : {
 				type : 'object',
-				required : true
+				required : required
 			},
 			state : {
 				type : 'object',
-				required : true
+				required : required
 			},
 			country : {
 				type : 'object',
-				required : true
+				required : required
 			},
 			zipcode : {
 				type : 'string',

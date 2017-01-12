@@ -57,7 +57,7 @@ function Invoice(db, userLogged, dirname) {
 				type : 'string',
 				required : false
 			},
-			siteAddress : new Address().schema,
+			siteAddress : new Address(false).schema,
 			phone : {
 				type : 'object',
 				required : false
