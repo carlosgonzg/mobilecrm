@@ -268,14 +268,22 @@ angular
 			searchList: function(List){
 				return List.get('search');
 			},
-			userList: function(User){
-				return new User().filter({ 'role._id': { $ne: 1 } });
+			userList: function(User, $rootScope){
+				var query = { 'role._id': { $ne: 1 } };
+				if($rootScope.userData.isRegionalManager){
+					query._id = $rootScope.userData._id;
+ 				}
+				return new User().filter();
 			},
 			companyList: function(Company){
 				return new Company().filter({});
 			},
-			branchList: function(Branch){
-				return new Branch().filter({ });
+			branchList: function(Branch, $rootScope){
+				var query = { };
+				if($rootScope.userData.isRegionalManager){
+					query['company._id'] = $rootScope.userData.company._id;
+ 				}
+				return new Branch().filter(query);
 			}
 		}
 	})

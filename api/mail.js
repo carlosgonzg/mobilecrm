@@ -131,7 +131,7 @@ var sendServiceOrder = function (serviceOrder, mails, dirname) {
 		body = body.replace('<clientCompany>', serviceOrder.client.company ? serviceOrder.client.company.entity.name : 'None');
 		body = body.replace('<clientBranch>', serviceOrder.client.branch ? serviceOrder.client.branch.name : 'None');
 		body = body.replace('<customer>', serviceOrder.customer || 'None');
-		body = body.replace('<customerPhone>', serviceOrder.phone ? serviceOrder.phone.number : 'None');
+		body = body.replace('<customerPhone>', serviceOrder.phone ? (serviceOrder.phone.number || '') : 'None');
 		body = body.replace('<sor>', serviceOrder.sor);
 		body = body.replace('<unitno>', serviceOrder.unitno);
 		body = body.replace('<pono>', serviceOrder.pono || '');
@@ -143,11 +143,10 @@ var sendServiceOrder = function (serviceOrder, mails, dirname) {
 		body = body.replace('<issue>', serviceOrder.issue || 'None');
 		body = body.replace('<comment>', serviceOrder.comment || 'None');
 		var contacts = '';
-		/*
 		for(var i = 0; i < serviceOrder.contacts.length; i++){
 			if(serviceOrder.contacts[i].name)
 				contacts += '<b>Contact #' + (i+1) + ':&nbsp;</b>' +  serviceOrder.contacts[i].name + '.&nbsp;<b>Phone(' + serviceOrder.contacts[i].phoneType.description + '):</b>&nbsp;' + serviceOrder.contacts[i].number + '<br/>';
-		}*/
+		}
 		body = body.replace('<contacts>', contacts || '');
 		var company = 'Company: ' + (serviceOrder && serviceOrder.client && serviceOrder.client.company && serviceOrder.client.company.entity ? serviceOrder.client.company.entity.name : 'Not Defined');
 		var branch = serviceOrder && serviceOrder.client && serviceOrder.client.branch ? 'Branch: ' + serviceOrder.client.branch.name : 'Client: ' + serviceOrder.client.entity.fullName;
@@ -189,12 +188,13 @@ var sendServiceOrderUpdate = function (serviceOrder, mails, user) {
 	bringTemplateData('/email/templateServiceOrderUpdate.html')
 	.then(function (body) {
 		var url = config.SERVER_URL;
+
 		body = body.replace('<emailUrl>', url);
 		body = body.replace('<createdDate>', moment(serviceOrder.date).format('MM/DD/YYYY'));
 		body = body.replace('<clientCompany>', serviceOrder.client.company ? serviceOrder.client.company.entity.name : 'None');
 		body = body.replace('<clientBranch>', serviceOrder.client.branch ? serviceOrder.client.branch.name : 'None');
 		body = body.replace('<customer>', serviceOrder.customer || 'None');
-		body = body.replace('<customerPhone>', serviceOrder.phone ? serviceOrder.phone.number : 'None');
+		body = body.replace('<customerPhone>', serviceOrder.phone ? (serviceOrder.phone.number || '') : 'None');
 		body = body.replace('<sor>', serviceOrder.sor);
 		body = body.replace('<unitno>', serviceOrder.unitno);
 		body = body.replace('<pono>', serviceOrder.pono ? 'With PO Number: ' + serviceOrder.pono : 'Without PO Number. Please provide PO Number for this Service Order.');
@@ -205,26 +205,29 @@ var sendServiceOrderUpdate = function (serviceOrder, mails, user) {
 		body = body.replace('<clientAddress>', serviceOrder.siteAddress.address1 + ', ' + serviceOrder.siteAddress.city.description + ', ' + serviceOrder.siteAddress.state.description + ' ' + serviceOrder.siteAddress.zipcode);
 		body = body.replace('<issue>', serviceOrder.issue || 'None');
 		body = body.replace('<comment>', serviceOrder.comment || 'None');
+
 		var changesByUser = '';
 		changesByUser += (user.entity.fullName || user.entity.name) + '<br/> Changes: ';
 		var fieldsChanged = '';
-		for(var i = 0; i < serviceOrder.fieldsChanged.length; i++){
-			if(serviceOrder.fieldsChanged[i].by != user._id)
-				continue;
-			fieldsChanged += serviceOrder.fieldsChanged[i].field;
-			if(i != serviceOrder.fieldsChanged.length - 1){
-				fieldsChanged += ', ';
+		if(serviceOrder.fieldsChanged){
+			for(var i = 0; i < serviceOrder.fieldsChanged.length; i++){
+				if(serviceOrder.fieldsChanged[i].by != user._id)
+					continue;
+				fieldsChanged += serviceOrder.fieldsChanged[i].field;
+				if(i != serviceOrder.fieldsChanged.length - 1){
+					fieldsChanged += ', ';
+				}
 			}
 		}
 		changesByUser += fieldsChanged == '' ? 'None' : fieldsChanged;
 		body = body.replace('<client>', changesByUser);
 		var contacts = '';
-		/*
 		for(var i = 0; i < serviceOrder.contacts.length; i++){
-			contacts += '<b>Contact #' + (i+1) + ':&nbsp;</b>' +  serviceOrder.contacts[i].name + '.&nbsp;<b>Phone(' + serviceOrder.contacts[i].phoneType.description + '):</b>&nbsp;' + serviceOrder.contacts[i].number + '<br/>';
+			if(serviceOrder.contacts[i].name)
+				contacts += '<b>Contact #' + (i+1) + ':&nbsp;</b>' +  serviceOrder.contacts[i].name + '.&nbsp;<b>Phone(' + serviceOrder.contacts[i].phoneType.description + '):</b>&nbsp;' + serviceOrder.contacts[i].number + '<br/>';
 		}
-		*/
 		body = body.replace('<contacts>', contacts || '');
+
 		var company = 'Company: ' + (serviceOrder && serviceOrder.client && serviceOrder.client.company && serviceOrder.client.company.entity ? serviceOrder.client.company.entity.name : 'Not Defined');
 		var branch = serviceOrder && serviceOrder.client && serviceOrder.client.branch ? 'Branch: ' + serviceOrder.client.branch.name : 'Client: ' + serviceOrder.client.entity.fullName;
 		var subject = company + ' | ' + branch + ' | Service Order: ' + serviceOrder.sor;
@@ -390,12 +393,14 @@ var sendWorkOrderUpdate = function (workOrder, mails, user, company) {
 		var changesByUser = '';
 		changesByUser += (user.entity.fullName || user.entity.name) + ', Changes: ';
 		var fieldsChanged = '';
-		for(var i = 0; i < workOrder.fieldsChanged.length; i++){
-			if(workOrder.fieldsChanged[i].by != user._id)
-				continue;
-			fieldsChanged += workOrder.fieldsChanged[i].field;
-			if(i != workOrder.fieldsChanged.length - 1){
-				fieldsChanged += ', ';
+		if(workOrder.fieldsChanged){
+			for(var i = 0; i < workOrder.fieldsChanged.length; i++){
+				if(workOrder.fieldsChanged[i].by != user._id)
+					continue;
+				fieldsChanged += workOrder.fieldsChanged[i].field;
+				if(i != workOrder.fieldsChanged.length - 1){
+					fieldsChanged += ', ';
+				}
 			}
 		}
 		changesByUser += fieldsChanged == '' ? 'None' : fieldsChanged;

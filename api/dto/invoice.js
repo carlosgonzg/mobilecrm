@@ -99,7 +99,7 @@ Invoice.prototype.insert = function (invoice, username, mail) {
 	promise
 	.then(function (sequence) {
 		invoice.invoiceNumber = sequence;
-		return _this.crud.insert(invoice);
+		return _this.crud.insert(invoice, invoice.invoiceNumber == 'Pending Invoice');
 	})
 	//inserto
 	.then(function (obj) {
@@ -125,13 +125,14 @@ Invoice.prototype.update = function (query, invoice, user, mail) {
 		total += invoice.items[i].quantity * invoice.items[i].price;
 	}
 	invoice.total = total;
-	_this.crud.update(query, invoice)
+	_this.crud.update(query, invoice, invoice.invoiceNumber == 'Pending Invoice')
 	.then(function (obj) {
 		if(user.role._id != 1)
 			_this.sendInvoiceUpdate(query._id, user, mail);
 		d.resolve(obj);
 	})
 	.catch (function (err) {
+		console.log(err)
 		d.reject({
 			result : 'Not ok',
 			errors : err

@@ -34,7 +34,7 @@
 			<label for="searchWho">{{params.searchBy.description}}:</label>
 			<select class="form-control" name="searchWho" ng-model="params.searchWho" ng-options="o._id as o.entity.fullName for o in searchWhoList" ng-disabled="userData.role._id != 1" ng-show="params.searchBy.code == 'User'"></select>
 			<select class="form-control" name="searchWho" ng-model="params.searchWho" ng-options="o._id as o.entity.name for o in searchWhoList" ng-disabled="userData.role._id != 1" ng-show="params.searchBy.code == 'Company'"></select>
-			<select class="form-control" name="searchWho" ng-model="params.searchWho" ng-options="o._id as o.name for o in searchWhoList" ng-disabled="userData.role._id != 1" ng-show="params.searchBy.code == 'Branch'"></select>
+			<select class="form-control" name="searchWho" ng-model="params.searchWho" ng-options="o._id as o.name for o in searchWhoList" ng-disabled="userData.role._id != 1 && !userData.isRegionalManager" ng-show="params.searchBy.code == 'Branch'"></select>
 		</div> 
 	</div>
 </div>

@@ -128,7 +128,7 @@ ServiceOrder.prototype.insert = function (serviceOrder, user, mail) {
 	serviceOrder.total = total;
 	var photos = serviceOrder.photos;
 	//Consigo el sequencial de invoice
-	var promise = serviceOrder.invoiceNumber ? q.when(serviceOrder.invoiceNumber) : util.getYearlySequence(_this.crud.db, 'ServiceOrder');
+	var promise = serviceOrder.invoiceNumber ? q.when(serviceOrder.invoiceNumber) : q.when('Pending Invoice');
 	promise
 	.then(function (sequence) {
 		serviceOrder.invoiceNumber = sequence;
@@ -148,6 +148,7 @@ ServiceOrder.prototype.insert = function (serviceOrder, user, mail) {
 		return _this.crud.update({ _id: serviceOrder._id }, serviceOrder)
 	})
 	.then(function (photos) {
+		console.log(sendMail)
 		if(sendMail)
 			_this.sendServiceOrder(serviceOrder._id, user, mail);
 		d.resolve(serviceOrder);
@@ -179,6 +180,7 @@ ServiceOrder.prototype.update = function (query, serviceOrder, user, mail) {
 		return _this.crud.update(query, serviceOrder);
 	})
 	.then(function (obj) {
+		console.log(sendMail)
 		if(sendMail)
 			_this.sendServiceOrderUpdate(query._id, user, mail);
 		d.resolve(obj);
@@ -241,10 +243,13 @@ ServiceOrder.prototype.sendServiceOrderUpdate = function(id, user, mail){
 		for(var i = 0; i < users.data.length; i++){
 			emails.push(users.data[i].account.email);
 		}
-		if(user.role._id != 1)
+		if(user.role._id != 1){
+			console.log('herE?');
 			return mail.sendServiceOrderUpdate(serviceOrder, emails, user);
-		else
-			q.when();
+		}
+		else{
+			return q.when();
+		}
 	})
 	.then(function(){
 		d.resolve(true);

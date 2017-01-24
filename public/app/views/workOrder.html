@@ -5,7 +5,7 @@
 				<i class="fa fa-lg fa-calculator"></i> <span> Work Order</span>
 			</h1>
 			<div class="btn-group pull-right" style="margin-top: 20px;" role="group" aria-label="...">
-				<button type="submit" class="btn btn-primary update" validation-submit="workOrderForm" ng-click="save()">
+				<button type="submit" class="btn btn-primary update" validation-submit="workOrderForm" ng-click="save()" ng-if="userData.role._id == 1">
 					<i class="fa fa-save"></i>&nbsp;<span>Save</span>
 				</button>
 				<button type="submit" form="userForm" class="btn btn-primary update" validation-submit="workOrderForm" ng-click="save(true)">

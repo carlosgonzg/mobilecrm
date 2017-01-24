@@ -185,7 +185,7 @@ function convertToDate(object) {
 };
 
 // Funcion que inserta un nuevo objeto en la base de datos. (Primero se verifica si existe)
-Crud.prototype.insert = function (newObject) {
+Crud.prototype.insert = function (newObject, overrideUniqueFields) {
 	var d = q.defer();
 	var _this = this;
 	newObject = convertToDate(newObject);
@@ -195,7 +195,7 @@ Crud.prototype.insert = function (newObject) {
 	.then(function () {
 		delete newObject.baseApiPath;
 		delete newObject.errors;
-		return checkUniqueFields(newObject, _this);
+		return overrideUniqueFields ? q.when({ exists: false }) : checkUniqueFields(newObject, _this);
 	})
 	.then(function (data) {
 		if (!data.exists) {
@@ -265,11 +265,10 @@ Crud.prototype.remove  = function (query) {
 	return deferred.promise;
 };
 
-Crud.prototype.update = function (qry, obj) {
+Crud.prototype.update = function (qry, obj, overrideUniqueFields) {
 	var d = q.defer();
 	var query = qry;
 	var _this = this;
-
 	if (query === undefined || JSON.stringify(query) === '{}') {
 		throw new Error('query is not defined');
 	}
@@ -285,10 +284,13 @@ Crud.prototype.update = function (qry, obj) {
     delete obj.ok;
     delete obj.nModified;
     delete obj.n;
+  console.log(4)
+
 		return checkUniqueFields(obj, _this);
 	})
 	.then(function (data) {
-			if (!data.exists) {
+    console.log(overrideUniqueFields)
+			if (!data.exists || overrideUniqueFields) {
 				return _this.db.get(_this.table).update(query, {
 					$set : obj
 				}, { multi: true });
@@ -297,6 +299,8 @@ Crud.prototype.update = function (qry, obj) {
 			}
 	})
 	.then(function (data) {
+  console.log(6)
+
 			d.resolve(data);
 	})
 	.catch (function (error) {

@@ -11,6 +11,15 @@ angular.module('MobileCRMApp')
 .controller('MonthlyStatementCtrl', function ($scope, $rootScope, Invoice, Loading, dialogs, searchList, userList, companyList, branchList, toaster) {
 	var today = new Date();
 	$scope.searchList = searchList || [];
+	if($rootScope.userData.isRegionalManager){
+		$scope.searchList = [{
+			code: 'User',
+			description: 'Customer'
+		},{
+			code: 'Branch',
+			description: 'Branch'
+		}];
+	};
 	$scope.searchWhoList = [];
 	$scope.selectedTab = 'month';
 
@@ -71,6 +80,9 @@ angular.module('MobileCRMApp')
 		switch(list){
 			case 'User':
 				$scope.searchWhoList = angular.copy(userList.data);
+				if($rootScope.userData.isRegionalManager){
+					$scope.params.searchWho = $scope.searchWhoList[0]._id;
+				}
 			break;
 			case 'Company':
 				$scope.searchWhoList = angular.copy(companyList.data);
