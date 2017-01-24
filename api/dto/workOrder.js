@@ -204,7 +204,7 @@ WorkOrder.prototype.sendWorkOrder = function(id, emails, user, mail){
 		return _this.user.getAdminUsers();
 	})
 	.then(function(users){
-		emails = emails.concat([ workOrder.client.account.email ]);
+		emails = emails.concat([ ]);
 		for(var i = 0; i < users.data.length; i++){
 			emails.push(users.data[i].account.email);
 		}
