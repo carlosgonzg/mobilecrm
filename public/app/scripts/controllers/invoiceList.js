@@ -20,8 +20,8 @@ angular.module('MobileCRMApp')
 			name : 'client.branch.name',
 			type : 'text'
 		},{
-			title : 'Created Date',
-			name : 'createdDate',
+			title : 'Date',
+			name : 'date',
 			type : 'date'
 		},{
 			title : 'Completed Date',
@@ -59,6 +59,7 @@ angular.module('MobileCRMApp')
 	$scope.search = [
 		'_id',
 		'createdDate',
+		'date',
 		'originalShipDate',
 		'invoiceNumber',
 		'sor',

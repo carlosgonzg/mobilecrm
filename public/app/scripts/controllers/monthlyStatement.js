@@ -76,7 +76,12 @@ angular.module('MobileCRMApp')
 				$scope.searchWhoList = angular.copy(companyList.data);
 			break;
 			case 'Branch':
-				$scope.searchWhoList = angular.copy(branchList.data);
+				if($rootScope.userData.role._id == 1 && $rootScope.userData.isRegionalManager){
+					$scope.searchWhoList = _.filter(branchList.data, function(doc){ return doc._id == $rootScope.userData.branch._id });
+				}
+				else {
+					$scope.searchWhoList = angular.copy(branchList.data);
+				}
 			break;
 		}
 		$scope.params.searchWho = null;

@@ -26,7 +26,7 @@
 	<div class="col-xs-6">
 		<div class="form-group">
 			<label for="searchBy">Search by:</label>
-			<select class="form-control" name="searchBy" ng-change="getList(params.searchBy.code)" ng-model="params.searchBy" ng-options="o as o.description for o in searchList track by o.code" ng-disabled="userData.role._id != 1"></select>
+			<select class="form-control" name="searchBy" ng-change="getList(params.searchBy.code)" ng-model="params.searchBy" ng-options="o as o.description for o in searchList track by o.code" ng-disabled="userData.role._id != 1 && !userData.isRegionalManager"></select>
 		</div> 
 	</div>
 	<div class="col-xs-6">

@@ -116,7 +116,7 @@ Invoice.prototype.insert = function (invoice, username, mail) {
 	return d.promise;
 };
 
-Invoice.prototype.update = function (query, invoice, username, mail) {
+Invoice.prototype.update = function (query, invoice, user, mail) {
 	var d = q.defer();
 	var _this = this;
 	var total = 0;
@@ -127,7 +127,8 @@ Invoice.prototype.update = function (query, invoice, username, mail) {
 	invoice.total = total;
 	_this.crud.update(query, invoice)
 	.then(function (obj) {
-		_this.sendInvoiceUpdate(query._id, username, mail);
+		if(user.role._id != 1)
+			_this.sendInvoiceUpdate(query._id, user, mail);
 		d.resolve(obj);
 	})
 	.catch (function (err) {
