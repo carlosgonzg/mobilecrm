@@ -142,10 +142,10 @@ angular.module('MobileCRMApp')
 			for(var i = 0; i < data.length; i++){
 				for(var j = 0; j < data[i].invoices.length; j++){
 					if(data[i].invoices[j].itemType == 'ServiceOrder'){
-						data[i].invoices[j] = new ServiceOrder(angular.copy(data[i].invoices[j]));
+						data[i].invoices[j] = new Invoice(angular.copy(data[i].invoices[j]));
 					}
 					else if(data[i].invoices[j].itemType == 'WorkOrder'){
-						data[i].invoices[j] = new WorkOrder(angular.copy(data[i].invoices[j]));
+						data[i].invoices[j] = new Invoice(angular.copy(data[i].invoices[j]));
 					}
 				}
 			}
@@ -192,6 +192,19 @@ angular.module('MobileCRMApp')
 	        d.reject(data);
 	    });
 	    return d.promise;
+	};
+	Invoice.prototype.changeStatus = function(){
+		var d = $q.defer();
+		$http.post(this.baseApiPath + '/status', { id: this._id })
+		.success(function(res){
+			toaster.success('The status has been changed!.');
+			d.resolve(true);
+		})
+		.error(function(error){
+			toaster.error('There was an error changing the status, please try again');
+			d.reject(error)
+		});
+		return d.promise;
 	};
 	return Invoice;
 });

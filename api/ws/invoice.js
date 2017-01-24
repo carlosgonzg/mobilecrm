@@ -37,5 +37,11 @@ module.exports = function (prefix, app, mail, dirname) {
 		var invoice = new Invoice(app.db, req.user, dirname);
 		invoice.getMonthlyStatementFile(req.body.query, req.body.format, req.user, res);
 	});
+
+	app.post(prefix + '/status', function (req, res) {
+		var invoice = new Invoice(app.db, req.user, dirname);
+		invoice.changeStatus(req.body.id, req.user)
+		.then(util.success(res), util.error(res));
+	});
 	require('./crud')(prefix, app, Invoice);
 }
