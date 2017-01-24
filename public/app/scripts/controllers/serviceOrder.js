@@ -179,8 +179,10 @@ angular.module('MobileCRMApp')
 		});
 	};
 
-	$scope.save = function () {
+	$scope.save = function (sendMail) {
 		delete $scope.serviceOrder.client.account.password;
+		if(sendMail)
+			$scope.serviceOrder.sendMail = true;
 		$scope.serviceOrder.save()
 		.then(function (data) {
 			toaster.success('The Service Order was saved successfully');

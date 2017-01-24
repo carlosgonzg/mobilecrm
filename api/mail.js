@@ -143,11 +143,11 @@ var sendServiceOrder = function (serviceOrder, mails, dirname) {
 		body = body.replace('<issue>', serviceOrder.issue || 'None');
 		body = body.replace('<comment>', serviceOrder.comment || 'None');
 		var contacts = '';
-
+		/*
 		for(var i = 0; i < serviceOrder.contacts.length; i++){
 			if(serviceOrder.contacts[i].name)
 				contacts += '<b>Contact #' + (i+1) + ':&nbsp;</b>' +  serviceOrder.contacts[i].name + '.&nbsp;<b>Phone(' + serviceOrder.contacts[i].phoneType.description + '):</b>&nbsp;' + serviceOrder.contacts[i].number + '<br/>';
-		}
+		}*/
 		body = body.replace('<contacts>', contacts || '');
 		var company = 'Company: ' + (serviceOrder && serviceOrder.client && serviceOrder.client.company && serviceOrder.client.company.entity ? serviceOrder.client.company.entity.name : 'Not Defined');
 		var branch = serviceOrder && serviceOrder.client && serviceOrder.client.branch ? 'Branch: ' + serviceOrder.client.branch.name : 'Client: ' + serviceOrder.client.entity.fullName;
@@ -219,9 +219,11 @@ var sendServiceOrderUpdate = function (serviceOrder, mails, user) {
 		changesByUser += fieldsChanged == '' ? 'None' : fieldsChanged;
 		body = body.replace('<client>', changesByUser);
 		var contacts = '';
+		/*
 		for(var i = 0; i < serviceOrder.contacts.length; i++){
 			contacts += '<b>Contact #' + (i+1) + ':&nbsp;</b>' +  serviceOrder.contacts[i].name + '.&nbsp;<b>Phone(' + serviceOrder.contacts[i].phoneType.description + '):</b>&nbsp;' + serviceOrder.contacts[i].number + '<br/>';
 		}
+		*/
 		body = body.replace('<contacts>', contacts || '');
 		var company = 'Company: ' + (serviceOrder && serviceOrder.client && serviceOrder.client.company && serviceOrder.client.company.entity ? serviceOrder.client.company.entity.name : 'Not Defined');
 		var branch = serviceOrder && serviceOrder.client && serviceOrder.client.branch ? 'Branch: ' + serviceOrder.client.branch.name : 'Client: ' + serviceOrder.client.entity.fullName;

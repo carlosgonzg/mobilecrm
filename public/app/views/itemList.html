@@ -51,7 +51,7 @@
 						<input class="form-control" type="text" ng-model="item.unitOfMeasure" />
 					</td>
 					<td>
-						<input class="form-control" type="number" ng-model="item.price" />
+						<input class="form-control" type="number" ng-model="item.price" step="0.01"/>
 					</td>
 					<td>
 						<button type="button" class="btn btn-sm btn-danger" ng-click="remove($index)">

@@ -6,7 +6,10 @@
 			</h1>
 			<div class="btn-group pull-right" style="margin-top: 20px;" role="group" aria-label="...">
 				<button type="submit" class="btn btn-primary update" validation-submit="serviceOrderForm" ng-click="save()">
-					<i class="fa fa-save"></i>&nbsp;<span>Save and Send to MobileOne</span>
+					<i class="fa fa-save"></i>&nbsp;<span>Save</span>
+				</button>
+				<button type="submit" class="btn btn-primary update" validation-submit="serviceOrderForm" ng-click="save(true)">
+					<i class="fa fa-save"></i>&nbsp;<span>Save & Send to MobileOne</span>
 				</button>
 				<button type="button" class="btn btn-danger" ng-click="delete()" ng-if="serviceOrder._id && userData.role._id == 1">
 					<i class="fa fa-trash"></i>&nbsp;<span>Delete</span>
@@ -287,10 +290,10 @@
 							<input type="text" name="description{{$index}}" class="form-control" ng-model="item.description"  ng-disabled="isDisabled()" validator="required">
 						</td>
 						<td>
-							<input type="number" name="quantity{{$index}}" class="form-control" ng-model="item.quantity"  ng-disabled="isDisabled()" validator="required, number">
+							<input type="number" name="quantity{{$index}}" class="form-control" ng-model="item.quantity"  ng-disabled="isDisabled()" validator="required" step="0.01">
 						</td>
 						<td>
-							<input type="number" name="price{{$index}}" class="form-control" ng-model="item.price"  ng-disabled="isDisabled()" validator="required">
+							<input type="number" name="price{{$index}}" class="form-control" ng-model="item.price"  ng-disabled="isDisabled()" validator="required" step="0.01">
 						</td>
 						<td>
 							{{item.getTotalPrice() | currency }}

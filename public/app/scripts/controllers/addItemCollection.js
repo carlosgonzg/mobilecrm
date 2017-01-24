@@ -6,7 +6,7 @@ angular.module('MobileCRMApp')
 
 	$scope.getItems = function(itemCollection){
 		var query = {
-			'clients._id': data.client._id,
+			'companies._id': data.client.company._id,
 			_id: {
 				$in: itemCollection.items
 			}

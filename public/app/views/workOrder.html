@@ -5,8 +5,11 @@
 				<i class="fa fa-lg fa-calculator"></i> <span> Work Order</span>
 			</h1>
 			<div class="btn-group pull-right" style="margin-top: 20px;" role="group" aria-label="...">
-				<button type="submit" form="userForm" class="btn btn-primary update" validation-submit="workOrderForm" ng-click="save()">
-					<i class="fa fa-save"></i>&nbsp;<span>Save and Send to MobileOne</span>
+				<button type="submit" class="btn btn-primary update" validation-submit="workOrderForm" ng-click="save()">
+					<i class="fa fa-save"></i>&nbsp;<span>Save</span>
+				</button>
+				<button type="submit" form="userForm" class="btn btn-primary update" validation-submit="workOrderForm" ng-click="save(true)">
+					<i class="fa fa-save"></i>&nbsp;<span>Save & Send to MobileOne</span>
 				</button>
 				<button type="button" class="btn btn-danger" ng-click="delete()" ng-if="workOrder._id && userData.role._id == 1">
 					<i class="fa fa-trash"></i>&nbsp;<span>Delete</span>
@@ -101,7 +104,7 @@
 				<div class="col-xs-6">
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
-							<label for="pono">ISO #</label>
+							<label for="pono">Contract #</label>
 							<input type="text" class="form-control" ng-model="workOrder.isono" ng-class="isChanged('isono')" ng-change="changed('isono')" ng-disabled="isDisabled()">
 						</div>
 					</div>
@@ -229,10 +232,10 @@
 							<input type="text" name="description{{$index}}" class="form-control" ng-model="item.description"  ng-disabled="isDisabled()" validator="required">
 						</td>
 						<td>
-							<input type="number" name="quantity{{$index}}" class="form-control" ng-model="item.quantity"  ng-disabled="isDisabled()" validator="required, number">
+							<input type="number" name="quantity{{$index}}" class="form-control" ng-model="item.quantity"  ng-disabled="isDisabled()" validator="required" step="0.01">
 						</td>
 						<td>
-							<input type="number" name="price{{$index}}" class="form-control" ng-model="item.price"  ng-disabled="isDisabled()">
+							<input type="number" name="price{{$index}}" class="form-control" ng-model="item.price"  ng-disabled="isDisabled()" step="0.01">
 						</td>
 						<td>
 							{{item.getTotalPrice() | currency }}

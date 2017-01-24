@@ -178,7 +178,7 @@ angular.module('MobileCRMApp')
 				Loading.show();
 				$scope.objeto.paginatedSearch(pParams).then(function (result) {
 					if (result.data.length == 0) {
-						toaster.pop('error', 'Information', 'Couldn\'t load the items');
+						//toaster.pop('error', 'Information', 'Couldn\'t load the items');
 					}
 					$scope.list = angular.copy(result.data);
 					listBk = angular.copy(result.data);
@@ -191,7 +191,7 @@ angular.module('MobileCRMApp')
 					}
 					Loading.hide();
 				}, function (error) {
-					toaster.pop('error', 'Information', 'Couldn\'t load the items');
+					//toaster.pop('error', 'Information', 'Couldn\'t load the items');
 					if (error == 'error') {
 						$scope.list = [];
 						listBk = [];
@@ -218,7 +218,7 @@ angular.module('MobileCRMApp')
 				.then(function (result) {
 					toaster.pop('success', 'Information', 'File downloaded');
 				}, function (error) {
-					toaster.pop('error', 'Information', 'Couldn\'t load the items');
+					//toaster.pop('error', 'Information', 'Couldn\'t load the items');
 				});
 			};
 

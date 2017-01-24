@@ -20,7 +20,7 @@ angular.module('MobileCRMApp')
 
 	$scope.wsClassOS = ServiceOrder;
 	$scope.wsFieldsOS = [{
-			label : 'SOR/Service Order #',
+			label : 'Service Order #',
 			field : 'sor',
 			type : 'text',
 			show: true
@@ -33,6 +33,16 @@ angular.module('MobileCRMApp')
 			label : 'Completed Date',
 			field : 'originalShipDate',
 			type : 'date',
+			show: true
+		}, {
+			label : 'Company',
+			field : 'client.company.entity.name',
+			type : 'text',
+			show: true
+		}, {
+			label : 'Branch',
+			field : 'client.branch.name',
+			type : 'text',
 			show: true
 		}, {
 			label : 'Customer',
@@ -53,7 +63,7 @@ angular.module('MobileCRMApp')
 	];
 	$scope.wsClassWO = WorkOrder;
 	$scope.wsFieldsWO = [{
-			label : 'WOR/Work Order #',
+			label : 'Work Order #',
 			field : 'wor',
 			type : 'text',
 			show: true
@@ -66,6 +76,16 @@ angular.module('MobileCRMApp')
 			label : 'Completed Date',
 			field : 'originalShipDate',
 			type : 'date',
+			show: true
+		}, {
+			label : 'Company',
+			field : 'client.company.entity.name',
+			type : 'text',
+			show: true
+		}, {
+			label : 'Branch',
+			field : 'client.branch.name',
+			type : 'text',
 			show: true
 		}, {
 			label : 'Customer',

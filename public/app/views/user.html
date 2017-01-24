@@ -58,5 +58,11 @@
 				<select class="form-control" ng-model="user.branch" id="branch" ng-options="branch as branch.name for branch in branches track by branch._id" ng-disabled="userData.role._id != 1"></select>
 			</div>
 		</div>
+		<div class="col-xs-12 col-md-6" ng-if="user.role._id == 3 && user.company">
+			<div class="form-group">
+				<label for="isRegionalManager">Is Regional Manager</label>
+				<input type="checkbox" class="form-control" ng-model="user.isRegionalManager" id="isRegionalManager">
+			</div>
+		</div>
 	</form>
 </div>

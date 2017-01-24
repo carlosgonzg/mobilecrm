@@ -1,7 +1,7 @@
 var config = {
 	development : {
 		APP_PORT : process.env.PORT || 8081,
-		DB_URL: 'localhost:27017/mobilecrm',
+		DB_URL: 'localhost:27017/heroku_cqkmxzc1',
 		SERVER_URL: 'http://localhost:8080',
 		MAIL_USR: 'info@mobileonecontainers.com',
 		MAIL_PASS: 'ElMundoGira2012!',

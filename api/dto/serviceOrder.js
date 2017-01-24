@@ -120,6 +120,7 @@ ServiceOrder.prototype.insert = function (serviceOrder, user, mail) {
 	var d = q.defer();
 	var _this = this;
 	var total = 0;
+	var sendMail = serviceOrder.sendMail || false;
 	//sumo el total
 	for (var i = 0; i < serviceOrder.items.length; i++) {
 		total += serviceOrder.items[i].quantity * serviceOrder.items[i].price;
@@ -131,6 +132,7 @@ ServiceOrder.prototype.insert = function (serviceOrder, user, mail) {
 	promise
 	.then(function (sequence) {
 		serviceOrder.invoiceNumber = sequence;
+		delete serviceOrder.sendMail;
 		delete serviceOrder.photos;
 		//inserto
 		return _this.crud.insert(serviceOrder);
@@ -146,7 +148,8 @@ ServiceOrder.prototype.insert = function (serviceOrder, user, mail) {
 		return _this.crud.update({ _id: serviceOrder._id }, serviceOrder)
 	})
 	.then(function (photos) {
-		_this.sendServiceOrder(serviceOrder._id, user, mail);
+		if(sendMail)
+			_this.sendServiceOrder(serviceOrder._id, user, mail);
 		d.resolve(serviceOrder);
 	})
 	.catch (function (err) {
@@ -167,14 +170,17 @@ ServiceOrder.prototype.update = function (query, serviceOrder, user, mail) {
 	for (var i = 0; i < serviceOrder.items.length; i++) {
 		total += serviceOrder.items[i].quantity * serviceOrder.items[i].price;
 	}
+	var sendMail = serviceOrder.sendMail || false;
 	serviceOrder.total = total;
 	_this.savePhotos(serviceOrder)
 	.then(function (photos) {
 		serviceOrder.photos = photos;
+		delete serviceOrder.sendMail;
 		return _this.crud.update(query, serviceOrder);
 	})
 	.then(function (obj) {
-		_this.sendServiceOrderUpdate(query._id, user, mail);
+		if(sendMail)
+			_this.sendServiceOrderUpdate(query._id, user, mail);
 		d.resolve(obj);
 	})
 	.catch (function (err) {
@@ -201,7 +207,7 @@ ServiceOrder.prototype.sendServiceOrder = function(id, user, mail){
 		return _this.user.getAdminUsers();
 	})
 	.then(function(users){
-		emails = [ ];
+		emails = [ serviceOrder.client.account.email ];
 		for(var i = 0; i < users.data.length; i++){
 			emails.push(users.data[i].account.email);
 		}

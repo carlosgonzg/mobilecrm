@@ -95,7 +95,7 @@ Invoice.prototype.insert = function (invoice, username, mail) {
 	}
 	invoice.total = total;
 	//Consigo el sequencial de invoice
-	var promise = invoice.invoiceNumber ? q.when(invoice.invoiceNumber) : util.getYearlySequence(_this.crud.db, 'Invoice');
+	var promise = invoice.invoiceNumber ? q.when(invoice.invoiceNumber) : q.when('Pending Invoice');//util.getYearlySequence(_this.crud.db, 'Invoice');
 	promise
 	.then(function (sequence) {
 		invoice.invoiceNumber = sequence;
@@ -393,10 +393,10 @@ Invoice.prototype.getMonthlyStatement = function(params, user){
 			return obj.invoiceNumber;
 		});
 		var array = _.map(result.data, function(element) { 
-		     return _.extend({}, element, { itemType: 'Invoice'});
+		     return _.extend({}, element, { itemType: element.sor ? 'ServiceOrder' : 'WorkOrder'});
 		});
 		results = results.concat(array);
-		console.log(invoices);
+		/*
 		return _this.crudServiceOrder.find({
 			invoiceNumber: {
 				$ne: invoices
@@ -420,7 +420,7 @@ Invoice.prototype.getMonthlyStatement = function(params, user){
 		var array = _.map(result.data, function(element) { 
 		     return _.extend({}, element, { itemType: 'WorkOrder'});
 		});
-		results = results.concat(array);
+		results = results.concat(array);*/
 		return _this.crud.db.get('REPORT').remove({});
 	})
 	.then(function(){

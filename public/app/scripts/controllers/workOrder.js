@@ -188,8 +188,10 @@ angular.module('MobileCRMApp')
 		$scope.workOrder.photos.splice(index, 1);
 	};
 
-	$scope.save = function () {
+	$scope.save = function (sendMail) {
 		delete $scope.workOrder.client.account.password;
+		if(sendMail)
+			$scope.workOrder.sendMail = true;
 		$scope.workOrder.save()
 		.then(function (data) {
 			toaster.success('The Work Order was saved successfully');
