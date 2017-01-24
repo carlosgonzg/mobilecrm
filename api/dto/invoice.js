@@ -160,7 +160,7 @@ Invoice.prototype.sendInvoice = function(id, username, mail, emails){
 	//busco compañia
 	.then(function(companyS){
 		company = companyS.data[0];
-		return _this.crudBranch.find({ _id: invoice.client.branch._id });
+		return invoice.client.branch && invoice.client.branch._id  ? _this.crudBranch.find({ _id: invoice.client.branch._id }) : q.when({ data:[{ name: 'None'}] });
 	})
 	//busco branch
 	.then(function(branchS){
