@@ -62,6 +62,8 @@ angular.module('MobileCRMApp')
 		'date',
 		'originalShipDate',
 		'invoiceNumber',
+		'client.company.entity.name',
+		'client.branch.name',
 		'sor',
 		'wor',
 		'unitno',

@@ -58,6 +58,8 @@ angular.module('MobileCRMApp')
 		'_id',
 		'createdDate',
 		'originalShipDate',
+		'client.company.entity.name',
+		'client.branch.name',
 		'invoiceNumber',
 		'wor',
 		'unitno',
