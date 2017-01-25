@@ -107,8 +107,8 @@ angular.module('MobileCRMApp')
     }
   ];
 
-	$scope.filter = $rootScope.userData.role._id == 1 ? { } : { 'client._id': $rootScope.userData._id };
-
+	$scope.filter = $rootScope.userData.role._id == 1 ? { } : $rootScope.userData.branch && $rootScope.userData.branch._id ?  { 'client.branch._id': $rootScope.userData.branch._id } : { 'client._id': $rootScope.userData._id };
+	
 	$scope.createNew = function () {
 		$location.path('invoice');
 	};
