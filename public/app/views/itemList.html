@@ -1,70 +1,19 @@
 <div class="row">
-	<div class="col-xs-9 fixed-top">
-		<h1 class="pull-left">
-				<i class="fa fa-lg fa-book"></i> <span>Items</span>
-		</h1>
-		<div class="btn-group pull-right" style="margin-top: 20px;" role="group" aria-label="...">
-			<back-button></back-button>
-			<button type="button" form="userForm" class="btn btn-primary" ng-click="save()"><i class="fa fa-save"></i>&nbsp;<span>Save</span></button>
-			<button type="button" class="btn btn-default" ng-click="add()"><i class="fa fa-plus"></i>&nbsp;<span>Add Item</span></button>
-		</div>
-	</div>
+    <div class="col-xs-12">
+        <h1 class="pull-left">
+            <i class="fa fa-lg fa-book"></i> <span>Items</span>
+        </h1>
+        <div class="btn-group pull-right" style="margin-top: 20px;" role="group" aria-label="...">
+            <back-button></back-button>
+            <button type="button" class="btn btn-primary new" ng-click="createNew()"  ng-if="userData.getAccessOfView('/item', true).write">
+                <i class="fa fa-plus"></i>&nbsp;<span>Create New</span>
+            </button>
+        </div>
+        <hr />
+    </div>
 </div>
-<div class="row fixed-content">
-	<div class="col-xs-12">
-		<table class="table">
-			<thead>
-				<tr>
-					<th class="col-xs-3">
-						Code
-					</th>
-					<th>
-						Description
-					</th>
-					<th>
-						Part #
-					</th>
-					<th>
-						Unit of measure
-					</th>
-					<th>
-						Price
-					</th>
-					<th class="col-xs-1">
-					</th>
-					<th class="col-xs-1">
-					</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr ng-repeat="item in items track by $index">
-					<td>
-						<input class="form-control" type="number" ng-model="item.code" />
-					</td>
-					<td>
-						<input class="form-control" type="text" ng-model="item.description" />
-					</td>
-					<td>
-						<input class="form-control" type="text" ng-model="item.part" />
-					</td>
-					<td>
-						<input class="form-control" type="text" ng-model="item.unitOfMeasure" />
-					</td>
-					<td>
-						<input class="form-control" type="number" ng-model="item.price" step="0.01"/>
-					</td>
-					<td>
-						<button type="button" class="btn btn-sm btn-danger" ng-click="remove($index)">
-							<i class="fa fa-times"></i>
-						</button>
-					</td>
-					<td>
-						<button type="button" class="btn btn-sm" ng-click="assignCompanies(item)">
-							<i class="fa fa-list"></i>
-						</button>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
+<div class="row">
+    <div class="col-xs-12">
+        <list clase="item" fields="fields" showid="false" search-fields="search" filter-field="filter" list="list" filter-date="filterDate" excel-fields="excelFields" excel-title="'Item Report'"></list>
+    </div>
 </div>

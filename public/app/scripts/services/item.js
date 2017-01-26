@@ -1,7 +1,7 @@
 ﻿'use strict';
 
 angular.module('MobileCRMApp')
-.factory('Item', function (Base) {
+.factory('Item', function (Base, $location) {
 
 	// Variable que se utiliza para comprobar si un objeto tiene una propiedad
 	// var hasProp = Object.prototype.hasOwnProperty;
@@ -42,6 +42,10 @@ angular.module('MobileCRMApp')
 	
 	Item.prototype.getTotalPrice = function(){
 		return this.price * (this.quantity || 1);
+	};
+
+	Item.prototype.goTo = function () {
+		$location.path('/item/' + this._id);
 	};
 	return Item;
 

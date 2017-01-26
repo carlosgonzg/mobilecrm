@@ -84,17 +84,25 @@ angular
 			}
 		}
 	})
-	.when('/itemList', {
-		templateUrl : 'views/itemList.html',
-		controller : 'ItemListCtrl',
-		resolve:{
-			items : function (Item) {
-				return new Item().find({});
+	.when('/item/:id?', {
+		templateUrl : 'views/item.html',
+		controller : 'ItemCtrl',
+		resolve : {
+			item : function (Item, $route) {
+				if ($route.current.params.id) {
+					return new Item().findById(parseInt($route.current.params.id));
+				} else {
+					return new Item();
+				}
 			},
 			companies : function (Company) {
 				return new Company().filter({ });
 			}
 		}
+	})
+	.when('/itemList', {
+		templateUrl : 'views/itemList.html',
+		controller : 'ItemListCtrl'
 	})
 	.when('/itemCollection/:id?', {
 		templateUrl : 'views/itemCollection.html',

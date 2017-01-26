@@ -1,0 +1,59 @@
+<form class="form" id="itemForm" name="itemForm" >
+	<div class="row">
+		<div class="col-xs-9 fixed-top">
+			<h1 class="pull-left">
+				<i class="fa fa-lg fa-book"></i> <span>Item</span>
+			</h1>
+			<div class="btn-group pull-right" style="margin-top: 20px;" role="group" aria-label="...">
+				<back-button></back-button>
+				<button type="button" form="itemForm" class="btn btn-primary" ng-click="save()"><i class="fa fa-save"></i>&nbsp;<span>Save</span></button>
+				<button type="button" form="itemForm" class="btn btn-danger" ng-click="remove()"><i class="fa fa-delete"></i>&nbsp;<span>Delete</span></button>
+				<button type="button" class="btn btn-default" ng-click="assignCompanies()"><i class="fa fa-plus"></i>&nbsp;<span>Assign Company</span></button>
+			</div>
+		</div>
+	</div>
+	<div class="row fixed-content">
+		<div class="col-xs-12">
+			<div class="col-xs-6">
+				<div class="col-xs-12 pull-right">
+					<div class="form-group">
+						<label for="date">Code</label>
+						<input class="form-control" type="number" ng-model="item.code" />
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-6">
+				<div class="col-xs-12 pull-right">
+					<div class="form-group">
+						<label for="date">Description</label>
+						<input class="form-control" type="text" ng-model="item.description" />
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-6">
+				<div class="col-xs-12 pull-right">
+					<div class="form-group">
+						<label for="date">Part #</label>
+						<input class="form-control" type="text" ng-model="item.part" />
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-6">
+				<div class="col-xs-12 pull-right">
+					<div class="form-group">
+						<label for="date">Unit of measure</label>
+						<input class="form-control" type="text" ng-model="item.unitOfMeasure" />
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-6">
+				<div class="col-xs-12 pull-right">
+					<div class="form-group">
+						<label for="date">Price</label>
+						<input class="form-control" type="number" ng-model="item.price" step="0.01"/>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
