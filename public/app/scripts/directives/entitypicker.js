@@ -18,7 +18,10 @@ angular.module('MobileCRMApp')
 		},
 		templateUrl : 'views/directives/entitypicker.html',
 		controller : function ($scope, $timeout, dialogs, toaster) {
+			console.log($scope.wsLabel)
+			
 			$scope.wsLabel = $scope.wsLabel || 'entity.fullName';
+			console.log($scope.wsLabel)
 			$scope.showModal = function () {
 				var dialog = dialogs.create('views/directives/entitypicker.modal.html', 'EntityPickerCtrl', {
 						wsClass : $scope.wsClass,

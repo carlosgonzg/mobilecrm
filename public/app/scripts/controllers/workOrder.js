@@ -8,7 +8,7 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-.controller('WorkOrderCtrl', function ($scope, $rootScope, $location, toaster, User, statusList, workOrder, items, Item, dialogs, $q, Company) {
+.controller('WorkOrderCtrl', function ($scope, $rootScope, $location, toaster, User, statusList, workOrder, Item, dialogs, $q, Company) {
 	$scope.workOrder = workOrder;
 	$scope.items = [];
 	$scope.params = {};
@@ -42,21 +42,40 @@ angular.module('MobileCRMApp')
 		}
 	];
 
-	$scope.clientChanged = function(client){
-		$scope.items = [];
-		for(var i = 0; i < items.data.length; i++){
-			if(!items.data[i].clients && !items.data[i].companies){
-				$scope.items.push(items.data[i]);
-			}
-			else {
-				for(var j = 0; j < items.data[i].companies.length; j++){
-					if(items.data[i].companies[j]._id ==  (client && client.company ? client.company._id : -1)){
-						$scope.items.push(items.data[i]);
-						break;
-					}
-				}
-			}
+	$scope.wsClassItem = Item;
+	$scope.wsFilterItem =  $rootScope.userData.role._id != 1 ? { 'companies._id': $rootScope.userData.company._id }: { };
+	$scope.wsFieldsItem = [{
+			label : 'Code',
+			field : 'code',
+			type : 'text',
+			show: true
+		},{
+			label : 'Description',
+			field : 'description',
+			type : 'text',
+			show: true
+		},{
+			label : 'Part',
+			field : 'part',
+			type : 'text',
+			show: true
+		},{
+			label : 'Unit of Measure',
+			field : 'unitOfMeasure',
+			type : 'text',
+			show: true
+		}, {
+			label : 'Price',
+			field : 'price',
+			type : 'currency',
+			show: true
 		}
+	];
+
+	$scope.clientChanged = function(client){
+		if(client && client.company)
+			$scope.wsFilterItem =  $rootScope.userData.role._id != 1 ? { 'companies._id': $rootScope.userData.company._id } : { 'companies._id': client.company._id };
+
 		if(client && client.company){
 			new Company().filter({ _id: client.company._id})
 			.then(function(result){

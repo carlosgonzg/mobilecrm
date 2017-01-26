@@ -336,12 +336,23 @@ User.prototype.getActual = function(){
 		});
 	return d.promise;
 };
-User.prototype.getAdminUsers = function(){
+User.prototype.getAdminUsers = function(getPono){
 	var d = q.defer();
 	var query = {
-		'role._id': 1,
-		'sendEmail': true
+		$and:[
+			{
+				'role._id': 1
+			},
+			{
+				$or: [{
+					sendEmail: true
+				}]
+			}
+		]
 	};
+	if(getPono){
+		query.$and[1].$or.push({ sendEmailWhenPono: true });
+	}
 	this.crud.find(query)
 	.then(function (obj) {
 		d.resolve({

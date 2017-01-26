@@ -198,15 +198,7 @@
 				<tbody>
 					<tr>
 						<td colspan="5">
-							<ui-select ng-model="params.item" theme="bootstrap">
-				            	<ui-select-match placeholder="Select the item you want on the list...">
-	        						{{$select.selected.code}}&nbsp;-&nbsp;{{$select.selected.description}}
-				            	</ui-select-match>
-				            	<ui-select-choices repeat="i in items | filter: $select.search track by i._id">
-			              			<div ng-bind-html="i.description | highlight: $select.search"></div>
-				              		<small ng-bind-html="i.code | highlight: $select.search"></small>
-				            	</ui-select-choices>
-				          	</ui-select>
+							<entitypicker ng-model="params.item" ws-class="wsClassItem" ws-fields="wsFieldsItem" ws-filter="wsFilterItem" disable="!workOrder.client._id" ws-label="'description'"></entitypicker>
 						</td>
 						<td>
 							<button type="button" class="btn btn-sm btn-primary update" ng-click="addItem(params.item)" ng-disabled="!params.item._id">

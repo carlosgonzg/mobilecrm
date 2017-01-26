@@ -8,7 +8,7 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-.controller('InvoiceCtrl', function ($scope, $rootScope, $location, toaster, User, invoice, items, statusList, Item, ServiceOrder, WorkOrder, dialogs, Invoice, Company) {
+.controller('InvoiceCtrl', function ($scope, $rootScope, $location, toaster, User, invoice, statusList, Item, ServiceOrder, WorkOrder, dialogs, Invoice, Company) {
 	$scope.invoice = invoice;
 	$scope.items = [];
 	$scope.readOnly = $rootScope.userData.role._id != 1;
@@ -143,27 +143,44 @@ angular.module('MobileCRMApp')
 		} 
 	};
 
+	$scope.wsClassItem = Item;
+	$scope.wsFilterItem =  $rootScope.userData.role._id != 1 ? { 'companies._id': $rootScope.userData.company._id }: { };
+	$scope.wsFieldsItem = [{
+			label : 'Code',
+			field : 'code',
+			type : 'text',
+			show: true
+		},{
+			label : 'Description',
+			field : 'description',
+			type : 'text',
+			show: true
+		},{
+			label : 'Part',
+			field : 'part',
+			type : 'text',
+			show: true
+		},{
+			label : 'Unit of Measure',
+			field : 'unitOfMeasure',
+			type : 'text',
+			show: true
+		}, {
+			label : 'Price',
+			field : 'price',
+			type : 'currency',
+			show: true
+		}
+	];
+
 	$scope.setInvoice = function(serviceOrder){
 		$scope.invoice = new Invoice(serviceOrder);
 		delete $scope.invoice._id;
 	};
 
 	$scope.clientChanged = function(client){
-		$scope.items = [];
-		for(var i = 0; i < items.data.length; i++){
-			if(!items.data[i].clients && !items.data[i].companies){
-				$scope.items.push(items.data[i]);
-			}
-			else {
-				for(var j = 0; j < items.data[i].companies.length; j++){
-					if(items.data[i].companies[j]._id == (client && client.company ? client.company._id : -1)){
-						$scope.items.push(items.data[i]);
-						break;
-					}
-				}
-			}
-		}
-		console.log($scope.items)
+		if(client && client.company)
+			$scope.wsFilterItem =  $rootScope.userData.role._id != 1 ? { 'companies._id': $rootScope.userData.company._id } : { 'companies._id': client.company._id };
 	};
 	
 	$scope.addItem = function () {

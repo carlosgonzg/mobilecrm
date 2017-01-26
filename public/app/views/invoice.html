@@ -171,15 +171,7 @@
 				<tbody>
 					<tr ng-repeat="item in invoice.items track by $index">
 						<td>
-							<ui-select ng-model="invoice.items[$index]" theme="bootstrap" ng-disabled="isDisabled()">
-				            	<ui-select-match placeholder="Select the item you want on the list...">
-            						{{$select.selected.code}}&nbsp;-&nbsp;{{$select.selected.description}}
-				            	</ui-select-match>
-				            	<ui-select-choices repeat="i in items | filter: $select.search track by i._id">
-			              			<div ng-bind-html="i.description | highlight: $select.search"></div>
-				              		<small ng-bind-html="i.code | highlight: $select.search"></small>
-				            	</ui-select-choices>
-				          	</ui-select>
+							<entitypicker ng-model="invoice.items[$index]" ws-class="wsClassItem" ws-fields="wsFieldsItem" ws-filter="wsFilterItem" ws-label="'description'" disable="!invoice.client._id"></entitypicker>
 						</td>
 						<td>
 							<input type="text" class="form-control" ng-model="item.code"  ng-disabled="isDisabled()">

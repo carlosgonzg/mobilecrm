@@ -1,0 +1,1 @@
+var jsreport = require('jsreport')({ httpPort: 3000, httpsPort: 0 }).init();

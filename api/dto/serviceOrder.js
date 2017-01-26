@@ -148,7 +148,6 @@ ServiceOrder.prototype.insert = function (serviceOrder, user, mail) {
 		return _this.crud.update({ _id: serviceOrder._id }, serviceOrder)
 	})
 	.then(function (photos) {
-		console.log(sendMail)
 		if(sendMail)
 			_this.sendServiceOrder(serviceOrder._id, user, mail);
 		d.resolve(serviceOrder);

@@ -127,8 +127,8 @@ Invoice.prototype.update = function (query, invoice, user, mail) {
 	invoice.total = total;
 	_this.crud.update(query, invoice, invoice.invoiceNumber == 'Pending Invoice')
 	.then(function (obj) {
-		if(user.role._id != 1)
-			_this.sendInvoiceUpdate(query._id, user, mail);
+		//if(user.role._id != 1)
+		//	_this.sendInvoice(query._id, user, mail, );
 		d.resolve(obj);
 	})
 	.catch (function (err) {
@@ -165,7 +165,7 @@ Invoice.prototype.sendInvoice = function(id, username, mail, emails){
 	//busco branch
 	.then(function(branchS){
 		branch = branchS.data[0];
-		return _this.user.getAdminUsers();
+		return _this.user.getAdminUsers(invoice.pono ? true : false);
 	})
 	.then(function(users){
 		emails = emails.concat([ invoice.client.account.email ]);
@@ -210,7 +210,12 @@ Invoice.prototype.sendInvoiceUpdate = function(id, username, mail){
 		return _this.createInvoice(id, username);
 	})
 	.then(function(){
-		return mail.sendInvoiceUpdate(invoice, emails, username);
+		fileNamePdf = invoice.invoiceNumber + '.pdf';
+		urlPdf = _this.dirname + '/api/invoices/' + fileNamePdf; 
+		return pdf.createInvoice(invoice, company, branch);
+	})
+	.then(function(){
+		return mail.sendInvoice(invoice, emails, cc, urlPdf, fileNamePdf);
 	})
 	.then(function(){
 		d.resolve(true);

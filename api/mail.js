@@ -284,15 +284,25 @@ var sendInvoice = function (invoice, mails, cc, file, fileName) {
 	return deferred.promise;
 };
 
-var sendInvoiceUpdate = function (invoice, mails, user) {
+var sendInvoiceUpdate = function (invoice, mails, user, file, fileName) {
 	var deferred = q.defer();
 	bringTemplateData('/email/templateInvoiceUpdate.html')
 	.then(function (body) {
 		var url = config.SERVER_URL;
 		body = body.replace('<emailUrl>', url);
+		body = body.replace('<clientName>', invoice.client.entity.fullName);
 		body = body.replace('<invoiceNumber>', invoice.invoiceNumber);
-		body = body.replace('<client>', user.entity.fullName || user.entity.name);
-		sendMail(mails.join(', '), 'Invoice: ' + invoice.invoiceNumber + ' Updated', body, true)
+		body = body.replace('<pono>', invoice.pono ? 'With PO Number: ' + invoice.pono : 'Without PO Number. Please provide PO Number for this Invoice.');
+		var subject = 'Invoice: ' + invoice.invoiceNumber;
+		if(!invoice.pono){
+			subject += ' Without po number';
+		}
+		else {
+			subject += '  with po number ' + invoice.pono;
+		}
+		subject += ' – MobileOne Restoration LLC';
+		var attachments = setAttachment(file, fileName)
+		sendMail(mails.join(', '), subject, body, true, attachments)
 		.then(function (response) {
 			console.log('DONE Sending Mail: ', response)
 			deferred.resolve(response);

@@ -132,9 +132,6 @@ angular
 		templateUrl : 'views/serviceOrder.html',
 		controller : 'ServiceOrderCtrl',
 		resolve:{
-			items : function (Item) {
-				return new Item().find({});
-			},
 			statusList: function(List){
 				return List.get('status');
 			},
@@ -155,9 +152,6 @@ angular
 		templateUrl : 'views/invoice.html',
 		controller : 'InvoiceCtrl',
 		resolve:{
-			items : function (Item) {
-				return new Item().find({});
-			},
 			statusList: function(List){
 				return List.get('status');
 			},
@@ -178,9 +172,6 @@ angular
 		templateUrl : 'views/workOrder.html',
 		controller : 'WorkOrderCtrl',
 		resolve:{
-			items : function (Item) {
-				return new Item().find({});
-			},
 			statusList: function(List){
 				return List.get('status');
 			},

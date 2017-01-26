@@ -201,7 +201,7 @@ WorkOrder.prototype.sendWorkOrder = function(id, emails, user, mail){
 	_this.crud.find({ _id: id })
 	.then(function(workOrderS){
 		workOrder = workOrderS.data[0];
-		return _this.user.getAdminUsers();
+		return _this.user.getAdminUsers(true);
 	})
 	.then(function(users){
 		emails = emails.concat([ ]);
