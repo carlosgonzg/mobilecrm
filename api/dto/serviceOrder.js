@@ -148,7 +148,7 @@ ServiceOrder.prototype.insert = function (serviceOrder, user, mail) {
 		return _this.crud.update({ _id: serviceOrder._id }, serviceOrder)
 	})
 	.then(function (photos) {
-		if(sendMail)
+		if(sendMail || user.role._id == 1)
 			_this.sendServiceOrder(serviceOrder._id, user, mail);
 		d.resolve(serviceOrder);
 	})
@@ -179,8 +179,7 @@ ServiceOrder.prototype.update = function (query, serviceOrder, user, mail) {
 		return _this.crud.update(query, serviceOrder);
 	})
 	.then(function (obj) {
-		console.log(sendMail)
-		if(sendMail)
+		if(sendMail || user.role._id == 1)
 			_this.sendServiceOrderUpdate(query._id, user, mail);
 		d.resolve(obj);
 	})

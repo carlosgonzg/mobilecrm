@@ -382,17 +382,12 @@ User.prototype.update = function(query, user, userLogged){
 		return _this.crudSO.update({ 'client._id': obj._id }, { client: obj });
 	})
 	.then(function(result){
-		console.log(result)
 		return _this.crudWO.update({ 'client._id': obj._id }, { client: obj });
 	})
 	.then(function(result){
-		console.log(result)
-
 		return _this.crudInv.update({ 'client._id': obj._id }, { client: obj });
 	})
 	.then(function(result){
-		console.log(result)
-
 		d.resolve(obj);
 	})
 	.catch(function(err){
