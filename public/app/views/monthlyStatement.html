@@ -89,6 +89,14 @@
 	</div>
 </div>
 <div class="row" ng-if="getActiveTab('detail')">
+	<div class="row">
+		<div class="col-xs-12">
+			<div class="form-group">
+				<label for="searchBy">Filter:</label>
+				<input type="text" class="form-control" name="filter" ng-model="params.filter">
+			</div> 
+		</div>
+	</div>
 	<div class="col-xs-12">
 		<table cellspacing="0" class="table table-hover tableNoBottom table-condensed" style="border-bottom: 1px solid #dddddd;">
 			<thead>
@@ -141,7 +149,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr ng-repeat="invoice in group.invoices track by $index" ng-dblclick="goTo(invoice)">
+				<tr ng-repeat="invoice in group.invoices | filter: params.filter track by $index" ng-dblclick="goTo(invoice)">
 					<td width="10%">
 						{{invoice.client.name}}
 					</td>
