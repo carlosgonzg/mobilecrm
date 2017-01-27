@@ -244,10 +244,7 @@ WorkOrder.prototype.sendWorkOrderUpdate = function(id, user, mail){
 		return _this.crudCompany.find({ _id: workOrder.client.company._id });
 	})
 	.then(function(companies){
-		if(user.role._id != 1)
-			return mail.sendWorkOrderUpdate(workOrder, emails, user, companies.data[0]);
-		else
-			q.when();
+		return mail.sendWorkOrderUpdate(workOrder, emails, user, companies.data[0]);
 	})
 	.then(function(){
 		d.resolve(true);
