@@ -134,6 +134,7 @@ WorkOrder.prototype.insert = function (workOrder, user, mail) {
 	.then(function (sequence) {
 		workOrder.invoiceNumber = sequence;
 		delete workOrder.photos;
+		delete workOrder.sendMail;
 		//inserto
 		return _this.crud.insert(workOrder);
 	})
