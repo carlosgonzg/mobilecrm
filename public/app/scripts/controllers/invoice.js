@@ -266,7 +266,7 @@ angular.module('MobileCRMApp')
 					return obj.accountPayableEmail;
 				});
 				emails.push($scope.invoice.client.account.email);
-				$scope.invoice.sendTo(emails);
+				$scope.invoice.sendTo(emails, true);
 			})
 		},
 		function (error) {

@@ -38,8 +38,8 @@ var createInvoiceBody = function(obj, company, branch){
 	body = body.replace(/<companyState>/g, (company.address.state.description + ' ' + company.address.zipcode) || '');
 	//Cliente
 	body = body.replace(/<clientName>/g, obj.client.entity.fullName || '');
-	body = body.replace(/<clientAddress>/g, company.address.address1 || '');
-	body = body.replace(/<clientState>/g, company.address.state.description + ' ' + company.address.zipcode || '');
+	body = body.replace(/<clientAddress>/g, obj.sor ? obj.siteAddress.address1 : company.address.address1 || '');
+	body = body.replace(/<clientState>/g, obj.sor ? (obj.siteAddress.state.description + ' ' + obj.siteAddress.zipcode || '') : (company.address.state.description + ' ' + company.address.zipcode || ''));
 	body = body.replace(/<clientPhone>/g, obj.phone.number || '');
 	body = body.replace(/<clientMail>/g, obj.client.account.email || '');
 	body = body.replace(/<comment>/g, obj.comment || '');

@@ -120,11 +120,11 @@ angular.module('MobileCRMApp')
 		});
 		return d.promise;
 	};
-	Invoice.prototype.sendTo = function(emails){
+	Invoice.prototype.sendTo = function(emails, sendToAllAdmin){
 		var d = $q.defer();
 		var _this = this;
 		toaster.warning('Sending the email');
-		$http.post(_this.baseApiPath + '/send', { id: _this._id, emails: emails })
+		$http.post(_this.baseApiPath + '/send', { id: _this._id, emails: emails, sendToAllAdmin: sendToAllAdmin })
 		.success(function (data) {
 			toaster.success('The invoice has been sent!.');
 	    })

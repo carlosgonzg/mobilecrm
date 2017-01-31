@@ -98,7 +98,7 @@
             </span>            
             <!-- Campos CheckBox -->
             <span ng-if="field.type=='checkbox'">
-              <input ng-checked="resolve(field.routeInDb, elem, field.function, field.def)" type="checkbox" ng-disabled="true">
+              <input ng-checked="inception(elem, field.name)" type="checkbox" ng-disabled="true">
             </span>
           </td>
         </tr>

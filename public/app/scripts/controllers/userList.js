@@ -20,6 +20,10 @@ angular.module('MobileCRMApp')
 			name : 'branch.name',
 			type : 'text'
 		},{
+			title : 'Regional Manager',
+			name : 'isRegionalManager',
+			type : 'checkbox'
+		},{
 			title : 'Name',
 			name : 'entity.fullName',
 			type : 'text'
@@ -41,7 +45,8 @@ angular.module('MobileCRMApp')
 		'account.email',
 		'role.description',
 		'company.entity.name',
-		'branch.name'
+		'branch.name',
+		'isRegionalManager'
 	];
 
 	$scope.createNew = function () {

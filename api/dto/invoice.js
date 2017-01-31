@@ -141,7 +141,7 @@ Invoice.prototype.update = function (query, invoice, user, mail) {
 	return d.promise;
 };
 
-Invoice.prototype.sendInvoice = function(id, username, mail, emails){
+Invoice.prototype.sendInvoice = function(id, username, mail, emails, sendToAllAdmin){
 	var d = q.defer();
 	var _this = this;
 	var invoice = {};
@@ -165,7 +165,7 @@ Invoice.prototype.sendInvoice = function(id, username, mail, emails){
 	//busco branch
 	.then(function(branchS){
 		branch = branchS.data[0];
-		return _this.user.getAdminUsers(invoice.pono ? true : false);
+		return _this.user.getAdminUsers(sendToAllAdmin ? true : (invoice.pono ? true : false));
 	})
 	.then(function(users){
 		emails = emails.concat([ invoice.client.account.email ]);
