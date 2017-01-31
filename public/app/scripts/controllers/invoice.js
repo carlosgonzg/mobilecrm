@@ -73,9 +73,9 @@ angular.module('MobileCRMApp')
 			type : 'date',
 			show: true
 		},{
-			label : 'Completed Date',
-			field : 'originalShipDate',
-			type : 'date',
+			label : 'Unit #',
+			field : 'unitno',
+			type : 'text',
 			show: true
 		}, {
 			label : 'Company',
