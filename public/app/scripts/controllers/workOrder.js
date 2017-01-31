@@ -233,8 +233,8 @@ angular.module('MobileCRMApp')
 		});
 	};
 
-	$scope.export = function(){
-		$scope.workOrder.download();
+	$scope.export = function(showPrice){
+		$scope.workOrder.download(showPrice);
 	};
 
 	$scope.send = function(){

@@ -15,7 +15,10 @@
 					<i class="fa fa-trash"></i>&nbsp;<span>Delete</span>
 				</button>
 				<button type="button" class="btn btn-default" ng-click="export()" ng-if="workOrder._id">
-					<i class="fa fa-download"></i>&nbsp;<span>Download</span>
+					<i class="fa fa-download"></i>&nbsp;<span>Print for Tech</span>
+				</button>
+				<button type="button" class="btn btn-default" ng-click="export(true)" ng-if="workOrder._id">
+					<i class="fa fa-download"></i>&nbsp;<span>Print for Corporate</span>
 				</button>
 				<button type="button" class="btn btn-default" ng-click="send()" ng-if="workOrder._id">
 					<i class="fa fa-paper-plane"></i>&nbsp;<span>Send</span>

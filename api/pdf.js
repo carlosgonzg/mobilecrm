@@ -165,7 +165,7 @@ var createServiceOrder = function(obj){
     return d.promise;
 };
 
-var createWorkOrderBody = function(workOrder, company){
+var createWorkOrderBody = function(workOrder, company, showPrice){
 	var body = fs.readFileSync(__dirname + '/workorder.html', 'utf8').toString();
 	//replacement of data
 	body = body.replace(/<createdDate>/g, moment(workOrder.date).format('MM/DD/YYYY'));
@@ -204,25 +204,29 @@ var createWorkOrderBody = function(workOrder, company){
 		tableItems += item.part || '';
 		tableItems += '</td>';
 		tableItems += '<td style="text-align: right;border: thin solid black; border-top: none; border-right: none;">';
-		tableItems += numeral(item.price || 0).format('$0,0.00');
+		if(showPrice)
+			tableItems += numeral(item.price || 0).format('$0,0.00');
 		tableItems += '</td>';
 		tableItems += '<td style="text-align: right;border: thin solid black; border-top: none; border-right: none;">';
-		tableItems += item.quantity || 1;
+		if(showPrice)
+			tableItems += item.quantity || 1;
 		tableItems += '</td>';
 		tableItems += '<td style="text-align: right;border: thin solid black; border-top: none;">';
-		tableItems += numeral((item.price || 0) * (item.quantity || 1)).format('$0,0.00');
+		if(showPrice)
+			tableItems += numeral((item.price || 0) * (item.quantity || 1)).format('$0,0.00');
 		tableItems += '</td>';
 		total += (item.price || 0) * (item.quantity || 1);
 		tableItems += '</tr>';
 	}
 	body = body.replace('<tableItems>', tableItems || '');
-
-	body = body.replace('<subtotal>', numeral(total).format('$0,0.00'));
-	body = body.replace('<total>', numeral(total).format('$0,0.00'));
+	if(showPrice){
+		body = body.replace('<subtotal>', numeral(total).format('$0,0.00'));
+		body = body.replace('<total>', numeral(total).format('$0,0.00'));
+	}
 	return body;
 };
 
-var createWorkOrder = function(obj, company){
+var createWorkOrder = function(obj, company, showPrice){
     var d = q.defer();
 	var options = { 
 		format: 'Letter',
@@ -234,7 +238,7 @@ var createWorkOrder = function(obj, company){
 		},
 		timeout: 60000
 	};
-	var body = createWorkOrderBody(obj, company);
+	var body = createWorkOrderBody(obj, company, showPrice || false);
 	var fileName = obj.wor + '.pdf';
 	var url = __dirname + '/workorders/' + fileName;
 	console.log(url)

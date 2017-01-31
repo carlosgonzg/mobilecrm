@@ -209,7 +209,7 @@ WorkOrder.prototype.sendWorkOrder = function(id, emails, user, mail){
 		for(var i = 0; i < users.data.length; i++){
 			emails.push(users.data[i].account.email);
 		}
-		return _this.createWorkOrder(id, user);
+		return _this.createWorkOrder(id, user, true);
 	})
 	.then(function(data){
 		return mail.sendWorkOrder(workOrder, emails, _this.dirname, data.path, data.fileName);
@@ -260,7 +260,7 @@ WorkOrder.prototype.sendWorkOrderUpdate = function(id, user, mail){
 	return d.promise;
 };
 
-WorkOrder.prototype.createWorkOrder = function(id, user){
+WorkOrder.prototype.createWorkOrder = function(id, user, showPrice){
 	var d = q.defer();
 	var _this = this;
 	var workOrder = {};
@@ -276,7 +276,7 @@ WorkOrder.prototype.createWorkOrder = function(id, user){
 	})
 	.then(function (companyS) {
 		company = companyS.data[0];
-		return pdf.createWorkOrder(workOrder, company);
+		return pdf.createWorkOrder(workOrder, company, showPrice);
 	})
 	.then(function (data) {
 		d.resolve(data);
@@ -290,8 +290,8 @@ WorkOrder.prototype.createWorkOrder = function(id, user){
 	return d.promise;
 };
 
-WorkOrder.prototype.getWorkOrder = function(id, res, user){
-	this.createWorkOrder(id, user)
+WorkOrder.prototype.getWorkOrder = function(id, showPrice, res, user){
+	this.createWorkOrder(id, user, showPrice)
 	.then(function(obj){
 		fs.readFile(obj.path, function (err,data){
 			res.contentType("application/pdf");

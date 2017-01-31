@@ -72,7 +72,7 @@ angular.module('MobileCRMApp')
 		$location.path('/workOrder/' + this._id);
 	};
 
-	WorkOrder.prototype.download = function(){
+	WorkOrder.prototype.download = function(showPrice){
 		var d = $q.defer();
 		var _this = this;
 		toaster.warning('Generating the document');
@@ -80,7 +80,7 @@ angular.module('MobileCRMApp')
 		$http({
 			url: this.baseApiPath + '/download',
 			method: "POST",
-			data: { id: _this._id }, //this is your json data string
+			data: { id: _this._id, showPrice: showPrice },
 			headers: {
 			'Content-type': 'application/json'
 			},

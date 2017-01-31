@@ -18,7 +18,7 @@ module.exports = function (prefix, app, mail, dirname) {
 
 	app.post(prefix + '/download', function (req, res) {
 		var workOrder = new WorkOrder(app.db, req.user, dirname);
-		workOrder.getWorkOrder(req.body.id, res, req.user)
+		workOrder.getWorkOrder(req.body.id, req.body.showPrice, res, req.user)
 	});
 
 	app.post(prefix + '/report', function (req, res) {
