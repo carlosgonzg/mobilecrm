@@ -37,7 +37,6 @@ angular.module('MobileCRMApp')
 
 	$scope.assignCompanies = function(){
 		var itemCompanies = $scope.item.companies || [];
-		console.log(itemCompanies)
 		var dialog = dialogs.create('views/assignCompanies.html', 'AssignCompaniesCtrl', { companyList: companies.data, companies: itemCompanies });
 		dialog.result.then(function (res) {
 			$scope.item.companies = res.companies;
