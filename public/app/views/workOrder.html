@@ -201,7 +201,7 @@
 				<tbody>
 					<tr>
 						<td colspan="5">
-							<entitypicker ng-model="params.item" ws-class="wsClassItem" ws-fields="wsFieldsItem" ws-filter="wsFilterItem" disable="!workOrder.client._id" ws-label="'description'"></entitypicker>
+							<entitypicker ng-model="params.item" ws-class="wsClassItem" ws-fields="wsFieldsItem" ws-filter="wsFilterItem" disable="!workOrder.client._id" ws-label="'description'" order-by="'code'"></entitypicker>
 						</td>
 						<td>
 							<button type="button" class="btn btn-sm btn-primary update" ng-click="addItem(params.item)" ng-disabled="!params.item._id">

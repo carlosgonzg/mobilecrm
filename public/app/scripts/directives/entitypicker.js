@@ -10,6 +10,7 @@ angular.module('MobileCRMApp')
 			wsFields : '=', //There's a little change here in comparison to List or crudtypetable
 			wsLabel : '=?',
 			wsFilter : '=?',
+			orderBy : '=?',
 			goTo : '&?',
 			ngChange : '&?',
 			disable : '=',
@@ -18,16 +19,14 @@ angular.module('MobileCRMApp')
 		},
 		templateUrl : 'views/directives/entitypicker.html',
 		controller : function ($scope, $timeout, dialogs, toaster) {
-			console.log($scope.wsLabel)
-			
 			$scope.wsLabel = $scope.wsLabel || 'entity.fullName';
-			console.log($scope.wsLabel)
 			$scope.showModal = function () {
 				var dialog = dialogs.create('views/directives/entitypicker.modal.html', 'EntityPickerCtrl', {
 						wsClass : $scope.wsClass,
 						wsFields : $scope.wsFields,
 						filter : angular.copy($scope.wsFilter),
 						list : $scope.wsList,
+						orderBy: $scope.orderBy,
 					default:
 						$scope.wsDefault
 					});
@@ -76,7 +75,7 @@ angular.module('MobileCRMApp')
 			$scope.currentPage = 1;
 			$scope.maxPage = 0;
 			var wsClassHandler = new data.wsClass();
-			$scope.orderBy = {
+			$scope.orderBy = data.orderBy || {
 				sort : {
 					'createdDate' : -1
 				},

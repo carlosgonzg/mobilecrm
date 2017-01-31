@@ -171,7 +171,7 @@
 				<tbody>
 					<tr ng-repeat="item in invoice.items track by $index">
 						<td>
-							<entitypicker ng-model="invoice.items[$index]" ws-class="wsClassItem" ws-fields="wsFieldsItem" ws-filter="wsFilterItem" ws-label="'description'" disable="!invoice.client._id"></entitypicker>
+							<entitypicker ng-model="invoice.items[$index]" ws-class="wsClassItem" ws-fields="wsFieldsItem" ws-filter="wsFilterItem" ws-label="'description'" disable="!invoice.client._id" order-by="'code'"></entitypicker>
 						</td>
 						<td>
 							<input type="text" class="form-control" ng-model="item.code"  ng-disabled="isDisabled()">
