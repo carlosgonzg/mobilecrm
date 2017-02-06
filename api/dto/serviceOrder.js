@@ -242,7 +242,6 @@ ServiceOrder.prototype.sendServiceOrderUpdate = function(id, user, mail){
 			emails.push(users.data[i].account.email);
 		}
 		if(user.role._id != 1){
-			console.log('herE?');
 			return mail.sendServiceOrderUpdate(serviceOrder, emails, user);
 		}
 		else{
