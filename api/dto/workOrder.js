@@ -178,7 +178,8 @@ WorkOrder.prototype.update = function (query, workOrder, user, mail) {
 		return _this.crud.update(query, workOrder);
 	})
 	.then(function (obj) {
-		_this.sendWorkOrderUpdate(query._id, user, mail);
+		var mails = [ ];
+		_this.sendWorkOrder(workOrder._id,mails , user, mail);
 		d.resolve(obj);
 	})
 	.catch (function (err) {
@@ -242,10 +243,11 @@ WorkOrder.prototype.sendWorkOrderUpdate = function(id, user, mail){
 		for(var i = 0; i < users.data.length; i++){
 			emails.push(users.data[i].account.email);
 		}
-		return _this.crudCompany.find({ _id: workOrder.client.company._id });
+		return _this.createWorkOrder(id, user, true);
+		//return _this.crudCompany.find({ _id: workOrder.client.company._id });
 	})
-	.then(function(companies){
-		return mail.sendWorkOrderUpdate(workOrder, emails, user, companies.data[0]);
+	.then(function(data){
+		return mail.sendWorkOrder(workOrder, emails, _this.dirname, data.path, data.fileName);
 	})
 	.then(function(){
 		d.resolve(true);
