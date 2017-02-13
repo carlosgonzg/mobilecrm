@@ -79,9 +79,9 @@ var createInvoiceBody = function(obj, company, branch){
 	body = body.replace('<tableItems>', tableItems || '');
 	body = body.replace('<subtotal>', numeral(total || 0).format('$0,0.00'));
 	body = body.replace('<total>', numeral(total || 0).format('$0,0.00'));
-	body = body.replace('<total15>', numeral((total || 0) * 1.15).format('$0,0.00'));
-	body = body.replace('<total30>', numeral((total || 0) * 1.30).format('$0,0.00'));
-	body = body.replace('<total60>', numeral((total || 0) * 1.60).format('$0,0.00'));
+	body = body.replace('<total15>', numeral((total || 0) * 1.05).format('$0,0.00'));
+	body = body.replace('<total30>', numeral((total || 0) * 1.10).format('$0,0.00'));
+	body = body.replace('<total60>', numeral((total || 0) * 1.15).format('$0,0.00'));
 	return body;
 };
 
