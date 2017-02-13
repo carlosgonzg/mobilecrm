@@ -155,6 +155,9 @@ angular
 			statusList: function(List){
 				return List.get('status');
 			},
+			companies: function(Company){
+				return new Company().filter({});
+			},
 			invoice : function (Invoice, $route) {
 				if ($route.current.params.id) {
 					return new Invoice().findById(parseInt($route.current.params.id));

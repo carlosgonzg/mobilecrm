@@ -8,7 +8,7 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-.controller('InvoiceCtrl', function ($scope, $rootScope, $location, toaster, User, invoice, statusList, Item, ServiceOrder, WorkOrder, dialogs, Invoice, Company) {
+.controller('InvoiceCtrl', function ($scope, $rootScope, $location, toaster, User, invoice, statusList, Item, ServiceOrder, WorkOrder, dialogs, Invoice, Company, companies) {
 	$scope.invoice = invoice;
 	$scope.items = [];
 	$scope.readOnly = $rootScope.userData.role._id != 1;
@@ -16,7 +16,7 @@ angular.module('MobileCRMApp')
 		$scope.invoice.client = new User($rootScope.userData);
 	}
 	$scope.listStatus = statusList;
-
+	$scope.listCompany = companies.data;
 
 	$scope.wsClassOS = ServiceOrder;
 	$scope.wsFieldsOS = [{
@@ -173,16 +173,24 @@ angular.module('MobileCRMApp')
 		}
 	];
 
-	$scope.setInvoice = function(serviceOrder){
-		$scope.invoice = new Invoice(serviceOrder);
+	$scope.setInvoice = function(doc){
+		$scope.invoice = new Invoice(doc);
 		delete $scope.invoice._id;
+		$scope.clientChanged(doc.client)
 	};
 
 	$scope.clientChanged = function(client){
+		console.log('entre?')
 		if(client && client.company)
 			$scope.wsFilterItem =  $rootScope.userData.role._id != 1 ? { 'companies._id': $rootScope.userData.company._id } : { 'companies._id': client.company._id };
+		if(!$scope.invoice._id && (!$scope.invoice.invoiceNumber || $scope.invoice.invoiceNumber == 'Pending Invoice')){
+			var company = new Company(client.company);
+			company.peek()
+			.then(function(sequence){
+				$scope.invoice.invoiceNumber = sequence;
+			});
+		}
 	};
-	
 	$scope.addItem = function () {
 		$scope.invoice.items.unshift(new Item())
 	};

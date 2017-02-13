@@ -3,6 +3,7 @@
 var q = require('q');
 var Crud = require('./crud');
 var Address = require('./address');
+var Company = require('./company');
 var Item = require('./item');
 var _ = require('underscore');
 var util = require('./util');
@@ -15,6 +16,7 @@ var fs = require('fs')
 function Invoice(db, userLogged, dirname) {
 	this.crud = new Crud(db, 'INVOICE', userLogged);
 	this.crudCompany = new Crud(db, 'COMPANY', userLogged);
+	this.company = new Company(db, userLogged);
 	this.crudBranch = new Crud(db, 'BRANCH', userLogged);
 	this.crudServiceOrder = new Crud(db, 'SERVICEORDER', userLogged);
 	this.crudWorkOrder = new Crud(db, 'WORKORDER', userLogged);
@@ -95,7 +97,7 @@ Invoice.prototype.insert = function (invoice, username, mail) {
 	}
 	invoice.total = total;
 	//Consigo el sequencial de invoice
-	var promise = invoice.invoiceNumber ? q.when(invoice.invoiceNumber) : q.when('Pending Invoice');//util.getYearlySequence(_this.crud.db, 'Invoice');
+	var promise = invoice.invoiceNumber ? q.when(invoice.invoiceNumber) : _this.company.getSequence(invoice.client.company._id);//util.getYearlySequence(_this.crud.db, 'Invoice');
 	promise
 	.then(function (sequence) {
 		invoice.invoiceNumber = sequence;
@@ -104,6 +106,12 @@ Invoice.prototype.insert = function (invoice, username, mail) {
 	//inserto
 	.then(function (obj) {
 		//_this.sendInvoice(obj.data._id, username, mail);
+		if(invoice.sor){
+			_this.crudServiceOrder.update({ sor: invoice.sor }, { invoiceNumber: invoice.invoiceNumber });
+		}
+		else if(invoice.wor){
+			_this.crudWorkOrder.update({ wor: invoice.wor }, { invoiceNumber: invoice.invoiceNumber });
+		}
 		d.resolve(obj);
 	})
 	.catch (function (err) {
@@ -127,8 +135,22 @@ Invoice.prototype.update = function (query, invoice, user, mail) {
 	invoice.total = total;
 	_this.crud.update(query, invoice, invoice.invoiceNumber == 'Pending Invoice')
 	.then(function (obj) {
-		//if(user.role._id != 1)
-		//	_this.sendInvoice(query._id, user, mail, );
+		if(invoice.sor){
+			_this.crudServiceOrder.update({ sor: invoice.sor }, { invoiceNumber: invoice.invoiceNumber }, true)
+			.then(function(res){
+				console.log('done', res)
+			}, function(err){
+				console.log('not ok', err)
+			});
+		}
+		else if(invoice.wor){
+			_this.crudWorkOrder.update({ wor: invoice.wor }, { invoiceNumber: invoice.invoiceNumber }, true)
+			.then(function(res){
+				console.log('done', res)
+			}, function(err){
+				console.log('not ok', err)
+			});
+		}
 		d.resolve(obj);
 	})
 	.catch (function (err) {

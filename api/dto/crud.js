@@ -284,12 +284,9 @@ Crud.prototype.update = function (qry, obj, overrideUniqueFields) {
     delete obj.ok;
     delete obj.nModified;
     delete obj.n;
-  console.log(4)
-
 		return checkUniqueFields(obj, _this);
 	})
 	.then(function (data) {
-    console.log(overrideUniqueFields)
 			if (!data.exists || overrideUniqueFields) {
 				return _this.db.get(_this.table).update(query, {
 					$set : obj
@@ -299,8 +296,6 @@ Crud.prototype.update = function (qry, obj, overrideUniqueFields) {
 			}
 	})
 	.then(function (data) {
-  console.log(6)
-
 			d.resolve(data);
 	})
 	.catch (function (error) {

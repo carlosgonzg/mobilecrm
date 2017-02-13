@@ -4,14 +4,14 @@
 			<i class="fa fa-lg fa-suitcase"></i> <span> Company</span>
 		</h1>
 		<div class="btn-group pull-right" style="margin-top: 20px;" role="group" aria-label="...">
-			<button type="submit" form="userForm" class="btn btn-primary update" ng-click="save()"><i class="fa fa-save"></i>&nbsp;<span>Save</span></button>
+			<button type="submit" form="companyForm" class="btn btn-primary update" ng-click="save()"><i class="fa fa-save"></i>&nbsp;<span>Save</span></button>
 			<back-button></back-button>
 		</div>
 		<hr />
 	</div>
 </div>
 <div class="col-xs-12 col-md-6">
-	<form class="form" id="userForm" name="userForm">
+	<form class="form" id="companyForm" name="companyForm" novalidate>
 		<div class="col-xs-12 col-md-6">
 			<div class="form-group">
 				<label for="name">Company Name</label>
@@ -34,6 +34,33 @@
 			<div class="col-xs-12">
 				<label for="address">Address</label>
 				<address-model id="address" ng-model="company.address" ></address-model>
+			</div>
+		</div>
+		<div class="col-xs-12 col-md-12">
+			<h1>Invoice Sequence</h1>
+		</div>
+		<div class="col-xs-12 col-md-12">
+			<div class="form-group">
+				<label for="code"> Code</label>
+				<input type="text" class="form-control" ng-model="company.seqCode" id="seqCode" placeholder="Sequence Code (eg MMxxxxxx)">
+			</div>
+		</div>
+		<div class="col-xs-12 col-md-12">
+			<div class="form-group">
+				<label for="mask"> Mask</label>
+				<input type="number" class="form-control" ng-model="company.seqMask" id="seqMask" placeholder="Digits (How many digits do you want)">
+			</div>
+		</div>
+		<div class="col-xs-12 col-md-6">
+			<div class="form-group">
+				<label for="seqStart"> Starting point</label>
+				<input type="number" class="form-control" ng-model="company.seqStart" id="seqStart" placeholder="Starting Point">
+			</div>
+		</div>
+		<div class="col-xs-12 col-md-6">
+			<div class="form-group">
+				<label for="seqNumber"> Actual Number</label>
+				<input type="number" class="form-control" ng-model="company.seqNumber" id="seqNumber" placeholder="Actual Number" disabled>
 			</div>
 		</div>
 	</form>

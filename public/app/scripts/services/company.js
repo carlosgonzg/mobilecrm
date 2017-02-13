@@ -15,6 +15,12 @@ angular.module('MobileCRMApp')
 		this.entity = this.entity || { name: '' };
 		this.addresses = this.addresses || [];
 		this.phones = this.phones || [];
+		this.seqCode = this.seqCode || '';
+		this.seqMask = this.seqMask || 0;
+		this.seqStart = this.seqStart || 0;
+		if(!this.seqNumber){
+			this.seqNumber = angular.copy(this.seqStart);
+		}
 	}
 	var extend = function (child, parent) {
 		var key;
@@ -42,6 +48,20 @@ angular.module('MobileCRMApp')
 	};
 	Company.prototype.goTo = function () {
 		$location.path('/company/' + this._id);
+	};
+
+	Company.prototype.peek = function(){
+		var d = $q.defer();
+		$http.get(this.baseApiPath + '/sequence/peek/' + this._id)
+		.success(function (data) {
+			console.log(data)
+			d.resolve(data);
+	    })
+	    .error(function (data, status, headers, config) {
+	    	console.log('err', data)
+	        d.reject(data);
+	    });
+		return d.promise;
 	};
 	return Company;
 

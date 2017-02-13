@@ -18,7 +18,7 @@ angular.module('MobileCRMApp')
 			advanced : '=',
 			sortList : '='
 		},
-		controller : function ($scope, $rootScope, $timeout, dialogs, toaster, Loading) {
+		controller : function ($scope, $rootScope, $timeout, dialogs, toaster, Loading, $window) {
 			$scope.list = [];
 			$scope.currentElement = {};
 			$scope.objeto = new $scope.clase();
@@ -43,31 +43,36 @@ angular.module('MobileCRMApp')
 			message = '',
 			filtro = $scope.filterField ? $scope.filterField : {}
 			//filtroOrBackup = $scope.filterField && $scope.filterField.$and ? $scope.filterField.$and : [];
-
-			$scope.params = {
-				filter : filtro,
-				limit : 10,
-				skip : 0,
-				sort : $scope.orderBy.sort,
-				search : '',
-				searchView : '',
-				fields : $scope.searchFields,
-				noAuth : $scope.noAuth,
-				advanced : $scope.advanced,
-				title : $scope.excelTitle,
-				excelFields : $scope.excelFields || $scope.fields,
-				fieldFilter : {}
-			};
-
-			if ($scope.sortList == "-1") {
-				$scope.params.sort = {
-					_id : -1
+			var params = {};
+			if($window.sessionStorage.params){
+				$scope.params = JSON.parse($window.sessionStorage.params);
+				delete $window.sessionStorage.params;
+			}
+			else {
+				$scope.params = {
+					filter : filtro,
+					limit : 10,
+					skip : 0,
+					sort : $scope.orderBy.sort,
+					search : '',
+					searchView : '',
+					fields : $scope.searchFields,
+					noAuth : $scope.noAuth,
+					advanced : $scope.advanced,
+					title : $scope.excelTitle,
+					excelFields : $scope.excelFields || $scope.fields,
+					fieldFilter : {}
 				};
-			} else if ($scope.sortList == "1") {
-				$scope.params.sort = {
-					_id : 1
+				if ($scope.sortList == "-1") {
+					$scope.params.sort = {
+						_id : -1
+					};
+				} else if ($scope.sortList == "1") {
+					$scope.params.sort = {
+						_id : 1
+					};
 				};
-			};
+			}
 
 			$scope.loaded = false;
 			searchByFields = $scope.searchFields;
@@ -145,7 +150,6 @@ angular.module('MobileCRMApp')
 						}
 					}
 				}
-
 				return result;
 			};
 
@@ -278,6 +282,7 @@ angular.module('MobileCRMApp')
 
 			$scope.dblClick = function (elem, event) {
 				if ((event.pointerType == 'touch' && event.type == 'tap') || event.type == 'dblclick') {
+					$window.sessionStorage.params = JSON.stringify($scope.params);
 					if ($scope.dblClickFn) {
 						$scope.dblClickFn(elem);
 					} else {
@@ -313,12 +318,13 @@ angular.module('MobileCRMApp')
 			})
 
 			// Buscar los tipos de cuentas
-			$scope.getPaginatedSearch($scope.params);
-
-			// Contar la cantidad de tipos de cuentas que hay en la base de datos
+			console.log($scope.params)
 			$scope.objeto.paginatedCount($scope.params).then(function (res) {
 				$scope.maxPage = res.count < $scope.params.limit ? 1 : Math.ceil(res.count / $scope.params.limit);
-			}, function (error) {});
+				var page = ($scope.params.skip + $scope.params.limit) / $scope.params.limit;
+				$scope.currentPage = page < 1 ? 1 : page;
+				$scope.getPaginatedSearch($scope.params);
+			});
 
 			// Extraer los campos pasados por parametros (fields)
 			for (x in $scope.fields) {
