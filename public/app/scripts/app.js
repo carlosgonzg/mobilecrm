@@ -16,7 +16,8 @@ angular
 		'validation',
 		'validation.rule',
 		'ui.select',
-		'ngFileUpload'
+		'ngFileUpload',
+		'hmTouchEvents'
 	])
 .config(function ($routeProvider) {
 	$routeProvider

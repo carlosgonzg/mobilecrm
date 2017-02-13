@@ -37,73 +37,65 @@
         </h4>
       </div>
     </div>
-    <table id="columnRender" cellspacing="0" class="table table-hover tableNoBottom table-condensed" style="border-bottom: 1px solid #dddddd; " ng-if="list.length">
-      <thead>
-        <tr>
-          <th ng-if="show" class="col-xs-1" ng-click="filter('_id')">#</th>
-          <th ng-style="field.sortable ? { 'cursor': 'pointer' } : {}" ng-repeat="field in fields" ng-click="field.sortable ? filter(field.name) : null" ng-class="field.class">
-            <span ng-bind-html="field.title"></span>
-            <i ng-if="field.sortable" class="fa" ng-style="{ 'opacity' : (field.name == orderBy.field) ? '1' : '0.2' }" ng-class="{'fa-angle-up':!orderBy.reverse, 'fa-angle-down':orderBy.reverse}"></i>
-          </th>
-        </tr>
-        <!--
-        <tr >
-          <th ng-if="show" class="col-xs-1" ng-click="filter('_id')">#</th>
-          <td ng-repeat="field in fields"  ng-class="field.class" vertical-alig="bottom"
-            <input placeholder="Desde" class="ta_right" ng-if="field.type ==='currency'"  ></input>
-            <input placeholder="Desde" ng-if="field.type=='date'"></input>    
-          </td>
-
-        </tr>
-        -->
-        <tr font-color="black" hidden >
-          <th ng-if="show" class="col-xs-1" ng-click="filter('_id')">#</th>
-          <td ng-repeat="field in fields"  ng-class="field.class" vertical-alig="bottom">
-             <!-- Campos Normales -->
-            <input class="form-control" ng-if="!field.config && field.type !='date' && field.decimalsOnly!= 'decimals-only' && field.type !='object' && field.type !='currency' && field.type != 'checkbox'"
-            ng-change="search()" ng-keyup="$event.keyCode == 13 ? search() : null" ng-model="params.fieldFilter[field.name]"  ng-model-options="{ debounce: 500}"></input>
-            <!-- Campos Monetarios -->
-            <input class="form-control" placeholder="Desde" class="ta_right" ng-if="field.type ==='currency'" ng-change="search()" ng-keyup="$event.keyCode == 13 ? applyFilters() : null" ng-model="params.fieldFilter[field.name]" ng-model-options="{ debounce: 500}" ></input>
-            <input class="form-control" placeholder="Hasta" class="ta_right" ng-if="field.type ==='currency'" ng-change="search()" ng-keyup="$event.keyCode == 13 ? applyFilters() : null" ng-model="params.fieldFilter[field.name]" ng-model-options="{ debounce: 500}" ></input>
-            <!-- Campos Fecha -->
-            <input class="form-control" placeholder="Desde" ng-if="field.type=='date'" ng-change="search()" ng-keyup="$event.keyCode == 13 ? search() : null" ng-model="params.fieldFilter[field.name]" ng-model-options="{ debounce: 500}"></input>  
-            <input class="form-control" placeholder="Hasta" ng-if="field.type=='date'" ng-change="search()" ng-keyup="$event.keyCode == 13 ? search() : null" ng-model="params.fieldFilter[field.name]" ng-model-options="{ debounce: 500}"></input>    
-          </td>
-        </tr>
-      </thead>
-      <tbody>
-        <tr style="cursor: pointer;" ng-repeat="elem in list" ng-dblclick="dblClick(elem, $event)" hm-tap="dblClick(elem, $event)">
-          <!-- Codigo del Elemento -->
-          <td ng-if="show">{{elem._id}}</td>
-          <!-- Campos a Repetir -->
-          <td ng-repeat="field in fields">
-            <!-- Campos Normales -->
-            <span ng-if="!field.config && field.type !='date' && field.decimalsOnly!= 'decimals-only' && field.type !='object' && field.type !='currency' && field.type != 'checkbox'">{{inception(elem, field.name) | limitTo: field.limit}}{{(inception(elem, field.name).length > field.limit) ? '...' : ''}}</span>
-            <!-- Campos Monetarios -->
-            <span class="ta_right" ng-if="field.type ==='currency'">{{elem['currency'].code}} {{inception(elem, field.name) | limitTo: field.limit | currency:"$":2}}{{(inception(elem, field.name).length > field.limit) ? '...' : ''}}</span>
-            <!-- Campos Numericos -->
-            <span ng-if="!field.config && field.type !='date' && field.decimalsOnly == 'decimals-only' && !matching(inception(elem, field.name)) && field.type !='object'">{{inception(elem, field.name) | limitTo: field.limit}}{{(inception(elem, field.name).length > field.limit) ? '...' : ''}}</span>
-            <!-- Campos Fecha -->
-            <span ng-if="field.type=='date'">{{inception(elem, field.name) | date:'MMM/dd/yyyy'}}</span>
-            <!-- Campos Objetos (Vienen de la BD) -->
-            <span ng-if="field.type=='object'">{{resolve(field.routeInDb, elem, field.function, field.def) | limitTo: field.limit}}{{(resolve(field.routeInDb, elem, field.function, field.def).length > field.limit) ? '...' : ''}}</span>
-            <!-- Campos Select (Solo viene el ID) -->
-            <span ng-if="field.type=='select'">
-              {{
-                getFieldLabel(elem[field.name],field.options) | limitTo: field.limit
-              }}
-              {{
-                ( getFieldLabel(elem[field.name],field.options).length > field.limit ) ? '...' : ''
-              }}
-            </span>            
-            <!-- Campos CheckBox -->
-            <span ng-if="field.type=='checkbox'">
-              <input ng-checked="inception(elem, field.name)" type="checkbox" ng-disabled="true">
-            </span>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="table-responsive">
+      <table id="columnRender" cellspacing="0" class="table table-hover tableNoBottom table-condensed" style="border-bottom: 1px solid #dddddd; " ng-if="list.length">
+        <thead>
+          <tr>
+            <th ng-if="show" class="col-xs-1" ng-click="filter('_id')">#</th>
+            <th ng-style="field.sortable ? { 'cursor': 'pointer' } : {}" ng-repeat="field in fields" ng-click="field.sortable ? filter(field.name) : null" ng-class="field.class">
+              <span ng-bind-html="field.title"></span>
+              <i ng-if="field.sortable" class="fa" ng-style="{ 'opacity' : (field.name == orderBy.field) ? '1' : '0.2' }" ng-class="{'fa-angle-up':!orderBy.reverse, 'fa-angle-down':orderBy.reverse}"></i>
+            </th>
+          </tr>
+          <tr font-color="black" hidden >
+            <th ng-if="show" class="col-xs-1" ng-click="filter('_id')">#</th>
+            <td ng-repeat="field in fields"  ng-class="field.class" vertical-alig="bottom">
+               <!-- Campos Normales -->
+              <input class="form-control" ng-if="!field.config && field.type !='date' && field.decimalsOnly!= 'decimals-only' && field.type !='object' && field.type !='currency' && field.type != 'checkbox'"
+              ng-change="search()" ng-keyup="$event.keyCode == 13 ? search() : null" ng-model="params.fieldFilter[field.name]"  ng-model-options="{ debounce: 500}"></input>
+              <!-- Campos Monetarios -->
+              <input class="form-control" placeholder="Desde" class="ta_right" ng-if="field.type ==='currency'" ng-change="search()" ng-keyup="$event.keyCode == 13 ? applyFilters() : null" ng-model="params.fieldFilter[field.name]" ng-model-options="{ debounce: 500}" ></input>
+              <input class="form-control" placeholder="Hasta" class="ta_right" ng-if="field.type ==='currency'" ng-change="search()" ng-keyup="$event.keyCode == 13 ? applyFilters() : null" ng-model="params.fieldFilter[field.name]" ng-model-options="{ debounce: 500}" ></input>
+              <!-- Campos Fecha -->
+              <input class="form-control" placeholder="Desde" ng-if="field.type=='date'" ng-change="search()" ng-keyup="$event.keyCode == 13 ? search() : null" ng-model="params.fieldFilter[field.name]" ng-model-options="{ debounce: 500}"></input>  
+              <input class="form-control" placeholder="Hasta" ng-if="field.type=='date'" ng-change="search()" ng-keyup="$event.keyCode == 13 ? search() : null" ng-model="params.fieldFilter[field.name]" ng-model-options="{ debounce: 500}"></input>    
+            </td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="cursor: pointer;" ng-repeat="elem in list" ng-dblclick="dblClick(elem, $event)" hm-tap="dblClick(elem, $event)">
+            <!-- Codigo del Elemento -->
+            <td ng-if="show">{{elem._id}}</td>
+            <!-- Campos a Repetir -->
+            <td ng-repeat="field in fields">
+              <!-- Campos Normales -->
+              <span ng-if="!field.config && field.type !='date' && field.decimalsOnly!= 'decimals-only' && field.type !='object' && field.type !='currency' && field.type != 'checkbox'">{{inception(elem, field.name) | limitTo: field.limit}}{{(inception(elem, field.name).length > field.limit) ? '...' : ''}}</span>
+              <!-- Campos Monetarios -->
+              <span class="ta_right" ng-if="field.type ==='currency'">{{elem['currency'].code}} {{inception(elem, field.name) | limitTo: field.limit | currency:"$":2}}{{(inception(elem, field.name).length > field.limit) ? '...' : ''}}</span>
+              <!-- Campos Numericos -->
+              <span ng-if="!field.config && field.type !='date' && field.decimalsOnly == 'decimals-only' && !matching(inception(elem, field.name)) && field.type !='object'">{{inception(elem, field.name) | limitTo: field.limit}}{{(inception(elem, field.name).length > field.limit) ? '...' : ''}}</span>
+              <!-- Campos Fecha -->
+              <span ng-if="field.type=='date'">{{inception(elem, field.name) | date:'MMM/dd/yyyy'}}</span>
+              <!-- Campos Objetos (Vienen de la BD) -->
+              <span ng-if="field.type=='object'">{{resolve(field.routeInDb, elem, field.function, field.def) | limitTo: field.limit}}{{(resolve(field.routeInDb, elem, field.function, field.def).length > field.limit) ? '...' : ''}}</span>
+              <!-- Campos Select (Solo viene el ID) -->
+              <span ng-if="field.type=='select'">
+                {{
+                  getFieldLabel(elem[field.name],field.options) | limitTo: field.limit
+                }}
+                {{
+                  ( getFieldLabel(elem[field.name],field.options).length > field.limit ) ? '...' : ''
+                }}
+              </span>            
+              <!-- Campos CheckBox -->
+              <span ng-if="field.type=='checkbox'">
+                <input ng-checked="inception(elem, field.name)" type="checkbox" ng-disabled="true">
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
 <div ng-if="list.length" class="row">

@@ -20,8 +20,8 @@
 		<header class="navbar navbar-fixed-top" ng-show="isAuthenticated">
 			<div class="container-fluid">
 				<div class="navbar-header" style="width: 100%">
-					<button class="navbar-toggle">
-						<i class="fa fa-bars"></i>
+					<button class="navbar-toggle" >
+						<i class="fa fa-bars fa-lg"></i>
 					</button>
 					<a class="navbar-brand">
 						<img src="./images/mobileone.png" style="width:100%; max-width:200px"/> 
@@ -33,9 +33,14 @@
 			<div class="row">
 				<toaster-container></toaster-container>
 				<div ng-controller="SessionCtrl"></div>
-				<div id="sidebar" class="col-sm-3 col-md-2 sidebar" ng-controller="NavigationCtrl" ng-show="isAuthenticated">
+				<div id="sidebar" class="col-xs-10 col-md-2 sidebar" ng-controller="NavigationCtrl" ng-show="isAuthenticated">
 					<ul class="nav nav-sidebar">
 						<li style="background-color: #999999; color: white; padding: 20px;">
+							<button class="navbar-toggle pull-right" >
+								<i class="fa fa-times fa-lg" style="color:#333333"></i>
+							</button>
+							<br>
+							<br>
 							<span>Welcome&nbsp;<b>{{ userData.entity.fullName }}</b></span>
 						</li>
 						<li ng-repeat="rOptions in roleOptions | orderBy: 'sort' track by $index" ng-if="rOptions.sort != 0">
@@ -61,6 +66,9 @@
 		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAhmuU1WbbPbyGC7iB1N-4LalpZFJI5irg&signed_in=true&libraries=places,geometry"
         async defer></script>
 		<script src="bower_components/jquery/dist/jquery.js"></script>
+	    <script src="bower_components/angular/angular.js"></script>
+	    <script src="bower_components/hammerjs/hammer.min.js"></script>
+	    <script src="bower_components/AngularHammer/angular.hammer.min.js"></script>
 	    <script src="bower_components/angular/angular.js"></script>
 	    <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
 	    <script src="bower_components/angular-animate/angular-animate.js"></script>
