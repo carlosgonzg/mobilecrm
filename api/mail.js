@@ -60,7 +60,7 @@ var sendMail = function (to, subject, body, isHtmlBody, attachments, cc, cco) {
 	} else {
 		mailOptions.text = body;
 	}
-	if (attachments != undefined)
+	if (attachments)
 		mailOptions.attachments = attachments;
 	smtpTransport.sendMail(mailOptions, function (error, response) {
 		if (error) {
@@ -322,7 +322,7 @@ var sendInvoiceUpdate = function (invoice, mails, user, file, fileName) {
 };
 
 exports.sendConfirmateMail = function (email, password) {
-	var subject = 'Confirmación de Correo';
+	var subject = 'Confirm your Account';
 	var token = md5(Date() + email);
 	var urlEmail = urlServer + '/user/confirm/' + token;
 	bringTemplateData(tmpMail)
