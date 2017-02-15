@@ -198,7 +198,7 @@ var createWorkOrderBody = function(workOrder, company, showPrice){
 		var item = workOrder.items[i];
 		tableItems += '<tr>';
 		tableItems += '<td style="text-align: center;border: thin solid black; border-top: none; border-right: none;">';
-		//tableItems += item.code || '';
+		tableItems += item.code || '';
 		tableItems += '</td>';
 		tableItems += '<td colspan="4" style="border: thin solid black; border-top: none; border-right: none;">';
 		tableItems += item.description || '';
