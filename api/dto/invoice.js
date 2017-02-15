@@ -106,11 +106,14 @@ Invoice.prototype.insert = function (invoice, username, mail) {
 	//inserto
 	.then(function (obj) {
 		//_this.sendInvoice(obj.data._id, username, mail);
+		var setObj = { invoiceNumber: invoice.invoiceNumber };
+		if(invoice.pono)
+			setObj.pono = invoice.pono;
 		if(invoice.sor){
-			_this.crudServiceOrder.update({ sor: invoice.sor }, { invoiceNumber: invoice.invoiceNumber });
+			_this.crudServiceOrder.update({ sor: invoice.sor }, setObj);
 		}
 		else if(invoice.wor){
-			_this.crudWorkOrder.update({ wor: invoice.wor }, { invoiceNumber: invoice.invoiceNumber });
+			_this.crudWorkOrder.update({ wor: invoice.wor }, setObj);
 		}
 		d.resolve(obj);
 	})
@@ -135,21 +138,14 @@ Invoice.prototype.update = function (query, invoice, user, mail) {
 	invoice.total = total;
 	_this.crud.update(query, invoice, invoice.invoiceNumber == 'Pending Invoice')
 	.then(function (obj) {
+		var setObj = { invoiceNumber: invoice.invoiceNumber };
+		if(invoice.pono)
+			setObj.pono = invoice.pono;
 		if(invoice.sor){
-			_this.crudServiceOrder.update({ sor: invoice.sor }, { invoiceNumber: invoice.invoiceNumber }, true)
-			.then(function(res){
-				console.log('done', res)
-			}, function(err){
-				console.log('not ok', err)
-			});
+			_this.crudServiceOrder.update({ sor: invoice.sor }, setObj, true);
 		}
 		else if(invoice.wor){
-			_this.crudWorkOrder.update({ wor: invoice.wor }, { invoiceNumber: invoice.invoiceNumber }, true)
-			.then(function(res){
-				console.log('done', res)
-			}, function(err){
-				console.log('not ok', err)
-			});
+			_this.crudWorkOrder.update({ wor: invoice.wor }, setObj, true)
 		}
 		d.resolve(obj);
 	})
