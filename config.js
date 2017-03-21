@@ -4,7 +4,7 @@ var config = {
 		DB_URL: 'localhost:27017/heroku_cqkmxzc1',
 		SERVER_URL: 'http://localhost:8080',
 		MAIL_USR: 'info@mobileonecontainers.com',
-		MAIL_PASS: 'ElMundoGira2012!',
+		MAIL_PASS: '*info1234',
 		PUBLIC_PATH: 'public/app'
 	},
 	production : {
@@ -14,7 +14,7 @@ var config = {
 		DB_PASS: 'Elo27071989',
 		SERVER_URL: 'https://mobileonecrm.herokuapp.com',
 		MAIL_USR: 'info@mobileonecontainers.com',
-		MAIL_PASS: 'ElMundoGira2012!',
+		MAIL_PASS: '*info1234',
 		PUBLIC_PATH: 'public/app'
 	}
 };
