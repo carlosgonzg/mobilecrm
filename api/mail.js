@@ -8,6 +8,7 @@ var mailOptions = {};
 var q = require('q');
 var config; 
 var moment = require('moment');
+var _ = require('lodash');
 
 var bringTemplateData = function (url) {
 	var deferred = q.defer();
@@ -49,12 +50,13 @@ var setAttachment = function (url, fileName) {
  	return thisAttachs;
 }
 
-var sendMail = function (to, subject, body, isHtmlBody, attachments, cc, cco) {
+var sendMail = function (to, subject, body, isHtmlBody, attachments, cc, cco, replyTo) {
 	var deferred = q.defer();
 	mailOptions.to = to;
 	mailOptions.cc = cc ? cc : '';
 	mailOptions.cco = cco ? cco : '';
 	mailOptions.subject = subject;
+	mailOptions.replyTo = replyTo || '';
 	if (isHtmlBody) {
 		mailOptions.html = body;
 	} else {
@@ -166,7 +168,8 @@ var sendServiceOrder = function (serviceOrder, mails, dirname) {
 			}
 		}
 		console.log('sending mail', subject);
-		sendMail(mails.join(', '), subject, body, true, attachments)
+		mails = _.uniq(mails);
+		sendMail(mails.join(', '), subject, body, true, attachments, null, null, 'mf@mobileonecontainers.com')
 		.then(function (response) {
 			console.log('DONE Sending Mail: ', response)
 			deferred.resolve(response);
@@ -232,7 +235,8 @@ var sendServiceOrderUpdate = function (serviceOrder, mails, user) {
 		var branch = serviceOrder && serviceOrder.client && serviceOrder.client.branch ? 'Branch: ' + serviceOrder.client.branch.name : 'Client: ' + serviceOrder.client.entity.fullName;
 		var subject = company + ' | ' + branch + ' | Service Order: ' + serviceOrder.sor;
 		console.log('sending mail', subject);
-		sendMail(mails.join(', '), subject, body, true)
+		mails = _.uniq(mails);
+		sendMail(mails.join(', '), subject, body, true, null, null, null, 'mf@mobileonecontainers.com')
 		.then(function (response) {
 			console.log('DONE Sending Mail: ', response)
 			deferred.resolve(response);
@@ -269,7 +273,8 @@ var sendInvoice = function (invoice, mails, cc, file, fileName) {
 			subject += '  with po number ' + invoice.pono;
 		}
 		subject += ' – MobileOne Restoration LLC';
-		sendMail(mails.join(', '), subject, body, true, attachments, cc.join(', '))
+		mails = _.uniq(mails);
+		sendMail(mails.join(', '), subject, body, true, attachments, cc.join(', '), null, 'mf@mobileonecontainers.com')
 		.then(function (response) {
 			console.log('DONE Sending Mail: ', response)
 			deferred.resolve(response);
@@ -303,8 +308,9 @@ var sendInvoiceUpdate = function (invoice, mails, user, file, fileName) {
 			subject += '  with po number ' + invoice.pono;
 		}
 		subject += ' – MobileOne Restoration LLC';
-		var attachments = setAttachment(file, fileName)
-		sendMail(mails.join(', '), subject, body, true, attachments)
+		var attachments = setAttachment(file, fileName);
+		mails = _.uniq(mails);
+		sendMail(mails.join(', '), subject, body, true, attachments, null, null, 'mf@mobileonecontainers.com')
 		.then(function (response) {
 			console.log('DONE Sending Mail: ', response)
 			deferred.resolve(response);
@@ -361,7 +367,8 @@ var sendWorkOrder = function (workOrder, mails, dirname, file, fileName) {
 		var subject = company + ' | ' + branch + ' | Work Order: ' + workOrder.wor;
 		var attachments = setAttachment(file, fileName)
 		console.log('sending mail');
-		sendMail(mails.join(', '), subject, body, true, attachments)
+		mails = _.uniq(mails);
+		sendMail(mails.join(', '), subject, body, true, attachments, null, null, 'mf@mobileonecontainers.com')
 		.then(function (response) {
 			console.log('DONE Sending Mail: ', response)
 			deferred.resolve(response);
@@ -422,7 +429,8 @@ var sendWorkOrderUpdate = function (workOrder, mails, user, company) {
 		var branch = workOrder && workOrder.client && workOrder.client.branch ? 'Branch: ' + workOrder.client.branch.name : 'Client: ' + workOrder.client.entity.fullName;
 		var subject = companyS + ' | ' + branch + ' | Work Order: ' + workOrder.wor;
 		console.log('sending mail', subject);
-		sendMail(mails.join(', '), subject, body, true)
+		mails = _.uniq(mails);
+		sendMail(mails.join(', '), subject, body, true, null, null, null, 'mf@mobileonecontainers.com')
 		.then(function (response) {
 			console.log('DONE Sending Mail: ', response)
 			deferred.resolve(response);
