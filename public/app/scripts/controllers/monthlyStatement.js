@@ -138,10 +138,10 @@ angular.module('MobileCRMApp')
 		invoice.goTo();
 	};
 	$scope.changeStatus = function(invoice){
-		invoice.changeStatus()
-		.then(function(res){
-			$scope.search($scope.params);
-		});
+		var status = invoice.changeStatus()
+		// .then(function(res){
+		// 	$scope.search($scope.params);
+		// });
 	};
 
 	if($rootScope.userData.role._id != 1){

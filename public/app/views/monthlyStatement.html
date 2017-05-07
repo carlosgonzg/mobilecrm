@@ -172,7 +172,7 @@
 						{{invoice.total|currency}}
 					</td>
 					<td width="10%">
-						<span class="badge" ng-click="changeStatus(invoice)">{{group.status.description}}&nbsp;({{invoice.status.description}})</span>
+						<span class="badge" ng-click="changeStatus(invoice)">{{invoice.statusPaid.description}}&nbsp;({{invoice.status.description}})</span>
 					</td>
 					<td width="5%">
 						{{invoice.year}}

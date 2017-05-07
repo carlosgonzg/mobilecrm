@@ -195,8 +195,13 @@ angular.module('MobileCRMApp')
 	};
 	Invoice.prototype.changeStatus = function(){
 		var d = $q.defer();
+		var invoice = this;
 		$http.post(this.baseApiPath + '/status', { id: this._id })
 		.success(function(res){
+			
+			invoice.status.description = res.description;
+			invoice.statusPaid.description = res._id == 3 ? "Pending to Pay" : res.description;
+
 			toaster.success('The status has been changed!.');
 			d.resolve(true);
 		})
