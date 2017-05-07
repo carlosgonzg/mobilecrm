@@ -241,6 +241,10 @@ angular.module('MobileCRMApp')
 		$scope.workOrder.send();
 	};
 
+	$scope.fillComment = function () {
+		$scope.workOrder.comment = "Reference work order #" + $scope.workOrder.wor;
+	}
+
 	if(workOrder.client){
 		$scope.clientChanged(workOrder.client);
 	}
