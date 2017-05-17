@@ -1,7 +1,10 @@
 var config = {
 	development : {
 		APP_PORT : process.env.PORT || 8081,
-		DB_URL: 'localhost:27017/heroku_cqkmxzc1',
+		//DB_URL: 'localhost:27017/heroku_cqkmxzc1',
+		DB_URL: 'inspector:Elo27071989@ds161315.mlab.com:61315/heroku_cqkmxzc1',
+		DB_USER: 'inspector',
+		DB_PASS: 'Elo27071989',
 		SERVER_URL: 'http://localhost:8080',
 		MAIL_USR: 'info@mobileonecontainers.com',
 		MAIL_PASS: '*info1234',

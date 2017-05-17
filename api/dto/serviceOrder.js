@@ -14,6 +14,7 @@ var fs = require('fs')
 
 function ServiceOrder(db, userLogged, dirname) {
 	this.crud = new Crud(db, 'SERVICEORDER', userLogged);
+	this.crudInvoice = new Crud(db, 'INVOICE', userLogged);
 	this.user = new User(db, '', userLogged);
 	this.dirname = dirname;
 	//DB Table Schema
@@ -176,6 +177,9 @@ ServiceOrder.prototype.update = function (query, serviceOrder, user, mail) {
 	.then(function (photos) {
 		serviceOrder.photos = photos;
 		delete serviceOrder.sendMail;
+		if([5,7].indexOf(serviceOrder.status._id) != -1){
+			_this.crudInvoice.update({ sor: serviceOrder.sor }, { invoiceNumber: "No Invoice"}, true);
+		}
 		return _this.crud.update(query, serviceOrder);
 	})
 	.then(function (obj) {

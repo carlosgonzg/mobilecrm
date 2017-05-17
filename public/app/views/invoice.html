@@ -207,12 +207,36 @@
 					<tr>
 						<th colspan="3">
 							<span class="pull-right">
-								Total
+								SubTotal
 							</span>
 						</th>
 						<th colspan="4">
 							<span class="pull-left">
 								{{invoice.getTotal() | currency}}
+							</span>
+						</th>
+					</tr>
+					<tr>
+						<th colspan="3">
+							<span class="pull-right">
+								Taxes (6.5%)
+							</span>
+						</th>
+						<th colspan="4">
+							<span class="pull-left">
+								{{invoice.getTaxes() | currency}}
+							</span>
+						</th>
+					</tr>
+					<tr>
+						<th colspan="3">
+							<span class="pull-right">
+								Total
+							</span>
+						</th>
+						<th colspan="4">
+							<span class="pull-left">
+								{{invoice.getTotal() + invoice.getTaxes() | currency}}
 							</span>
 						</th>
 					</tr>

@@ -63,6 +63,13 @@ angular.module('MobileCRMApp')
 		return total;
 	};
 	
+	Invoice.prototype.getTaxes = function(){
+		var total = 0;
+		for(var i = 0; i < this.items.length; i++){
+			total += this.items[i].getTotalPrice();
+		}
+		return total * 0.065;
+	};
 	
 	Invoice.prototype.goTo = function () {
 		$location.path('/invoice/' + this._id);

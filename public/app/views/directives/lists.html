@@ -15,7 +15,7 @@
         <div style="padding: 15px;padding-top:0px;" class="input-group">
           <span class="input-group-addon">Search: </span>
           
-          <input class="form-control" type="text" ng-change="search()" ng-keyup="$event.keyCode == 13 ? search() : null" ng-model="params.search" ng-model-options="{ debounce: 500}"/>
+          <input class="form-control" type="text" ng-keyup="$event.keyCode == 13 ? search() : null" ng-model="params.search" ng-model-options="{ debounce: 500}"/>
           <span class="input-group-addon btn btn-default" ng-click="search()" tooltip="Search"><i class="fa fa-search"></i></span>
           <span class="input-group-addon btn btn-default" ng-click="downloadExcel(params)" tooltip="Descargar Excel"><i class="fa fa fa-download"></i></span>
         </div>
