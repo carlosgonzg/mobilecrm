@@ -77,12 +77,15 @@ var createInvoiceBody = function(obj, company, branch){
 		tableItems += '</tr>';
 	}
 	body = body.replace('<tableItems>', tableItems || '');
-	body = body.replace('<subtotal>', numeral(total || 0).format('$0,0.00'));
-	body = body.replace('<taxes>', numeral(total * 0.065 || 0).format('$0,0.00'));
-	body = body.replace('<total>', numeral(total + (total * 0.065) || 0).format('$0,0.00'));
-	body = body.replace('<total15>', numeral((total || 0) * 1.05).format('$0,0.00'));
-	body = body.replace('<total30>', numeral((total || 0) * 1.10).format('$0,0.00'));
-	body = body.replace('<total60>', numeral((total || 0) * 1.15).format('$0,0.00'));
+	total = total || 0;
+	var taxes = (company.taxes || 0);
+	body = body.replace('<subtotal>', numeral(total).format('$0,0.00'));
+	
+	body = body.replace('<taxes>', numeral(total * taxes).format('$0,0.00'));
+	body = body.replace('<total>', numeral(total + (total * taxes)).format('$0,0.00'));
+	body = body.replace('<total15>', numeral(total * 1.05).format('$0,0.00'));
+	body = body.replace('<total30>', numeral(total * 1.10).format('$0,0.00'));
+	body = body.replace('<total60>', numeral(total * 1.15).format('$0,0.00'));
 	return body;
 };
 

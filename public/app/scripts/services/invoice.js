@@ -68,7 +68,12 @@ angular.module('MobileCRMApp')
 		for(var i = 0; i < this.items.length; i++){
 			total += this.items[i].getTotalPrice();
 		}
-		return total * 0.065;
+		var taxes = 0;
+		if(this.client && this.client.company){
+			taxes = this.client.company.taxes || 0;
+		}
+		
+		return total * taxes;
 	};
 	
 	Invoice.prototype.goTo = function () {
