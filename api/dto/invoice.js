@@ -190,6 +190,8 @@ Invoice.prototype.sendInvoice = function(id, username, mail, emails, sendToAllAd
 		for(var i = 0; i < users.data.length; i++){
 			cc.push(users.data[i].account.email);
 		}
+		emails = _.uniq(emails);
+		cc = _.uniq(cc);
 		fileNamePdf = invoice.invoiceNumber + '.pdf';
 		urlPdf = _this.dirname + '/api/invoices/' + fileNamePdf; 
 		return pdf.createInvoice(invoice, company, branch);

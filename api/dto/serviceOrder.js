@@ -241,6 +241,7 @@ ServiceOrder.prototype.sendServiceOrderUpdate = function(id, user, mail){
 		for(var i = 0; i < users.data.length; i++){
 			emails.push(users.data[i].account.email);
 		}
+		emails = _.uniq(emails);
 		if(user.role._id != 1){
 			return mail.sendServiceOrderUpdate(serviceOrder, emails, user);
 		}

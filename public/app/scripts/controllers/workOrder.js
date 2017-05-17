@@ -8,7 +8,7 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-.controller('WorkOrderCtrl', function ($scope, $rootScope, $location, toaster, User, statusList, workOrder, Item, dialogs, $q, Company) {
+.controller('WorkOrderCtrl', function ($scope, $rootScope, $location, toaster, User, statusList, workOrder, Item, dialogs, $q, Branch) {
 	$scope.workOrder = workOrder;
 	$scope.items = [];
 	$scope.params = {};
@@ -76,10 +76,11 @@ angular.module('MobileCRMApp')
 		if(client && client.company)
 			$scope.wsFilterItem =  $rootScope.userData.role._id != 1 ? { 'companies._id': $rootScope.userData.company._id } : { 'companies._id': client.company._id };
 
-		if(client && client.company){
-			new Company().filter({ _id: client.company._id})
+		if(client && client.branch){
+			new Branch().filter({ _id: client.branch._id})
 			.then(function(result){
-				$scope.workOrder.siteAddress = angular.copy(result.data[0].address);
+				if(result.data[0].addresses && result.data[0].addresses.length > 0)
+					$scope.workOrder.siteAddress = angular.copy(result.data[0].addresses[0]);
 			})
 			.catch(function(){
 				$scope.workOrder.siteAddress = angular.copy(client.company.address);

@@ -243,6 +243,7 @@ WorkOrder.prototype.sendWorkOrderUpdate = function(id, user, mail){
 		for(var i = 0; i < users.data.length; i++){
 			emails.push(users.data[i].account.email);
 		}
+		emails = _.uniq(emails);
 		return _this.createWorkOrder(id, user, true);
 		//return _this.crudCompany.find({ _id: workOrder.client.company._id });
 	})
