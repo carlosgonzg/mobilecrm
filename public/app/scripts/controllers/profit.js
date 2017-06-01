@@ -2,5 +2,6 @@
 
 angular.module('MobileCRMApp')
 .controller('ProfitCtrl', function ($scope, invoices) {
-	$scope.invoices = invoices.data || [];
+	console.log(invoices)
+	$scope.invoices = invoices || [];
 });
