@@ -142,9 +142,14 @@
 		</table>
 		<table cellspacing="0" class="table table-hover tableNoBottom table-condensed" style="border-bottom: 1px solid #dddddd;" ng-repeat="group in invoices track by $index">
 			<thead>
+				<tr ng-if="invoices[$index-i].year != group.year">
+					<th colspan="10">
+						{{ group.year }}
+					</th>
+				</tr>
 				<tr>
 					<th colspan="10">
-						{{ group.month }}&nbsp;-&nbsp;{{ group.year }} ({{group.status.description}})
+						{{ group.month }}&nbsp;-&nbsp; ({{group.status.description}})
 					</th>
 				</tr>
 			</thead>
