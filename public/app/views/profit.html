@@ -60,13 +60,13 @@
 								{{invoice.branch}}
 							</td>
 							<td>
-								{{invoice.totalIncome|currency:2}}
+								{{invoice.totalIncome|currency}}
 							</td>
 							<td>
-								{{invoice.totalExpenses|currency:2}}
+								{{invoice.totalExpenses|currency}}
 							</td>
 							<td>
-								{{(invoice.totalIncome - invoice.totalExpenses)|currency:2}}
+								{{(invoice.totalIncome - invoice.totalExpenses)|currency}}
 							</td>
 						</tr>
 						<tr>
@@ -74,13 +74,13 @@
 								<b>Totals</b>
 							</td>
 							<td>
-								<b>{{getTotalIncome()|currency:2}}</b>
+								<b>{{getTotalIncome()|currency}}</b>
 							</td>
 							<td>
-								<b>{{getTotalExpenses()|currency:2}}</b>
+								<b>{{getTotalExpenses()|currency}}</b>
 							</td>
 							<td>
-								<b>{{(getTotalIncome() - getTotalExpenses())|currency:2}}</b>
+								<b>{{(getTotalIncome() - getTotalExpenses())|currency}}</b>
 							</td>
 						</tr>
 					</tbody>
