@@ -315,7 +315,7 @@ angular.module('MobileCRMApp')
 	};
 
 	$scope.showExpenses = function(){
-		var dialog = dialogs.create('views/expenses.html', 'ExpensesCtrl', { data: $scope.invoice.expenses });
+		var dialog = dialogs.create('views/expenses.html', 'ExpensesCtrl', { expenses: $scope.invoice.expenses });
 		dialog.result
 		.then(function (res) {
 			$scope.invoice.expenses = angular.copy(res);
