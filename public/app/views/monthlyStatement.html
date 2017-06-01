@@ -221,33 +221,30 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr ng-repeat="date in months track by $index">
+				<tr ng-repeat="branch in branches track by $index">
 					<td>
-						{{date.branch.name}}
+						{{branch.name}}
 					</td>
 					<td>
-						{{getPaid(date.year, date.month)|currency}}
+						{{branch.paid|currency}}
 					</td>
 					<td>
-						{{getPendingPay(date.year, date.month)|currency}}
+						{{branch.pending|currency}}
 					</td>
-					<!-- <td>
-						{{getPending(date.year, date.month)|currency}}
-					</td>-->
 					<td>
-						<b>{{getTotal(date.year, date.month)|currency}}</b>
+						<b>{{branch.total|currency}}</b>
 					</td>
 				</tr>
 				<tr>
 					<th colspan="2" style="text-align:right"></th>
 					<th>
-						{{getTotalPaid()|currency}}
+						{{getBranchTotalPaid()|currency}}
 					</th>
 					<th>
-						{{getTotalPendingPay()|currency}}
+						{{getBranchTotalPendingPay()|currency}}
 					</th>
 					<th>
-						{{getTotalYear()|currency}}
+						{{getBranchTotalYear()|currency}}
 					</th>
 				</tr>
 			</tbody>

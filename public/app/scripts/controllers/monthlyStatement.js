@@ -148,6 +148,30 @@ angular.module('MobileCRMApp')
 		.then(function(result){
 			setMonths($scope.params.year);
 			$scope.invoices = result;
+			$scope.branches = {};
+			if($scope.params.searchBy.code == 'Company'){
+				for(var i = 0; i < result.length; i++){
+					for(var j = 0; j < result[i].invoices.length; j++){
+						var bId = result[i].invoices[j].client.branch ? result[i].invoices[j].client.branch._id || 'n/a' : 'n/a';
+						var bName = result[i].invoices[j].client.branch ? result[i].invoices[j].client.branch.name || 'n/a' : 'n/a';
+						if(!$scope.branches[bId]){
+							$scope.branches[bId] = {
+								branch: bName,
+								paid: 0,
+								pending: 0,
+								total: 0,
+							};
+						}
+						if(result[i].invoices[j].status._id == 4){
+							$scope.branches[bId].paid += result[i].invoices[j].total;
+						}
+						else if(result[i].invoices[j].status._id == 1){
+							$scope.branches[bId].pending += result[i].invoices[j].total;
+						}
+						$scope.branches[bId].pending += result[i].invoices[j].total;
+					}
+				}
+			}
 			Loading.hide();
 		})
 	};
@@ -163,6 +187,29 @@ angular.module('MobileCRMApp')
 		// .then(function(res){
 		// 	$scope.search($scope.params);
 		// });
+	};
+
+	$scope.getBranchTotalPaid = function(){
+		var aux = 0;
+		for(var i in $scope.branches){
+			aux += $scope.branches[i].paid;
+		}
+		return aux;
+	};
+	$scope.getBranchTotalPending = function(){
+		var aux = 0;
+		for(var i in $scope.branches){
+			aux += $scope.branches[i].pending;
+		}
+		return aux;
+	};
+
+	$scope.getBranchTotalYear = function(){
+		var aux = 0;
+		for(var i in $scope.branches){
+			aux += $scope.branches[i].total;
+		}
+		return aux;
 	};
 
 	if($rootScope.userData.role._id != 1){

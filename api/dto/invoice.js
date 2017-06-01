@@ -387,10 +387,6 @@ Invoice.prototype.getMonthlyStatement = function(params, user){
 		}
 	};
 
-	if(params.companyId){
-		group.$group._id['branch'] = '$branch'
-	}
-
 	var project2 = {
 		$project: {
 			_id: 0,
@@ -401,10 +397,6 @@ Invoice.prototype.getMonthlyStatement = function(params, user){
 			invoices: '$invoices'
 		}
 	};
-
-	if(params.companyId){
-		project2.$project.branch = '$_id.branch';
-	}
 
 	var sort1 = {
 		$sort: {
