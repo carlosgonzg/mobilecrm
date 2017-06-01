@@ -16,10 +16,10 @@
 				<table class="table table-striped table-hover">
 					<thead>
 						<tr>
-							<th width="20%">
+							<th width="10%">
 								Invoice
 							</th>
-							<th width="10%">
+							<th width="20%">
 								Document No. (SOR, WOR)
 							</th>
 							<th width="20%">
@@ -63,10 +63,10 @@
 								{{invoice.totalIncome|currency:2}}
 							</td>
 							<td>
-								{{invoice.totaExpenses|currency:2}}
+								{{invoice.totalExpenses|currency:2}}
 							</td>
 							<td>
-								{{(invoice.totalIncome - invoice.totaExpenses)|currency:2}}
+								{{(invoice.totalIncome - invoice.totalExpenses)|currency:2}}
 							</td>
 						</tr>
 						<tr>
@@ -80,7 +80,7 @@
 								<b>{{getTotalExpenses()|currency:2}}</b>
 							</td>
 							<td>
-								<b>{{getTotalProfit()|currency:2}}</b>
+								<b>{{(getTotalIncome() - getTotalExpenses())|currency:2}}</b>
 							</td>
 						</tr>
 					</tbody>
