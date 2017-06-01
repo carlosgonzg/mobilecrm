@@ -17,6 +17,7 @@ function WorkOrder(db, userLogged, dirname) {
 	this.user = new User(db, 'USER', userLogged);
 	this.crudCompany = new Crud(db, 'COMPANY', userLogged);
 	this.crudBranch = new Crud(db, 'BRANCH', userLogged);
+	this.crudInvoice = new Crud(db, 'INVOICE', userLogged);
 	this.dirname = dirname;
 	//DB Table Schema
 	this.schema = {
@@ -179,6 +180,9 @@ WorkOrder.prototype.update = function (query, workOrder, user, mail) {
 	})
 	.then(function (obj) {
 		var mails = [ ];
+		if([5,7].indexOf(workOrder.status._id) != -1){
+			_this.crudInvoice.update({ sor: workOrder.wor }, { invoiceNumber: "No Invoice"}, true);
+		}
 		_this.sendWorkOrder(workOrder._id,mails , user, mail);
 		d.resolve(obj);
 	})
