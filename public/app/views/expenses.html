@@ -32,8 +32,8 @@
 							<input type="number" class="form-control" ng-model="expense.price" />
 						</td>
 						<td>
-							<button class="btn btn-sm btn-default" ng-click="remove($index)">
-								<i class="fa fa-plus"></i>
+							<button class="btn btn-sm btn-danger" ng-click="remove($index)">
+								<i class="fa fa-times"></i>
 							</button>
 						</td>
 					</tr>
@@ -43,6 +43,6 @@
 	</div>
 </div>
 <div class="modal-footer">
-	<button class="btn btn-primary" type="button" ng-click="set()"><i class="fa fa-disk"></i>&nbsp;Assign</button>
+	<button class="btn btn-primary" type="button" ng-click="assign()"><i class="fa fa-disk"></i>&nbsp;Assign</button>
   <button class="btn btn-default" type="button" ng-click="close()"><i class="fa fa-times"></i>&nbsp;Close</button>
 </div>
