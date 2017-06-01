@@ -156,20 +156,20 @@ angular.module('MobileCRMApp')
 						var bName = result[i].invoices[j].branch ? result[i].invoices[j].branch.name || 'n/a' : 'n/a';
 						if(!$scope.branches[bId]){
 							$scope.branches[bId] = {
-								branch: bName,
+								name: bName,
 								paid: 0,
 								pending: 0,
 								total: 0,
 							};
 						}
-						if(result[i].invoices[j].status._id == 4){
+						if(result[i].invoices[j].statusPaid._id == 4){
 							$scope.branches[bId].paid += result[i].invoices[j].total;
 						}
-						else if(result[i].invoices[j].status._id == 1){
+						else if(result[i].invoices[j].statusPaid._id == 3){
 							$scope.branches[bId].pending += result[i].invoices[j].total;
 						}
 						$scope.branches[bId].total += result[i].invoices[j].total;
-						
+
 					}
 				}
 			}
