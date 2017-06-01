@@ -16,7 +16,7 @@
 			<button type="submit" form="userForm" class="btn btn-default update" ng-click="saveSend()">
 				<i class="fa fa-save"></i>&nbsp;<span>Save & Send</span>
 			</button>
-				<button type="button" class="btn btn-default" ng-click="showExpenses()" ng-if="invoice._id && userData.role.id == 1">
+				<button type="button" class="btn btn-default" ng-click="showExpenses()" ng-if="invoice._id && userData.role._id == 1">
 					<i class="fa fa-money"></i>&nbsp;<span>Expenses</span>
 				</button>
 			<button type="button" class="btn btn-danger" ng-click="delete()" ng-if="invoice._id && userData.role._id == 1">
