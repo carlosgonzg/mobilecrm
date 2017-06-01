@@ -290,6 +290,15 @@ angular
 			}
 		}
 	})
+	.when('/profit', {
+		templateUrl : 'views/profit.html',
+		controller : 'ProfitCtrl',
+		resolve : {
+			invoices : function (Invoice) {
+				return new Invoice().getExpenses();
+			}
+		}
+	})
 	.when('/noaccess', {
 		templateUrl : 'views/noaccess.html'
 	})

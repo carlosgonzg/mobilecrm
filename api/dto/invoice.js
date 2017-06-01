@@ -574,6 +574,8 @@ Invoice.prototype.getExpenses = function(){
 		for(var i = 0; i < result.data.length; i++){
 			var inv = {
 				_id: result.data[i]._id,
+				invoiceNumber: result.data[i].invoiceNumber,
+				document: result.data[i].sor || result.data[i].wor,
 				clientId: result.data[i].client._id,
 				client: result.data[i].client.entity.fullName,
 				company: result.data[i].client.company.entity.name,
