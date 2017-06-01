@@ -152,8 +152,8 @@ angular.module('MobileCRMApp')
 			if($scope.params.searchBy.code == 'Company'){
 				for(var i = 0; i < result.length; i++){
 					for(var j = 0; j < result[i].invoices.length; j++){
-						var bId = result[i].invoices[j].client.branch ? result[i].invoices[j].client.branch._id || 'n/a' : 'n/a';
-						var bName = result[i].invoices[j].client.branch ? result[i].invoices[j].client.branch.name || 'n/a' : 'n/a';
+						var bId = result[i].invoices[j].branch ? result[i].invoices[j].branch._id || 'n/a' : 'n/a';
+						var bName = result[i].invoices[j].branch ? result[i].invoices[j].branch.name || 'n/a' : 'n/a';
 						if(!$scope.branches[bId]){
 							$scope.branches[bId] = {
 								branch: bName,
@@ -169,6 +169,7 @@ angular.module('MobileCRMApp')
 							$scope.branches[bId].pending += result[i].invoices[j].total;
 						}
 						$scope.branches[bId].total += result[i].invoices[j].total;
+						
 					}
 				}
 			}
