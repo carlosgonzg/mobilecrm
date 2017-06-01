@@ -231,7 +231,7 @@ angular.module('MobileCRMApp')
 		var invoice = this;
 		$http.get(this.baseApiPath + '/expenses')
 		.success(function(res){
-			d.resolve(res.data || []);
+			d.resolve(res || []);
 		})
 		.error(function(error){
 			d.reject(error)
