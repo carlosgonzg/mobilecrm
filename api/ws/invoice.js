@@ -43,5 +43,11 @@ module.exports = function (prefix, app, mail, dirname) {
 		invoice.changeStatus(req.body.id, req.user)
 		.then(util.success(res), util.error(res));
 	});
+
+	app.get(prefix + '/expenses', function (req, res) {
+		var invoice = new Invoice(app.db, req.user, dirname);
+		invoice.getExpenses()
+		.then(util.success(res), util.error(res));
+	});
 	require('./crud')(prefix, app, Invoice);
 }

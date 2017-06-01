@@ -226,5 +226,17 @@ angular.module('MobileCRMApp')
 		});
 		return d.promise;
 	};
+	Invoice.prototype.getExpenses = function(){
+		var d = $q.defer();
+		var invoice = this;
+		$http.get(this.baseApiPath + '/expenses')
+		.success(function(res){
+			d.resolve(res.data || []);
+		})
+		.error(function(error){
+			d.reject(error)
+		});
+		return d.promise;
+	};
 	return Invoice;
 });

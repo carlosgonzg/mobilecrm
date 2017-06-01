@@ -565,4 +565,41 @@ Invoice.prototype.changeStatus = function(id){
 	return d.promise;
 };
 
+Invoice.prototype.getExpenses = function(){
+	var d = q.defer();
+	var _this = this;
+	_this.crud.find({ expenses: { $exists: true } })
+	.then(function (result) {
+		var obj = [];
+		for(var i = 0; i < result.data.length; i++){
+			var inv = {
+				_id: result.data[i]._id,
+				clientId: result.data[i].client._id,
+				client: result.data[i].client.entity.fullName,
+				company: result.data[i].client.company.entity.name,
+				branch: result.data[i].client.branch.name,
+				items: result.data[i].items,
+				expenses: result.data[i].expenses,
+				totalIncome: 0,
+				totalExpenses: 0
+			};
+			for(var j = 0; j < result.data[i].items.length; j++){
+				inv.totalIncome += result.data[i].items[j].quantity * result.data[i].items[j].price;
+			}
+			for(var j = 0; j < result.data[i].expenses.length; j++){
+				inv.totalExpenses += result.data[i].expenses[j].price;
+			}
+			obj.push(inv);
+		}
+		d.resolve(obj);
+	})
+	.catch (function (err) {
+		d.reject({
+			result : 'Not ok',
+			errors : err
+		});
+	});
+	return d.promise;
+};
+
 module.exports = Invoice;

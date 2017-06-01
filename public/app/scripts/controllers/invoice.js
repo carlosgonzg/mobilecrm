@@ -314,6 +314,13 @@ angular.module('MobileCRMApp')
 		$scope.invoice.send();
 	};
 
+	$scope.showExpenses = function(){
+		var dialog = dialogs.create('views/expenses.html', 'ExpensesCtrl', { data: $scope.invoice.expenses });
+		dialog.result
+		.then(function (res) {
+			$scope.invoice.expenses = angular.copy(res);
+		});
+	};
 	if(invoice.client){
 		$scope.clientChanged(invoice.client);
 	}
