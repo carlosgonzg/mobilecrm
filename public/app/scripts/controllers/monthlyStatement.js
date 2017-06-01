@@ -168,7 +168,7 @@ angular.module('MobileCRMApp')
 						else if(result[i].invoices[j].status._id == 1){
 							$scope.branches[bId].pending += result[i].invoices[j].total;
 						}
-						$scope.branches[bId].pending += result[i].invoices[j].total;
+						$scope.branches[bId].total += result[i].invoices[j].total;
 					}
 				}
 			}
@@ -196,7 +196,7 @@ angular.module('MobileCRMApp')
 		}
 		return aux;
 	};
-	$scope.getBranchTotalPending = function(){
+	$scope.getBranchTotalPendingPay = function(){
 		var aux = 0;
 		for(var i in $scope.branches){
 			aux += $scope.branches[i].pending;
