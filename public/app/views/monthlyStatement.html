@@ -49,6 +49,7 @@
 <ul class="nav nav-pills">
 	<li role="presentation" ng-class="{ active: getActiveTab('month') }" ng-click="selectTab('month')"><a>Monthly Statement</a></li>
 	<li role="presentation" ng-class="{ active: getActiveTab('detail') }" ng-click="selectTab('detail')"><a>Detail</a></li>
+	<li role="presentation" ng-class="{ active: getActiveTab('branches') }" ng-click="selectTab('branches')" ng-if="params.searchBy.code == 'Company'"><a>By Branches</a></li>
 </ul>
 <div class="row" ng-if="getActiveTab('month')">
 	<div class="col-xs-12" ng-if="invoices.length > 0">
@@ -203,6 +204,51 @@
 					<td width="10%">
 						{{invoice.company.name}}
 					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+<div class="row" ng-if="getActiveTab('branches')">
+	<div class="col-xs-12" ng-if="invoices.length > 0">
+		<table cellspacing="0" class="table table-hover tableNoBottom table-condensed" style="border-bottom: 1px solid #dddddd;">
+			<thead>
+				<tr>
+					<th width="20%">Branch</th>
+					<th width="20%">Paid</th>
+					<th width="20%">Pending To Pay</th>
+					<th width="20%">Total</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="date in months track by $index">
+					<td>
+						{{date.branch.name}}
+					</td>
+					<td>
+						{{getPaid(date.year, date.month)|currency}}
+					</td>
+					<td>
+						{{getPendingPay(date.year, date.month)|currency}}
+					</td>
+					<!-- <td>
+						{{getPending(date.year, date.month)|currency}}
+					</td>-->
+					<td>
+						<b>{{getTotal(date.year, date.month)|currency}}</b>
+					</td>
+				</tr>
+				<tr>
+					<th colspan="2" style="text-align:right"></th>
+					<th>
+						{{getTotalPaid()|currency}}
+					</th>
+					<th>
+						{{getTotalPendingPay()|currency}}
+					</th>
+					<th>
+						{{getTotalYear()|currency}}
+					</th>
 				</tr>
 			</tbody>
 		</table>
