@@ -25,6 +25,9 @@ angular.module('MobileCRMApp')
 		this.status = this.status || { _id: 1, description: 'Pending' };
 		this.total = this.total || '';
 		this.items = this.items || [];
+		this.date = this.date || new Date();
+		this.dueDate = this.dueDate || new Date();
+		
 		for(var i = 0; i < this.items.length; i++){
 			this.items[i] = new Item(this.items[i]);
 		}

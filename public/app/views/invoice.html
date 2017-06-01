@@ -143,6 +143,14 @@
 						</div>
 					</div>
 				</div>
+				<div class="col-sm-6">
+					<div class="col-xs-12 pull-right">
+						<div class="form-group">
+							<label for="dueDate">Due Date</label>
+							<sc-datepicker ng-model="invoice.dueDate" ng-class="isChanged('dueDate')" ng-change="changed('dueDate')" ng-disabled="isDisabled()"></sc-datepicker>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>

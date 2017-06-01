@@ -175,12 +175,12 @@ angular.module('MobileCRMApp')
 
 	$scope.setInvoice = function(doc){
 		$scope.invoice = new Invoice(doc);
+		$scope.invoice.date = new Date();
 		delete $scope.invoice._id;
-		$scope.clientChanged(doc.client)
+		$scope.clientChanged(doc.client);
 	};
 
 	$scope.clientChanged = function(client){
-		console.log('entre?')
 		if(client && client.company)
 			$scope.wsFilterItem =  $rootScope.userData.role._id != 1 ? { 'companies._id': $rootScope.userData.company._id } : { 'companies._id': client.company._id };
 		if(!$scope.invoice._id && (!$scope.invoice.invoiceNumber || $scope.invoice.invoiceNumber == 'Pending Invoice')){

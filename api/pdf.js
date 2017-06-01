@@ -30,6 +30,7 @@ var createInvoiceBody = function(obj, company, branch){
 	var body = fs.readFileSync(__dirname + '/invoice.html', 'utf8').toString();
 	//replacement of data
 	body = body.replace(/<createdDate>/g, moment(obj.date).format('MM/DD/YYYY'));
+	body = body.replace(/<dueDate>/g, moment(obj.dueDate || new Date()).format('MM/DD/YYYY'));
 	body = body.replace(/<invoiceNumber>/g, obj.invoiceNumber || '');
 	//Company
 
