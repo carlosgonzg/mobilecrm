@@ -212,6 +212,14 @@ angular.module('MobileCRMApp')
 		});
 	};
 
+	$scope.showExpenses = function(){
+		var dialog = dialogs.create('views/expenses.html', 'ExpensesCtrl', { data: $scope.serviceOrder.expenses });
+		dialog.result
+		.then(function (res) {
+			$scope.serviceOrder.expenses = angular.copy(res);
+		});
+	};
+
 	$scope.save = function (sendMail) {
 		delete $scope.serviceOrder.client.account.password;
 		if(sendMail)
