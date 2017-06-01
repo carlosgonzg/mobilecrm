@@ -84,6 +84,17 @@
 						<b>{{getTotal(date.year, date.month)|currency}}</b>
 					</td>
 				</tr>
+				<tr>
+					<th colspan="2" style="text-align:right">
+						{{getTotalPaid()|currency}}
+					</th>
+					<th>
+						{{getTotalPendingPay()|currency}}
+					</th>
+					<th>
+						{{getTotalYear()|currency}}
+					</th>
+				</tr>
 			</tbody>
 		</table>
 	</div>

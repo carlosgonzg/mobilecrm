@@ -75,6 +75,27 @@ angular.module('MobileCRMApp')
 		}, 0);
 	};
 
+	$scope.getTotalPaid = function(){
+		return _.reduce($scope.invoices, function(memo, value){
+			return memo + (value.status._id == 4 ? value.total : 0);
+		}, 0);
+	};
+	$scope.getTotalPending = function(){
+		return _.reduce($scope.invoices, function(memo, value){
+			return memo + (value.status._id == 1 ? value.total : 0);
+		}, 0);
+	};
+	$scope.getTotalPendingPay = function(){
+		return _.reduce($scope.invoices, function(memo, value){
+			return memo + (value.status._id != 4 ? value.total : 0);
+		}, 0);
+	};
+	$scope.getTotalYear = function(){
+		return _.reduce($scope.invoices, function(memo, value){
+			return memo + value.total;
+		}, 0);
+	};
+
 	$scope.getList = function(list){
 		Loading.show();
 		switch(list){
