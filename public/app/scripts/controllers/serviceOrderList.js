@@ -20,8 +20,8 @@ angular.module('MobileCRMApp')
 			name : 'client.branch.name',
 			type : 'text'
 		},{
-			title : 'Created Date',
-			name : 'createdDate',
+			title : 'Date',
+			name : 'date',
 			type : 'date'
 		},{
 			title : 'Completed Date',
@@ -56,7 +56,7 @@ angular.module('MobileCRMApp')
 
 	$scope.search = [
 		'_id',
-		'createdDate',
+		'date',
 		'originalShipDate',
 		'invoiceNumber',
 		'client.company.entity.name',
@@ -70,7 +70,7 @@ angular.module('MobileCRMApp')
 		'status.description',
 		'total'
 	];
-	$scope.filterDate = 'createdDate';
+	$scope.filterDate = 'date';
 
   $scope.excelFields = [{
 			title : 'Company',
@@ -81,8 +81,8 @@ angular.module('MobileCRMApp')
 			name : 'client.branch.name',
 			type : 'text'
 		},{
-			title : 'Created Date',
-			name : 'createdDate',
+			title : 'Date',
+			name : 'date',
 			type : 'date'
 		},{
 			title : 'Completed Date',

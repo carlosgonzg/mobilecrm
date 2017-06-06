@@ -128,6 +128,10 @@ angular.module('MobileCRMApp')
 				$scope.serviceOrder.fieldsChanged.push({ field: field, by: $rootScope.userData._id });
 			}
 		} 
+
+		if (field === "status") {
+				$scope.setNoInvoice();
+		}
 	};
 
 	$scope.isChanged = function(field){
@@ -245,6 +249,16 @@ angular.module('MobileCRMApp')
 	$scope.send = function(){
 		$scope.serviceOrder.send();
 	};
+
+	$scope.setNoInvoice = function () {
+		console.log($scope.serviceOrder.status._id)
+		var array = [5,7]
+		if ($scope.serviceOrder.status._id === 5 || $scope.serviceOrder.status._id === 7) {
+			$scope.serviceOrder.invoiceNumber = "No Invoice";
+		} else {
+			$scope.serviceOrder.invoiceNumber = "Pending Invoice";
+		}
+	}
 
 	if(serviceOrder.client){
 		$scope.clientChanged(serviceOrder.client);
