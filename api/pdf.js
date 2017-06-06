@@ -30,7 +30,7 @@ var createInvoiceBody = function(obj, company, branch){
 	var body = fs.readFileSync(__dirname + '/invoice.html', 'utf8').toString();
 	//replacement of data
 	body = body.replace(/<createdDate>/g, moment(obj.date).format('MM/DD/YYYY'));
-	body = body.replace(/<dueDate>/g, moment(obj.dueDate || new Date()).format('MM/DD/YYYY'));
+	body = body.replace(/<dueDate>/g, moment(obj.date).add(30,'days').format('MM/DD/YYYY'));
 	body = body.replace(/<invoiceNumber>/g, obj.invoiceNumber || '');
 	//Company
 
@@ -81,6 +81,10 @@ var createInvoiceBody = function(obj, company, branch){
 	total = total || 0;
 	var taxes = (company.taxes || 0);
 	body = body.replace('<subtotal>', numeral(total).format('$0,0.00'));
+
+	body = body.replace('<date15>', moment(obj.date,'MM/DD/YYYY').add(45,'days').format('MM/DD/YYYY'));
+	body = body.replace('<date30>', moment(obj.date,'MM/DD/YYYY').add(60,'days').format('MM/DD/YYYY'));
+	body = body.replace('<date60>', moment(obj.date,'MM/DD/YYYY').add(90,'days').format('MM/DD/YYYY'));
 	
 	body = body.replace('<taxes>', numeral(total * taxes).format('$0,0.00'));
 	body = body.replace('<total>', numeral(total + (total * taxes)).format('$0,0.00'));

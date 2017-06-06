@@ -26,7 +26,9 @@ angular.module('MobileCRMApp')
 		this.total = this.total || '';
 		this.items = this.items || [];
 		this.date = this.date || new Date();
-		this.dueDate = this.dueDate || new Date();
+
+		this.dueDate = new Date(this.date);
+		this.dueDate.setDate(this.dueDate.getDate()+30);
 		
 		for(var i = 0; i < this.items.length; i++){
 			this.items[i] = new Item(this.items[i]);
