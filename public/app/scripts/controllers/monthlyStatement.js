@@ -8,7 +8,7 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-.controller('MonthlyStatementCtrl', function ($scope, $rootScope, Invoice, Loading, dialogs, searchList, userList, companyList, branchList, toaster) {
+.controller('MonthlyStatementCtrl', function ($scope, $rootScope, Invoice, Loading, dialogs, searchList, userList, companyList, branchList, toaster, statusList) {
 	var today = new Date();
 	$scope.searchList = searchList || [];
 	if($rootScope.userData.isRegionalManager){
@@ -181,7 +181,12 @@ angular.module('MobileCRMApp')
 		new Invoice().exportMonthlyStatement(query, format);
 	};
 	$scope.goTo = function(invoice){
-		invoice.goTo();
+		// invoice.goTo();
+		invoice.callInvoice(statusList, companyList)
+			.then(function(result) {
+				$scope.search($scope.params);
+			});
+	
 	};
 	$scope.changeStatus = function(invoice){
 		var status = invoice.changeStatus()

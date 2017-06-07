@@ -287,6 +287,9 @@ angular
 					query['company._id'] = $rootScope.userData.company._id;
  				}
 				return new Branch().filter(query);
+			},
+			statusList: function(List){
+				return List.get('status');
 			}
 		}
 	})

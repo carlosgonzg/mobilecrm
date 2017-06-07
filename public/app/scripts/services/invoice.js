@@ -85,6 +85,31 @@ angular.module('MobileCRMApp')
 		$location.path('/invoice/' + this._id);
 	};
 
+	Invoice.prototype.callInvoice = function (statusList, companyList) {
+		var d = $q.defer();
+		var _this = this;
+
+		var invoice = new Invoice().findById(parseInt(this._id))
+			.then(function(result){
+
+				var dialog = dialogs.create('views/invoiceModal.html', 'InvoiceModalCtrl',
+				 {
+								data: this,
+								status : statusList,
+								companies : companyList,
+								invoice :result
+				});
+				dialog.result
+					.then(function(result){
+						// return result;
+						d.resolve(result)
+					})
+
+			});
+
+			return d.promise;
+	}
+
 	Invoice.prototype.download = function(){
 		var d = $q.defer();
 		var _this = this;
