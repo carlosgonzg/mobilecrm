@@ -48,9 +48,13 @@ angular.module('MobileCRMApp')
 			name : 'status.description',
 			type : 'text'
 		}, {
-			title : 'Total Amount',
+			title : 'Amount',
 			name : 'total',
 			type : 'currency'
+		}, {
+			title : 'Expenses',
+			name : 'expensesComplete',
+			type : 'checkbox'
 		}
 	];
 	if($rootScope.userData.role._id == 1){
@@ -76,7 +80,8 @@ angular.module('MobileCRMApp')
 		'client.entity',
 		'client.entity.fullName',
 		'status.description',
-		'total'
+		'total',
+		'expensesComplete'
 	];
 	$scope.filterDate = 'createdDate';
 
@@ -108,6 +113,10 @@ angular.module('MobileCRMApp')
       title : 'Total Amount',
       name : 'total',
       type : 'currency'
+    }, {
+      title : 'Expenses',
+      name : 'expensesComplete',
+      type : 'boolean'
     }
   ];
 

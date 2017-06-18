@@ -81,6 +81,12 @@ var createInvoiceBody = function(obj, company, branch){
 	total = total || 0;
 	var taxes = (company.taxes || 0);
 	body = body.replace('<subtotal>', numeral(total).format('$0,0.00'));
+	console.log("DUEE DATEEEES----->", obj.showDueDates, obj)
+	if (obj.client.hideDueDates) {
+		body = body.replace('<showTable>', '<div style="display:none">');
+	} else {
+		body = body.replace('<showTable>', '<div>');
+	}
 
 	body = body.replace('<date15>', moment(obj.date,'MM/DD/YYYY').add(45,'days').format('MM/DD/YYYY'));
 	body = body.replace('<date30>', moment(obj.date,'MM/DD/YYYY').add(60,'days').format('MM/DD/YYYY'));
@@ -88,9 +94,9 @@ var createInvoiceBody = function(obj, company, branch){
 	
 	body = body.replace('<taxes>', numeral(total * taxes).format('$0,0.00'));
 	body = body.replace('<total>', numeral(total + (total * taxes)).format('$0,0.00'));
-	body = body.replace('<total15>', numeral(total * 1.05).format('$0,0.00'));
-	body = body.replace('<total30>', numeral(total * 1.10).format('$0,0.00'));
-	body = body.replace('<total60>', numeral(total * 1.15).format('$0,0.00'));
+	body = body.replace('<total15>', numeral((total + (total * taxes)) * 1.05).format('$0,0.00'));
+	body = body.replace('<total30>', numeral((total + (total * taxes)) * 1.10).format('$0,0.00'));
+	body = body.replace('<total60>', numeral((total + (total * taxes)) * 1.15).format('$0,0.00'));
 	return body;
 };
 

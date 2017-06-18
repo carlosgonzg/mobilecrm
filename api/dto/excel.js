@@ -158,7 +158,7 @@ Excel.resolve = function(path, obj, aFunction, def) {
     } else if (!aFunction) {}
 
     if (typeof a == "boolean") {
-      a = a ? 'Si':'No';
+      a = a ? 'Yes':'No';
     }
 
     return a;

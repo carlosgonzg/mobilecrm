@@ -1,14 +1,30 @@
 'use strict';
 
 angular.module('MobileCRMApp')
-.controller('ExpensesCtrl', function ($scope, data, $uibModalInstance) {
+.controller('ExpensesCtrl', function ($scope, data, $uibModalInstance, User) {
 	$scope.expenses = angular.copy(data.expenses || []);
+	$scope.expensesComplete = angular.copy(data.expensesComplete || false);
+	$scope.technician = angular.copy(data.technician)
+
+	$scope.technicians = [];
+
+	new User().filter({"role._id":4})
+			.then(function (result) {
+				console.log(result)
+				$scope.technicians = result.data;
+			})
 
 	$scope.close = function(){
 		$uibModalInstance.dismiss(data.expenses);
 	};
 	$scope.assign = function(){
-		$uibModalInstance.close($scope.expenses)
+		var result = {
+			expenses: $scope.expenses,
+			expensesComplete: $scope.expensesComplete,
+			technician: $scope.technician
+		}
+
+		$uibModalInstance.close(result)
 	};
 	$scope.add = function(){
 		$scope.expenses.push({
@@ -18,5 +34,9 @@ angular.module('MobileCRMApp')
 	};
 	$scope.remove = function(index){
 		$scope.expenses.splice(index, 1);
+
+		if ($scope.expenses.length === 0) {
+			$scope.expensesComplete = false;
+		}
 	};
 });

@@ -10,6 +10,7 @@
 angular.module('MobileCRMApp')
 .controller('InvoiceCtrl', function ($scope, $rootScope, $location, toaster, User, invoice, statusList, Item, ServiceOrder, WorkOrder, dialogs, Invoice, Company, companies) {
 	$scope.invoice = invoice;
+	console.log(invoice)
 	$scope.items = [];
 	$scope.readOnly = $rootScope.userData.role._id != 1;
 	if($rootScope.userData.role._id != 1){
@@ -315,10 +316,15 @@ angular.module('MobileCRMApp')
 	};
 
 	$scope.showExpenses = function(){
-		var dialog = dialogs.create('views/expenses.html', 'ExpensesCtrl', { expenses: $scope.invoice.expenses });
+		var dialog = dialogs.create('views/expenses.html', 'ExpensesCtrl', {expenses: $scope.invoice.expenses, 
+																			expensesComplete:$scope.invoice.expensesComplete,
+																			technician:$scope.invoice.technician});
 		dialog.result
 		.then(function (res) {
-			$scope.invoice.expenses = angular.copy(res);
+			console.log(res)
+			$scope.invoice.expenses = angular.copy(res.expenses);
+			$scope.invoice.expensesComplete = angular.copy(res.expensesComplete);
+			$scope.invoice.technician = angular.copy(res.technician);
 		});
 	};
 	if(invoice.client){
