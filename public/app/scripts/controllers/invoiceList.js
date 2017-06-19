@@ -52,7 +52,7 @@ angular.module('MobileCRMApp')
 			name : 'total',
 			type : 'currency'
 		}, {
-			title : 'Expenses',
+			title : 'Expense',
 			name : 'expensesComplete',
 			type : 'checkbox'
 		}
