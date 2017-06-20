@@ -52,18 +52,18 @@ angular.module('MobileCRMApp')
 			name : 'total',
 			type : 'currency'
 		}, {
-			title : 'Expense',
+			title : 'Expenses',
 			name : 'expensesComplete',
 			type : 'checkbox'
 		}
 	];
-	if($rootScope.userData.role._id == 1){
-		$scope.fields.push({
-			title : 'Total Amount',
-			name : 'total',
-			type : 'currency'
-		});
-	}
+	// if($rootScope.userData.role._id == 1){
+	// 	$scope.fields.push({
+	// 		title : 'Total Amount',
+	// 		name : 'total',
+	// 		type : 'currency'
+	// 	});
+	// }
 	$scope.search = [
 		'_id',
 		'createdDate',
