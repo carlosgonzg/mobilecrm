@@ -12,8 +12,8 @@ angular.module('MobileCRMApp')
 	$scope.serviceOrder = serviceOrder;
 	$scope.items = [];
 	$scope.params = {};
-	$scope.readOnly = $rootScope.userData.role._id != 1 && $rootScope.userData.role._id != 5;
-	if($rootScope.userData.role._id != 1 && $rootScope.userData.role._id != 5){
+	$scope.readOnly = $rootScope.userData.role._id != 1;
+	if($rootScope.userData.role._id != 1){
 		$scope.serviceOrder.client = new User($rootScope.userData);
 	}
 	$scope.listStatus = statusList;
@@ -75,7 +75,7 @@ angular.module('MobileCRMApp')
 
 	$scope.clientChanged = function(client){ 
 		if(client && client.company)
-			$scope.wsFilterItem =  $rootScope.userData.role._id != 1 && $rootScope.userData.role._id != 5 ? { 'companies._id': $rootScope.userData.company._id } : { 'companies._id': client.company._id };
+			$scope.wsFilterItem =  $rootScope.userData.role._id != 1 ? { 'companies._id': $rootScope.userData.company._id } : { 'companies._id': client.company._id };
 		/*
 		$scope.items = [];
 		for(var i = 0; i < items.data.length; i++){
@@ -115,7 +115,7 @@ angular.module('MobileCRMApp')
 	};
 
 	$scope.changed = function(field){
-		if($scope.serviceOrder._id && $rootScope.userData.role._id != 1 && $rootScope.userData.role._id != 5){
+		if($scope.serviceOrder._id && $rootScope.userData.role._id != 1){
 			var isHere = false;
 			$scope.serviceOrder.fieldsChanged = $scope.serviceOrder.fieldsChanged || [];
 			for(var i = 0; i < $scope.serviceOrder.fieldsChanged.length; i++){
@@ -135,7 +135,7 @@ angular.module('MobileCRMApp')
 	};
 
 	$scope.isChanged = function(field){
-		if($scope.serviceOrder._id && $rootScope.userData.role._id == 1 && $rootScope.userData.role._id == 5){
+		if($scope.serviceOrder._id && $rootScope.userData.role._id == 1){
 			var isHere = false;
 			$scope.serviceOrder.fieldsChanged = $scope.serviceOrder.fieldsChanged || [];
 			for(var i = 0; i < $scope.serviceOrder.fieldsChanged.length; i++){
@@ -150,7 +150,7 @@ angular.module('MobileCRMApp')
 	};
 
 	$scope.isDisabled = function(){
-		return $rootScope.userData.role._id != 1 && $rootScope.userData.role._id != 5 && $scope.serviceOrder.status._id == 3;
+		return $rootScope.userData.role._id != 1 && $scope.serviceOrder.status._id == 3 || $scope.userData.role._id == 5;
 	};
 
 	$scope.uploadFiles = function(files){
