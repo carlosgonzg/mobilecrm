@@ -322,7 +322,7 @@
 			<div class="col-sm-4 pull-left">
 				<div class="form-group">
 					<label for="comment">Issue</label>
-					<textarea id="comment" ng-model="serviceOrder.issue" class="form-control">
+					<textarea id="comment" ng-model="serviceOrder.issue" class="form-control" ng-disabled="userData.role._id == 5">
 					</textarea> 
 				</div>
 				<div class="form-group">
