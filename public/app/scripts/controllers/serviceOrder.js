@@ -75,7 +75,7 @@ angular.module('MobileCRMApp')
 
 	$scope.clientChanged = function(client){ 
 		if(client && client.company)
-			$scope.wsFilterItem =  $rootScope.userData.role._id != 1 ? { 'companies._id': $rootScope.userData.company._id } : { 'companies._id': client.company._id };
+			$scope.wsFilterItem =  $rootScope.userData.role._id != 1 && $rootScope.userData.role._id != 5 ? { 'companies._id': $rootScope.userData.company._id } : { 'companies._id': client.company._id };
 		/*
 		$scope.items = [];
 		for(var i = 0; i < items.data.length; i++){

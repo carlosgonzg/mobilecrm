@@ -30,7 +30,7 @@ var a;
 		for(var i = 0; i < this.items.length; i++){
 			this.items[i] = new Item(this.items[i]);
 		}
-		if($rootScope.userData.role._id != 1){
+		if($rootScope.userData.role._id != 1 && $rootScope.userData.role._id != 5){
 			this.invoiceNumber = 'Pending Invoice';
 		}
 	}
