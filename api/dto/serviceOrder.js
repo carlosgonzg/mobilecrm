@@ -167,6 +167,7 @@ ServiceOrder.prototype.update = function (query, serviceOrder, user, mail) {
 	var d = q.defer();
 	var _this = this;
 	var total = 0;
+
 	//sumo el total
 	for (var i = 0; i < serviceOrder.items.length; i++) {
 		total += serviceOrder.items[i].quantity * serviceOrder.items[i].price;
@@ -177,9 +178,24 @@ ServiceOrder.prototype.update = function (query, serviceOrder, user, mail) {
 	.then(function (photos) {
 		serviceOrder.photos = photos;
 		delete serviceOrder.sendMail;
-		if([5,7].indexOf(serviceOrder.status._id) != -1){
-			_this.crudInvoice.update({ sor: serviceOrder.sor }, { invoiceNumber: "No Invoice"}, true);
-		}
+
+			var setObj = {};
+			if([5,7].indexOf(serviceOrder.status._id) != -1) {
+				setObj = { invoiceNumber: "No Invoice"};
+			} 
+			else {
+				setObj = { invoiceNumber: serviceOrder.invoiceNumber};
+			} 
+
+			if(serviceOrder.pono)
+				setObj.pono = serviceOrder.pono;
+			if(serviceOrder.unitno)
+				setObj.unitno = serviceOrder.unitno;
+			if(serviceOrder.items.length>0)
+				setObj.items = serviceOrder.items;
+
+			_this.crudInvoice.update({ sor: serviceOrder.sor }, setObj, true);
+	
 		return _this.crud.update(query, serviceOrder);
 	})
 	.then(function (obj) {

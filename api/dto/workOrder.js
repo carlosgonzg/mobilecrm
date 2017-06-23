@@ -176,13 +176,28 @@ WorkOrder.prototype.update = function (query, workOrder, user, mail) {
 	_this.savePhotos(workOrder)
 	.then(function (photos) {
 		workOrder.photos = photos;
+
 		return _this.crud.update(query, workOrder);
 	})
 	.then(function (obj) {
 		var mails = [ ];
-		if([5,7].indexOf(workOrder.status._id) != -1){
-			_this.crudInvoice.update({ sor: workOrder.wor }, { invoiceNumber: "No Invoice"}, true);
-		}
+			var setObj = {};
+			if([5,7].indexOf(workOrder.status._id) != -1) {
+				setObj = { invoiceNumber: "No Invoice"};
+			} 
+			else {
+				setObj = { invoiceNumber: workOrder.invoiceNumber};
+			} 
+
+			if(workOrder.pono)
+				setObj.pono = workOrder.pono;
+			if(workOrder.unitno)
+				setObj.unitno = workOrder.unitno;
+			if(workOrder.items.length>0)
+				setObj.items = workOrder.items;
+					
+			_this.crudInvoice.update({ wor: workOrder.wor }, setObj, true);
+
 		_this.sendWorkOrder(workOrder._id,mails , user, mail);
 		d.resolve(obj);
 	})

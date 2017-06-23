@@ -139,8 +139,14 @@ Invoice.prototype.update = function (query, invoice, user, mail) {
 	_this.crud.update(query, invoice, invoice.invoiceNumber == 'Pending Invoice')
 	.then(function (obj) {
 		var setObj = { invoiceNumber: invoice.invoiceNumber };
+		
 		if(invoice.pono)
 			setObj.pono = invoice.pono;
+		if(invoice.unitno)
+			setObj.unitno = invoice.unitno;
+		if(invoice.items.length>0)
+			setObj.items = invoice.items;
+		
 		if(invoice.sor){
 			_this.crudServiceOrder.update({ sor: invoice.sor }, setObj, true);
 		}
