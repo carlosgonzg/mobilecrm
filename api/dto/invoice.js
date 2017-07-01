@@ -146,6 +146,8 @@ Invoice.prototype.update = function (query, invoice, user, mail) {
 			setObj.unitno = invoice.unitno;
 		if(invoice.items.length>0)
 			setObj.items = invoice.items;
+		if(invoice.total)
+			setObj.total = invoice.total;
 		
 		if(invoice.sor){
 			_this.crudServiceOrder.update({ sor: invoice.sor }, setObj, true);

@@ -195,6 +195,8 @@ WorkOrder.prototype.update = function (query, workOrder, user, mail) {
 				setObj.unitno = workOrder.unitno;
 			if(workOrder.items.length>0)
 				setObj.items = workOrder.items;
+			if(workOrder.total)
+				setObj.total = workOrder.total;
 					
 			_this.crudInvoice.update({ wor: workOrder.wor }, setObj, true);
 

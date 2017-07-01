@@ -193,6 +193,8 @@ ServiceOrder.prototype.update = function (query, serviceOrder, user, mail) {
 				setObj.unitno = serviceOrder.unitno;
 			if(serviceOrder.items.length>0)
 				setObj.items = serviceOrder.items;
+			if(serviceOrder.total)
+				setObj.total = serviceOrder.total;
 
 			_this.crudInvoice.update({ sor: serviceOrder.sor }, setObj, true);
 	
