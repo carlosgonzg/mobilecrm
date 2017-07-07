@@ -13,6 +13,7 @@ angular.module('MobileCRMApp')
 	$scope.roles = roles.data || [];
 	$scope.companies = companies.data || [];
 	$scope.branches = [];
+	$scope.categories = ["1st Option", "2nd Option"];
 	if($rootScope.userData.role._id != 1 && user._id != $rootScope.userData._id){
 		$location.path('/noaccess');
 	}

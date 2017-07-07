@@ -82,6 +82,14 @@
 				<input type="text" class="form-control" ng-model="user.specialty" id="specialty" >
 			</div>
 		</div>
+		<div class="col-xs-12 col-md-6" ng-if="user.role._id == 4">
+			<div class="form-group">
+				<label for="category">Category:</label>
+				<select class="form-control" ng-model="user.category" id="category">
+					<option ng-repeat="category in categories">{{category}}</option>
+				</select>
+			</div>
+		</div>
 		<div class="col-xs-12 col-md-12" ng-if="user.role._id == 4">
 			<div class="form-group">
 				<label for="name">Phone (Mobile)</label>
