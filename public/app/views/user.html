@@ -76,5 +76,21 @@
 				<input type="number" class="form-control" ng-model="user.techId" id="techId" min="1">
 			</div>
 		</div>
+		<div class="col-xs-12 col-md-6" ng-if="user.role._id == 4 && user.company">
+			<div class="form-group">
+				<label for="techId">Specialty</label>
+				<input type="text" class="form-control" ng-model="user.specialty" id="specialty" >
+			</div>
+		</div>
+		<div class="col-xs-12 col-md-12" ng-if="user.role._id == 4 && user.company">
+			<div class="form-group">
+				<label for="name">Phone (Mobile)</label>
+				<phone-model hide-labels="true" ng-model="user.phone"></phone-model>
+			</div>
+		</div>
+		<div class="col-xs-12 col-md-12" ng-if="user.role._id == 4 && user.company">
+			<label for="address">Address</label>
+			<address-model id="address" ng-model="user.address" ></address-model>
+		</div>
 	</form>
 </div>
