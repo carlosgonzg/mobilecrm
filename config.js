@@ -10,9 +10,9 @@ var config = {
 	},
 	production : {
 		APP_PORT : process.env.PORT || 80,
-		DB_URL: 'mmini:MobileMini2017@ds139023-a0.mlab.com:39023/heroku_74tjnnf6',
+		DB_URL: 'mmini:MobileMini2017*@ds139023-a0.mlab.com:39023/heroku_74tjnnf6',
 		DB_USER: 'mmini',
-		DB_PASS: 'MobileMini2017',
+		DB_PASS: 'MobileMini2017*',
 		SERVER_URL: 'https://mobileonecrm.herokuapp.com',
 		MAIL_USR: 'info@mobileonecontainers.com',
 		MAIL_PASS: '*info1234',
