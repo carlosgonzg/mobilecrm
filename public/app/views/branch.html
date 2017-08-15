@@ -4,7 +4,7 @@
 			<i class="fa fa-lg fa-list"></i> <span> Branch</span>
 		</h1>
 		<div class="btn-group pull-right" style="margin-top: 20px;" role="group" aria-label="...">
-			<button type="submit" form="userForm" class="btn btn-primary update" ng-click="save()"><i class="fa fa-save"></i>&nbsp;<span>Save</span></button>
+			<button type="submit" form="userForm" class="btn btn-primary update" ng-click="createCSCoordinatorString()"><i class="fa fa-save"></i>&nbsp;<span>Save</span></button>
 			<back-button></back-button>
 		</div>
 		<hr />
@@ -113,6 +113,34 @@
 				<label for="name">O.M. Phone (Ext)</label>
 				<phone-model hide-labels="true" ng-model="branch.dispatcher.extension"></phone-model>
 			</div>
+		</div>
+		<div class="col-xs-12 col-md-12">
+			<table class="table table-striped table-hover" width="100%" style="margin: 0 auto">
+				<thead>
+					<tr>
+						<th width="90%">
+							Customer Service Coordinator
+						</th>
+						<th width="10%">
+							<button class="btn btn-sm btn-primary pull-right" ng-click="add()">
+								<i class="fa fa-plus"></i> Add another
+							</button>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="coord in branch.custServiceCoordinators track by $index">
+						<td>
+							<input type="text" class="form-control" ng-model="coord.name" />
+						</td>
+						<td>
+							<button class="btn btn-sm btn-danger" ng-click="remove($index)">
+								<i class="fa fa-times"></i>
+							</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
 		</div>
 		<div class="col-xs-12">
 			<h2 class="pull-left"><i class="fa fa-map"></i>&nbsp;Addresses</h2>

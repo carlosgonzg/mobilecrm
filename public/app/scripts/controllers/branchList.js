@@ -38,6 +38,11 @@ angular.module('MobileCRMApp')
 			title: 'Dispatcher', 
 			name: 'dispatcher.name', 
 			type: 'text'
+		},
+		{
+			title: 'Customer Service Coord.', 
+			name: 'CSCoordinatorString', 
+			type: 'text'
 		}
 	];
 	$scope.search = [
@@ -48,7 +53,8 @@ angular.module('MobileCRMApp')
 		'officeCoordinator',
 		'branchManager',
 		'officeManager',
-		'dispatcher'
+		'dispatcher',
+		'CSCoordinatorString'
 	];
 
 	$scope.createNew = function () {
