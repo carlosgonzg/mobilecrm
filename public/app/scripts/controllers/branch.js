@@ -30,19 +30,23 @@ angular.module('MobileCRMApp')
 
 	$scope.createCSCoordinatorString = function () {
 		$scope.branch.CSCoordinatorString = null;
-		for (var i=0; i<$scope.branch.custServiceCoordinators.length;i++) {
-			if (i>0) {
-				$scope.branch.CSCoordinatorString = $scope.branch.CSCoordinatorString + ", " + $scope.branch.custServiceCoordinators[i].name;
-			} else {
-				$scope.branch.CSCoordinatorString = $scope.branch.custServiceCoordinators[i].name;
-			}
-			console.log(i)
+		if ($scope.branch.custServiceCoordinators.length>0) {
+			for (var i=0; i<$scope.branch.custServiceCoordinators.length;i++) {
+				if (i>0) {
+					$scope.branch.CSCoordinatorString = $scope.branch.CSCoordinatorString + ", " + $scope.branch.custServiceCoordinators[i].name;
+				} else {
+					$scope.branch.CSCoordinatorString = $scope.branch.custServiceCoordinators[i].name;
+				}
+				console.log(i)
 
-			if (i === $scope.branch.custServiceCoordinators.length-1) {
-				$scope.save();
-			}
-			
-		} 
+				if (i === $scope.branch.custServiceCoordinators.length-1) {
+					$scope.save();
+				}
+				
+			} 
+		} else {
+			$scope.save();
+		}
 	}
 
 	$scope.remove = function(index){
