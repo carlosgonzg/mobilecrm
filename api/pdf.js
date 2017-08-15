@@ -28,7 +28,6 @@ var getTotal = function(invoices, year, month){
 
 var createInvoiceBody = function(obj, company, branch){
 	var body = fs.readFileSync(__dirname + '/invoice.html', 'utf8').toString();
-	console.log(obj.client.branch.addresses[0].address1)
 	//replacement of data
 	body = body.replace(/<createdDate>/g, moment(obj.date).format('MM/DD/YYYY'));
 	body = body.replace(/<dueDate>/g, moment(obj.date).add(30,'days').format('MM/DD/YYYY'));
@@ -41,7 +40,7 @@ var createInvoiceBody = function(obj, company, branch){
 	//Cliente
 	body = body.replace(/<clientName>/g, obj.client.entity.fullName || '');
 	// body = body.replace(/<clientAddress>/g, obj.sor ? obj.siteAddress.address1 : company.address.address1 || '');
-	body = body.replace(/<clientAddress>/g, obj.sor ? obj.siteAddress.address1 : obj.client.branch.addresses[0].address1 || '');
+	body = body.replace(/<clientAddress>/g, obj.sor ? obj.siteAddress.address1 :  obj.client.branch.addresses.length > 0 ? obj.client.branch.addresses[0].address1 :  company.address.address1 || '');
 	body = body.replace(/<clientState>/g, obj.sor ? (obj.siteAddress.state.description + ' ' + obj.siteAddress.zipcode || '') : (company.address.state.description + ' ' + company.address.zipcode || ''));
 	body = body.replace(/<clientPhone>/g, obj.phone.number || '');
 	body = body.replace(/<clientMail>/g, obj.client.account.email || '');
