@@ -149,6 +149,7 @@ ServiceOrder.prototype.insert = function (serviceOrder, user, mail) {
 		return _this.crud.update({ _id: serviceOrder._id }, serviceOrder)
 	})
 	.then(function (photos) {
+
 		if(sendMail || user.role._id == 1)
 			_this.sendServiceOrder(serviceOrder._id, user, mail);
 		d.resolve(serviceOrder);
@@ -201,6 +202,7 @@ ServiceOrder.prototype.update = function (query, serviceOrder, user, mail) {
 		return _this.crud.update(query, serviceOrder);
 	})
 	.then(function (obj) {
+
 		if(sendMail || user.role._id == 1)
 			_this.sendServiceOrderUpdate(query._id, user, mail);
 		d.resolve(obj);
@@ -264,12 +266,13 @@ ServiceOrder.prototype.sendServiceOrderUpdate = function(id, user, mail){
 			emails.push(users.data[i].account.email);
 		}
 		emails = _.uniq(emails);
-		if(user.role._id != 1){
+		console.log()
+		//if(user.role._id != 1){
 			return mail.sendServiceOrderUpdate(serviceOrder, emails, user);
-		}
-		else{
-			return q.when();
-		}
+		//}
+		//else{
+		//	return q.when();
+		//}
 	})
 	.then(function(){
 		d.resolve(true);

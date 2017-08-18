@@ -41,7 +41,9 @@ var createInvoiceBody = function(obj, company, branch){
 	body = body.replace(/<clientName>/g, obj.client.entity.fullName || '');
 	// body = body.replace(/<clientAddress>/g, obj.sor ? obj.siteAddress.address1 : company.address.address1 || '');
 	body = body.replace(/<clientAddress>/g, obj.sor ? obj.siteAddress.address1 :  obj.client.branch.addresses.length > 0 ? obj.client.branch.addresses[0].address1 :  company.address.address1 || '');
-	body = body.replace(/<clientState>/g, obj.sor ? (obj.siteAddress.state.description + ' ' + obj.siteAddress.zipcode || '') : (company.address.state.description + ' ' + company.address.zipcode || ''));
+	// body = body.replace(/<clientState>/g, obj.sor ? (obj.siteAddress.state.description + ' ' + obj.siteAddress.zipcode || '') : (company.address.state.description + ' ' + company.address.zipcode || ''));
+	
+	body = body.replace(/<clientState>/g, obj.sor ? (obj.siteAddress.city.description + ', ' + obj.siteAddress.state.id + ', ' + obj.siteAddress.zipcode || '') : obj.client.branch.addresses.length > 0 ? obj.client.branch.addresses[0].city.description + ', ' +obj.client.branch.addresses[0].state.id + ', ' + obj.client.branch.addresses[0].zipcode : (company.address.city.description + ', ' +company.address.state.id + ', ' + company.address.zipcode || ''));
 	body = body.replace(/<clientPhone>/g, obj.phone.number || '');
 	body = body.replace(/<clientMail>/g, obj.client.account.email || '');
 	body = body.replace(/<comment>/g, obj.comment || '');

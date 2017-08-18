@@ -114,7 +114,42 @@
 				<phone-model hide-labels="true" ng-model="branch.dispatcher.extension"></phone-model>
 			</div>
 		</div>
-		<div class="col-xs-12 col-md-12">
+		<!-- Customer Service Coordinator -->
+
+		<div ng-repeat="coord in branch.custServiceCoordinators track by $index">
+			<div class="col-xs-12 col-md-4">
+				<div class="form-group">
+					<label for="dispatcher">Customer Service Coordinator<span ng-if="$index>0"> #{{$index+1}}</span></label>
+					<input type="text" class="form-control" ng-model="coord.name" id="CSCoordinator" placeholder="Customer Service Coordinator">
+				</div>
+			</div>
+			<div class="col-xs-12 col-md-4">
+				<div class="form-group">
+					<label for="name">O.M. Phone (Mobile)</label>
+					<phone-model hide-labels="true" ng-model="coord.phone"></phone-model>
+				</div>
+			</div>
+			<div class="col-xs-12 col-md-3">
+				<div class="form-group">
+					<label for="name">O.M. Phone (Ext)</label>
+					<phone-model hide-labels="true" ng-model="coord.ext"></phone-model>
+				</div>
+			</div>
+			<div class="col-xs-12 col-md-1" style="padding-top:10px">
+				<!-- <button class="btn btn-sm btn-danger" ng-click="remove($index)"> -->
+					<i class="fa fa-times" ng-click="remove($index)" ng-if="branch.custServiceCoordinators.length>1"></i>
+				<!-- </button> -->
+			</div>
+		</div>
+
+		<button class="btn btn-sm btn-primary pull-left" ng-click="add()">
+			<i class="fa fa-plus"></i> Add another CS Coordinator
+		</button>
+
+		
+
+
+		<!-- <div class="col-xs-12 col-md-12">
 			<table class="table table-striped table-hover" width="100%" style="margin: 0 auto">
 				<thead>
 					<tr>
@@ -141,7 +176,7 @@
 					</tr>
 				</tbody>
 			</table>
-		</div>
+		</div> -->
 		<div class="col-xs-12">
 			<h2 class="pull-left"><i class="fa fa-map"></i>&nbsp;Addresses</h2>
 			<button type="button" class="btn btn-sm btn-primary pull-right" style="margin-top:20px" ng-click="addAddress()"><i class="fa fa-plus"></i></button>
