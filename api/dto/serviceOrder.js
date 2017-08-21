@@ -203,7 +203,7 @@ ServiceOrder.prototype.update = function (query, serviceOrder, user, mail) {
 	})
 	.then(function (obj) {
 
-		if(sendMail || user.role._id == 1)
+		if(sendMail /*|| user.role._id == 1*/)
 			_this.sendServiceOrderUpdate(query._id, user, mail);
 		d.resolve(obj);
 	})
@@ -266,8 +266,8 @@ ServiceOrder.prototype.sendServiceOrderUpdate = function(id, user, mail){
 			emails.push(users.data[i].account.email);
 		}
 		emails = _.uniq(emails);
-		console.log()
-		//if(user.role._id != 1){
+		// //if(user.role._id != 1){
+		// 	console.log("SERVICE ORDER UPDATE!!!", emails, serviceOrder)
 			return mail.sendServiceOrderUpdate(serviceOrder, emails, user);
 		//}
 		//else{
