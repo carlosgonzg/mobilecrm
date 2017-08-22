@@ -36,7 +36,7 @@ var createInvoiceBody = function(obj, company, branch){
 
 	body = body.replace(/<companyName>/g, company.entity.name || '');
 	body = body.replace(/<companyAddress>/g, company.address.address1 || '');
-	body = body.replace(/<companyState>/g, (company.address.state.description + ' ' + company.address.zipcode) || '');
+	body = body.replace(/<companyState>/g, (company.address.state.description ? (company.address.state.description + ' ' + company.address.zipcode) || '' : '')) ;
 	//Cliente
 	body = body.replace(/<clientName>/g, obj.client.entity.fullName || '');
 	// body = body.replace(/<clientAddress>/g, obj.sor ? obj.siteAddress.address1 : company.address.address1 || '');
@@ -194,7 +194,7 @@ var createWorkOrderBody = function(workOrder, company, showPrice){
 	//Company
 	body = body.replace(/<companyName>/g, company.entity.name || '');
 	body = body.replace(/<companyAddress>/g, company.address.address1 || '');
-	body = body.replace(/<companyState>/g, (company.address.state.description || '') + ' ' + (company.address.zipcode || ''));
+	body = body.replace(/<companyState>/g, company.address.state.description ? (company.address.state.description || '') + ' ' + (company.address.zipcode || '') : '');
 
 	//Cliente
 	body = body.replace(/<clientName>/g, workOrder.client.entity.fullName || '');
