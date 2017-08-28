@@ -154,6 +154,14 @@
 						</div>
 					</div>
 				</div>
+				<div class="col-sm-6">
+					<div class="col-xs-12 pull-right">
+						<div class="form-group">
+							<label for="pono">Unit Size</label>
+							<input type="text" class="form-control" ng-model="invoice.unitSize" ng-class="isChanged('unitSize')" ng-change="changed('unitSize')" ng-disabled="isDisabled()">
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>

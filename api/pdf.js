@@ -198,8 +198,8 @@ var createWorkOrderBody = function(workOrder, company, showPrice){
 
 	//Cliente
 	body = body.replace(/<clientName>/g, workOrder.client.entity.fullName || '');
-	body = body.replace(/<clientAddress>/g, company.address.address1 || '');
-	body = body.replace(/<clientState>/g, (company.address.state.description || '') + ' ' + (company.address.zipcode || ''));
+	body = body.replace(/<clientAddress>/g, workOrder.client.branch.addresses.length > 0 ? workOrder.client.branch.addresses[0].address1 :  company.address.address1 || '');
+	body = body.replace(/<clientState>/g, workOrder.client.branch.addresses.length > 0 ? workOrder.client.branch.addresses[0].city.description + ', ' +workOrder.client.branch.addresses[0].state.id + ', ' + workOrder.client.branch.addresses[0].zipcode : (company.address.state.description || '') + ' ' + (company.address.zipcode || ''));
 	body = body.replace(/<clientMail>/g, workOrder.client.account.email || '');
 
 	body = body.replace(/<comment>/g, workOrder.comment || '');
