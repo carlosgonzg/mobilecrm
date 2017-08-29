@@ -275,8 +275,7 @@ var sendInvoice = function (invoice, mails, cc, file, fileName) {
 		}
 		subject += ' – MobileOne Restoration LLC' ;
 		mails = _.uniq(mails);
-		// sendMail(mails.join(', '), subject, body, true, attachments, cc.join(', '), null, 'mf@mobileonecontainers.com')
-		sendMail('j_deveaux184@hotmail.com', subject, body, true, attachments, cc.join(', '), null, 'mf@mobileonecontainers.com')
+		sendMail(mails.join(', '), subject, body, true, attachments, cc.join(', '), null, 'mf@mobileonecontainers.com')
 		.then(function (response) {
 			console.log('DONE Sending Mail: ', response)
 			deferred.resolve(response);
