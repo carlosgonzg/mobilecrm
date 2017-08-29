@@ -206,7 +206,7 @@ var createWorkOrderBody = function(workOrder, company, showPrice){
 	body = body.replace(/<pono>/g, workOrder.pono || '');
 	body = body.replace(/<unitno>/g, workOrder.unitno || '');
 	body = body.replace(/<isono>/g, workOrder.isono || '');
-	body = body.replace(/<clientCity>/g, company.address.city.description || '');
+	body = body.replace(/<clientCity>/g, workOrder.client.branch.addresses.length > 0 ? workOrder.client.branch.addresses[0].city.description : company.address.city.description || '');
 
 	//Inserting table of items
 	var total = 0;
