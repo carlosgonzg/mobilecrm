@@ -50,7 +50,7 @@ var setAttachment = function (url, fileName) {
  	return thisAttachs;
 }
 
-var sendMail = function (to, subject, body, isHtmlBody, attachments, cc, cco, replyTo) {
+var sendMail = function (to, subject, body, isHtmlBody, attached, cc, cco, replyTo) {
 	var deferred = q.defer();
 	mailOptions.to = to;
 	mailOptions.cc = cc ? cc : '';
@@ -62,8 +62,9 @@ var sendMail = function (to, subject, body, isHtmlBody, attachments, cc, cco, re
 	} else {
 		mailOptions.text = body;
 	}
-	if (attachments)
-		mailOptions.attachments = attachments;
+	if (attached)
+		mailOptions.attachments = attached;
+
 	smtpTransport.sendMail(mailOptions, function (error, response) {
 		if (error) {
 			console.log(error);
@@ -265,16 +266,17 @@ var sendInvoice = function (invoice, mails, cc, file, fileName) {
 		body = body.replace('<confirm>', !invoice.pono ? '' : 'Please confirm as received.<br/><br/>I wait for your comment.<br/>');
 		
 		var attachments = setAttachment(file, fileName)
-		var subject = 'Invoice: ' + invoice.invoiceNumber;
+		var subject = (invoice.client.company ? invoice.client.company.entity.name + ' - ' : '') + 'Invoice: ' + invoice.invoiceNumber;
 		if(!invoice.pono){
 			subject += ' Without po number';
 		}
 		else {
 			subject += '  with po number ' + invoice.pono;
 		}
-		subject += ' – MobileOne Restoration LLC';
+		subject += ' – MobileOne Restoration LLC' ;
 		mails = _.uniq(mails);
-		sendMail(mails.join(', '), subject, body, true, attachments, cc.join(', '), null, 'mf@mobileonecontainers.com')
+		// sendMail(mails.join(', '), subject, body, true, attachments, cc.join(', '), null, 'mf@mobileonecontainers.com')
+		sendMail('j_deveaux184@hotmail.com', subject, body, true, attachments, cc.join(', '), null, 'mf@mobileonecontainers.com')
 		.then(function (response) {
 			console.log('DONE Sending Mail: ', response)
 			deferred.resolve(response);
@@ -300,7 +302,7 @@ var sendInvoiceUpdate = function (invoice, mails, user, file, fileName) {
 		body = body.replace('<clientName>', invoice.client.entity.fullName);
 		body = body.replace('<invoiceNumber>', invoice.invoiceNumber);
 		body = body.replace('<pono>', invoice.pono ? 'With PO Number: ' + invoice.pono : 'Without PO Number. Please provide PO Number for this Invoice.');
-		var subject = 'Invoice: ' + invoice.invoiceNumber;
+		var subject = (invoice.client.company ? invoice.client.company.entity.name + ' - ' : '') + 'Invoice: ' + invoice.invoiceNumber;
 		if(!invoice.pono){
 			subject += ' Without po number';
 		}
