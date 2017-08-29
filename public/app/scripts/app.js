@@ -227,6 +227,27 @@ angular
 			}
 		}
 	})
+	.when('/reportInvoice', {
+		templateUrl : 'views/reportInvoice.html',
+		controller : 'ReportInvoiceCtrl',
+		resolve:{
+			clients : function (User) {
+				return new User().filter({ 'role._id': { $ne: 1} });
+			},
+			countries : function (Country) {
+				return new Country().find();
+			},
+			statusList: function(List){
+				return List.get('status');
+			},
+			items: function(Item){
+				return new Item().filter({});
+			},
+			companyList: function(Company){
+				return new Company().filter({});
+			}
+		}
+	})
 	.when('/companyList', {
 		templateUrl : 'views/companyList.html',
 		controller : 'CompanyListCtrl'

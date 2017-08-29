@@ -77,7 +77,7 @@ angular.module('MobileCRMApp')
 		if(this.client && this.client.company){
 			taxes = this.client.company.taxes || 0;
 		}
-		
+		console.log(total, taxes)
 		return total * taxes;
 	};
 	
@@ -253,6 +253,14 @@ angular.module('MobileCRMApp')
 		});
 		return d.promise;
 	};
+
+	Invoice.prototype.showPicture = function(index){
+		var dialog = dialogs.create('views/photo.html', 'PhotoCtrl', { photos: this.photos, index: (index || 0) });
+		dialog.result
+		.then(function (res) {
+		}, function (res) {});
+	};
+	
 	Invoice.prototype.getExpenses = function(){
 		var d = $q.defer();
 		var invoice = this;
