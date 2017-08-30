@@ -169,7 +169,16 @@ var createReport = function(objs, whoIs, user){
 	excel.worksheet.addRow(['', '', '', '', '', '', '', '', '', '', '']);
 	excel.worksheet.mergeCells('A3:K3');
 	//table header
-	excel.worksheet.addRow(['Created Date', 'Completed Date', (whoIs == 'ServiceOrder' ? 'Service' : 'Work') + ' Order #', 'Invoice', 'Customer', 'Status', 'Unit #', 'Responsible for Charges', 'Materials from the Yard', 'Parts from the Yard', 'Issue / Comment', 'Total Amount']);
+	var fieldsArray = [];
+
+	if (whoIs != "Invoice") {
+		fieldsArray = ['Created Date', 'Completed Date', (whoIs == 'ServiceOrder' ? 'Service' : 'Work') + ' Order #', 'Invoice', 'Customer', 'Status', 'Unit #', 'Responsible for Charges', 'Materials from the Yard', 'Parts from the Yard', 'Issue / Comment', 'Total Amount'];
+		
+	} else {
+		fieldsArray = ['Created Date', 'Completed Date', 'Invoice', 'Service Order #','Work Order #', 'Customer', 'Status', 'Unit #', 'Responsible for Charges', 'Materials from the Yard', 'Parts from the Yard', 'Issue / Comment', 'Total Amount'];
+	}
+
+	excel.worksheet.addRow(fieldsArray);
 	excel.worksheet.lastRow.font = boldFont;
 	//Now the data
 	var total = 0;
@@ -180,7 +189,16 @@ var createReport = function(objs, whoIs, user){
 			subTotal += obj.items[j].price * obj.items[j].quantity;
 		}
 		total += subTotal;
-		excel.worksheet.addRow([moment(obj.date).format('MM-DD-YYYY'), moment(obj.originalShipDate).format('MM-DD-YYYY'), whoIs == 'ServiceOrder' ? obj.sor : obj.wor, obj.invoiceNumber, obj.client.entity.fullName, obj.status.description, obj.unitno, obj.clientResponsibleCharges ? 'x' : '', obj.partsFromTheYard ? 'x' : '', obj.yardComment || '', obj.comment || '', subTotal]);
+
+		var valueArray = [];
+
+		if (whoIs != "Invoice") {
+			valueArray = [moment(obj.date).format('MM-DD-YYYY'), moment(obj.originalShipDate).format('MM-DD-YYYY'), whoIs == 'ServiceOrder' ? obj.sor : obj.wor, obj.invoiceNumber, obj.client.entity.fullName, obj.status.description, obj.unitno, obj.clientResponsibleCharges ? 'x' : '', obj.partsFromTheYard ? 'x' : '', obj.yardComment || '', obj.comment || '', subTotal];
+		} else {
+			valueArray = [moment(obj.date).format('MM-DD-YYYY'), moment(obj.originalShipDate).format('MM-DD-YYYY'), obj.invoiceNumber, obj.sor, obj.wor,  obj.client.entity.fullName, obj.status.description, obj.unitno, obj.clientResponsibleCharges ? 'x' : '', obj.partsFromTheYard ? 'x' : '', obj.yardComment || '', obj.comment || '', subTotal];
+		}
+
+		excel.worksheet.addRow(valueArray);
 		excel.worksheet.lastRow.font = normalFont;
 		excel.worksheet.getCell('L' + (i + 5).toString()).numFmt = '$ #,###,###,##0.00';	
 	}
