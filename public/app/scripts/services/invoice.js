@@ -260,7 +260,7 @@ angular.module('MobileCRMApp')
 		.then(function (res) {
 		}, function (res) {});
 	};
-	
+
 	Invoice.prototype.getExpenses = function(){
 		var d = $q.defer();
 		var invoice = this;
@@ -273,5 +273,38 @@ angular.module('MobileCRMApp')
 		});
 		return d.promise;
 	};
+
+	Invoice.prototype.getReport = function(query){
+		var d = $q.defer();
+		var _this = this;
+		$http({
+			url: this.baseApiPath + '/report',
+			method: "POST",
+			data: { query: query },
+			headers: {
+			'Content-type': 'application/json'
+			},
+			responseType: 'arraybuffer'
+		})
+		.success(function (data, status, headers, config) {
+			var json = JSON.stringify(data);
+			var blob = new Blob([data], {
+				type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+			});
+			var url = window.URL.createObjectURL(blob);
+			
+			a.href = url;
+			a.download =  'report.xlsx';
+			a.click();
+			window.URL.revokeObjectURL(url);
+			d.resolve(url);
+	    })
+	    .error(function (data, status, headers, config) {
+	    	toaster.error('There was an error exporting the file, please try again')
+	        d.reject(data);
+	    });
+	    return d.promise;
+	};
+
 	return Invoice;
 });

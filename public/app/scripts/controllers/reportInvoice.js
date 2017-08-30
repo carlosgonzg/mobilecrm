@@ -40,6 +40,16 @@ angular.module('MobileCRMApp')
 		description: 'All'
 	});
 
+	for (var i=0; i<statusList.length; i++) {
+		if (statusList[i].description == "Completed") {
+			statusList[i].description = "Completed (Pending to Pay)";
+		}
+
+		if (statusList[i].description == "Paid") {
+			statusList[i].description = "Completed (Paid)";
+		}
+	}
+
 	$scope.companyList = companyList.data;
 	$scope.companyList.unshift({
 		_id: -1,
@@ -356,6 +366,12 @@ angular.module('MobileCRMApp')
 				'client.branch._id': $scope.filter.branch._id
 			});
 		}
+		//ahora customer y parts from the yard
+		if(params.pendingPO){
+			query.$and.push({
+				'pono': ""
+			});
+		}
 		return query;
 	}
 	//Search function
@@ -368,6 +384,7 @@ angular.module('MobileCRMApp')
 		new Invoice().filter(query, $scope.sort)
 		.then(function(invoices){
 			$scope.invoices = invoices.data;
+			console.log($scope.invoices)
 			Loading.hide();
 			if($scope.selectedTab != 'data')
 				drawChart();

@@ -168,6 +168,7 @@ Invoice.prototype.update = function (query, invoice, user, mail) {
 };
 
 Invoice.prototype.sendInvoice = function(id, username, mail, emails, sendToAllAdmin){
+	console.log("SEND INVOICEEEE", emails, sendToAllAdmin)
 	var d = q.defer();
 	var _this = this;
 	var invoice = {};
@@ -250,6 +251,35 @@ Invoice.prototype.sendInvoiceUpdate = function(id, username, mail){
 	})
 	.catch (function (err) {
 		console.log(err)
+		d.reject({
+			result : 'Not ok',
+			errors : err
+		});
+	});
+	return d.promise;
+};
+
+Invoice.prototype.getReport = function(query, res){
+	this.createReport(query)
+	.then(function(obj){
+		fs.readFile(obj.path, function (err,data){
+			res.contentType('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+			res.send(data);
+		});
+	});
+};
+
+Invoice.prototype.createReport = function(query){
+	var d = q.defer();
+	var _this = this;
+	_this.crud.find(query)
+	.then(function (result) {
+		return excel.createReport(result.data, 'Invoice');
+	})
+	.then(function (data) {
+		d.resolve(data);
+	})
+	.catch (function (err) {
 		d.reject({
 			result : 'Not ok',
 			errors : err

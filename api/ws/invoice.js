@@ -21,6 +21,11 @@ module.exports = function (prefix, app, mail, dirname) {
 		invoice.getInvoice(req.body.id, res, req.user)
 	});
 
+	app.post(prefix + '/report', function (req, res) {
+		var invoice = new Invoice(app.db, req.user, dirname);
+		invoice.getReport(req.body.query, res);
+	});
+
 	app.post(prefix + '/send', function (req, res) {
 		var invoice = new Invoice(app.db, req.user, dirname);
 		invoice.sendInvoice(req.body.id, req.user, mail, req.body.emails || [], req.body.sendToAllAdmin)
