@@ -13,7 +13,7 @@ angular.module('MobileCRMApp')
 	$scope.items = [];
 	$scope.params = {};
 	$scope.readOnly = $rootScope.userData.role._id != 1;
-	if($rootScope.userData.role._id != 1){
+	if($rootScope.userData.role._id != 1 && $rootScope.userData.role._id != 5) {
 		$scope.serviceOrder.client = new User($rootScope.userData);
 	}
 	$scope.listStatus = statusList;
