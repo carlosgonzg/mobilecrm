@@ -8,10 +8,12 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-.controller('ServiceOrderCtrl', function ($scope, $rootScope, $location, toaster, User, statusList, serviceOrder, Item, dialogs, $q) {
+.controller('ServiceOrderCtrl', function ($scope, $rootScope, $location, toaster, User, statusList, serviceOrder, Item, dialogs, $q, Branch) {
 	$scope.serviceOrder = serviceOrder;
+
 	$scope.items = [];
 	$scope.params = {};
+	$scope.branches = [];
 	$scope.readOnly = $rootScope.userData.role._id != 1;
 	if($rootScope.userData.role._id != 1 && $rootScope.userData.role._id != 5) {
 		$scope.serviceOrder.client = new User($rootScope.userData);
@@ -42,6 +44,39 @@ angular.module('MobileCRMApp')
 			show: true
 		}
 	];
+	$scope.addresses = [];
+	var address = {};
+
+	$scope.serviceOrder.siteAddressFrom = $scope.serviceOrder.client.branch.addresses[0];
+	console.log($scope.serviceOrder.siteAddressFrom)
+
+	$scope.getBranches = function(){
+
+		$scope.branches = [];
+		new Branch().filter({})
+		.then(function(res){
+			$scope.branches = res.data;
+			for (var i=0; i<$scope.branches.length;i++) {
+				if ($scope.branches[i].addresses.length>0) {
+					address = $scope.branches[i].addresses[0];
+					address.addressString = address ? address.city.description + " - " + address.address1 + ", " + address.state.id : "";
+					$scope.addresses.push(address)
+				}
+			}
+		});
+	};
+
+	$scope.recalculate = function () {
+		console.log($scope.serviceOrder.siteAddressFrom)
+		$scope.serviceOrder.siteAddress.distanceFrom = $scope.serviceOrder.siteAddressFrom.address1 && $scope.serviceOrder.siteAddress.address1 ? getDistance($scope.serviceOrder.siteAddress, $scope.serviceOrder.siteAddressFrom) : 0;
+	}
+
+	var getDistance = function(p1, p2) {
+				var p1 = new google.maps.LatLng(p1.latitude, p1.longitude);
+				var p2 = new google.maps.LatLng(p2.latitude, p2.longitude);
+				var distance = google.maps.geometry.spherical.computeDistanceBetween(p1, p2);
+				return parseFloat((distance * 0.00062137).toFixed(2));
+	};
 
 	$scope.wsClassItem = Item;
 	$scope.wsFilterItem =  $rootScope.userData.role._id != 1 && $rootScope.userData.role._id != 5 ? { 'companies._id': $rootScope.userData.company._id }: { };
@@ -132,6 +167,7 @@ angular.module('MobileCRMApp')
 		if (field === "status") {
 				$scope.setNoInvoice();
 		}
+
 	};
 
 	$scope.isChanged = function(field){
@@ -263,4 +299,7 @@ angular.module('MobileCRMApp')
 	if(serviceOrder.client){
 		$scope.clientChanged(serviceOrder.client);
 	}
+
+	$scope.getBranches();
+
 });

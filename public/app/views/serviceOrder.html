@@ -129,11 +129,44 @@
 						</uib-accordion>
 					</div>
 				</div>
+				<!-- <div class="col-xs-12">
+					<div class="col-xs-12 pull-right">
+						<uib-accordion>
+				 			<uib-accordion-group class="panel-default" heading="Address (From)">
+								<address-model ng-model="serviceOrder.siteAddressFrom" origin-point="serviceOrder.client.branch.addresses[0]" ng-class="isChanged('siteAddressFrom')" ng-change="changed('siteAddressFrom')" ng-disabled="isDisabled()"></address-model>
+							</uib-accordion-group>
+						</uib-accordion>
+					</div>
+				</div> -->
+				<div class="col-xs-12" ng-if="userData.role._id == 1">
+					<div class="col-xs-12 pull-right">
+						<uib-accordion>
+				 			<uib-accordion-group class="panel-default">
+				 				<uib-accordion-heading>
+				 					<span class="fa fa-map-pin fa-lg"> </span> From Branch Address
+
+				 					<small ng-if="serviceOrder.siteAddressFrom.address1">{{serviceOrder.siteAddressFrom.address1 }}, {{serviceOrder.siteAddressFrom.city.description}} </small>
+				 				</uib-accordion-heading>
+								
+
+								<select ng-model="serviceOrder.siteAddressFrom" class="form-control" ng-class="isChanged('siteAddressFrom')" ng-change="changed('siteAddressFrom');recalculate()" ng-disabled="isDisabled()" ng-options="address as address.addressString for address in addresses track by address.address1">
+								</select>
+
+							</uib-accordion-group>
+						</uib-accordion>
+					</div>
+				</div>
 				<div class="col-xs-12">
 					<div class="col-xs-12 pull-right">
 						<uib-accordion>
-				 			<uib-accordion-group class="panel-default" heading="Address">
-								<address-model ng-model="serviceOrder.siteAddress" ng-class="isChanged('siteAddress')" ng-change="changed('siteAddress')" ng-disabled="isDisabled()"></address-model>
+				 			<uib-accordion-group class="panel-default">
+				 				<uib-accordion-heading>
+				 					<span class="fa fa-map-marker fa-lg"></span> To Customer Address
+				 					<small ng-if="serviceOrder.siteAddress.city">{{serviceOrder.siteAddress.address1 }}, {{serviceOrder.siteAddress.city.description}} </small>
+				 				</uib-accordion-heading>
+								
+								<address-model ng-model="serviceOrder.siteAddress" origin-point="serviceOrder.siteAddressFrom" ng-class="isChanged('siteAddress')" ng-change="changed('siteAddress')" ng-disabled="isDisabled()"></address-model>
+
 							</uib-accordion-group>
 						</uib-accordion>
 					</div>

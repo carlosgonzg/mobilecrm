@@ -4,7 +4,8 @@ angular.module('MobileCRMApp')
     templateUrl: 'views/directives/address.html',
     restrict: 'E',
     scope:{
-			ngModel: '='
+			ngModel: '=',
+			originPoint: '='
 		},
 		controller: function ($scope, Country, State, City, $timeout) {
 			$scope.ngModel = $scope.ngModel || {};
@@ -19,10 +20,16 @@ angular.module('MobileCRMApp')
 				this.longitude = address.longitude || 0;
 				this.distanceFrom =  address.distanceFrom || 0;
 			};
-			var originPoint = {
-				latitude: 28.39788010000001,
-				longitude: -81.33288979999998
-			};
+			// var originPoint = {
+			// 	latitude: 28.39788010000001,
+			// 	longitude: -81.33288979999998
+			// };
+
+			console.log($scope.ngModel)
+
+			var originPoint = {};
+			
+			console.log(originPoint)
 
 			var placeSearch, autocomplete;
 
@@ -53,6 +60,11 @@ angular.module('MobileCRMApp')
 
 			function fillInAddress() {
 				// Get the place details from the autocomplete object.
+				originPoint = $scope.originPoint && $scope.originPoint.latitude != 0 && $scope.originPoint.longitude != 0 ? $scope.originPoint : {
+																																latitude: 28.39788010000001,
+																																longitude: -81.33288979999998
+																															};
+
 				var place = autocomplete.getPlace();
 			 	var data = {
 			 		streetNumber: '',
@@ -148,6 +160,7 @@ angular.module('MobileCRMApp')
 				$scope.ngModel.zipcode = data.zipcode.postal;
 				$scope.ngModel.latitude = place.geometry ? place.geometry.location.lat() : 0;
 				$scope.ngModel.longitude = place.geometry ? place.geometry.location.lng() : 0;
+				console.log(originPoint)
 				$scope.ngModel.distanceFrom = place.geometry ? getDistance($scope.ngModel, originPoint) : 0;
 				$scope.$apply();
 			}
