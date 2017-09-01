@@ -47,7 +47,7 @@ angular.module('MobileCRMApp')
 	$scope.addresses = [];
 	var address = {};
 
-	$scope.serviceOrder.siteAddressFrom = $scope.serviceOrder.client.branch.addresses[0];
+	$scope.serviceOrder.siteAddressFrom = $scope.serviceOrder.client ? $scope.serviceOrder.client.branch.addresses[0] : {};
 	console.log($scope.serviceOrder.siteAddressFrom)
 
 	$scope.getBranches = function(){
