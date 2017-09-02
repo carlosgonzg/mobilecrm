@@ -372,6 +372,12 @@ angular.module('MobileCRMApp')
 				'pono': ""
 			});
 		}
+
+		if(params.withPO){
+			query.$and.push({
+				'pono': {$ne: ""}
+			});
+		}
 		return query;
 	}
 	//Search function
