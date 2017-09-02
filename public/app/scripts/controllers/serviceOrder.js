@@ -58,8 +58,9 @@ angular.module('MobileCRMApp')
 			$scope.branches = res.data;
 			for (var i=0; i<$scope.branches.length;i++) {
 				if ($scope.branches[i].addresses.length>0) {
+					console.log($scope.branches[i])
 					address = $scope.branches[i].addresses[0];
-					address.addressString = address ? address.city.description + " - " + address.address1 + ", " + address.state.id : "";
+					address.addressString = $scope.branches[i].company.entity.name + " - " + (address ? (address.city.description ? address.city.description + " - " : "") + address.address1 + ", " + address.state.id : "");
 					$scope.addresses.push(address)
 				}
 			}
