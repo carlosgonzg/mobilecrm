@@ -110,8 +110,12 @@ angular.module('MobileCRMApp')
 	];
 
 	$scope.clientChanged = function(client){ 
-		if(client && client.company)
+		if(client && client.company) {
 			$scope.wsFilterItem =  $rootScope.userData.role._id != 1 && $rootScope.userData.role._id != 5 ? { 'companies._id': $rootScope.userData.company._id } : { 'companies._id': client.company._id };
+			
+			$scope.serviceOrder.siteAddressFrom = $scope.serviceOrder.client.branch ? $scope.serviceOrder.client.branch.addresses[0] : {};
+		}
+
 		/*
 		$scope.items = [];
 		for(var i = 0; i < items.data.length; i++){
