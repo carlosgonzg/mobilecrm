@@ -41,17 +41,23 @@ Company.prototype.getSequence = function(id, peek){
 				seqNumber = Number(company.seqStart || 0);
 			}
 			var sequence = company.seqCode + pad(seqNumber.toString(), company.seqMask);
-			//if(!peek){
+
+				console.log("UPDATING SEQUENCEEE!!!", peek)
+			if(!peek){
 				//actualizo company
-			company.seqNumber = seqNumber + 1;
-			_this.crud.update({ _id: Number(id) }, company, true)
-			.then(function(){
+				company.seqNumber = seqNumber + 1;
+
+				_this.crud.update({ _id: Number(id) }, company, true)
+					.then(function(){
+						d.resolve(sequence);
+					}, function(err){
+						console.log(err)
+						d.resolve(sequence);
+					});
+			} else {
 				d.resolve(sequence);
-			}, function(err){
-				console.log(err)
-				d.resolve(sequence);
-			});
-			//}
+			}
+
 		}
 	})
 	.catch (function (err) {
@@ -63,5 +69,50 @@ Company.prototype.getSequence = function(id, peek){
 	});
 	return d.promise; 
 }
+
+Company.prototype.setSequence = function (id) {
+
+	var d = q.defer();
+	var _this = this;
+
+	var otherCompany;
+
+		if (id === 7) {
+			otherCompany=3;
+		} else if (id === 3) {
+			otherCompany=7;
+		} 
+
+	_this.crud.find({ _id: Number(id) })
+	.then(function (company) {
+		var companyData = company.data[0];
+		companyData.seqNumber = companyData.seqNumber + 1;
+
+					_this.crud.update({ _id: Number(id)}, companyData, true)
+						.then(function(){
+							console.log(otherCompany)
+							if (otherCompany) {
+								_this.crud.find({ _id: Number(otherCompany) })
+								.then(function(oCompany) {
+									var otherCompanyData = oCompany.data[0];
+									otherCompanyData.seqNumber = otherCompanyData.seqNumber + 1;
+									
+									_this.crud.update({_id:Number(otherCompany)}, otherCompanyData,true )
+									.then(function() {
+										console.log("ACTIVO ACTUALIZANDO")
+										d.resolve(sequence);
+									})
+								})
+							} else {
+								d.resolve(sequence)
+							}
+							
+						}, function(err){
+							console.log(err)
+							d.resolve(sequence);
+						});
+	})
+}
+
 //Export
 module.exports = Company;

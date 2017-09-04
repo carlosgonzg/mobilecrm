@@ -97,11 +97,18 @@ Invoice.prototype.insert = function (invoice, username, mail) {
 	}
 	invoice.total = total;
 	//Consigo el sequencial de invoice
-	var promise = invoice.invoiceNumber ? q.when(invoice.invoiceNumber) : _this.company.getSequence(invoice.client.company._id);//util.getYearlySequence(_this.crud.db, 'Invoice');
+	var promise = invoice.invoiceNumber ? q.when(invoice.invoiceNumber) : _this.company.getSequence(invoice.client.company._id, false);//util.getYearlySequence(_this.crud.db, 'Invoice');
 	promise
 	.then(function (sequence) {
 		invoice.invoiceNumber = sequence;
 		return _this.crud.insert(invoice, invoice.invoiceNumber == 'Pending Invoice');
+	})
+	.then(function (obj) {
+		if (invoice.invoiceNumber != "Pending Invoice") {
+			_this.company.setSequence(invoice.client.company._id)
+		}
+
+		d.resolve(obj) ;
 	})
 	//inserto
 	.then(function (obj) {
