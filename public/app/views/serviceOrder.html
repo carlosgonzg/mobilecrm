@@ -119,7 +119,7 @@
 										<b>Contact #{{$index + 1}}</b>
 									</div>
 									<div class="col-xs-10">
-										<contact-model ng-model="serviceOrder.contacts[$index]"> </contact-model>
+										<contact-model ng-model="serviceOrder.contacts[$index]" ng-class="isChanged('contact')" ng-change="changed('contact')"> </contact-model>
 									</div>
 									<div class="col-xs-2">
 										<button class="btn btn-danger pull-right" type="button" ng-click="removeContact($index)" ng-if="serviceOrder.contacts.length > 1"><i class="fa fa-minus"></i></button>
@@ -244,7 +244,7 @@
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
 							<label for="distanceFrom">Service Miles (Miles)</label>
-							<input type="text" name="distanceFrom" class="form-control" ng-model="serviceOrder.siteAddress.distanceFrom" validator="required" ng-disabled="userData.role._id == 5">
+							<input type="text" name="distanceFrom" class="form-control" ng-model="serviceOrder.siteAddress.distanceFrom" validator="required" ng-disabled="userData.role._id == 5" ng-class="isChanged('distanceFrom')" ng-change="changed('serviceMiles')">
 						</div>
 					</div>
 				</div>
@@ -320,19 +320,19 @@
 							{{item.itemCollection.description}}
 						</td>
 						<td colspan="{{ item.itemCollection._id ? '1' : '2' }}" width="15%">
-							<input type="text" name="description{{$index}}" class="form-control" ng-model="item.description"  ng-disabled="isDisabled()" validator="required">
+							<input type="text" name="description{{$index}}" class="form-control" ng-model="item.description"  ng-disabled="isDisabled()" validator="required" ng-class="isChanged('item')" ng-change="changed('item')">
 						</td>
 						<td>
-							<input type="number" name="quantity{{$index}}" class="form-control" ng-model="item.quantity"  ng-disabled="isDisabled()" validator="required" step="0.01">
+							<input type="number" name="quantity{{$index}}" class="form-control" ng-model="item.quantity"  ng-disabled="isDisabled()" validator="required" step="0.01" ng-class="isChanged('item')" ng-change="changed('item')">
 						</td>
 						<td>
-							<input type="number" name="price{{$index}}" class="form-control" ng-model="item.price"  ng-disabled="isDisabled()" validator="required" step="0.01">
+							<input type="number" name="price{{$index}}" class="form-control" ng-model="item.price"  ng-disabled="isDisabled()" validator="required" step="0.01" ng-class="isChanged('item')" ng-change="changed('item')">
 						</td>
 						<td>
 							{{item.getTotalPrice() | currency }}
 						</td>
 						<td>
-							<input type="text" name="part{{$index}}" class="form-control" ng-model="item.part"  ng-disabled="isDisabled()">
+							<input type="text" name="part{{$index}}" class="form-control" ng-model="item.part"  ng-disabled="isDisabled()" ng-class="isChanged('item')" ng-change="changed('item')">
 						</td>
 						<td>
 							<button type="button" class="btn btn-sm btn-danger update" ng-click="removeItem($index)" ng-if="userData.role._id == 1">
@@ -363,12 +363,12 @@
 			<div class="col-sm-4 pull-left">
 				<div class="form-group">
 					<label for="comment">Issue</label>
-					<textarea id="comment" ng-model="serviceOrder.issue" class="form-control" ng-disabled="userData.role._id == 5">
+					<textarea id="comment" ng-model="serviceOrder.issue" class="form-control" ng-disabled="userData.role._id == 5" ng-class="isChanged('issue')" ng-change="changed('issue')">
 					</textarea> 
 				</div>
 				<div class="form-group">
 					<label for="comment">Comment</label>
-					<textarea id="comment" ng-model="serviceOrder.comment" class="form-control">
+					<textarea id="comment" ng-model="serviceOrder.comment" class="form-control" ng-class="isChanged('comment')" ng-change="changed('comment')">
 					</textarea> 
 				</div>
 			</div>

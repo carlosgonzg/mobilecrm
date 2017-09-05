@@ -47,8 +47,11 @@ angular.module('MobileCRMApp')
 	$scope.addresses = [];
 	var address = {};
 
+	var originalPhotos = $scope.serviceOrder.photos;
+	var originalContacts = $scope.serviceOrder.contacts;
+	var originalSiteAddress = $scope.serviceOrder.siteAddress;
+
 	$scope.serviceOrder.siteAddressFrom = $scope.serviceOrder.client.branch ? $scope.serviceOrder.client.branch.addresses[0] : {};
-	console.log($scope.serviceOrder.siteAddressFrom)
 
 	$scope.getBranches = function(){
 
@@ -135,19 +138,23 @@ angular.module('MobileCRMApp')
 
 	$scope.addContact = function () {
 		$scope.serviceOrder.contacts.push({})
+		$scope.changed("contact")
 	};
 
 	$scope.removeContact = function (index) {
 		$scope.serviceOrder.contacts.splice(index, 1);
+		$scope.changed("contact")
 	};
 	
 	$scope.addItem = function (item) {
 		$scope.serviceOrder.items.unshift(item);
 		$scope.params.item = {};
+		$scope.changed('items');
 	};
 
 	$scope.removeItem = function (index) {
 		$scope.serviceOrder.items.splice(index, 1);
+		$scope.changed('items');
 	};
 
 	$scope.setItem = function(item, index) {
@@ -165,15 +172,16 @@ angular.module('MobileCRMApp')
 				}
 			}
 			if(!isHere){
-				$scope.serviceOrder.fieldsChanged.push({ field: field + (field === "status" ? " - " + $scope.serviceOrder.status.description : field), by: $rootScope.userData._id });
+				$scope.serviceOrder.fieldsChanged.push({ field: field + (field === "status" ? " - " + $scope.serviceOrder.status.description : ""), by: $rootScope.userData._id });
 				console.log($scope.serviceOrder.fieldsChanged)
 			}
 		} 
 
 		if (field === "status") {
 				$scope.setNoInvoice();
-
 		}
+
+		console.log(field)
 
 	};
 
@@ -263,6 +271,20 @@ angular.module('MobileCRMApp')
 		delete $scope.serviceOrder.client.account.password;
 		if(sendMail)
 			$scope.serviceOrder.sendMail = true;
+
+		if (originalContacts != $scope.serviceOrder.contacts) {
+			$scope.changed('contacts');
+		}
+
+		if (originalPhotos != $scope.serviceOrder.photos) {
+			$scope.changed('photos');
+		}
+
+		if (originalSiteAddress.address1 != $scope.serviceOrder.siteAddress.address1) {
+			$scope.changed('siteAddress');
+		}
+
+		console.log($scope.serviceOrder);
 		$scope.serviceOrder.save()
 		.then(function (data) {
 			toaster.success('The Service Order was saved successfully');
