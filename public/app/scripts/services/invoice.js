@@ -274,6 +274,31 @@ angular.module('MobileCRMApp')
 		return d.promise;
 	};
 
+	Invoice.prototype.getExpensesbyFilter = function(query, start, end){
+		var d = $q.defer();
+		var invoice = this;
+
+		var _query = {};
+	    _query.query = query;
+
+		if (start) { // Si no se envia la fecha de inicio no se toma
+	      _query['start'] = start.toISOString();
+	    };
+	    if (end) { // Si no se envia la fecha fin el no se toma
+	      _query['end'] = end.toISOString();
+	    };
+
+
+		$http.post(this.baseApiPath + '/getExpensesByFilter', _query)
+		.success(function(res){
+			d.resolve(res || []);
+		})
+		.error(function(error){
+			d.reject(error)
+		});
+		return d.promise;
+	};
+
 	Invoice.prototype.getReport = function(query){
 		var d = $q.defer();
 		var _this = this;

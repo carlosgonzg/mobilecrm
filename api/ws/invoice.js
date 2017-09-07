@@ -54,5 +54,11 @@ module.exports = function (prefix, app, mail, dirname) {
 		invoice.getExpenses()
 		.then(util.success(res), util.error(res));
 	});
+
+	app.post(prefix + '/getExpensesByFilter', function (req, res) {
+		var invoice = new Invoice(app.db, req.user, dirname);
+		invoice.getExpensesByFilter(req.body.query, req.body.start, req.body.end)
+		.then(util.success(res), util.error(res));
+	});
 	require('./crud')(prefix, app, Invoice);
 }

@@ -649,4 +649,78 @@ Invoice.prototype.getExpenses = function(){
 	return d.promise;
 };
 
+Invoice.prototype.getExpensesByFilter = function (query, start, end) {
+  var deferred = q.defer();
+  var _crud = this.crud;
+  var sort = {};
+  var where = {
+    $and: [],
+    expenses: { $exists: true } 
+  };
+
+
+  // Si no tengo start Buscar todas las citas desde hace un año, de lo contrario desde start
+  if (!start) {
+    start.setDate(1);
+    start.setHours(0, 0, 0, 0);
+    start.setMonth(start.getMonth() - 12);
+    
+  }
+  where.$and.push({ 
+    date: {
+      '$gte': new Date(start)
+    }
+  });
+
+  // Si especifican cual es la fecha de fin, buscar hasta la fecha fin
+  if (end) {
+    where.$and.push({ 
+      date: {
+        '$lte': new Date(end)
+      }
+    });
+  }
+
+  if (query) {
+    for (var x in query) {
+      where[x] = query[x];
+    }
+  }
+
+  console.log(where.$and);
+
+  _crud.find(where, sort)
+  .then(function (result) {
+    var obj = [];
+		for(var i = 0; i < result.data.length; i++){
+			var inv = {
+				_id: result.data[i]._id,
+				invoiceNumber: result.data[i].invoiceNumber,
+				document: result.data[i].sor || result.data[i].wor,
+				clientId: result.data[i].client._id,
+				client: result.data[i].client.entity.fullName,
+				company: result.data[i].client.company.entity.name,
+				branch: result.data[i].client.branch.name,
+				items: result.data[i].items,
+				expenses: result.data[i].expenses,
+				totalIncome: 0,
+				totalExpenses: 0
+			};
+			for(var j = 0; j < result.data[i].items.length; j++){
+				inv.totalIncome += result.data[i].items[j].quantity * result.data[i].items[j].price;
+			}
+			for(var j = 0; j < result.data[i].expenses.length; j++){
+				inv.totalExpenses += result.data[i].expenses[j].price;
+			}
+			obj.push(inv);
+		}
+		console.log(obj)
+		deferred.resolve(obj);
+  }, function (err) {
+    deferred.reject(err);
+  });
+
+  return deferred.promise;
+};
+
 module.exports = Invoice;

@@ -320,6 +320,9 @@ angular
 		resolve : {
 			invoices : function (Invoice) {
 				return new Invoice().getExpenses();
+			},
+			companies : function (Company) {
+				return new Company().find({});
 			}
 		}
 	})
