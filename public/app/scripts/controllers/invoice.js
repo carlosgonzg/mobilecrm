@@ -24,6 +24,11 @@ angular.module('MobileCRMApp')
 			field : 'sor',
 			type : 'text',
 			show: true
+		},  {
+			label : 'Invoice',
+			field : 'invoiceNumber',
+			type : 'text',
+			show: true
 		},{
 			label : 'Created Date',
 			field : 'createdDate',
@@ -59,17 +64,17 @@ angular.module('MobileCRMApp')
 			field : 'total',
 			type : 'currency',
 			show: true
-		},  {
-			label : 'Invoice',
-			field : 'invoiceNumber',
-			type : 'text',
-			show: true
 		}
 	];
 	$scope.wsClassWO = WorkOrder;
 	$scope.wsFieldsWO = [{
 			label : 'Work Order #',
 			field : 'wor',
+			type : 'text',
+			show: true
+		},  {
+			label : 'Invoice',
+			field : 'invoiceNumber',
 			type : 'text',
 			show: true
 		},{
@@ -106,11 +111,6 @@ angular.module('MobileCRMApp')
 			label : 'Total Amount',
 			field : 'total',
 			type : 'currency',
-			show: true
-		},  {
-			label : 'Invoice',
-			field : 'invoiceNumber',
-			type : 'text',
 			show: true
 		}
 	];
