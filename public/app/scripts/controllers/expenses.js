@@ -10,7 +10,6 @@ angular.module('MobileCRMApp')
 
 	new User().filter({"role._id":4})
 			.then(function (result) {
-				console.log(result)
 				$scope.technicians = result.data;
 			})
 
