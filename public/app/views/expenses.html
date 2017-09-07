@@ -13,10 +13,13 @@
 						<th width="50%">
 							Description
 						</th>
-						<th width="30%">
+						<th width="10%">
 							Price
 						</th>
-						<th width="20%">
+						<th width="30%">
+							Technician
+						</th>
+						<th width="10%">
 							<button class="btn btn-sm btn-default" ng-click="add()">
 								<i class="fa fa-plus"></i>
 							</button>
@@ -32,6 +35,11 @@
 							<input type="number" class="form-control" ng-model="expense.price" />
 						</td>
 						<td>
+							<select class="form-control" ng-model="expense.technician">
+								<option ng-repeat="tech in technicians">{{tech.techId}} - {{tech.entity.fullName}}</option>
+							</select>
+						</td>
+						<td>
 							<button class="btn btn-sm btn-danger" ng-click="remove($index)">
 								<i class="fa fa-times"></i>
 							</button>
@@ -40,10 +48,10 @@
 				</tbody>
 			</table>
 			<br>	
-			<label>Technician:</label>
+			<!-- <label>Technician:</label>
 			<select class="form-control" ng-model="technician">
 				<option ng-repeat="tech in technicians">{{tech.techId}} - {{tech.entity.fullName}}</option>
-			</select>
+			</select> -->
 			<div class="checkbox">
 				<label>
 					<input type="checkbox" name="expensesComplete" ng-model="expensesComplete" ng-disabled="expenses.length === 0"> <strong>Expenses Complete?</strong>
