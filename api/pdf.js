@@ -94,7 +94,7 @@ var createInvoiceBody = function(obj, company, branch){
 	body = body.replace('<date30>', moment(obj.date,'MM/DD/YYYY').add(60,'days').format('MM/DD/YYYY'));
 	body = body.replace('<date60>', moment(obj.date,'MM/DD/YYYY').add(90,'days').format('MM/DD/YYYY'));
 	
-	body = body.replace('<taxesPorcentage>', taxes*100 || 0);
+	body = body.replace('<taxesPorcentage>', round(taxes*100) || 0);
 	body = body.replace('<taxes>', numeral(total * taxes).format('$0,0.00'));
 	body = body.replace('<total>', numeral(total + (total * taxes)).format('$0,0.00'));
 	body = body.replace('<total15>', numeral((total + (total * taxes)) * 1.05).format('$0,0.00'));
