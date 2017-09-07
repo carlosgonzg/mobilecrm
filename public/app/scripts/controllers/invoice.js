@@ -60,6 +60,11 @@ angular.module('MobileCRMApp')
 			field : 'total',
 			type : 'currency',
 			show: true
+		},  {
+			label : 'Invoice',
+			field : 'invoiceNumber',
+			type : 'text',
+			show: true
 		}
 	];
 	$scope.wsClassWO = WorkOrder;
@@ -102,6 +107,11 @@ angular.module('MobileCRMApp')
 			label : 'Total Amount',
 			field : 'total',
 			type : 'currency',
+			show: true
+		},  {
+			label : 'Invoice',
+			field : 'invoiceNumber',
+			type : 'text',
 			show: true
 		}
 	];
