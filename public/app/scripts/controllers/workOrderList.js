@@ -55,14 +55,11 @@ angular.module('MobileCRMApp')
 	];
 
 	$scope.search = [
-		'_id',
 		'wor',
-		'date',
 		'client.company.entity.name',
 		'client.branch.name',
 		'invoiceNumber',
 		'unitno',
-		'client.entity.fullName',
 		'status.description'
 	];
 	$scope.filterDate = 'date';
