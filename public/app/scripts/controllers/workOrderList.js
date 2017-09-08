@@ -62,7 +62,9 @@ angular.module('MobileCRMApp')
 		'unitno',
 		'status.description',
     'total',
-    'client.entity.fullName'
+    'client.entity.fullName',
+    'originalShipDate',
+    'date'
 	];
 	$scope.filterDate = 'date';
 
