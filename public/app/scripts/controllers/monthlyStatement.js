@@ -149,6 +149,7 @@ angular.module('MobileCRMApp')
 			setMonths($scope.params.year);
 			$scope.invoices = result;
 			$scope.branches = {};
+			$scope.companies = {};
 			if($scope.params.searchBy.code == 'Company'){
 				for(var i = 0; i < result.length; i++){
 					for(var j = 0; j < result[i].invoices.length; j++){
@@ -169,6 +170,31 @@ angular.module('MobileCRMApp')
 							$scope.branches[bId].pending += result[i].invoices[j].total;
 						}
 						$scope.branches[bId].total += result[i].invoices[j].total;
+
+					}
+				}
+			}
+
+			if($scope.params.searchBy.code == 'MobileOne'){
+				for(var i = 0; i < result.length; i++){
+					for(var j = 0; j < result[i].invoices.length; j++){
+						var bId = result[i].invoices[j].company ? result[i].invoices[j].company._id || 'n/a' : 'n/a';
+						var bName = result[i].invoices[j].company ? result[i].invoices[j].company.name || 'n/a' : 'n/a';
+						if(!$scope.companies[bId]){
+							$scope.companies[bId] = {
+								name: bName,
+								paid: 0,
+								pending: 0,
+								total: 0,
+							};
+						}
+						if(result[i].invoices[j].statusPaid._id == 4){
+							$scope.companies[bId].paid += result[i].invoices[j].total;
+						}
+						else if(result[i].invoices[j].statusPaid._id == 3){
+							$scope.companies[bId].pending += result[i].invoices[j].total;
+						}
+						$scope.companies[bId].total += result[i].invoices[j].total;
 
 					}
 				}
@@ -214,6 +240,29 @@ angular.module('MobileCRMApp')
 		var aux = 0;
 		for(var i in $scope.branches){
 			aux += $scope.branches[i].total;
+		}
+		return aux;
+	};
+
+	$scope.getCompanyTotalPaid = function(){
+		var aux = 0;
+		for(var i in $scope.companies){
+			aux += $scope.companies[i].paid;
+		}
+		return aux;
+	};
+	$scope.getCompanyTotalPendingPay = function(){
+		var aux = 0;
+		for(var i in $scope.companies){
+			aux += $scope.companies[i].pending;
+		}
+		return aux;
+	};
+
+	$scope.getCompanyTotalYear = function(){
+		var aux = 0;
+		for(var i in $scope.companies){
+			aux += $scope.companies[i].total;
 		}
 		return aux;
 	};
