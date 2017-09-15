@@ -11,7 +11,28 @@
     </div>
 </div>
 <div class="row">
-	<div class="col-xs-12">
-		<list clase="wsUser" fields="fields" showid="false" search-fields="search" list="list"></list>
+  <div class="col-xs-12">
+        <ul class="nav nav-tabs">
+            <li role="presentation" ng-class="{ active: selectedTab == role.description }" ng-repeat="role in roles track by $index" ng-click="selectTab(role)">
+                <a>{{role.description}}</a>
+            </li>
+        </ul>
+  </div>
+</div>
+<div class="row">
+	<div class="col-xs-12" ng-show="selectedId==='1'">
+		<list clase="wsUser" fields="fields" showid="false" search-fields="search" filter-field="filter1" list="list"></list>
 	</div>
+
+    <div class="col-xs-12" ng-show="selectedId==='3'">
+        <list clase="wsUser" fields="fields" showid="false" search-fields="search" filter-field="filter2" list="list"></list>
+    </div>
+
+    <div class="col-xs-12" ng-show="selectedId==='4'">
+        <list clase="wsUser" fields="fields" showid="false" search-fields="search" filter-field="filter3" list="list"></list>
+    </div>
+
+    <div class="col-xs-12" ng-show="selectedId==='5'">
+        <list clase="wsUser" fields="fields" showid="false" search-fields="search" filter-field="filter4" list="list"></list>
+    </div>
 </div>
