@@ -41,7 +41,7 @@ angular.module('MobileCRMApp')
 		'unitOfMeasure',
 		'price'
 	];
-	$scope.filterDate = 'code';
+	// $scope.filterDate = 'code';
 
   $scope.excelFields = [{
 			title : 'Code',
@@ -65,6 +65,10 @@ angular.module('MobileCRMApp')
 			type : 'currency'
 		}
   ];
+
+  $scope.sort = {
+  		'code' : 1
+  }
 
 	$scope.filter = {};
 	
