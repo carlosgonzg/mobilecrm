@@ -16,7 +16,8 @@ angular.module('MobileCRMApp')
 			searchBar : '=',
 			noAuth : '=',
 			advanced : '=',
-			sortList : '='
+			sortList : '=',
+			sortField : '=?'
 		},
 		controller : function ($scope, $rootScope, $timeout, dialogs, toaster, Loading, $window) {
 			$scope.list = [];
@@ -25,10 +26,12 @@ angular.module('MobileCRMApp')
 			$scope.qty = 0;
 			$scope.currentPage = 1;
 			$scope.maxPage = 0;
+			$scope.sortField = $scope.sortField ? $scope.sortField : {'createdDate':-1}
 			$scope.orderBy = {
-				sort : {
-					'createdDate' : -1
-				},
+				// sort : {
+				// 	'createdDate' : -1
+				// },
+				sort : $scope.sortField,
 				reverse : false,
 				field : '_id'
 			};
@@ -37,11 +40,13 @@ angular.module('MobileCRMApp')
 				fromDate: new Date(today.getFullYear(), today.getMonth() - 1, today.getDate()),
 				toDate: new Date(today.getFullYear(), today.getMonth(), today.getDate())
 			};
+
 			var listBk = [],
 			searchByFields = ['_id'],
 			x,
 			message = '',
 			filtro = $scope.filterField ? $scope.filterField : {}
+			console.log(filtro)
 			//filtroOrBackup = $scope.filterField && $scope.filterField.$and ? $scope.filterField.$and : [];
 			var params = {};
 			if($window.sessionStorage.params){
@@ -63,6 +68,7 @@ angular.module('MobileCRMApp')
 					excelFields : $scope.excelFields || $scope.fields,
 					fieldFilter : {}
 				};
+
 				if ($scope.sortList == "-1") {
 					$scope.params.sort = {
 						_id : -1
@@ -72,6 +78,17 @@ angular.module('MobileCRMApp')
 						_id : 1
 					};
 				};
+
+
+				if ($scope.filterDate) {
+					var dateRange = {};
+						dateRange.start = $scope.filterDateOptions.fromDate;
+						dateRange.end = $scope.filterDateOptions.toDate;
+						dateRange.fields = [];
+						dateRange.fields.push($scope.filterDate);
+
+					$scope.params.dateRange = dateRange;
+				}
 			}
 
 			$scope.loaded = false;
@@ -94,7 +111,7 @@ angular.module('MobileCRMApp')
 								};
 							});
 					}
-				}
+				} 
 			});
 
 			var setFieldLimit = function () {
@@ -180,11 +197,21 @@ angular.module('MobileCRMApp')
 			//Obtener los registros de la tabla paginados.
 			$scope.getPaginatedSearch = function (pParams) {
 				Loading.show();
+
+				if ($scope.filterDate) {
+					pParams.dateRange = {};
+					pParams.dateRange.start = $scope.filterDateOptions.fromDate;
+					pParams.dateRange.end = $scope.filterDateOptions.toDate;
+					pParams.dateRange.fields = [];
+					pParams.dateRange.fields.push($scope.filterDate);
+				}
+
 				$scope.objeto.paginatedSearch(pParams).then(function (result) {
 					if (result.data.length == 0) {
 						//toaster.pop('error', 'Information', 'Couldn\'t load the items');
 					}
 					$scope.list = angular.copy(result.data);
+
 					listBk = angular.copy(result.data);
 					$scope.loaded = true;
 					// Define el limite para los campos a mostrar
