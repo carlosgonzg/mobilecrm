@@ -60,7 +60,11 @@ angular.module('MobileCRMApp')
 		'client.branch.name',
 		'invoiceNumber',
 		'unitno',
-		'status.description'
+		'status.description',
+    'total',
+    'client.entity.fullName',
+    'originalShipDate',
+    'date'
 	];
 	$scope.filterDate = 'date';
 
