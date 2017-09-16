@@ -169,6 +169,7 @@ angular.module('MobileCRMApp')
 		$http.post(_this.baseApiPath + '/send', { id: _this._id, emails: emails, sendToAllAdmin: sendToAllAdmin })
 		.success(function (data) {
 			toaster.success('The invoice has been sent!.');
+			$location.path('invoiceList');
 	    })
 	    .error(function (data, status, headers, config) {
 	    	toaster.error('There was an error sending the email, please try again')
