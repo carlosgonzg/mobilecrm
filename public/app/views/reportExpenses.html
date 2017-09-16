@@ -1,0 +1,268 @@
+<div class="row">
+	<div class="col-xs-12">
+		<h1 class="pull-left">
+			<i class="fa fa-lg fa-area-chart"></i> <span> Reports (Invoice)</span>
+		</h1>
+		<div class="btn-group pull-right" style="margin-top: 20px;" role="group" aria-label="...">
+			<back-button></back-button>
+			<button type="button" class="btn btn-default" ng-click="export()"><i class="fa fa-download"></i>&nbsp;Download as Excel</button>
+		</div>
+		<hr />
+	</div>
+</div>
+<div class="row">
+	<div class="col-xs-12">
+		 <uib-accordion>
+		 	<uib-accordion-group class="panel-default" is-open="filter.isOpen">
+		 		<uib-accordion-heading>
+					<i class='fa fa-filter'></i> &nbsp; Filters
+				</uib-accordion-heading>
+				<form class="form" id="reportForm" name="reportForm" ng-submit="search()">
+					<div class="row">
+						<div class="col-xs-12">
+							<div class="col-xs-6">
+								<div class="form-group">
+								    <label for="fromDate">From:</label>
+								    <sc-datepicker ng-model="filter.fromDate"></sc-datepicker>
+						  		</div>
+				  			</div>
+				  			<div class="col-xs-6">
+								<div class="form-group">
+								    <label for="fromDate">To:</label>
+								    <sc-datepicker ng-model="filter.toDate"></sc-datepicker>
+						  		</div>
+				  			</div>
+				  		</div>
+			  		</div>
+			  		<div class="row">
+						<div class="col-xs-12">
+							<div class="col-xs-6">
+								<div class="form-group">
+								    <label for="status">Status:</label>
+								    <select class="form-control" ng-model="filter.status" ng-options="o as o.description for o in statusList track by o._id"></select>
+						  		</div>
+				  			</div>
+				  			<div class="col-xs-6">
+								<div class="form-group">
+								    <label for="client">Client:</label>
+								    <select class="form-control" ng-model="filter.client" ng-options="o as o.entity.fullName for o in clientList track by o._id" ng-disabled="isClient"></select>
+						  		</div>
+				  			</div>
+				  		</div>
+			  		</div>
+			  		<div class="row" ng-if="!isClient">
+						<div class="col-xs-12">
+							<div class="col-xs-6">
+								<div class="form-group">
+								    <label for="status">Company:</label>
+								    <select class="form-control" ng-model="filter.company" ng-options="o as o.entity.name for o in companyList track by o._id" ng-disabled="isClient" ng-change="setBranches(filter.company)"></select>
+						  		</div>
+				  			</div>
+				  			<div class="col-xs-6">
+								<div class="form-group">
+								    <label for="client">Branch:</label>
+								    <select class="form-control" ng-model="filter.branch" ng-options="o as o.name for o in branchList track by o._id" ng-disabled="isClient"></select>
+						  		</div>
+				  			</div>
+				  		</div>
+			  		</div>
+			  		<div class="row">
+					<!-- 	<div class="col-xs-12">
+							<div class="form-group">
+							    <label>Filter by:</label>
+					  		</div>
+				  		</div> -->
+				  		<div class="col-xs-12">
+							<div class="form-group">
+								<label>Filter by:</label>
+							    <div class="checkbox">
+								    <label>
+								    	<input type="checkbox" ng-model="filter.pendingPO"> Pending PO Number
+									</label>
+							  	</div>
+							  	<div class="checkbox">
+								    <label>
+								    	<input type="checkbox" ng-model="filter.withPO"> With PO Number
+									</label>
+							  	</div>
+							  	<div class="checkbox">
+								    <label>
+								    	<input type="checkbox" ng-model="filter.partsFromTheYard"> Parts from the yard
+									</label>
+							  	</div>
+							  	<div class="checkbox">
+								    <label>
+								    	<input type="checkbox" ng-model="filter.clientResponsibleCharges"> Customer Responsible for Charges
+									</label>
+							  	</div>
+					  		</div>
+				  		</div>
+			  		</div>
+						<button type="submit" class="btn btn-default pull-right"><i class="fa fa-search"></i>&nbsp;Search</button>
+				</form>
+		 	</uib-accordion-group>
+		</uib-accordion>
+	</div>
+
+</div>
+<ul class="nav nav-pills">
+  <li role="presentation" ng-class="{ active: getActiveTab('data') }" ng-click="selectTab('data')"><a>Data</a></li>
+  <li role="presentation" ng-class="{ active: getActiveTab('items') }" ng-click="selectTab('items')"><a>Items</a></li>
+  <li role="presentation" ng-class="{ active: getActiveTab('countByClient') }" ng-click="selectTab('countByClient')" ng-if="userData.role._id == 1"><a>Count by Client</a></li>
+  <li role="presentation" ng-class="{ active: getActiveTab('totalPriceByClient') }" ng-click="selectTab('totalPriceByClient')" ng-if="userData.role._id == 1"><a>Amount By Client</a></li>
+  <li role="presentation" ng-class="{ active: getActiveTab('status') }" ng-click="selectTab('status')"><a>Status</a></li>
+</ul>
+<div class="row" ng-if="getActiveTab('data')">
+	<div class="col-xs-12">
+		<table cellspacing="0" class="table table-hover tableNoBottom table-condensed" style="border-bottom: 1px solid #dddddd;">
+			<thead>
+				<tr>
+					<th style="width:10%" ng-click="sortBy('date')">
+						Created Date <span ng-if="sort.field == 'date' && sort.order == 1">^</span><span ng-if="sort.field == 'date' && sort.order == -1">v</span>
+					</th>
+					<th style="width:10%" ng-click="sortBy('originalShipDate')">
+						Completed Date <span ng-if="sort.field == 'originalShipDate' && sort.order == 1">^</span><span ng-if="sort.field == 'originalShipDate' && sort.order == -1">v</span>
+					</th>
+					<th style="width:5%" ng-click="sortBy('invoiceNumber')">
+						Invoice <span ng-if="sort.field == 'invoiceNumber' && sort.order == 1">^</span><span ng-if="sort.field == 'invoiceNumber' && sort.order == -1">v</span>
+					</th>
+					<th style="width:10%" ng-click="sortBy('pono')">
+						PO # <span  ng-if="sort.order == 1">^</span><span ng-if="sort.order == -1">v</span>
+					</th>
+					<th style="width:10%" ng-click="sortBy('client.entity.fullName')">
+						Customer <span ng-if="sort.field == 'client.entity.fullName' && sort.order == 1">^</span><span ng-if="sort.field == 'client.entity.fullName' && sort.order == -1">v</span>
+					</th>
+					<th style="width:5%" ng-click="sortBy('status.description')">
+						Status <span ng-if="sort.field == 'status.description' && sort.order == 1">^</span><span ng-if="sort.field == 'status.description' && sort.order == -1">v</span>
+					</th>
+					<th style="width:10%" ng-click="sortBy('unitno')">
+						Unit # <span ng-if="sort.field == 'unitno' && sort.order == 1">^</span><span ng-if="sort.field == 'unitno' && sort.order == -1">v</span>
+					</th>
+					<th style="width:5%" ng-click="sortBy('clientResponsibleCharges')">
+						Resp. for Charges <span ng-if="sort.field =='clientResponsibleCharges' && sort.order == 1">^</span><span ng-if="sort.field == 'clientResponsibleCharges' && sort.order == -1">v</span>
+					</th>
+					<th style="width:5%" ng-click="sortBy('partsFromTheYard')">
+						Mat. from the Yard <span ng-if="sort.field =='partsFromTheYard' && sort.order == 1">^</span><span ng-if="sort.field == 'partsFromTheYard' && sort.order == -1">v</span>
+					</th>
+					<th style="width:5%">
+						Items
+					</th>
+					<th style="width:5%">
+						Parts from the Yard
+					</th>
+					<th style="width:5%">
+						Issue / Comment
+					</th>
+					<th style="width:5%">
+						Photos
+					</th>
+					<th style="width:10%">
+						Total Amount
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="invoice in invoices track by $index" ng-dblclick="invoice.goTo()">
+					<td>
+						{{invoice.date|date:'MM/dd/yyyy'}}
+					</td>
+					<td>
+						{{invoice.originalShipDate|date:'MM/dd/yyyy'}}
+					</td>
+					<td>
+						{{invoice.invoiceNumber}}
+					</td>
+					<td>
+						{{invoice.pono}}
+					</td>
+					<td>
+						{{invoice.client.entity.fullName}}
+					</td>
+					<td>
+						{{invoice.status.description}}
+					</td>
+					<td>
+						{{invoice.unitno}}
+					</td>
+					<td>
+						<i class="fa fa-times" ng-if="!invoice.clientResponsibleCharges"></i>
+						<i class="fa fa-check" ng-if="invoice.clientResponsibleCharges"></i>
+					</td>
+					<td>
+						<i class="fa fa-times" ng-if="!invoice.partsFromTheYard"></i>
+						<i class="fa fa-check" ng-if="invoice.partsFromTheYard"></i>
+					</td>
+					<td>
+						<button class="btn btn-sm" ng-click="showItems(invoice)"><i class="fa fa-eye"></i></button>
+					</td>
+					<td>
+						<button class="btn btn-sm" ng-click="showYardComment(invoice)"><i class="fa fa-eye"></i></button>
+					</td>
+					<td>
+						<button class="btn btn-sm" ng-click="showComment(invoice)"><i class="fa fa-eye"></i></button>
+					</td>
+					<td>
+						<button class="btn btn-sm" ng-click="invoice.showPicture()"><i class="fa fa-picture-o" ng-disabled="invoice.photos.length <= 0"></i></button>
+					</td>
+					<td>
+						{{invoice.getTotal()|currency}}
+					</td>
+				</tr>
+				<tr>
+					<td colspan="13" class="text-right">
+						<b>Total</b>
+					</td>
+					<td>
+						<b>{{getTotal()|currency}}</b>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+<div class="row" ng-if="getActiveTab('items')">
+	<div class="col-xs-12">
+		<table cellspacing="0" class="table table-hover tableNoBottom table-condensed" style="border-bottom: 1px solid #dddddd;">
+			<thead>
+				<tr>
+					<th style="width:10%">
+						Code
+					</th>
+					<th style="width:20%">
+						Description
+					</th>
+					<th style="width:20%">
+						Part
+					</th>
+					<th style="width:10%">
+						Quantity
+					</th>
+					<th style="width:20%">
+						Price
+					</th>
+					<th style="width:20%">
+						Total
+					</th>
+				</tr>
+			</thead>
+			<tbody ng-repeat="invoice in invoices track by $index">
+				<tr>
+					<th colspan="6">
+						{{invoice.sor}}
+					</th>
+				</tr>
+				<tr ng-repeat="item in invoice.items track by $index">
+					<td>{{item.code}}</td>
+					<td>{{item.description}}</td>
+					<td>{{item.part}}</td>
+					<td>{{item.quantity}}</td>
+					<td>{{item.price | currency}}</td>
+					<td>{{item.price * item.quantity | currency}}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+<div class="row" ng-if="!getActiveTab('data') && !getActiveTab('items')">
+	<div id="chart_container" style="width:100%; height:400px;"></div>
+</div>
