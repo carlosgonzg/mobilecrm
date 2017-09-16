@@ -1,7 +1,7 @@
 <div class="row">
 	<div class="col-xs-12">
 		<h1 class="pull-left">
-			<i class="fa fa-lg fa-area-chart"></i> <span> Reports (Invoice)</span>
+			<i class="fa fa-lg fa-area-chart"></i> <span> Reports (Expenses)</span>
 		</h1>
 		<div class="btn-group pull-right" style="margin-top: 20px;" role="group" aria-label="...">
 			<back-button></back-button>
@@ -157,7 +157,13 @@
 						Photos
 					</th>
 					<th style="width:10%">
-						Total Amount
+						Price
+					</th>
+					<th style="width:10%">
+						Expenses
+					</th>
+					<th style="width:10%">
+						Profit
 					</th>
 				</tr>
 			</thead>
@@ -206,6 +212,12 @@
 					</td>
 					<td>
 						{{invoice.getTotal()|currency}}
+					</td>
+					<td>
+						{{invoice.totalExpenses |currency}}
+					</td>
+					<td>
+						{{invoice.getTotal() - invoice.totalExpenses |currency}}
 					</td>
 				</tr>
 				<tr>
