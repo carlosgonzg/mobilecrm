@@ -40,6 +40,8 @@ angular.module('MobileCRMApp')
 		description: 'All'
 	});
 
+	var queryDescription = {};
+
 	for (var i=0; i<statusList.length; i++) {
 		if (statusList[i].description == "Completed") {
 			statusList[i].description = "Completed (Pending to Pay)";
@@ -305,6 +307,7 @@ angular.module('MobileCRMApp')
 		var query = {
 			$and: []
 		};
+		queryDescription = {};
 		//primero las fechas (siempre son obligatorias)
 		query.$and.push({
 			date: {
@@ -312,18 +315,7 @@ angular.module('MobileCRMApp')
 				$lte: params.toDate
 			}
 		});
-		//ahora el cliente
-		if(params.client._id != -1){
-			query.$and.push({
-				'client._id': params.client._id
-			});
-		}
-		//ahora el status
-		if(params.status._id != -1){
-			query.$and.push({
-				'status._id': params.status._id
-			});
-		}
+
 		//ahora el pais
 		if(params.country._id != -1){
 			query.$and.push({
@@ -359,25 +351,45 @@ angular.module('MobileCRMApp')
 			query.$and.push({
 				'client.company._id': $scope.filter.company._id
 			});
+			queryDescription.company =  params.company.entity.name;
 		}
 		//ahora el branch
 		if($scope.filter.branch._id != -1){
 			query.$and.push({
 				'client.branch._id': $scope.filter.branch._id
 			});
+			queryDescription.branch = params.branch.name;
+		}
+		//ahora el cliente
+		if(params.client._id != -1){
+			query.$and.push({
+				'client._id': params.client._id
+			});
+			queryDescription.client = params.client.entity.name;
+		}
+		//ahora el status
+		if(params.status._id != -1){
+			query.$and.push({
+				'status._id': params.status._id
+			});
+			queryDescription.status = params.status.description;
 		}
 		//ahora customer y parts from the yard
 		if(params.pendingPO){
 			query.$and.push({
 				'pono': ""
 			});
+			queryDescription.pendingPo = true;
 		}
 
 		if(params.withPO){
 			query.$and.push({
 				'pono': {$ne: ""}
 			});
+			queryDescription.po = true;
 		}
+
+
 		return query;
 	}
 	//Search function
@@ -398,7 +410,8 @@ angular.module('MobileCRMApp')
 	};
 	$scope.export = function(){
 		var query = setQuery($scope.filter);
-		new Invoice().getReport(query);
+
+		new Invoice().getReport(query, queryDescription);
 	};
 	$scope.search();
 });

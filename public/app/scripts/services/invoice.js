@@ -283,10 +283,10 @@ angular.module('MobileCRMApp')
 	    _query.query = query;
 
 		if (start) { // Si no se envia la fecha de inicio no se toma
-	      _query['start'] = start.toISOString();
+	      _query['start'] = new Date(start);//.toISOString();
 	    };
 	    if (end) { // Si no se envia la fecha fin el no se toma
-	      _query['end'] = end.toISOString();
+	      _query['end'] = new Date(end);//.toISOString();
 	    };
 
 
@@ -300,13 +300,13 @@ angular.module('MobileCRMApp')
 		return d.promise;
 	};
 
-	Invoice.prototype.getReport = function(query){
+	Invoice.prototype.getReport = function(query, queryDescription){
 		var d = $q.defer();
 		var _this = this;
 		$http({
 			url: this.baseApiPath + '/report',
 			method: "POST",
-			data: { query: query },
+			data: { query: query, queryDescription: queryDescription },
 			headers: {
 			'Content-type': 'application/json'
 			},
@@ -320,7 +320,18 @@ angular.module('MobileCRMApp')
 			var url = window.URL.createObjectURL(blob);
 			
 			a.href = url;
-			a.download =  'report.xlsx';
+			console.log(query)
+
+			var reportName = (queryDescription.company ? queryDescription.company : "All Companies") + " - "
+							+(queryDescription.branch ? queryDescription.branch :"All Branches") + " - "
+							+(queryDescription.status ? queryDescription.status :"All Status") + " - "
+							+(queryDescription.pendingPo ? 'Pending PO' + " - " : "")
+							+(queryDescription.po ? 'With PO' + " - " : "")
+							+"Invoice Report "
+							+formatDate(new Date) 
+							+'.xlsx';
+
+			a.download = reportName;
 			a.click();
 			window.URL.revokeObjectURL(url);
 			d.resolve(url);
@@ -331,6 +342,15 @@ angular.module('MobileCRMApp')
 	    });
 	    return d.promise;
 	};
+
+	function formatDate(date) {
+
+	  var day = date.getDate();
+	  var month = date.getMonth();
+	  var year = date.getFullYear();
+
+	  return day + "-" + month + "-" + year;
+	}
 
 	return Invoice;
 });

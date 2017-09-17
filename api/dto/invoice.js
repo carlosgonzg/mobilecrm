@@ -266,8 +266,9 @@ Invoice.prototype.sendInvoiceUpdate = function(id, username, mail){
 	return d.promise;
 };
 
-Invoice.prototype.getReport = function(query, res){
-	this.createReport(query)
+Invoice.prototype.getReport = function(query, queryDescription, res){
+	
+	this.createReport(query, queryDescription)
 	.then(function(obj){
 		fs.readFile(obj.path, function (err,data){
 			res.contentType('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
@@ -276,12 +277,12 @@ Invoice.prototype.getReport = function(query, res){
 	});
 };
 
-Invoice.prototype.createReport = function(query){
+Invoice.prototype.createReport = function(query, queryDescription){
 	var d = q.defer();
 	var _this = this;
 	_this.crud.find(query)
 	.then(function (result) {
-		return excel.createReport(result.data, 'Invoice');
+		return excel.createReport(result.data, 'Invoice', query, queryDescription);
 	})
 	.then(function (data) {
 		d.resolve(data);
@@ -628,7 +629,8 @@ Invoice.prototype.getExpenses = function(){
 				items: result.data[i].items,
 				expenses: result.data[i].expenses,
 				totalIncome: 0,
-				totalExpenses: 0
+				totalExpenses: 0,
+				date: result.data[i].date
 			};
 			for(var j = 0; j < result.data[i].items.length; j++){
 				inv.totalIncome += result.data[i].items[j].quantity * result.data[i].items[j].price;
@@ -652,7 +654,7 @@ Invoice.prototype.getExpenses = function(){
 Invoice.prototype.getExpensesByFilter = function (query, start, end) {
   var deferred = q.defer();
   var _crud = this.crud;
-  var sort = {};
+  var sort = {};	
   var where = {
     $and: [],
     expenses: { $exists: true } 

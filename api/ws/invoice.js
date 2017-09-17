@@ -23,7 +23,7 @@ module.exports = function (prefix, app, mail, dirname) {
 
 	app.post(prefix + '/report', function (req, res) {
 		var invoice = new Invoice(app.db, req.user, dirname);
-		invoice.getReport(req.body.query, res);
+		invoice.getReport(req.body.query, req.body.queryDescription, res);
 	});
 
 	app.post(prefix + '/send', function (req, res) {

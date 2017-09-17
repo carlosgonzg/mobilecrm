@@ -92,7 +92,6 @@ Excel.prototype.addHeader = function (fromDate, toDate) {
   //Get the header to modified and format it
   var row = worksheet.getRow(1);
 
-  //- MedicalCore -
   //Font
   row.font = fontReportHeader;
   //Align Left

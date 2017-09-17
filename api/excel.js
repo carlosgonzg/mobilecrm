@@ -118,14 +118,14 @@ var createMonthlyStatement = function(invoices, whoIs, user){
 	return d.promise;
 };
 
-var createReport = function(objs, whoIs, user){
+var createReport = function(objs, whoIs, query, queryDescription, user){
 	var d = q.defer();
-  	var excel = new Excel('Report', null, 'Report');
+  	var excel = new Excel(whoIs+' Report', null, whoIs + 'Report');
   	//fonts
 	var headerFont = {
 		name: "Calibri (Body)",
 	 	family: 4,
-	  	size: 36,
+	  	size: 28,
 	  	bold: true
 	};
 	var normalFont = {
@@ -156,18 +156,26 @@ var createReport = function(objs, whoIs, user){
 		{ key: 'l', width: 27 }
 	];
 	//header
-	excel.worksheet.addRow(['Report - MOBILE ONE', '', '', '', '', '', '', '', '', '', '']);
-	excel.worksheet.mergeCells('A1:D1');
-	excel.worksheet.mergeCells('E1:K1');
+
+
+	excel.worksheet.addRow(['MOBILE ONE - Restoration LLC', '', '', '', '', '', '', '', '', '', moment().format('MM/DD/YYYY')]);
+	excel.worksheet.mergeCells('A1:K1');
 	excel.worksheet.lastRow.font = headerFont;
 	//sub header
-	excel.worksheet.addRow(['Restoration LLC', '', '', '', '', '', '', '', '', '', moment().format('MM/DD/YYYY')]);
+	excel.worksheet.addRow([(queryDescription.status ? queryDescription.status : "")  + " " + whoIs + ' Report', '', '', '', '', '', '', '', '', '', '']);
 	excel.worksheet.mergeCells('A2:B2');
 	excel.worksheet.mergeCells('C2:J2');
 	excel.worksheet.lastRow.font = boldFont;
 	//space!
 	excel.worksheet.addRow(['', '', '', '', '', '', '', '', '', '', '']);
-	excel.worksheet.mergeCells('A3:K3');
+	excel.worksheet.addRow(['Company:', queryDescription.company||"All", 'Branch:', queryDescription.branch||"All", 'Client:',queryDescription.client||"All", '', '', '', '', '']);
+	excel.worksheet.lastRow.font = boldFont;
+	excel.worksheet.getCell('B4').font = normalFont;
+	excel.worksheet.getCell('D4').font = normalFont;
+	excel.worksheet.getCell('F4').font = normalFont;
+
+	excel.worksheet.addRow(['', '', '', '', '', '', '', '', '', '', '']);
+	// excel.worksheet.mergeCells('A4:K4');
 	//table header
 	var fieldsArray = [];
 
@@ -202,8 +210,8 @@ var createReport = function(objs, whoIs, user){
 		excel.worksheet.lastRow.font = normalFont;
 		excel.worksheet.getCell('L' + (i + 5).toString()).numFmt = '$ #,###,###,##0.00';	
 	}
-	var key = (objs.length + 5).toString();
-	excel.worksheet.addRow(['', '', '', '', '', '', '','', '', '', 'Total', total]);
+	var key = (objs.length + 7).toString();
+	excel.worksheet.addRow(['', '', '', '', '', '', '','', '', '', '', 'Total', total]);
 	excel.worksheet.getCell('L' + key).numFmt = '$ #,###,###,##0.00';
 	excel.worksheet.mergeCells('A' + key + ':J' + key);
 	excel.worksheet.lastRow.font = boldFont;
