@@ -40,6 +40,7 @@ angular.module('MobileCRMApp')
 		_id: -1,
 		description: 'All'
 	});
+	var queryDescription = {}
 
 	for (var i=0; i<statusList.length; i++) {
 		if (statusList[i].description == "Completed") {
@@ -387,6 +388,7 @@ angular.module('MobileCRMApp')
 				$exists: true
 			}
 		});
+		queryDescription.expenses = true;
 		//ahora el cliente
 		if(params.client._id != -1){
 			query.$and.push({
@@ -499,7 +501,7 @@ angular.module('MobileCRMApp')
 	};
 	$scope.export = function(){
 		var query = setQuery($scope.filter);
-		new Invoice().getReport(query);
+		new Invoice().getReport(query, queryDescription);
 	};
 	$scope.search();
 });

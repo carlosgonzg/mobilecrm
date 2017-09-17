@@ -333,6 +333,7 @@ angular.module('MobileCRMApp')
 			var reportName = ((queryDescription.status ? queryDescription.status + ' ' :'') 
 							+(queryDescription.pendingPo ? 'without PO ' : '')
 							+(queryDescription.po ? 'With PO '  : '')
+							+(queryDescription.expenses ? 'Expenses ' :'')
 							+ 'REPORT - MOBILE ONE RESTORATION LCC (UPDATED) - '
 							+(queryDescription.company ? queryDescription.company + ' ' : '')
 							+(queryDescription.branch ? queryDescription.branch  + ' ' : '')).toUpperCase()
