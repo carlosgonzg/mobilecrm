@@ -39,6 +39,7 @@ angular.module('MobileCRMApp')
 		_id: -1,
 		description: 'All'
 	});
+	var queryDescription={};
 
 	$scope.companyList = companyList.data;
 	$scope.companyList.unshift({
@@ -293,6 +294,7 @@ angular.module('MobileCRMApp')
 		var query = {
 			$and: []
 		};
+		queryDescription = {};
 		//primero las fechas (siempre son obligatorias)
 		query.$and.push({
 			date: {
@@ -300,17 +302,33 @@ angular.module('MobileCRMApp')
 				$lte: params.toDate
 			}
 		});
+			//ahora company
+		if($scope.filter.company._id != -1){
+			query.$and.push({
+				'client.company._id': $scope.filter.company._id
+			});
+			queryDescription.company =  params.company.entity.name;
+		}
+		//ahora el branch
+		if($scope.filter.branch._id != -1){
+			query.$and.push({
+				'client.branch._id': $scope.filter.branch._id
+			});
+			queryDescription.branch = params.branch.name;
+		}
 		//ahora el cliente
 		if(params.client._id != -1){
 			query.$and.push({
 				'client._id': params.client._id
 			});
+			queryDescription.client = params.client.entity.name;
 		}
 		//ahora el status
 		if(params.status._id != -1){
 			query.$and.push({
 				'status._id': params.status._id
 			});
+			queryDescription.status = params.status.description;
 		}
 		//ahora el pais
 		if(params.country._id != -1){
@@ -342,18 +360,6 @@ angular.module('MobileCRMApp')
 				'clientResponsibleCharges': params.clientResponsibleCharges
 			});
 		}
-		//ahora company
-		if($scope.filter.company._id != -1){
-			query.$and.push({
-				'client.company._id': $scope.filter.company._id
-			});
-		}
-		//ahora el branch
-		if($scope.filter.branch._id != -1){
-			query.$and.push({
-				'client.branch._id': $scope.filter.branch._id
-			});
-		}
 		return query;
 	}
 	//Search function
@@ -373,7 +379,7 @@ angular.module('MobileCRMApp')
 	};
 	$scope.export = function(){
 		var query = setQuery($scope.filter);
-		new ServiceOrder().getReport(query);
+		new ServiceOrder().getReport(query, queryDescription);
 	};
 	$scope.search();
 });

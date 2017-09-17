@@ -46,6 +46,7 @@ angular.module('MobileCRMApp')
 		_id: -1,
 		description: 'All'
 	});
+	var queryDescription = {};
 
 	$scope.companyList = companyList.data;
 	$scope.companyList.unshift({
@@ -301,6 +302,7 @@ angular.module('MobileCRMApp')
 		var query = {
 			$and: []
 		};
+		queryDescription = {}
 		//primero las fechas (siempre son obligatorias)
 		query.$and.push({
 			date: {
@@ -308,17 +310,33 @@ angular.module('MobileCRMApp')
 				$lte: $scope.filter.toDate
 			}
 		});
-		//ahora el cliente
-		if($scope.filter.client._id != -1){
+		//ahora company
+		if($scope.filter.company._id != -1){
 			query.$and.push({
-				'client._id': $scope.filter.client._id
+				'client.company._id': $scope.filter.company._id
 			});
+			queryDescription.company =  params.company.entity.name;
+		}
+		//ahora el branch
+		if($scope.filter.branch._id != -1){
+			query.$and.push({
+				'client.branch._id': $scope.filter.branch._id
+			});
+			queryDescription.branch = params.branch.name;
+		}
+		//ahora el cliente
+		if(params.client._id != -1){
+			query.$and.push({
+				'client._id': params.client._id
+			});
+			queryDescription.client = params.client.entity.name;
 		}
 		//ahora el status
-		if($scope.filter.status._id != -1){
+		if(params.status._id != -1){
 			query.$and.push({
-				'status._id': $scope.filter.status._id
+				'status._id': params.status._id
 			});
+			queryDescription.status = params.status.description;
 		}
 		//ahora el pais
 		if($scope.filter.country._id != -1){
@@ -348,18 +366,6 @@ angular.module('MobileCRMApp')
 		if($scope.filter.clientResponsibleCharges){
 			query.$and.push({
 				'clientResponsibleCharges': $scope.filter.clientResponsibleCharges
-			});
-		}
-		//ahora company
-		if($scope.filter.company._id != -1){
-			query.$and.push({
-				'client.company._id': $scope.filter.company._id
-			});
-		}
-		//ahora el branch
-		if($scope.filter.branch._id != -1){
-			query.$and.push({
-				'client.branch._id': $scope.filter.branch._id
 			});
 		}
 		//item
@@ -393,7 +399,7 @@ angular.module('MobileCRMApp')
 	};
 	$scope.export = function(){
 		var query = setQuery($scope.filter);
-		new WorkOrder().getReport(query);
+		new WorkOrder().getReport(query, queryDescription);
 	};
 	$scope.search();
 
