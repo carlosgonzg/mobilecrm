@@ -148,9 +148,7 @@ angular.module('MobileCRMApp')
 		} 
 	};
 	$scope.filterC = {
-		'role._id': {
-			$ne: 1
-		} 
+		'role._id': 3
 	};
 
 	$scope.wsClassItem = Item;

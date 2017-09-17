@@ -18,7 +18,7 @@ angular.module('MobileCRMApp')
 	}
 	$scope.listStatus = statusList;
 	$scope.wsClass = User;
-	$scope.wsFilter = { 'role._id': { $ne: 1 }};
+	$scope.wsFilter = { 'role._id': 3};
 	$scope.wsFields = [{
 			field : 'entity.fullName',
 			label : 'Name',
