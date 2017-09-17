@@ -125,7 +125,13 @@ var createReport = function(objs, whoIs, query, queryDescription, user){
 	var headerFont = {
 		name: "Calibri (Body)",
 	 	family: 4,
-	  	size: 28,
+	  	size: 22,
+	  	bold: true
+	};
+	var subHeaderFont = {
+		name: "Calibri (Body)",
+	 	family: 4,
+	  	size: 18,
 	  	bold: true
 	};
 	var normalFont = {
@@ -139,6 +145,9 @@ var createReport = function(objs, whoIs, query, queryDescription, user){
 	 	family: 4,
 	  	size: 14,
 	  	bold: true
+	};
+	var reportBgColor = {
+	    bgColor:{argb:'00000000'}
 	};
 	//setting columns
 	excel.worksheet.columns = [
@@ -156,34 +165,51 @@ var createReport = function(objs, whoIs, query, queryDescription, user){
 		{ key: 'l', width: 27 }
 	];
 	//header
+	console.log(queryDescription)
 
+	if (queryDescription.status === 'Completed (Pending to Pay)') {
+		queryDescription.status = 'Pending to Pay';
+	}
 
-	excel.worksheet.addRow(['MOBILE ONE - Restoration LLC', '', '', '', '', '', '', '', '', '', moment().format('MM/DD/YYYY')]);
+	if (queryDescription.status === 'Completed (Paid)') {
+		queryDescription.status = 'Paid';
+	}
+
+	excel.worksheet.addRow([((queryDescription.status ? queryDescription.status + ' ' : '') + (queryDescription.po ? 'With PO Number ' : '') + (queryDescription.pendingPo ? 'Without PO Number ' : '') + 'REPORT - MOBILE ONE Restoration LLC (UPDATED)').toUpperCase() , '', '', '', '', '', '', '', '', '', moment().format('MM/DD/YYYY')]);
 	excel.worksheet.mergeCells('A1:K1');
 	excel.worksheet.lastRow.font = headerFont;
-	//sub header
-	excel.worksheet.addRow([(queryDescription.status ? queryDescription.status : "")  + " " + whoIs + ' Report', '', '', '', '', '', '', '', '', '', '']);
+	// sub header
+	excel.worksheet.addRow([((queryDescription.company || '') + ' ' + (queryDescription.branch || '')).toUpperCase(), '', '', '', '', '', '', '', '', '', '']);
 	excel.worksheet.mergeCells('A2:B2');
 	excel.worksheet.mergeCells('C2:J2');
-	excel.worksheet.lastRow.font = boldFont;
+	excel.worksheet.lastRow.font = subHeaderFont;
 	//space!
 	excel.worksheet.addRow(['', '', '', '', '', '', '', '', '', '', '']);
-	excel.worksheet.addRow(['Company:', queryDescription.company||"All", 'Branch:', queryDescription.branch||"All", 'Client:',queryDescription.client||"All", '', '', '', '', '']);
-	excel.worksheet.lastRow.font = boldFont;
-	excel.worksheet.getCell('B4').font = normalFont;
-	excel.worksheet.getCell('D4').font = normalFont;
-	excel.worksheet.getCell('F4').font = normalFont;
-
 	excel.worksheet.addRow(['', '', '', '', '', '', '', '', '', '', '']);
+	excel.worksheet.addRow(['', '', '', '', '', '', '', '', '', '', '']);
+	//excel.worksheet.addRow(['Company:', queryDescription.company||"All", 'Branch:', queryDescription.branch||"All", 'Client:',queryDescription.client||"All", '', '', '', '', '']);
+	//excel.worksheet.lastRow.font = boldFont;
+	//excel.worksheet.getCell('B4').font = normalFont;
+	//excel.worksheet.getCell('D4').font = normalFont;
+	//excel.worksheet.getCell('F4').font = normalFont;
+
+	//excel.worksheet.addRow(['', '', '', '', '', '', '', '', '', '', '']);
 	// excel.worksheet.mergeCells('A4:K4');
 	//table header
 	var fieldsArray = [];
 
+	// if (whoIs != "Invoice") {
+	// 	fieldsArray = ['Created Date', 'Completed Date', (whoIs == 'ServiceOrder' ? 'Service' : 'Work') + ' Order #', 'Invoice', 'Customer', 'Status', 'Unit #', 'Responsible for Charges', 'Materials from the Yard', 'Parts from the Yard', 'Issue / Comment', 'Total Amount'];
+		
+	// } else {
+	// 	fieldsArray = ['Created Date', 'Completed Date', 'Invoice', 'Service Order #','Work Order #', 'Customer', 'Status', 'Unit #', 'Responsible for Charges', 'Materials from the Yard', 'Parts from the Yard', 'Issue / Comment', 'Total Amount'];
+	// }
+
 	if (whoIs != "Invoice") {
-		fieldsArray = ['Created Date', 'Completed Date', (whoIs == 'ServiceOrder' ? 'Service' : 'Work') + ' Order #', 'Invoice', 'Customer', 'Status', 'Unit #', 'Responsible for Charges', 'Materials from the Yard', 'Parts from the Yard', 'Issue / Comment', 'Total Amount'];
+		fieldsArray = ['Created Date', 'Unit Number', 'PO Number',  (whoIs == 'ServiceOrder' ? 'Service' : 'Work') + ' Order #', 'Invoice',  'Total Amount','Status', 'Year', 'Month', 'Branch'];
 		
 	} else {
-		fieldsArray = ['Created Date', 'Completed Date', 'Invoice', 'Service Order #','Work Order #', 'Customer', 'Status', 'Unit #', 'Responsible for Charges', 'Materials from the Yard', 'Parts from the Yard', 'Issue / Comment', 'Total Amount'];
+		fieldsArray = ['Created Date', 'Unit Number', 'PO Number', 'Invoice', 'Service Order #','Work Order #', 'Total Amount', 'Status', 'Year', 'Month', 'Branch'];
 	}
 
 	excel.worksheet.addRow(fieldsArray);
@@ -199,21 +225,22 @@ var createReport = function(objs, whoIs, query, queryDescription, user){
 		total += subTotal;
 
 		var valueArray = [];
+		
 
 		if (whoIs != "Invoice") {
-			valueArray = [moment(obj.date).format('MM-DD-YYYY'), moment(obj.originalShipDate).format('MM-DD-YYYY'), whoIs == 'ServiceOrder' ? obj.sor : obj.wor, obj.invoiceNumber, obj.client.entity.fullName, obj.status.description, obj.unitno, obj.clientResponsibleCharges ? 'x' : '', obj.partsFromTheYard ? 'x' : '', obj.yardComment || '', obj.comment || '', subTotal];
+			valueArray = [moment(obj.date).format('MM-DD-YYYY'), obj.unitno, obj.pono, whoIs == 'ServiceOrder' ? obj.sor : obj.wor, obj.invoiceNumber, subTotal, obj.status.description, moment(obj.date).format('YYYY'), moment(obj.date).format('MM'), obj.client.branch.name];
 		} else {
-			valueArray = [moment(obj.date).format('MM-DD-YYYY'), moment(obj.originalShipDate).format('MM-DD-YYYY'), obj.invoiceNumber, obj.sor, obj.wor,  obj.client.entity.fullName, obj.status.description, obj.unitno, obj.clientResponsibleCharges ? 'x' : '', obj.partsFromTheYard ? 'x' : '', obj.yardComment || '', obj.comment || '', subTotal];
+			valueArray = [moment(obj.date).format('MM-DD-YYYY'), obj.unitno, obj.pono, obj.invoiceNumber, obj.sor, obj.wor, subTotal, obj.status.description, moment(obj.date).format('YYYY'), moment(obj.date).format('MM'), obj.client.branch.name];
 		}
 
 		excel.worksheet.addRow(valueArray);
 		excel.worksheet.lastRow.font = normalFont;
 		excel.worksheet.getCell('L' + (i + 5).toString()).numFmt = '$ #,###,###,##0.00';	
 	}
-	var key = (objs.length + 7).toString();
-	excel.worksheet.addRow(['', '', '', '', '', '', '','', '', '', '', 'Total', total]);
+	var key = (objs.length + 4).toString();
+	excel.worksheet.addRow(['', '', '', '', '', 'Total', total, '','', '', '', '', '']);
 	excel.worksheet.getCell('L' + key).numFmt = '$ #,###,###,##0.00';
-	excel.worksheet.mergeCells('A' + key + ':J' + key);
+	excel.worksheet.mergeCells('A' + key + ':F' + key);
 	excel.worksheet.lastRow.font = boldFont;
 
 	//saving file

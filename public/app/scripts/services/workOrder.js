@@ -126,14 +126,8 @@ angular.module('MobileCRMApp')
 			var url = window.URL.createObjectURL(blob);
 			
 			a.href = url;
-			var reportName = (queryDescription.company ? queryDescription.company : "All Companies") + " - "
-							+(queryDescription.branch ? queryDescription.branch :"All Branches") + " - "
-							+(queryDescription.status ? queryDescription.status :"All Status") + " - "
-							+"Work Order Report "
-							+formatDate(new Date) 
-							+'.xlsx';
 
-			a.download = reportName;
+			a.download = 'Work Order Report '+formatDate(new Date()) + '.xlsx';
 			a.click();
 			window.URL.revokeObjectURL(url);
 			d.resolve(url);
@@ -212,7 +206,7 @@ angular.module('MobileCRMApp')
 		return d.promise;
 	};
 
-	
+
 	function formatDate(date) {
 
 	  var day = date.getDate();

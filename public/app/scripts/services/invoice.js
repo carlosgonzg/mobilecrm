@@ -322,12 +322,20 @@ angular.module('MobileCRMApp')
 			a.href = url;
 			console.log(query)
 
-			var reportName = (queryDescription.company ? queryDescription.company : "All Companies") + " - "
-							+(queryDescription.branch ? queryDescription.branch :"All Branches") + " - "
-							+(queryDescription.status ? queryDescription.status :"All Status") + " - "
-							+(queryDescription.pendingPo ? 'Pending PO' + " - " : "")
-							+(queryDescription.po ? 'With PO' + " - " : "")
-							+"Invoice Report "
+			if (queryDescription.status === 'Completed (Pending to Pay)') {
+				queryDescription.status = 'Pending to Pay';
+			}
+
+			if (queryDescription.status === 'Completed (Paid)') {
+				queryDescription.status = 'Paid';
+			}
+
+			var reportName = ((queryDescription.status ? queryDescription.status + ' ' :'') 
+							+(queryDescription.pendingPo ? 'without PO ' : '')
+							+(queryDescription.po ? 'With PO '  : '')
+							+ 'REPORT - MOBILE ONE RESTORATION LCC (UPDATED) - '
+							+(queryDescription.company ? queryDescription.company + ' ' : '')
+							+(queryDescription.branch ? queryDescription.branch  + ' ' : '')).toUpperCase()
 							+formatDate(new Date) 
 							+'.xlsx';
 

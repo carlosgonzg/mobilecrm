@@ -125,14 +125,8 @@ var a;
 			var url = window.URL.createObjectURL(blob);
 			
 			a.href = url;
-			var reportName = (queryDescription.company ? queryDescription.company : "All Companies") + " - "
-							+(queryDescription.branch ? queryDescription.branch :"All Branches") + " - "
-							+(queryDescription.status ? queryDescription.status :"All Status") + " - "
-							+"Service Order Report "
-							+formatDate(new Date) 
-							+'.xlsx';
 
-			a.download = reportName;
+			a.download = 'Service Order Report '+formatDate(new Date()) + '.xlsx';
 			a.click();
 			window.URL.revokeObjectURL(url);
 			d.resolve(url);
@@ -206,7 +200,7 @@ var a;
 		return d.promise;
 	};
 
-	
+
 	function formatDate(date) {
 
 	  var day = date.getDate();
