@@ -38,7 +38,8 @@ angular.module('MobileCRMApp')
 			var today = new Date();
 			$scope.filterDateOptions = {
 				fromDate: new Date(today.getFullYear(), today.getMonth() - 1, today.getDate()),
-				toDate: new Date(today.getFullYear(), today.getMonth(), today.getDate())
+				toDate: new Date(today.getFullYear(), today.getMonth(), today.getDate()),
+				enabled:true
 			};
 
 			var listBk = [],
@@ -80,7 +81,7 @@ angular.module('MobileCRMApp')
 				};
 
 
-				if ($scope.filterDate) {
+				if ($scope.filterDate && $scope.filterDateOptions.enabled) {
 					var dateRange = {};
 						dateRange.start = $scope.filterDateOptions.fromDate;
 						dateRange.end = $scope.filterDateOptions.toDate;
@@ -197,8 +198,10 @@ angular.module('MobileCRMApp')
 			//Obtener los registros de la tabla paginados.
 			$scope.getPaginatedSearch = function (pParams) {
 				Loading.show();
+				console.log(pParams)
 
-				if ($scope.filterDate) {
+				delete pParams.dateRange;
+				if ($scope.filterDate && $scope.filterDateOptions.enabled) {
 					pParams.dateRange = {};
 					pParams.dateRange.start = $scope.filterDateOptions.fromDate;
 					pParams.dateRange.end = $scope.filterDateOptions.toDate;
