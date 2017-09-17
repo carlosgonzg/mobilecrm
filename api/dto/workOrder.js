@@ -324,12 +324,12 @@ WorkOrder.prototype.getWorkOrder = function(id, showPrice, res, user){
 	});
 };
 
-WorkOrder.prototype.createReport = function(query){
+WorkOrder.prototype.createReport = function(query, queryDescription){
 	var d = q.defer();
 	var _this = this;
 	_this.crud.find(query)
 	.then(function (result) {
-		return excel.createReport(result.data, 'WorkOrder');
+		return excel.createReport(result.data, 'WorkOrder',query, queryDescription);
 	})
 	.then(function (data) {
 		d.resolve(data);
@@ -343,8 +343,9 @@ WorkOrder.prototype.createReport = function(query){
 	return d.promise;
 };
 
-WorkOrder.prototype.getReport = function(query, res){
-	this.createReport(query)
+WorkOrder.prototype.getReport = function(query, queryDescription, res){
+	console.log(queryDescription)
+	this.createReport(query, queryDescription)
 	.then(function(obj){
 		fs.readFile(obj.path, function (err,data){
 			res.contentType('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');

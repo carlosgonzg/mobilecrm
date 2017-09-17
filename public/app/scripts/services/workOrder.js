@@ -105,13 +105,14 @@ angular.module('MobileCRMApp')
 	    });
 	    return d.promise;
 	};
-	WorkOrder.prototype.getReport = function(query){
+	WorkOrder.prototype.getReport = function(query, queryDescription){
 		var d = $q.defer();
 		var _this = this;
+		console.log(queryDescription)
 		$http({
 			url: this.baseApiPath + '/report',
 			method: "POST",
-			data: { query: query },
+			data: { query: query, queryDescription:queryDescription },
 			headers: {
 			'Content-type': 'application/json'
 			},
@@ -125,7 +126,14 @@ angular.module('MobileCRMApp')
 			var url = window.URL.createObjectURL(blob);
 			
 			a.href = url;
-			a.download =  'report.xlsx';
+			var reportName = (queryDescription.company ? queryDescription.company : "All Companies") + " - "
+							+(queryDescription.branch ? queryDescription.branch :"All Branches") + " - "
+							+(queryDescription.status ? queryDescription.status :"All Status") + " - "
+							+"Work Order Report "
+							+formatDate(new Date) 
+							+'.xlsx';
+
+			a.download = reportName;
 			a.click();
 			window.URL.revokeObjectURL(url);
 			d.resolve(url);
@@ -203,6 +211,16 @@ angular.module('MobileCRMApp')
 		});
 		return d.promise;
 	};
+
+	
+	function formatDate(date) {
+
+	  var day = date.getDate();
+	  var month = date.getMonth();
+	  var year = date.getFullYear();
+
+	  return day + "-" + month + "-" + year;
+	}
 	
 	return WorkOrder;
 

@@ -235,6 +235,7 @@ ServiceOrder.prototype.sendServiceOrder = function(id, user, mail){
 		for(var i = 0; i < users.data.length; i++){
 			emails.push(users.data[i].account.email);
 		}
+		console.log(emails)
 		return mail.sendServiceOrder(serviceOrder, emails, _this.dirname);
 	})
 	.then(function(){
@@ -319,12 +320,12 @@ ServiceOrder.prototype.getServiceOrder = function(id, res, user){
 	});
 };
 
-ServiceOrder.prototype.createReport = function(query){
+ServiceOrder.prototype.createReport = function(query, queryDescription){
 	var d = q.defer();
 	var _this = this;
 	_this.crud.find(query)
 	.then(function (result) {
-		return excel.createReport(result.data, 'ServiceOrder');
+		return excel.createReport(result.data, 'ServiceOrder', query, queryDescription);
 	})
 	.then(function (data) {
 		d.resolve(data);
@@ -338,8 +339,8 @@ ServiceOrder.prototype.createReport = function(query){
 	return d.promise;
 };
 
-ServiceOrder.prototype.getReport = function(query, res){
-	this.createReport(query)
+ServiceOrder.prototype.getReport = function(query, queryDescription, res){
+	this.createReport(query, queryDescription)
 	.then(function(obj){
 		fs.readFile(obj.path, function (err,data){
 			res.contentType('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
