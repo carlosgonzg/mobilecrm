@@ -71,7 +71,6 @@ angular.module('MobileCRMApp')
 	};
 
 	$scope.recalculate = function () {
-		console.log($scope.serviceOrder.siteAddressFrom)
 		$scope.serviceOrder.siteAddress.distanceFrom = $scope.serviceOrder.siteAddressFrom.address1 && $scope.serviceOrder.siteAddress.address1 ? getDistance($scope.serviceOrder.siteAddress, $scope.serviceOrder.siteAddressFrom) : 0;
 	}
 
@@ -330,5 +329,6 @@ angular.module('MobileCRMApp')
 	}
 
 	$scope.getBranches();
+	$scope.recalculate();
 
 });

@@ -17,6 +17,7 @@ angular.module('MobileCRMApp')
 		field: 'date',
 		order: 1
 	};
+	var categories=[];
 
 	$scope.countryList = countries.data;
 	$scope.countryList.unshift({
@@ -198,6 +199,9 @@ angular.module('MobileCRMApp')
 			count: [],
 			price: []
 		};
+
+		categories = [];
+
 		for(var i = 0; i < $scope.invoices.length; i++){
 			var invoice = $scope.invoices[i];
 			// id, value y label
@@ -221,7 +225,7 @@ angular.module('MobileCRMApp')
 			var isHere = false;
 			var client = {};
 			for(var j = 0; j < obj.count.length; j++){
-				if(obj.count[j]._id == invoice.client._id){
+				if(obj.count[j]._id == invoice.clientId){
 					obj.count[j].value++;
 					isHere = true;
 					break;
@@ -230,26 +234,34 @@ angular.module('MobileCRMApp')
 			if(!isHere){
 				obj.count.push({
 					value: 1,
-					_id: invoice.client._id,
-					label: invoice.client.entity.fullName
+					_id: invoice.clientId,
+					label: invoice.client
 				});
 			}
 
 			var isHere = false;
 			for(var j = 0; j < obj.price.length; j++){
-				if(obj.price[j]._id == invoice.client._id){
-					obj.price[j].value += invoice.total;
+				if(obj.price[j]._id == invoice.clientId){
+					obj.price[j].value += invoice.totalExpenses;
 					isHere = true;
 					break;
 				}
 			}
 			if(!isHere){
 				obj.price.push({
-					value: invoice.total,
-					_id: invoice.client._id,
-					label: invoice.client.entity.fullName
+					value: invoice.getTotal(),
+					_id: 1,
+					label: 'Price',
+					client: invoice.client,
+					value2: invoice.totalExpenses,
+					value3: invoice.getTotal() - invoice.totalExpenses
 				});
 			}
+
+			if (categories.indexOf(invoice.client) === -1) {
+				categories.push(invoice.client)
+			}
+
 		}
 		return obj;
 	};
@@ -257,6 +269,21 @@ angular.module('MobileCRMApp')
 		Loading.hide();
 		$timeout(function(){
 			var chartType = ['totalPriceByClient', 'countByClient'].indexOf($scope.selectedTab) != -1 ? 'column' : 'pie';
+			
+			var plotOptionsAmount = {
+				series : {
+					stacking:'normal'
+				}
+			}
+			var plotOptionsOthers = {
+				bar: {
+		            dataLabels: {
+		                enabled: true
+		            }
+		        }
+			}
+
+			var plotOptions = $scope.selectedTab === 'totalPriceByClient' ? plotOptionsAmount: plotOptionsOthers;
 			var data = chartData();
 
 			var seriesData = [];
@@ -267,6 +294,31 @@ angular.module('MobileCRMApp')
 					data: []
 				}];
 			}
+
+			if ($scope.selectedTab === "totalPriceByClient") {
+				seriesData = [
+					// {
+					// 	name : 'Price',
+					// 	data :[]
+					// },
+					{
+						name : 'Expenses',
+						data :[]
+					},
+					{
+						name : 'Profit',
+						data :[]
+					},
+				]
+			} else {
+				seriesData = [
+					{
+						name : "Count",
+						data : []
+					}
+				]
+			}
+
 			var array = $scope.selectedTab == 'totalPriceByClient' ? data.price : $scope.selectedTab == 'countByClient' ? data.count : $scope.selectedTab == 'status' ? data.status : [];
 			for(var i = 0; i < array.length; i++){
 				if(chartType == 'pie'){
@@ -276,10 +328,24 @@ angular.module('MobileCRMApp')
 					});
 				}
 				else {
-					seriesData.push({
-						name: array[i].label,
-						data: [ array[i].value ]
-					});
+
+					if ($scope.selectedTab === 'totalPriceByClient') {
+						if (categories.indexOf(array[i].client) === -1) {
+							// seriesData[0].data.push(array[i].value);
+							seriesData[0].data.push(array[i].value2);
+							seriesData[1].data.push(array[i].value3);
+						} else {
+							// seriesData[0].data[categories.indexOf(array[i].client)] = (seriesData[0].data[categories.indexOf(array[i].client)] || 0) + array[i].value
+							seriesData[0].data[categories.indexOf(array[i].client)] = (seriesData[0].data[categories.indexOf(array[i].client)] || 0) + array[i].value2
+							seriesData[1].data[categories.indexOf(array[i].client)] = (seriesData[1].data[categories.indexOf(array[i].client)] || 0) + array[i].value3
+						}
+						
+					} else {
+						seriesData[0].data.push(array[i].value)
+					}
+
+
+
 				}
 			}
 			var myChart = Highcharts.chart('chart_container', {
@@ -290,26 +356,35 @@ angular.module('MobileCRMApp')
 		            text: ''
 		        },
 		        xAxis: {
-		            categories: ['Amount']
+		            categories: categories
 		        },
 		        yAxis: {
 		            title: {
 		                text: ''
 		            }
 		        },
-		        series: seriesData
+		        series: seriesData,
+		        plotOptions:plotOptions
 		    });
+
+		    console.log(seriesData)
+
 		});
 	};
 	var setQuery = function(params){
 		var query = {
-			$and: []
+			$and: [],
 		};
 		//primero las fechas (siempre son obligatorias)
 		query.$and.push({
 			date: {
 				$gte: params.fromDate,
 				$lte: params.toDate
+			}
+		});
+		query.$and.push({
+			expenses: {
+				$exists: true
 			}
 		});
 		//ahora el cliente
@@ -383,14 +458,40 @@ angular.module('MobileCRMApp')
 	//Search function
 	$scope.search = function(){
 		$scope.filter.isOpen = false;
+		var start = $scope.filter.fromDate;
+		var end = $scope.filter.toDate;
 		var query = setQuery($scope.filter);
 		//ahora listado de order services
 		$scope.invoices = [];
 		Loading.show();
-		new Invoice().filter(query, $scope.sort)
+		new Invoice().filter(query, start, end)
 		.then(function(invoices){
-			$scope.invoices = invoices.data;
-			console.log($scope.invoices)
+			var invoicesList = invoices.data;
+			
+			for(var i = 0; i < invoicesList.length; i++){
+				var inv = {
+					_id: invoicesList[i]._id,
+					invoiceNumber: invoicesList[i].invoiceNumber,
+					document: invoicesList[i].sor || invoicesList[i].wor,
+					clientId: invoicesList[i].client._id,
+					client: invoicesList[i].client.entity.fullName,
+					company: invoicesList[i].client.company.entity.name,
+					branch: invoicesList[i].client.branch.name,
+					items: invoicesList[i].items,
+					expenses: invoicesList[i].expenses,
+					totalIncome: 0,
+					totalExpenses: 0,
+					date: invoicesList[i].date
+				};
+				for(var j = 0; j < invoicesList[i].items.length; j++){
+					inv.totalIncome += invoicesList[i].items[j].quantity * invoicesList[i].items[j].price;
+				}
+				for(var j = 0; j < invoicesList[i].expenses.length; j++){
+					inv.totalExpenses += invoicesList[i].expenses[j].price;
+				}
+				$scope.invoices.push(new Invoice(inv));
+			}
+
 			Loading.hide();
 			if($scope.selectedTab != 'data')
 				drawChart();
