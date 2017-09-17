@@ -25,7 +25,7 @@ angular.module('MobileCRMApp')
 			type : 'text',
 			show: true
 		},  {
-			label : 'Invoice',
+			label : 'Invoice #',
 			field : 'invoiceNumber',
 			type : 'text',
 			show: true
@@ -73,7 +73,7 @@ angular.module('MobileCRMApp')
 			type : 'text',
 			show: true
 		},  {
-			label : 'Invoice',
+			label : 'Invoice #',
 			field : 'invoiceNumber',
 			type : 'text',
 			show: true
