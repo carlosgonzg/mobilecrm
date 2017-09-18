@@ -329,7 +329,7 @@ angular.module('MobileCRMApp')
 			query.$and.push({
 				'client._id': params.client._id
 			});
-			queryDescription.client = params.client.entity.fullName;
+			queryDescription.client = params.client;
 		}
 		//ahora el status
 		if(params.status._id != -1){
