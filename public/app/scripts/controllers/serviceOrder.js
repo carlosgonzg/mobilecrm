@@ -329,6 +329,6 @@ angular.module('MobileCRMApp')
 	}
 
 	$scope.getBranches();
-	$scope.recalculate();
+	//$scope.recalculate();
 
 });
