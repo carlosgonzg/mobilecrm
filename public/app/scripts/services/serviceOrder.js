@@ -111,7 +111,7 @@ var a;
 		$http({
 			url: this.baseApiPath + '/report',
 			method: "POST",
-			data: { query: query, queryDescription, queryDescription },
+			data: { query: query, queryDescription: queryDescription },
 			headers: {
 			'Content-type': 'application/json'
 			},
