@@ -166,6 +166,7 @@ var createReport = function(objs, whoIs, query, queryDescription, user){
 	];
 	//header
 
+
 	if (queryDescription.status === 'Completed (Pending to Pay)') {
 		queryDescription.status = 'Pending to Pay';
 	}
@@ -173,6 +174,8 @@ var createReport = function(objs, whoIs, query, queryDescription, user){
 	if (queryDescription.status === 'Completed (Paid)') {
 		queryDescription.status = 'Paid';
 	}
+
+	console.log(queryDescription)
 
 	excel.worksheet.addRow([((queryDescription.status ? queryDescription.status + ' ' : '') + (queryDescription.po ? 'With PO Number ' : '') + (queryDescription.pendingPo ? 'Without PO Number ' : '') + (queryDescription.expenses ? 'Expenses ' : '') + 'REPORT - MOBILE ONE Restoration LLC (UPDATED)').toUpperCase() , '', '', '', '', '', '', '', '', '', moment().format('MM/DD/YYYY')]);
 	excel.worksheet.mergeCells('A1:K1');
@@ -194,7 +197,11 @@ var createReport = function(objs, whoIs, query, queryDescription, user){
 		fieldsArray = ['Created Date', 'Unit Number', 'PO Number',  (whoIs == 'ServiceOrder' ? 'Service' : 'Work') + ' Order #', 'Invoice',  'Total Amount', 'Branch', 'Status', 'Year', 'Month'];
 		
 	} else {
-		fieldsArray = ['Created Date', 'Unit Number', 'PO Number', 'Invoice', 'Service Order #','Work Order #', 'Total Amount', 'Expenses', 'Profit', 'Branch', 'Status', 'Year', 'Month'];
+		if (queryDescription.expenses) {
+				fieldsArray = ['Created Date', 'Unit Number', 'PO Number', 'Invoice', 'Service Order #','Work Order #', 'Total Amount', 'Expenses', 'Profit', 'Branch', 'Status', 'Year', 'Month'];
+		} else {
+				fieldsArray = ['Created Date', 'Unit Number', 'PO Number', 'Invoice', 'Service Order #','Work Order #', 'Total Amount', 'Branch', 'Status', 'Year', 'Month'];			
+		}
 	}
 
 	excel.worksheet.addRow(fieldsArray);
@@ -212,22 +219,28 @@ var createReport = function(objs, whoIs, query, queryDescription, user){
 		total += subTotal;
 
 		var subTotalExpenses = 0;
-		for(var j = 0; j < obj.expenses.length; j++){
-			subTotalExpenses += obj.expenses[j].price;
+		if (obj.expenses) {
+			for(var j = 0; j < obj.expenses.length; j++){
+				subTotalExpenses += obj.expenses[j].price;
+			}
+			totalExpenses += subTotalExpenses;
 		}
-		totalExpenses += subTotalExpenses;
 
 		var subTotalProfit = 0;
 		subTotalProfit  = subTotal - subTotalExpenses;
 		totalProfit += subTotalProfit;
 
 		var valueArray = [];
-		
-
+	
 		if (whoIs != "Invoice") {
 			valueArray = [moment(obj.date).format('MM-DD-YYYY'), obj.unitno, obj.pono, whoIs == 'ServiceOrder' ? obj.sor : obj.wor, obj.invoiceNumber, subTotal, obj.client.branch.name, obj.status.description, moment(obj.date).format('YYYY'), moment(obj.date).format('MM')];
 		} else {
-			valueArray = [moment(obj.date).format('MM-DD-YYYY'), obj.unitno, obj.pono, obj.invoiceNumber, obj.sor, obj.wor, subTotal, subTotalExpenses, subTotalProfit, obj.client.branch.name, obj.status.description, moment(obj.date).format('YYYY'), moment(obj.date).format('MM')];
+			if (queryDescription.expenses) {
+					valueArray = [moment(obj.date).format('MM-DD-YYYY'), obj.unitno, obj.pono, obj.invoiceNumber, obj.sor, obj.wor, subTotal, subTotalExpenses, subTotalProfit, obj.client.branch.name, obj.status.description, moment(obj.date).format('YYYY'), moment(obj.date).format('MM')];
+			} else {
+		console.log(i)
+					valueArray = [moment(obj.date).format('MM-DD-YYYY'), obj.unitno, obj.pono, obj.invoiceNumber, obj.sor, obj.wor, subTotal, obj.client && obj.client.branch ? obj.client.branch.name : '', obj.status.description, moment(obj.date).format('YYYY'), moment(obj.date).format('MM')];
+			}
 		}
 
 		excel.worksheet.addRow(valueArray);
