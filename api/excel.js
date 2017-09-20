@@ -198,9 +198,9 @@ var createReport = function(objs, whoIs, query, queryDescription, user){
 		
 	} else {
 		if (queryDescription.expenses) {
-				fieldsArray = ['Created Date', 'Unit Number', 'PO Number', 'Invoice', 'Service Order #','Work Order #', 'Total Amount', 'Expenses', 'Profit', 'Branch', 'Status', 'Year', 'Month'];
+				fieldsArray = ['Created Date', 'Unit Number', 'PO Number', 'Invoice', 'Total Amount', 'Expenses', 'Profit', 'Service Order #','Work Order #', 'Branch', 'Status', 'Year', 'Month'];
 		} else {
-				fieldsArray = ['Created Date', 'Unit Number', 'PO Number', 'Invoice', 'Service Order #','Work Order #', 'Total Amount', 'Branch', 'Status', 'Year', 'Month'];			
+				fieldsArray = ['Created Date', 'Unit Number', 'PO Number', 'Invoice', 'Total Amount', 'Service Order #','Work Order #', 'Branch', 'Status', 'Year', 'Month'];			
 		}
 	}
 
@@ -236,10 +236,10 @@ var createReport = function(objs, whoIs, query, queryDescription, user){
 			valueArray = [moment(obj.date).format('MM-DD-YYYY'), obj.unitno, obj.pono, whoIs == 'ServiceOrder' ? obj.sor : obj.wor, obj.invoiceNumber, subTotal, obj.client.branch.name, obj.status.description, moment(obj.date).format('YYYY'), moment(obj.date).format('MM')];
 		} else {
 			if (queryDescription.expenses) {
-					valueArray = [moment(obj.date).format('MM-DD-YYYY'), obj.unitno, obj.pono, obj.invoiceNumber, obj.sor, obj.wor, subTotal, subTotalExpenses, subTotalProfit, obj.client.branch.name, obj.status.description, moment(obj.date).format('YYYY'), moment(obj.date).format('MM')];
+					valueArray = [moment(obj.date).format('MM-DD-YYYY'), obj.unitno, obj.pono, obj.invoiceNumber, subTotal, subTotalExpenses, subTotalProfit, obj.sor, obj.wor, obj.client.branch.name, obj.status.description, moment(obj.date).format('YYYY'), moment(obj.date).format('MM')];
 			} else {
 		console.log(i)
-					valueArray = [moment(obj.date).format('MM-DD-YYYY'), obj.unitno, obj.pono, obj.invoiceNumber, obj.sor, obj.wor, subTotal, obj.client && obj.client.branch ? obj.client.branch.name : '', obj.status.description, moment(obj.date).format('YYYY'), moment(obj.date).format('MM')];
+					valueArray = [moment(obj.date).format('MM-DD-YYYY'), obj.unitno, obj.pono, obj.invoiceNumber, subTotal, obj.sor, obj.wor, obj.client && obj.client.branch ? obj.client.branch.name : '', obj.status.description, moment(obj.date).format('YYYY'), moment(obj.date).format('MM')];
 			}
 		}
 
