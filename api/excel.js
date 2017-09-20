@@ -238,19 +238,20 @@ var createReport = function(objs, whoIs, query, queryDescription, user){
 			if (queryDescription.expenses) {
 					valueArray = [moment(obj.date).format('MM-DD-YYYY'), obj.unitno, obj.pono, obj.invoiceNumber, subTotal, subTotalExpenses, subTotalProfit, obj.sor, obj.wor, obj.client.branch.name, obj.status.description, moment(obj.date).format('YYYY'), moment(obj.date).format('MM')];
 			} else {
-		console.log(i)
 					valueArray = [moment(obj.date).format('MM-DD-YYYY'), obj.unitno, obj.pono, obj.invoiceNumber, subTotal, obj.sor, obj.wor, obj.client && obj.client.branch ? obj.client.branch.name : '', obj.status.description, moment(obj.date).format('YYYY'), moment(obj.date).format('MM')];
 			}
 		}
 
 		excel.worksheet.addRow(valueArray);
 		excel.worksheet.lastRow.font = normalFont;
-		excel.worksheet.getCell('L' + (i + 5).toString()).numFmt = '$ #,###,###,##0.00';	
+		excel.worksheet.getCell('E' + (i + 7).toString()).numFmt = '$ #,###,###,##0.00';	
 	}
-	var key = (objs.length + 4).toString();
-	excel.worksheet.addRow(['', '', '', '', '', 'Total', total, totalExpenses, totalProfit, '', '', '', '']);
-	excel.worksheet.getCell('L' + key).numFmt = '$ #,###,###,##0.00';
-	excel.worksheet.mergeCells('A' + key + ':F' + key);
+	var key = (objs.length + 7).toString();
+	excel.worksheet.addRow(['', '', '', 'Total', total, totalExpenses, totalProfit, '',  '', '', '', '', '']);
+	excel.worksheet.getCell('E' + key).numFmt = '$ #,###,###,##0.00';
+	excel.worksheet.getCell('F' + key).numFmt = '$ #,###,###,##0.00';
+	excel.worksheet.getCell('G' + key).numFmt = '$ #,###,###,##0.00';
+	excel.worksheet.mergeCells('A' + key + ':C' + key);
 	excel.worksheet.lastRow.font = boldFont;
 
 	//saving file
