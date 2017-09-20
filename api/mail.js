@@ -62,8 +62,12 @@ var sendMail = function (to, subject, body, isHtmlBody, attached, cc, cco, reply
 	} else {
 		mailOptions.text = body;
 	}
+	
 	if (attached)
 		mailOptions.attachments = attached;
+	else {
+		mailOptions.attachments = [];
+	}
 
 	smtpTransport.sendMail(mailOptions, function (error, response) {
 		if (error) {
@@ -155,12 +159,12 @@ var sendServiceOrder = function (serviceOrder, mails, dirname) {
 		var branch = serviceOrder && serviceOrder.client && serviceOrder.client.branch ? 'Branch: ' + serviceOrder.client.branch.name : 'Client: ' + serviceOrder.client.entity.fullName;
 		var subject = company + ' | ' + branch + ' | Service Order: ' + serviceOrder.sor;
 		
-		var attachments = [];
+		var serviceOrderAttachments = [];
 		if(serviceOrder.photos){
 			for(var i = 0; i < serviceOrder.photos.length; i++){
 				var photoDir = dirname + '/public/app' + serviceOrder.photos[i].url;
 				//console.log(photoDir)
-				attachments.push({
+				serviceOrderAttachments.push({
 					filename: serviceOrder.photos[i].name,
 					//content: fs.readFileSync(photoDir),
 					contentType: serviceOrder.photos[i].type,
@@ -170,7 +174,7 @@ var sendServiceOrder = function (serviceOrder, mails, dirname) {
 		}
 		console.log('sending mail', subject);
 		mails = _.uniq(mails);
-		sendMail(mails.join(', '), subject, body, true, attachments, null, null, 'mf@mobileonecontainers.com')
+		sendMail(mails.join(', '), subject, body, true, serviceOrderAttachments, null, null, 'mf@mobileonecontainers.com')
 		.then(function (response) {
 			console.log('DONE Sending Mail: ', response)
 			deferred.resolve(response);
