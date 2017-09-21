@@ -55,3 +55,6 @@ log/*
 *.pdf
 
 *.xlsx
+
+#IGNORAR LOS ARCHIVOS DE VB CODE 
+.vscode

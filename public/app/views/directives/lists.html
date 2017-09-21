@@ -122,15 +122,25 @@
     </ul>
   </div>-->
   <div class="col-xs-12 center-element paginator t-center">
-    <div style="width:150px; margin: 0 auto;">
+    <div style="width:200px; margin: 0 auto;">
 			<div class="btn-group">
-				<button type="button" class="btn btn-default disabled" ng-class="prevPageDisabled()" ng-click="prevPage()" style="cursor:pointer">
-				<i class="fa fa-angle-double-left"></i>
-				</button>
+        <button type="button" class="btn btn-default disabled" ng-class="prevPageDisabled()" ng-click="firstPage()" style="cursor:pointer">        
+        <i class="fa fa-angle-double-left"></i>
+        </button>
+        
+        <button type="button" class="btn btn-default disabled" ng-class="prevPageDisabled()" ng-click="prevPage()" style="cursor:pointer">
+        <i class="fa fa-angle-left" aria-hidden="true"></i>
+        </button>
+        
 				<button type="button" class="btn btn-default ng-binding" disabled="" style="cursor:pointer">{{currentPage}}/{{maxPage}}</button>
-				<button type="button" class="btn btn-default" ng-class="nextPageDisabled()" ng-click="nextPage()" style="cursor:pointer">
-				<i class="fa fa-angle-double-right"></i>
-				</button>
+      
+        <button type="button" class="btn btn-default" ng-class="nextPageDisabled()" ng-click="nextPage()" style="cursor:pointer">
+        <i class="fa fa-angle-right" aria-hidden="true"></i>
+        </button>
+        
+        <button type="button" class="btn btn-default" ng-class="nextPageDisabled()" ng-click="finPage()" style="cursor:pointer">        
+        <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+        </button>
 			</div>
     </div>
   </div>
