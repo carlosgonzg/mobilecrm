@@ -151,7 +151,9 @@ WorkOrder.prototype.insert = function (workOrder, user, mail) {
 	})
 	.then(function (photos) {
 		var mails = [ ];
-		_this.sendWorkOrder(workOrder._id,mails , user, mail);
+		if (workOrder.sendMail) {
+				_this.sendWorkOrder(workOrder._id,mails , user, mail);
+		}
 		d.resolve(workOrder);
 	})
 	.catch (function (err) {
@@ -200,7 +202,7 @@ WorkOrder.prototype.update = function (query, workOrder, user, mail) {
 					
 			_this.crudInvoice.update({ wor: workOrder.wor }, setObj, true);
 
-		if (workOrder.sendMail && user.role._id != 1) {
+		if (workOrder.sendMail) {
 				_this.sendWorkOrder(workOrder._id,mails , user, mail);
 		}
 		d.resolve(obj);
