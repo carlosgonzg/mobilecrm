@@ -356,6 +356,9 @@ angular.module('MobileCRMApp')
 		        title: {
 		            text: ''
 		        },
+            tooltip: {
+                pointFormat: $scope.selectedTab === 'totalPriceByClient' ? "US$ {point.y:,.2f}" : "{point.y:,.0f}"
+            },
 		        xAxis: {
 		            categories: categories
 		        },
