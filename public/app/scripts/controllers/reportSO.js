@@ -278,6 +278,9 @@ angular.module('MobileCRMApp')
 		        title: {
 		            text: ''
 		        },
+            tooltip: {
+                pointFormat: $scope.selectedTab === 'totalPriceByClient' ? "US$ {point.y:,.2f}" : "{point.y:,.0f}"
+            },
 		        xAxis: {
 		            categories: ['Amount']
 		        },
@@ -321,7 +324,7 @@ angular.module('MobileCRMApp')
 			query.$and.push({
 				'client._id': params.client._id
 			});
-			queryDescription.client = params.client;
+			queryDescription.client = params.client.entity.name;
 		}
 		//ahora el status
 		if(params.status._id != -1){

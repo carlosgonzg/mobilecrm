@@ -896,6 +896,9 @@
 .fa-angle-double-left:before {
   content: "\f100";
 }
+.fa-fa-angle-left:before {
+  content: "\f100";
+}
 .fa-angle-double-right:before {
   content: "\f101";
 }

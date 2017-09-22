@@ -1,6 +1,6 @@
 'use strict';
 
-angular
+var app = angular
 .module('MobileCRMApp', [
 		'ngAnimate',
 		'ngAria',
@@ -358,4 +358,14 @@ angular
 	.otherwise({
 		redirectTo : '/'
 	});
+});
+
+app.run(function($rootScope) {
+//This code will be executed on AngularJS initilization
+    Highcharts.setOptions({
+          lang: {
+              decimalPoint: '.',
+              thousandsSep: ','
+          }
+      });
 });
