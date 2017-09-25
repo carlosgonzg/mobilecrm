@@ -297,7 +297,7 @@
 					</th>
 				</tr>
 				<tr ng-repeat="item in invoice.items track by $index">
-					<td>{{item.createdDate|date:'MM/dd/yyyy'}}</td>
+					<td>{{invoice.createdDate|date:'MM/dd/yyyy'}}</td>
 					<td>{{invoice.invoiceNumber}}</td>
 					<td>{{item.code}}</td>
 					<td>{{item.description}}</td>

@@ -171,12 +171,12 @@ angular.module('MobileCRMApp')
 				}
 			}
 			if(!isHere){
-				$scope.serviceOrder.fieldsChanged.push({ field: field + (field === "status" ? " - " + $scope.serviceOrder.status.description : ""), by: $rootScope.userData._id });
+				$scope.serviceOrder.fieldsChanged.push({ field: field + (field === "Status" ? " - " + $scope.serviceOrder.status.description : ""), by: $rootScope.userData._id });
 				console.log($scope.serviceOrder.fieldsChanged)
 			}
 		} 
 
-		if (field === "status") {
+		if (field === "Status") {
 				$scope.setNoInvoice();
 		}
 
