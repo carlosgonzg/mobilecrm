@@ -31,7 +31,8 @@
 				<div class="col-sm-12 pull-left">
 					<div class="form-group">
 						<label for="Client">Client</label>
-						<entitypicker ng-model="serviceOrder.client" ng-change="clientChanged(serviceOrder.client)" ws-class="wsClass" ws-fields="wsFields" ws-filter="wsFilter" disable="userData.role._id != 1"></entitypicker>
+						<entitypicker ng-model="serviceOrder.client" ng-change="clientChanged(serviceOrder.client)" ws-class="wsClass" ws-fields="wsFields"
+						 ws-filter="wsFilter" disable="userData.role._id != 1"></entitypicker>
 					</div>
 				</div>
 				<div class="col-sm-12 pull-left">
@@ -42,7 +43,8 @@
 								<b>{{serviceOrder.client.branch.name}}</b>
 								<br/>
 								<p class="col-xs-12 text-left" ng-repeat="address in serviceOrder.client.branch.addresses track by $index">
-									<i class="fa fa-map"></i>&nbsp;{{ address.address1 }},&nbsp;{{ address.city.description }},&nbsp;{{ address.state.description }},&nbsp;{{ address.country.description }}
+									<i class="fa fa-map"></i>&nbsp;{{ address.address1 }},&nbsp;{{ address.city.description }},&nbsp;{{ address.state.description
+									}},&nbsp;{{ address.country.description }}
 								</p>
 							</p>
 							<p class="col-xs-12 text-left" ng-repeat="phone in serviceOrder.client.branch.phones track by $index">
@@ -57,7 +59,8 @@
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
 							<label for="customer">Customer</label>
-							<input type="text" name="customer" class="form-control" ng-model="serviceOrder.customer" ng-class="isChanged('customer')" ng-change="changed('customer')" ng-disabled="isDisabled()" validator="required">
+							<input type="text" name="customer" class="form-control" ng-model="serviceOrder.customer" ng-class="isChanged('customer')"
+							 ng-change="changed('customer')" ng-disabled="isDisabled()" validator="required">
 						</div>
 					</div>
 				</div>
@@ -65,7 +68,8 @@
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
 							<label for="sor">Service order #</label>
-							<input type="text" name="sor" class="form-control" ng-model="serviceOrder.sor" ng-class="isChanged('sor')" ng-change="changed('sor')" ng-disabled="isDisabled()" validator="required">
+							<input type="text" name="sor" class="form-control" ng-model="serviceOrder.sor" ng-class="isChanged('sor')" ng-change="changed('sor')"
+							 ng-disabled="isDisabled()" validator="required">
 						</div>
 					</div>
 				</div>
@@ -73,7 +77,8 @@
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
 							<label for="contract">Contract</label>
-							<input type="text" name="contract" class="form-control" ng-model="serviceOrder.contract" ng-class="isChanged('contract')" ng-change="changed('contract')" ng-disabled="isDisabled()">
+							<input type="text" name="contract" class="form-control" ng-model="serviceOrder.contract" ng-class="isChanged('contract')"
+							 ng-change="changed('contract')" ng-disabled="isDisabled()">
 						</div>
 					</div>
 				</div>
@@ -81,7 +86,8 @@
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
 							<label for="invoiceNumber">Invoice #</label>
-							<input type="text" name="invoiceNumber" class="form-control" ng-model="serviceOrder.invoiceNumber" ng-class="isChanged('invoiceNumber')" ng-change="changed('invoiceNumber')" ng-disabled="isDisabled() || userData.role._id != 1">
+							<input type="text" name="invoiceNumber" class="form-control" ng-model="serviceOrder.invoiceNumber" ng-class="isChanged('invoiceNumber')"
+							 ng-change="changed('invoiceNumber')" ng-disabled="isDisabled() || userData.role._id != 1">
 						</div>
 					</div>
 				</div>
@@ -89,7 +95,9 @@
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
 							<label for="status">Status</label>
-							<select class="form-control" name="status" ng-model="serviceOrder.status" ng-class="isChanged('status')" ng-change="changed('status')" ng-options="status as status.description for status in listStatus track by status._id" ng-disabled="isDisabled() && userData.role._id != 1 && userData.role._id != 5" validator="required"></select>
+							<select class="form-control" name="status" ng-model="serviceOrder.status" ng-class="isChanged('status')" ng-change="changed('status')"
+							 ng-options="status as status.description for status in listStatus track by status._id" ng-disabled="isDisabled() && userData.role._id != 1 && userData.role._id != 5"
+							 validator="required"></select>
 						</div>
 					</div>
 				</div>
@@ -105,15 +113,16 @@
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
 							<label for="originalShipDate">Completed Date</label>
-							<sc-datepicker ng-model="serviceOrder.originalShipDate" ng-class="isChanged('originalShipDate')" ng-change="changed('originalShipDate')" ng-disabled="userData.role._id != 1"></sc-datepicker>
+							<sc-datepicker ng-model="serviceOrder.originalShipDate" ng-class="isChanged('originalShipDate')" ng-change="changed('originalShipDate')"
+							 ng-disabled="userData.role._id != 1"></sc-datepicker>
 						</div>
 					</div>
 				</div>
 				<div class="col-xs-12">
 					<div class="col-xs-12 pull-right">
 						<uib-accordion ng-disabled="userData.role._id == 5">
-				 			<uib-accordion-group class="panel-default" heading="Contacts" >
-				 				<button class="btn btn-primary pull-right" type="button" ng-click="addContact()"><i class="fa fa-plus"></i></button>
+							<uib-accordion-group class="panel-default" heading="Contacts">
+								<button class="btn btn-primary pull-right" type="button" ng-click="addContact()"><i class="fa fa-plus"></i></button>
 								<div ng-repeat="contact in serviceOrder.contacts track by $index">
 									<div class="col-xs-12">
 										<b>Contact #{{$index + 1}}</b>
@@ -141,15 +150,16 @@
 				<div class="col-xs-12" ng-if="userData.role._id == 1">
 					<div class="col-xs-12 pull-right">
 						<uib-accordion>
-				 			<uib-accordion-group class="panel-default">
-				 				<uib-accordion-heading>
-				 					<span class="fa fa-map-pin fa-lg"> </span> From Branch Address
+							<uib-accordion-group class="panel-default">
+								<uib-accordion-heading>
+									<span class="fa fa-map-pin fa-lg"> </span> From Branch Address
 
-				 					<small ng-if="serviceOrder.siteAddressFrom.address1">{{serviceOrder.siteAddressFrom.address1 }}, {{serviceOrder.siteAddressFrom.city.description}} </small>
-				 				</uib-accordion-heading>
-								
+									<small ng-if="serviceOrder.siteAddressFrom.address1">{{serviceOrder.siteAddressFrom.address1 }}, {{serviceOrder.siteAddressFrom.city.description}} </small>
+								</uib-accordion-heading>
 
-								<select ng-model="serviceOrder.siteAddressFrom" class="form-control" ng-class="isChanged('siteAddressFrom')" ng-change="changed('siteAddressFrom');recalculate()" ng-disabled="isDisabled()" ng-options="address as address.addressString for address in addresses track by address.address1">
+
+								<select ng-model="serviceOrder.siteAddressFrom" class="form-control" ng-class="isChanged('siteAddressFrom')" ng-change="changed('siteAddressFrom');recalculate()"
+								 ng-disabled="isDisabled()" ng-options="address as address.addressString for address in addresses track by address.address1">
 								</select>
 
 							</uib-accordion-group>
@@ -159,13 +169,14 @@
 				<div class="col-xs-12">
 					<div class="col-xs-12 pull-right">
 						<uib-accordion>
-				 			<uib-accordion-group class="panel-default">
-				 				<uib-accordion-heading>
-				 					<span class="fa fa-map-marker fa-lg"></span> To Customer Address
-				 					<small ng-if="serviceOrder.siteAddress.city">{{serviceOrder.siteAddress.address1 }}, {{serviceOrder.siteAddress.city.description}} </small>
-				 				</uib-accordion-heading>
-								
-								<address-model ng-model="serviceOrder.siteAddress" origin-point="serviceOrder.siteAddressFrom" ng-class="isChanged('siteAddress')" ng-change="changed('siteAddress')" ng-disabled="isDisabled()"></address-model>
+							<uib-accordion-group class="panel-default">
+								<uib-accordion-heading>
+									<span class="fa fa-map-marker fa-lg"></span> To Customer Address
+									<small ng-if="serviceOrder.siteAddress.city">{{serviceOrder.siteAddress.address1 }}, {{serviceOrder.siteAddress.city.description}} </small>
+								</uib-accordion-heading>
+
+								<address-model ng-model="serviceOrder.siteAddress" origin-point="serviceOrder.siteAddressFrom" ng-class="isChanged('siteAddress')"
+								 ng-change="changed('siteAddress')" ng-disabled="isDisabled()"></address-model>
 
 							</uib-accordion-group>
 						</uib-accordion>
@@ -185,7 +196,8 @@
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
 							<label for="pono">PO #</label>
-							<input type="text" class="form-control" ng-model="serviceOrder.pono" ng-class="isChanged('pono')" ng-change="changed('pono')" ng-disabled="isDisabled()">
+							<input type="text" class="form-control" ng-model="serviceOrder.pono" ng-class="isChanged('pono')" ng-change="changed('pono')"
+							 ng-disabled="isDisabled()">
 						</div>
 					</div>
 				</div>
@@ -193,7 +205,8 @@
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
 							<label for="pono">ISO #</label>
-							<input type="text" class="form-control" ng-model="serviceOrder.isono" ng-class="isChanged('isono')" ng-change="changed('isono')" ng-disabled="isDisabled()">
+							<input type="text" class="form-control" ng-model="serviceOrder.isono" ng-class="isChanged('isono')" ng-change="changed('isono')"
+							 ng-disabled="isDisabled()">
 						</div>
 					</div>
 				</div>
@@ -201,7 +214,8 @@
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
 							<label for="date">Unit #/Building ID</label>
-							<input type="text" class="form-control" ng-model="serviceOrder.unitno" ng-class="isChanged('unitno')" ng-change="changed('unitno')" ng-disabled="isDisabled()">
+							<input type="text" class="form-control" ng-model="serviceOrder.unitno" ng-class="isChanged('unitno')" ng-change="changed('unitno')"
+							 ng-disabled="isDisabled()">
 						</div>
 					</div>
 				</div>
@@ -209,26 +223,27 @@
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
 							<label for="date">Unit Size</label>
-							<input type="text" class="form-control" ng-model="serviceOrder.unitSize" ng-class="isChanged('unitSize')" ng-change="changed('unitSize')" ng-disabled="isDisabled()">
+							<input type="text" class="form-control" ng-model="serviceOrder.unitSize" ng-class="isChanged('unitSize')" ng-change="changed('unitSize')"
+							 ng-disabled="isDisabled()">
 						</div>
 					</div>
 				</div>
 				<div class="col-sm-6">
 					<div class="col-xs-12 pull-right">
 						<div class="checkbox">
-						    <label>
+							<label>
 						      <input type="checkbox" ng-model="serviceOrder.clientResponsibleCharges" ng-class="isChanged('clientResponsibleCharges')" ng-change="changed('clientResponsibleCharges')" id="clientResponsibleCharges" ng-disabled="isDisabled()"> Customer responsible for charges
 							</label>
-					  	</div>
+						</div>
 					</div>
 				</div>
 				<div class="col-sm-6">
 					<div class="col-xs-12 pull-right">
 						<div class="checkbox">
-						    <label>
+							<label>
 						      <input type="checkbox" ng-model="serviceOrder.partsFromTheYard" ng-class="isChanged('partsFromTheYard')" ng-change="changed('partsFromTheYard')" id="partsFromTheYard" ng-disabled="isDisabled()"> Parts from the yard
 							</label>
-					  	</div>
+						</div>
 					</div>
 				</div>
 				<div class="col-sm-6" ng-if="serviceOrder.partsFromTheYard">
@@ -236,7 +251,7 @@
 						<div class="form-group">
 							<label for="yardComment">Parts from the Yard</label>
 							<textarea id="yardComment" ng-model="serviceOrder.yardComment" class="form-control">
-							</textarea> 
+							</textarea>
 						</div>
 					</div>
 				</div>
@@ -244,7 +259,8 @@
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
 							<label for="distanceFrom">Service Miles (Miles)</label>
-							<input type="text" name="distanceFrom" class="form-control" ng-model="serviceOrder.siteAddress.distanceFrom" validator="required" ng-disabled="userData.role._id == 5" ng-class="isChanged('distanceFrom')" ng-change="changed('serviceMiles')">
+							<input type="text" name="distanceFrom" class="form-control" ng-model="serviceOrder.siteAddress.distanceFrom" validator="required"
+							 ng-disabled="userData.role._id == 5" ng-class="isChanged('distanceFrom')" ng-change="changed('serviceMiles')">
 						</div>
 					</div>
 				</div>
@@ -255,7 +271,7 @@
 					<label>Photos</label>
 				</div>
 				<div class="col-sm-3" ng-repeat="photo in serviceOrder.photos track by $index">
-					<img class="img-rounded" style="width:120px" ng-src="{{photo.url}}"  ng-click="showPicture($index)"/>
+					<img class="img-rounded" style="width:120px" ng-src="{{photo.url}}" ng-click="showPicture($index)" />
 					<button type="button" ng-click="removePhoto($index)" class="btn btn-sm btn-danger">
 						<i class="fa fa-times"></i>
 					</button>
@@ -296,7 +312,8 @@
 				<tbody>
 					<tr>
 						<td colspan="5">
-							<entitypicker ng-model="params.item" ws-class="wsClassItem" ws-fields="wsFieldsItem" ws-filter="wsFilterItem" ws-label="'description'" disable="!serviceOrder.client._id" order-by="'code'"></entitypicker>
+							<entitypicker ng-model="params.item" ws-class="wsClassItem" ws-fields="wsFieldsItem" ws-filter="wsFilterItem" ws-label="'description'"
+							 disable="!serviceOrder.client._id" order-by="'code'"></entitypicker>
 						</td>
 						<td>
 							<button type="button" class="btn btn-sm btn-primary update" ng-click="addItem(params.item)" ng-disabled="!params.item._id">
@@ -314,25 +331,29 @@
 					</tr>
 					<tr ng-repeat="item in serviceOrder.items track by $index">
 						<td>
-							<input type="text" class="form-control" ng-model="item.code"  ng-disabled="isDisabled()">
+							<input type="text" class="form-control" ng-model="item.code" ng-disabled="isDisabled()">
 						</td>
 						<td ng-if="item.itemCollection._id" width="15%">
 							{{item.itemCollection.description}}
 						</td>
 						<td colspan="{{ item.itemCollection._id ? '1' : '2' }}" width="15%">
-							<input type="text" name="description{{$index}}" class="form-control" ng-model="item.description"  ng-disabled="isDisabled()" validator="required" ng-class="isChanged('item')" ng-change="changed('item')">
+							<input type="text" name="description{{$index}}" class="form-control" ng-model="item.description" ng-disabled="isDisabled()"
+							 validator="required" ng-class="isChanged('item')" ng-change="changed('item')">
 						</td>
 						<td>
-							<input type="number" name="quantity{{$index}}" class="form-control" ng-model="item.quantity"  ng-disabled="isDisabled()" validator="required" step="0.01" ng-class="isChanged('item')" ng-change="changed('item')">
+							<input type="number" name="quantity{{$index}}" class="form-control" ng-model="item.quantity" ng-disabled="isDisabled()" validator="required"
+							 step="0.01" ng-class="isChanged('item')" ng-change="changed('item')">
 						</td>
 						<td>
-							<input type="number" name="price{{$index}}" class="form-control" ng-model="item.price"  ng-disabled="isDisabled()" validator="required" step="0.01" ng-class="isChanged('item')" ng-change="changed('item')">
+							<input type="number" name="price{{$index}}" class="form-control" ng-model="item.price" ng-disabled="isDisabled()" validator="required"
+							 step="0.01" ng-class="isChanged('item')" ng-change="changed('item')">
 						</td>
 						<td>
 							{{item.getTotalPrice() | currency }}
 						</td>
 						<td>
-							<input type="text" name="part{{$index}}" class="form-control" ng-model="item.part"  ng-disabled="isDisabled()" ng-class="isChanged('item')" ng-change="changed('item')">
+							<input type="text" name="part{{$index}}" class="form-control" ng-model="item.part" ng-disabled="isDisabled()" ng-class="isChanged('item')"
+							 ng-change="changed('item')">
 						</td>
 						<td>
 							<button type="button" class="btn btn-sm btn-danger update" ng-click="removeItem($index)" ng-if="userData.role._id == 1">
@@ -362,14 +383,18 @@
 		<div class="col-xs-12">
 			<div class="col-sm-4 pull-left">
 				<div class="form-group">
-					<label for="comment">Issue</label>
-					<textarea id="comment" ng-model="serviceOrder.issue" class="form-control" ng-disabled="userData.role._id == 5" ng-class="isChanged('issue')" ng-change="changed('issue')">
-					</textarea> 
+					<label for="comment">Issue/Comments</label>
+					<textarea id="comment" ng-model="serviceOrder.issue" class="form-control" ng-disabled="userData.role._id == 5" ng-class="isChanged('issue')"
+					 ng-change="changed('issue')">
+					</textarea>
 				</div>
-				<div class="form-group">
-					<label for="comment">Comment</label>
-					<textarea id="comment" ng-model="serviceOrder.comment" class="form-control" ng-class="isChanged('comment')" ng-change="changed('comment')">
-					</textarea> 
+
+				<div ng-hide="">
+					<div class="form-group">
+						<label for="comment">Comments</label>
+						<textarea id="comment" ng-model="serviceOrder.comment" class="form-control" ng-class="isChanged('comment')" ng-change="changed('comment')" ng-disabled="userData.role._id>=2" >
+					</textarea>
+					</div>
 				</div>
 			</div>
 		</div>
