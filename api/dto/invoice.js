@@ -391,7 +391,8 @@ Invoice.prototype.getMonthlyStatement = function(params, user){
 	};
 
 	var sort = {
-		$sort: {
+		$sort: 
+		{
 			date: 1,
 			'company._id': 1,
 			'branch._id': 1,
@@ -461,6 +462,7 @@ Invoice.prototype.getMonthlyStatement = function(params, user){
 	_this.crud.find({
 		date: queryDate
 	})
+
 	.then(function(result){
 		invoices = _.map(result.data, function(obj){
 			return obj.invoiceNumber;
@@ -504,7 +506,7 @@ Invoice.prototype.getMonthlyStatement = function(params, user){
 		q.all(promise);
 	})
 	.then(function(){
-		_this.crud.db.get('REPORT').aggregate(pipeline, function(error, data){
+		_this.crud.db.get('REPORT').aggregate(pipeline, {allowDiskUse:true}, function(error, data){
 			if(error){
 				d.reject(error);
 				throw new Error("Error happened: ", error);
