@@ -1,4 +1,4 @@
-<form class="form" id="itemForm" name="itemForm" >
+<form class="form" id="itemForm" name="itemForm">
 	<div class="row">
 		<div class="col-xs-9 fixed-top">
 			<h1 class="pull-left">
@@ -50,10 +50,22 @@
 				<div class="col-xs-12 pull-right">
 					<div class="form-group">
 						<label for="date">Price</label>
-						<input class="form-control" type="number" ng-model="item.price" step="0.01"/>
+						<input class="form-control" type="number" ng-model="item.price" step="0.01" />
 					</div>
 				</div>
 			</div>
+
+			<div class="col-xs-6">
+				<div class="col-xs-12 pull-right">
+					<div class="form-group">
+						<label for="category">Type Item</label>
+						<select class="form-control" ng-model="item.typeItem" id="category">
+					<option ng-repeat="category in list">{{category.item}}</option>
+				</select>
+					</div>
+				</div>
+			</div>
+
 		</div>
 	</div>
 </form>
