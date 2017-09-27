@@ -452,8 +452,8 @@ Invoice.prototype.getMonthlyStatement = function(params, user){
 		}
 	};
 	pipeline.push(project);
-	pipeline.push(sort);
 	pipeline.push(query);
+	pipeline.push(sort);
 	pipeline.push(group);
 	pipeline.push(project2);
 	pipeline.push(sort1);
