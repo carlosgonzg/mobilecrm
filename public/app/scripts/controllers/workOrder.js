@@ -210,11 +210,8 @@ angular.module('MobileCRMApp')
 
 	$scope.save = function (sendMail) {
 		delete $scope.workOrder.client.account.password;
-		if(sendMail)
-			$scope.workOrder.sendMail = true;
-		else {
-			$scope.workOrder.sendMail = false;
-		}
+		$scope.workOrder.sendMail = sendMail || false;
+
 		$scope.workOrder.save()
 		.then(function (data) {
 			toaster.success('The Work Order was saved successfully');
