@@ -506,7 +506,7 @@ Invoice.prototype.getMonthlyStatement = function(params, user){
 		q.all(promise);
 	})
 	.then(function(){
-		_this.crud.db.get('REPORT').aggregate(pipeline, {allowDiskUse:true}, function(error, data){
+		_this.crud.db.get('REPORT').aggregate(pipeline, function(error, data){
 			if(error){
 				d.reject(error);
 				throw new Error("Error happened: ", error);
