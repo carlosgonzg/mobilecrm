@@ -456,7 +456,7 @@ Invoice.prototype.getMonthlyStatement = function(params, user){
 	pipeline.push(sort);
 	pipeline.push(group);
 	pipeline.push(project2);
-	pipeline.push(sort1);
+	// pipeline.push(sort1);
 	var results = [];
 	var invoices = [];
 	_this.crud.find({
