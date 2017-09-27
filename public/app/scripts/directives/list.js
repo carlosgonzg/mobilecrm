@@ -38,7 +38,7 @@ angular.module('MobileCRMApp')
 				var today = new Date();
 				$scope.filterDateOptions = {
 					fromDate: new Date(today.getFullYear(), today.getMonth() - 1, today.getDate()),
-					toDate: new Date(today.getFullYear(), today.getMonth(), today.getDate()),
+					toDate: new Date(today.getFullYear(), today.getMonth(), today.getDate()+1),
 					enabled: true
 				};
 
