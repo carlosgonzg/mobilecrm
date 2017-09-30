@@ -17,7 +17,8 @@ angular.module('MobileCRMApp')
 				noAuth: '=',
 				advanced: '=',
 				sortList: '=',
-				sortField: '=?'
+				sortField: '=?',
+				showDeleteAction: '='
 			},
 			controller: function ($scope, $rootScope, $timeout, dialogs, toaster, Loading, $window, Company) {
 				$scope.list = [];
@@ -323,6 +324,21 @@ angular.module('MobileCRMApp')
 					$scope.getPaginatedSearch($scope.params);
 				};
 
+				$scope.delete = function (elem, fieldName) {
+					var dlg = dialogs.confirm('Warning',
+						'Are you sure you want to remove item: [' + elem[fieldName] + '] ?');
+					dlg.result.then(function (btn) {
+						elem.remove()
+							.then(function () {
+								toaster.success('The item was removed successfully');
+								$scope.getPaginatedSearch($scope.params);
+							})
+							.catch(function (error) {
+								toaster.error(error.message);
+							});
+					});
+				};
+				
 				$scope.matching = function (value) {
 					return (value === parseInt(value));
 				};
