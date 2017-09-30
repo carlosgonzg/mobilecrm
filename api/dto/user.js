@@ -4,6 +4,7 @@ var q = require('q');
 var bcrypt = require('bcryptjs');
 var mail = require('../mail');
 var Crud = require('./crud');
+var util = require('./util');
 var Role = require('./role');
 var Option = require('./option');
 var RoleOptions = require('./roleOptions');
@@ -19,6 +20,7 @@ function User(db, secret, userLogged) {
 	this.crudWO = new Crud(db, 'WORKORDER', userLogged );
 	this.crudInv = new Crud(db, 'INVOICE', userLogged );
 	this.secret = secret;
+	this.db = db;
 	//DB Table Schema
 	var accountSchema = {
 		type : 'object',
@@ -178,6 +180,18 @@ User.prototype.register = function (user) {
 		return _this.crud.update({
 			_id : obj._id
 		}, user);
+	})
+	.then(function (obj) {
+		console.log(_this.db)
+		if (user.role._id === 4) {
+			util.getSequence(_this.db, 'TECH')
+			.then(function (result) {
+				return util.getSequence(_this.db, _this.table);
+			})
+		} else {
+			d.resolve(obj);
+		}
+
 	})
 	.then(function (obj) {
 		d.resolve({

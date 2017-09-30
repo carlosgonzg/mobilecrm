@@ -62,6 +62,17 @@ angular.module('MobileCRMApp')
 			});
 		});
 	};
+
+	$scope.getTechId = function () {
+		if ($scope.user.role._id === 4) {
+			$scope.user.getSequence("TECH")
+			.then(function(result){
+				$scope.user.techId = result;
+				console.log(result)
+			});
+		}
+	}
+
 	if($scope.user.company){
 		$scope.getBranches($scope.user.company)
 	}

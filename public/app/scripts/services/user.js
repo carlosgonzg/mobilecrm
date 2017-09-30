@@ -115,6 +115,25 @@ angular.module('MobileCRMApp')
 		});
 		return d.promise;
 	};
+
+	User.prototype.getSequence = function (table) {
+		var d= $q.defer();
+		var _this = this;
+		var params = {
+			table: table
+		}
+		console.log(params)
+		$http.post(this.baseApiPath + '/getActualSequence', params)
+		.success(function (result) {
+			console.log(result)
+			d.resolve(Number(result));
+		})
+		.error(function (error) {
+			console.log(error)
+		})
+		return d.promise;
+	}
+
 	User.prototype.register = function () {
 		var d = $q.defer();
 		var _this = this;

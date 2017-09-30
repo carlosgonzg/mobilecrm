@@ -64,4 +64,12 @@ module.exports = function (prefix, app, ParentClass) {
 		obj.crud.paginatedCount(req.body).then(success(res), error(res));
 	});
 
+	//Find By Id
+	app.post(prefix + '/getActualSequence', function (req, res) {
+		var obj = new ParentClass(app.db, req.user);
+		console.log(req.body)
+		obj.crud.getActualSequence(app.db, req.body.table)
+		.then(success(res), error(res));
+	});
+
 };

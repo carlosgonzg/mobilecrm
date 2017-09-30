@@ -700,6 +700,26 @@ Crud.prototype.getPrevious = function (date) {
 	return deffered.promise;
 };
 
+Crud.prototype.getActualSequence = function (db, table) {
+  var deferred = q.defer();
+  var seqTable = db.get('SEQUENCE');
+  var query = {
+    table : table
+  };
+  seqTable.findOne(query)
+  .then(function (obj) {
+    if (obj == null || (obj.value == null && !obj.sequence)) {
+      deferred.resolve(1);
+    } else {
+      deferred.resolve(obj.sequence.toString());
+    }
+  })
+  .catch (function (err) {
+    d.reject(err);
+  });
+  return deferred.promise;
+}
+
 //Private Functions
 function handleMongoResponse(deferred) {
 	return function (err, data) {
