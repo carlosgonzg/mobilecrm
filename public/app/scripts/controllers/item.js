@@ -18,14 +18,21 @@ angular.module('MobileCRMApp')
 
 		$scope.save = function () {
 			console.log($scope.item)
-			$scope.item.save()
-				.then(function () {
-					toaster.success('The items was saved successfully');
-					$location.path('itemList');
-				})
-				.catch(function (error) {
-					toaster.error(error.message);
-				});
+
+			if ($scope.item.code)
+
+				$scope.item.save()
+					.then(function () {
+						toaster.success('The items was saved successfully');
+						$location.path('itemList');
+					})
+					.catch(function (error) {
+						toaster.error(error.message);
+					});
+			else {
+				toaster.error("Code can't be empty");
+			}
+
 		};
 
 		$scope.remove = function () {
