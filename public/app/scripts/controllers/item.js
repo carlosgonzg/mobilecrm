@@ -7,17 +7,17 @@
  * # AboutCtrl
  * Controller of the MobileCRMApp
  */
+
 angular.module('MobileCRMApp')
 	.controller('ItemCtrl', function ($scope, item, companies, $location, $q, toaster, dialogs) {
 		$scope.item = item;
 
 		$scope.list = [
 			{ item: 'Material' },
-			{ item: 'Labol' }
+			{ item: 'Labor' }
 		]
 
 		$scope.save = function () {
-			console.log($scope.item)
 
 			if ($scope.item.code)
 
@@ -32,7 +32,6 @@ angular.module('MobileCRMApp')
 			else {
 				toaster.error("Code can't be empty");
 			}
-
 		};
 
 		$scope.remove = function () {
