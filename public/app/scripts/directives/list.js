@@ -19,8 +19,9 @@ angular.module('MobileCRMApp')
 				sortList: '=',
 				sortField: '=?'
 			},
-			controller: function ($scope, $rootScope, $timeout, dialogs, toaster, Loading, $window) {
+			controller: function ($scope, $rootScope, $timeout, dialogs, toaster, Loading, $window, Company) {
 				$scope.list = [];
+				$scope.companies = [];
 				$scope.currentElement = {};
 				$scope.objeto = new $scope.clase();
 				$scope.qty = 0;
@@ -67,7 +68,8 @@ angular.module('MobileCRMApp')
 						advanced: $scope.advanced,
 						title: $scope.excelTitle,
 						excelFields: $scope.excelFields || $scope.fields,
-						fieldFilter: {}
+						fieldFilter: {},
+						company: {}
 					};
 
 					if ($scope.sortList == "-1") {
@@ -357,6 +359,24 @@ angular.module('MobileCRMApp')
 					}
 				};
 
+				$scope.getCompanies = function () {
+						new Company().find().then(function (result) {
+							$scope.companies = result.data;
+						})
+				}
+
+				$scope.filterByCompany = function () {
+				console.log($scope.params.company)
+				if ($scope.params.company) {
+					$scope.params.filter["client.company._id"] = $scope.params.company._id;
+				} else {
+					$scope.params.filter.company = {}
+				}
+				$scope.search();
+
+
+				}
+
 				//Ejecutar busqueda cuando se cambie algun parametro en filter
 				$scope.$watch(function () {
 					return JSON.stringify($scope.filterField);
@@ -385,6 +405,8 @@ angular.module('MobileCRMApp')
 						}
 					}
 				}
+
+				$scope.getCompanies();
 			}
 		};
 	});
