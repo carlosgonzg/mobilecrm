@@ -40,6 +40,38 @@ angular.module('MobileCRMApp')
 		}
 	];
 
+	$scope.techFields = [{
+			title : 'Company',
+			name : 'company.entity.name',
+			type : 'text'
+		},{
+			title : 'Branch',
+			name : 'branch.name',
+			type : 'text'
+		},{
+			title : 'Regional Manager',
+			name : 'isRegionalManager',
+			type : 'checkbox'
+		},{
+			title : 'Name',
+			name : 'entity.fullName',
+			type : 'text'
+		}, {
+			title : 'Email',
+			name : 'account.email',
+			type : 'text'
+		}, {
+			title : 'Role',
+			name : 'role.description',
+			type : 'text'
+		},
+		{
+			title : 'TechId',
+			name : 'techId',
+			type : 'text'
+		}
+	];
+
 	$scope.search = [
 		'_id',
 		'entity',
@@ -48,7 +80,8 @@ angular.module('MobileCRMApp')
 		'role.description',
 		'company.entity.name',
 		'branch.name',
-		'isRegionalManager'
+		'isRegionalManager',
+		'techId'
 	];
 
 	$scope.filter1 = {
@@ -84,5 +117,7 @@ angular.module('MobileCRMApp')
 		// });
 	};
 
-	$scope.selectTab(angular.copy($scope.roles[0]));
+	if (!$scope.selectedTab) {
+		$scope.selectTab(angular.copy($scope.roles[0]));
+	}
 });
