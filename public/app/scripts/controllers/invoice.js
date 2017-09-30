@@ -11,6 +11,7 @@ angular.module('MobileCRMApp')
 .controller('InvoiceCtrl', function ($scope, $rootScope, $location, toaster, User, invoice, statusList, Item, ServiceOrder, WorkOrder, dialogs, Invoice, Company, companies) {
 	$scope.invoice = invoice;
 	$scope.items = [];
+	$scope.waiting = false;
 	$scope.readOnly = $rootScope.userData.role._id != 1;
 	if($rootScope.userData.role._id != 1){
 		$scope.invoice.client = new User($rootScope.userData);
@@ -244,18 +245,22 @@ angular.module('MobileCRMApp')
 
 	
 	$scope.save = function () {
+		$scope.waiting = true;
 		delete $scope.invoice.client.account.password;
 		$scope.invoice.save()
 		.then(function (data) {
 			toaster.success('The Invoice was saved successfully');
 			$location.path('invoiceList')
+			$scope.waiting = false;
 		},
 			function (error) {
 			console.log(error);
 			toaster.error('The Invoice couldn\'t be saved, please check if some required field is empty or if its duplicated');
+			$scope.waiting = false;
 		});
 	};
 	$scope.saveBranch = function () {
+		$scope.waiting = true;
 		delete $scope.invoice.client.account.password;
 		$scope.invoice.save()
 		.then(function (data) {
@@ -264,15 +269,21 @@ angular.module('MobileCRMApp')
 				var emails = _.map(result.data, function(obj){
 					return obj.account.email;
 				});
-				$scope.invoice.sendTo(emails);
+				$scope.invoice.sendTo(emails)
+				.then(function() {
+					$scope.waiting = false;
+					
+				});
 			})
 		},
 		function (error) {
 			console.log(error);
 			toaster.error('The Invoice couldn\'t be saved and/or sent, please check if some required field is empty or if its duplicated');
+			$scope.waiting = false;
 		});
 	};
 	$scope.saveCompany = function () {
+		$scope.waiting = true;
 		delete $scope.invoice.client.account.password;
 		$scope.invoice.save()
 		.then(function (data) {
@@ -282,24 +293,32 @@ angular.module('MobileCRMApp')
 					return obj.accountPayableEmail;
 				});
 				emails.push($scope.invoice.client.account.email);
-				$scope.invoice.sendTo(emails, true);
+				$scope.invoice.sendTo(emails, true)
+				.then(function() {
+					$scope.waiting = false;
+					
+				});
 			})
 		},
 		function (error) {
 			console.log(error);
 			toaster.error('The Invoice couldn\'t be saved and/or sent, please check if some required field is empty or if its duplicated');
+			$scope.waiting = false;
 		});
 	};
 	$scope.saveSend = function () {
+		$scope.waiting = true;
 		delete $scope.invoice.client.account.password;
 		$scope.invoice.save()
 		.then(function (data) {
 			toaster.success('The Invoice was saved successfully');
 			$scope.invoice.send();
+			$scope.waiting = false;
 		},
 		function (error) {
 			console.log(error);
 			toaster.error('The Invoice couldn\'t be saved and/or sent, please check if some required field is empty or if its duplicated');
+			$scope.waiting = false;
 		});
 	};
 

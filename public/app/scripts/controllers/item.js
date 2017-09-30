@@ -11,6 +11,7 @@
 angular.module('MobileCRMApp')
 	.controller('ItemCtrl', function ($scope, item, companies, $location, $q, toaster, dialogs) {
 		$scope.item = item;
+		$scope.waiting = false;
 
 		$scope.list = [
 			{ item: 'Material' },
@@ -18,17 +19,22 @@ angular.module('MobileCRMApp')
 		]
 
 		$scope.save = function () {
-
-			if ($scope.item.code)
-
+			
+			if ($scope.item.code) {
+				$scope.waiting = true;
 				$scope.item.save()
 					.then(function () {
 						toaster.success('The items was saved successfully');
 						$location.path('itemList');
+						$scope.waiting = false;
 					})
 					.catch(function (error) {
 						toaster.error(error.message);
+						$scope.waiting = false;
 					});
+				
+			}
+
 			else {
 				toaster.error("Code can't be empty");
 			}

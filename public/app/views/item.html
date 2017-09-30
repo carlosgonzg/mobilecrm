@@ -6,7 +6,7 @@
 			</h1>
 			<div class="btn-group pull-right" style="margin-top: 20px;" role="group" aria-label="...">
 				<back-button></back-button>
-				<button type="button" form="itemForm" class="btn btn-primary" ng-click="save()"><i class="fa fa-save"></i>&nbsp;<span>Save</span></button>
+				<button type="button" form="itemForm" class="btn btn-primary" ng-click="save()" ng-disabled="waiting"><i class="fa fa-save"></i>&nbsp;<span>Save</span></button>
 				<button type="button" form="itemForm" class="btn btn-danger" ng-click="remove()"><i class="fa fa-delete"></i>&nbsp;<span>Delete</span></button>
 				<button type="button" class="btn btn-default" ng-click="assignCompanies()"><i class="fa fa-plus"></i>&nbsp;<span>Assign Company</span></button>
 			</div>

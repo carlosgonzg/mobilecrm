@@ -19,6 +19,7 @@ angular.module('MobileCRMApp')
 		$scope.serviceOrder.client = new User($rootScope.userData);
 	}
 	$scope.listStatus = statusList;
+	$scope.waiting = false;
 
 	$scope.wsClass = User;
 	$scope.wsFilter = { 'role._id': 3};
@@ -267,6 +268,7 @@ angular.module('MobileCRMApp')
 	};
 
 	$scope.save = function (sendMail) {
+		$scope.waiting = true;
 		delete $scope.serviceOrder.client.account.password;
 		if(sendMail)
 			$scope.serviceOrder.sendMail = true;
@@ -288,10 +290,12 @@ angular.module('MobileCRMApp')
 		.then(function (data) {
 			toaster.success('The Service Order was saved successfully');
 			$location.path('serviceOrderList')
+			$scope.waiting = false;
 		},
 			function (error) {
 			console.log(error);
 			toaster.error('The Service Order couldn\'t be saved, please check if some required field is empty or if its duplicated');
+			$scope.waiting = false;
 		});
 	};
 

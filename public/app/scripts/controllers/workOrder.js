@@ -16,6 +16,7 @@ angular.module('MobileCRMApp')
 	if($rootScope.userData.role._id != 1){
 		$scope.workOrder.client = new User($rootScope.userData);
 	}
+	$scope.waiting = false;
 	$scope.listStatus = statusList;
 	$scope.wsClass = User;
 	$scope.wsFilter = { 'role._id': 3};
@@ -209,6 +210,7 @@ angular.module('MobileCRMApp')
 	};
 
 	$scope.save = function (sendMail) {
+		$scope.waiting = true;
 		delete $scope.workOrder.client.account.password;
 		$scope.workOrder.sendMail = sendMail || false;
 
@@ -216,10 +218,12 @@ angular.module('MobileCRMApp')
 		.then(function (data) {
 			toaster.success('The Work Order was saved successfully');
 			$location.path('workOrderList')
+			$scope.waiting = false;
 		},
 			function (error) {
 			console.log(error);
 			toaster.error('The Work Order couldn\'t be saved, please check if some required field is empty or if its duplicated');
+			$scope.waiting = false;
 		});
 	};
 
