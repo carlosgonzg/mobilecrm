@@ -14,62 +14,74 @@
           <div class="col-xs-12 col-md-2">
             <label></label>
             <div class="checkbox">
-                <label>
+              <label>
                   <input type="checkbox" ng-model="filterDateOptions.enabled" ng-change="search()"> Filter by Dates
               </label>
             </div>
           </div>
-         
+
         </div>
         <div class="col-md-10">
           <div style="padding: 15px;padding-top:0px;" class="input-group">
             <span class="input-group-addon">Search: </span>
-            
-            <input class="form-control" type="text" ng-keyup="$event.keyCode == 13 ? search() : null" ng-model="params.search" ng-model-options="{ debounce: 500}"/>
+
+            <input class="form-control" type="text" ng-keyup="$event.keyCode == 13 ? search() : null" ng-model="params.search" ng-model-options="{ debounce: 500}"
+            />
             <span class="input-group-addon btn btn-default" ng-click="search()" tooltip="Search"><i class="fa fa-search"></i></span>
             <span class="input-group-addon btn btn-default" ng-click="downloadExcel(params)" tooltip="Descargar Excel"><i class="fa fa fa-download"></i></span>
           </div>
         </div>
       </div>
-       <div class="col-xs-12 col-md-2" ng-if="filterDate">
-            <label for="date">Company:</label>
-            <select class="form-control" ng-model="params.company" ng-options="company as company.entity.name for company in companies track by company._id"  ng-change="filterByCompany()"></select>
+      <div class="col-xs-12 col-md-2" ng-if="filterDate">
+        <label for="date">Company:</label>
+        <select class="form-control" ng-model="params.company" ng-options="company as company.entity.name for company in companies track by company._id"
+          ng-change="filterByCompany()"></select>
       </div>
       <div class="col-xs-12 text-center" ng-if="!list.length">
         <br>
         <h4>
-        <span ng-if="!loaded">
+          <span ng-if="!loaded">
           <i class="fa fa-spinner fa-pulse"></i>
           Loading
         </span>
-        <span ng-if="loaded">
+          <span ng-if="loaded">
           There's no information to show
         </span>
         </h4>
       </div>
     </div>
     <div class="table-responsive">
-      <table id="columnRender" cellspacing="0" class="table table-hover tableNoBottom table-condensed" style="border-bottom: 1px solid #dddddd; " ng-if="list.length">
+      <table id="columnRender" cellspacing="0" class="table table-hover tableNoBottom table-condensed" style="border-bottom: 1px solid #dddddd; "
+        ng-if="list.length">
         <thead>
           <tr>
             <th ng-if="show" class="col-xs-1" ng-click="filter('_id')">#</th>
-            <th ng-style="field.sortable ? { 'cursor': 'pointer' } : {}" ng-repeat="field in fields" ng-click="field.sortable ? filter(field.name) : null" ng-class="field.class">
+            <th ng-style="field.sortable ? { 'cursor': 'pointer' } : {}" ng-repeat="field in fields" ng-click="field.sortable ? filter(field.name) : null"
+              ng-class="field.class">
               <span ng-bind-html="field.title"></span>
               <i ng-if="field.sortable" class="fa" ng-style="{ 'opacity' : (field.name == orderBy.field) ? '1' : '0.2' }" ng-class="{'fa-angle-up':!orderBy.reverse, 'fa-angle-down':orderBy.reverse}"></i>
             </th>
+            <th ng-show="showDeleteAction" ng-class="field.class" vertical-alig="bottom">
+              <strong>Delete</strong>
+            </th>
           </tr>
-          <tr font-color="black" hidden >
+          <tr font-color="black" hidden>
             <th ng-if="show" class="col-xs-1" ng-click="filter('_id')">#</th>
-            <td ng-repeat="field in fields"  ng-class="field.class" vertical-alig="bottom">
-               <!-- Campos Normales -->
+            <td ng-repeat="field in fields" ng-class="field.class" vertical-alig="bottom">
+              <!-- Campos Normales -->
               <input class="form-control" ng-if="!field.config && field.type !='date' && field.decimalsOnly!= 'decimals-only' && field.type !='object' && field.type !='currency' && field.type != 'checkbox'"
-              ng-change="search()" ng-keyup="$event.keyCode == 13 ? search() : null" ng-model="params.fieldFilter[field.name]"  ng-model-options="{ debounce: 500}"></input>
+                ng-change="search()" ng-keyup="$event.keyCode == 13 ? search() : null" ng-model="params.fieldFilter[field.name]"
+                ng-model-options="{ debounce: 500}"></input>
               <!-- Campos Monetarios -->
-              <input class="form-control" placeholder="Desde" class="ta_right" ng-if="field.type ==='currency'" ng-change="search()" ng-keyup="$event.keyCode == 13 ? applyFilters() : null" ng-model="params.fieldFilter[field.name]" ng-model-options="{ debounce: 500}" ></input>
-              <input class="form-control" placeholder="Hasta" class="ta_right" ng-if="field.type ==='currency'" ng-change="search()" ng-keyup="$event.keyCode == 13 ? applyFilters() : null" ng-model="params.fieldFilter[field.name]" ng-model-options="{ debounce: 500}" ></input>
+              <input class="form-control" placeholder="Desde" class="ta_right" ng-if="field.type ==='currency'" ng-change="search()" ng-keyup="$event.keyCode == 13 ? applyFilters() : null"
+                ng-model="params.fieldFilter[field.name]" ng-model-options="{ debounce: 500}"></input>
+              <input class="form-control" placeholder="Hasta" class="ta_right" ng-if="field.type ==='currency'" ng-change="search()" ng-keyup="$event.keyCode == 13 ? applyFilters() : null"
+                ng-model="params.fieldFilter[field.name]" ng-model-options="{ debounce: 500}"></input>
               <!-- Campos Fecha -->
-              <input class="form-control" placeholder="Desde" ng-if="field.type=='date'" ng-change="search()" ng-keyup="$event.keyCode == 13 ? search() : null" ng-model="params.fieldFilter[field.name]" ng-model-options="{ debounce: 500}"></input>  
-              <input class="form-control" placeholder="Hasta" ng-if="field.type=='date'" ng-change="search()" ng-keyup="$event.keyCode == 13 ? search() : null" ng-model="params.fieldFilter[field.name]" ng-model-options="{ debounce: 500}"></input>    
+              <input class="form-control" placeholder="Desde" ng-if="field.type=='date'" ng-change="search()" ng-keyup="$event.keyCode == 13 ? search() : null"
+                ng-model="params.fieldFilter[field.name]" ng-model-options="{ debounce: 500}"></input>
+              <input class="form-control" placeholder="Hasta" ng-if="field.type=='date'" ng-change="search()" ng-keyup="$event.keyCode == 13 ? search() : null"
+                ng-model="params.fieldFilter[field.name]" ng-model-options="{ debounce: 500}"></input>
             </td>
           </tr>
         </thead>
@@ -97,11 +109,16 @@
                 {{
                   ( getFieldLabel(elem[field.name],field.options).length > field.limit ) ? '...' : ''
                 }}
-              </span>            
+              </span>
               <!-- Campos CheckBox -->
               <span ng-if="field.type=='checkbox'">
                 <input ng-checked="inception(elem, field.name)" type="checkbox" ng-disabled="true">
               </span>
+            </td>
+            <td ng-show="showDeleteAction">
+              <button type="button" class="btn btn-sm btn-danger" ng-click="delete(elem, 'description')">
+                    <i class="fa fa-trash-o"></i>
+                </button>
             </td>
           </tr>
         </tbody>
@@ -126,25 +143,25 @@
   </div>-->
   <div class="col-xs-12 center-element paginator t-center">
     <div style="width:200px; margin: 0 auto;">
-			<div class="btn-group">
+      <div class="btn-group">
         <button type="button" class="btn btn-default disabled" ng-class="prevPageDisabled()" ng-click="firstPage()" style="cursor:pointer">        
         <i class="fa fa-angle-double-left"></i>
         </button>
-        
+
         <button type="button" class="btn btn-default disabled" ng-class="prevPageDisabled()" ng-click="prevPage()" style="cursor:pointer">
         <i class="fa fa-angle-left" aria-hidden="true"></i>
         </button>
-        
-				<button type="button" class="btn btn-default ng-binding" disabled="" style="cursor:pointer">{{currentPage}}/{{maxPage}}</button>
-      
+
+        <button type="button" class="btn btn-default ng-binding" disabled="" style="cursor:pointer">{{currentPage}}/{{maxPage}}</button>
+
         <button type="button" class="btn btn-default" ng-class="nextPageDisabled()" ng-click="nextPage()" style="cursor:pointer">
         <i class="fa fa-angle-right" aria-hidden="true"></i>
         </button>
-        
+
         <button type="button" class="btn btn-default" ng-class="nextPageDisabled()" ng-click="finPage()" style="cursor:pointer">        
         <i class="fa fa-angle-double-right" aria-hidden="true"></i>
         </button>
-			</div>
+      </div>
     </div>
   </div>
 </div>
