@@ -7,17 +7,17 @@
  * # AboutCtrl
  * Controller of the MobileCRMApp
  */
+
 angular.module('MobileCRMApp')
 	.controller('ItemCtrl', function ($scope, item, companies, $location, $q, toaster, dialogs) {
 		$scope.item = item;
 
 		$scope.list = [
 			{ item: 'Material' },
-			{ item: 'Labol' }
+			{ item: 'Labor' }
 		]
 
 		$scope.save = function () {
-			console.log($scope.item)
 			$scope.item.save()
 				.then(function () {
 					toaster.success('The items was saved successfully');
