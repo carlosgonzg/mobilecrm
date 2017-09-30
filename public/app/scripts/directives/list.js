@@ -48,7 +48,6 @@ angular.module('MobileCRMApp')
 					x,
 					message = '',
 					filtro = $scope.filterField ? $scope.filterField : {}
-				console.log(filtro)
 				//filtroOrBackup = $scope.filterField && $scope.filterField.$and ? $scope.filterField.$and : [];
 				var params = {};
 				if ($window.sessionStorage.params) {
@@ -200,7 +199,6 @@ angular.module('MobileCRMApp')
 				//Obtener los registros de la tabla paginados.
 				$scope.getPaginatedSearch = function (pParams) {
 					Loading.show();
-					console.log(pParams);
 					delete pParams.dateRange;
 					if ($scope.filterDate && $scope.filterDateOptions.enabled) {
 						pParams.dateRange = {};
@@ -362,16 +360,19 @@ angular.module('MobileCRMApp')
 				$scope.getCompanies = function () {
 						new Company().find().then(function (result) {
 							$scope.companies = result.data;
+							$scope.companies.push({_id:-1, entity: {name:"All Companies"}})
 						})
 				}
 
 				$scope.filterByCompany = function () {
-				console.log($scope.params.company)
-				if ($scope.params.company) {
+					console.log($scope.params.company)
+				if ($scope.params.company._id != -1) {
 					$scope.params.filter["client.company._id"] = $scope.params.company._id;
 				} else {
-					$scope.params.filter.company = {}
+					console.log("Sf")
+					delete $scope.params.filter["client.company._id"]
 				}
+				console.log($scope.params.filter)
 				$scope.search();
 
 
@@ -385,7 +386,6 @@ angular.module('MobileCRMApp')
 				})
 
 				// Buscar los tipos de cuentas
-				console.log($scope.params)
 				$scope.objeto.paginatedCount($scope.params).then(function (res) {
 					$scope.maxPage = res.count < $scope.params.limit ? 1 : Math.ceil(res.count / $scope.params.limit);
 					var page = ($scope.params.skip + $scope.params.limit) / $scope.params.limit;
@@ -407,6 +407,7 @@ angular.module('MobileCRMApp')
 				}
 
 				$scope.getCompanies();
+				$scope.params.company = {_id:-1,description: "All Companies"};
 			}
 		};
 	});

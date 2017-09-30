@@ -31,7 +31,7 @@
           </div>
         </div>
       </div>
-       <div class="col-xs-12 col-md-2">
+       <div class="col-xs-12 col-md-2" ng-if="filterDate">
             <label for="date">Company:</label>
             <select class="form-control" ng-model="params.company" ng-options="company as company.entity.name for company in companies track by company._id"  ng-change="filterByCompany()"></select>
       </div>
