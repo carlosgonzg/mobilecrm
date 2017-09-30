@@ -115,14 +115,6 @@
 				<div class="col-sm-6">
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
-							<label for="date">Unit #</label>
-							<input type="text" class="form-control" ng-model="workOrder.unitno" ng-class="isChanged('unitno')" ng-change="changed('unitno')" ng-disabled="isDisabled()">
-						</div>
-					</div>
-				</div>
-				<div class="col-sm-6">
-					<div class="col-xs-12 pull-right">
-						<div class="form-group">
 							<label for="date">Unit Size</label>
 							<input type="text" class="form-control" ng-model="workOrder.unitSize" ng-class="isChanged('unitSize')" ng-change="changed('unitSize')" ng-disabled="isDisabled()">
 						</div>
@@ -139,6 +131,14 @@
 				</div>
 				<div class="col-sm-6">
 					<div class="col-xs-12 pull-right">
+						<div class="form-group">
+							<label for="date">Unit #</label>
+							<input type="text" class="form-control" ng-model="workOrder.unitno" ng-class="isChanged('unitno')" ng-change="changed('unitno')" ng-disabled="isDisabled()">
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="col-xs-12 pull-right">
 						<div class="checkbox">
 						    <label>
 						      <input type="checkbox" ng-model="workOrder.partsFromTheYard" ng-class="isChanged('partsFromTheYard')" ng-change="changed('partsFromTheYard')" id="partsFromTheYard" ng-disabled="isDisabled()"> Parts from the yard
@@ -146,8 +146,8 @@
 					  	</div>
 					</div>
 				</div>
-				<div class="col-sm-6" ng-if="workOrder.partsFromTheYard">
-					<div class="col-xs-12 pull-right">
+				<div class="col-sm-6">
+					<div class="col-xs-12 pull-right" ng-if="workOrder.partsFromTheYard">
 						<div class="form-group">
 							<label for="yardComment">Parts from the Yard</label>
 							<textarea id="yardComment" ng-model="workOrder.yardComment" class="form-control">
