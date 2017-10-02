@@ -1,0 +1,85 @@
+<style>
+	.aParent div {
+		float: left;
+		clear: none;
+	}
+</style>
+
+<form class="form" id="CrewLeader" name="CrewLeader">
+	<div class="row">
+		<div class="col-xs-12">
+			<h1 class="pull-left">
+				<i class="fa fa-lg fa-book"></i> <span>Crew Leader</span>
+			</h1>
+			<div class="btn-group pull-right" style="margin-top: 20px;" role="group" aria-label="...">
+				<button type="button" form="formname" class="btn btn-primary" ng-click="save(addedItem)"><i class="fa fa-save"></i>&nbsp;<span>Save</span></button>
+				<back-button></back-button>
+			</div>
+			<hr />
+		</div>
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-xs-12">
+			<div class="form-group">
+				<label for="description">Description</label>
+				<input name="description" ng-disabled="1" type="text" class="form-control" ng-model="crewleaderName" validator="required"
+				/>
+			</div>
+		</div>
+	</div>
+	<div>
+		<div class="dropdown pull-left makePaymentDropdownMainDiv" auto-close="outsideClick">
+			<button style="width: 150px" class="btn btn-default dropdown-toggle makePaymentDropdownBtn" type="text" id="individualDrop"
+			 data-toggle="dropdown">Please Select<span class="caret pull-right"></span></button>
+			<ul class="dropdown-menu makePaymentDropdownUlStyle" role="menu" aria-labelledby="individualDrop">
+				<input disable-auto-close type="search" class="makePaymentDropdownSearchBox" style="font-size: 12px; width: 320px; margin-left: 8px"
+				 placeholder="Search"></input>
+				<li role="presentation" ng-repeat="indi in item | filter: serchFilter">
+					<a role="menuitem" style="cursor: pointer" ng-click="add(indi)">{{indi.description}}</a></li>
+			</ul>
+		</div>
+
+	</div>
+	<br />
+	<br />
+
+	<div class="col-xs-12" ng-if="table">
+		<table class="table table-striped" >
+			<thead>
+				<tr>
+					<th width="85%">
+						Items
+					</th>
+					<th width="15%">
+						Price
+					</th>
+				</tr>
+			</thead>
+		</table>
+	</div>
+	<br/>
+	<br/>
+	<div style="margin-top: 10px">
+		<div class="form-control" role="presentation" ng-repeat="item in addedItem" style="height: 40px">
+			<table>
+				<thead>
+					<tr>
+						<th class="col-xs-12">
+							{{item.item}} <input type="hidden" name="inpHide" ng-model="item.itemid">
+						</th>
+						<th class="col-xs-12">
+							<input class="pull-right" id="Text1" style="border: 1px #cccccc solid; height: 22px; width: 100px" type="number" ng-model="item.price">
+						</th>
+						<th>
+							<button class="btn btn-sm btn-danger pull-right" type="button" ng-click="removeOption(item)">
+			<i class="fa fa-times pull-right"></i>
+			</button>
+						</th>
+					</tr>
+				</thead>
+			</table>
+		</div>
+	</div>
+
+</form>
