@@ -72,8 +72,10 @@ angular.module('MobileCRMApp')
 	};
 
 	$scope.recalculate = function () {
-		$scope.serviceOrder.siteAddress.distanceFrom = $scope.serviceOrder.siteAddressFrom.address1 && $scope.serviceOrder.siteAddress.address1 ? getDistance($scope.serviceOrder.siteAddress, $scope.serviceOrder.siteAddressFrom) : 0;
-	}
+    if ($scope.serviceOrder.siteAddress) {
+		  $scope.serviceOrder.siteAddress.distanceFrom = $scope.serviceOrder.siteAddressFrom && $scope.serviceOrder.siteAddressFrom.address1 && $scope.serviceOrder.siteAddress && $scope.serviceOrder.siteAddress.address1 ? getDistance($scope.serviceOrder.siteAddress, $scope.serviceOrder.siteAddressFrom) : 0;
+    }
+  }
 
 	var getDistance = function(p1, p2) {
 				var p1 = new google.maps.LatLng(p1.latitude, p1.longitude);
@@ -333,6 +335,6 @@ angular.module('MobileCRMApp')
 	}
 
 	$scope.getBranches();
-	//$scope.recalculate();
+	$scope.recalculate();
 
 });
