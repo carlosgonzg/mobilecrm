@@ -8,7 +8,7 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-.controller('InvoiceCtrl', function ($scope, $rootScope, $location, toaster, User, invoice, statusList, Item, ServiceOrder, WorkOrder, dialogs, Invoice, Company, companies) {
+.controller('InvoiceCtrl', function ($scope, $rootScope, $location, toaster, $window, User, invoice, statusList, Item, ServiceOrder, WorkOrder, dialogs, Invoice, Company, companies) {
 	$scope.invoice = invoice;
 	$scope.items = [];
 	$scope.waiting = false;
@@ -18,6 +18,8 @@ angular.module('MobileCRMApp')
 	}
 	$scope.listStatus = statusList;
 	$scope.listCompany = companies.data;
+
+	$scope.Math = $window.Math;
 
 	$scope.wsClassOS = ServiceOrder;
 	$scope.wsFieldsOS = [{
