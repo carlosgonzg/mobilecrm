@@ -52,7 +52,7 @@ angular.module('MobileCRMApp')
 	var originalContacts = $scope.serviceOrder.contacts;
 	var originalSiteAddress = $scope.serviceOrder.siteAddress;
 
-	$scope.serviceOrder.siteAddressFrom = $scope.serviceOrder.client.branch ? $scope.serviceOrder.client.branch.addresses[0] : {};
+	$scope.serviceOrder.siteAddressFrom = $scope.serviceOrder.client && $scope.serviceOrder.client.branch ? $scope.serviceOrder.client.branch.addresses[0] : {};
 
 	$scope.getBranches = function(){
 
@@ -62,7 +62,6 @@ angular.module('MobileCRMApp')
 			$scope.branches = res.data;
 			for (var i=0; i<$scope.branches.length;i++) {
 				if ($scope.branches[i].addresses.length>0) {
-					console.log($scope.branches[i])
 					address = $scope.branches[i].addresses[0];
 					address.addressString = $scope.branches[i].company.entity.name + " - " + (address ? (address.city.description ? address.city.description + " - " : "") + address.address1 + (address.state.id ? ", " + address.state.id : "") : "");
 					$scope.addresses.push(address)
@@ -72,14 +71,57 @@ angular.module('MobileCRMApp')
 	};
 
 	$scope.recalculate = function () {
-		$scope.serviceOrder.siteAddress.distanceFrom = $scope.serviceOrder.siteAddressFrom.address1 && $scope.serviceOrder.siteAddress.address1 ? getDistance($scope.serviceOrder.siteAddress, $scope.serviceOrder.siteAddressFrom) : 0;
+		if ($scope.serviceOrder.siteAddressFrom.address1 && $scope.serviceOrder.siteAddress.address1) {
+			 var distance = getDistance($scope.serviceOrder.siteAddress, $scope.serviceOrder.siteAddressFrom);
+			 console.log(distance)
+			 // $scope.serviceOrder.siteAddress.distanceFrom = $scope.serviceOrder.siteAddressFrom.address1 && $scope.serviceOrder.siteAddress.address1 ? distance : 0;
+		}
 	}
 
-	var getDistance = function(p1, p2) {
+	var getDistance1 = function(p1, p2) {
 				var p1 = new google.maps.LatLng(p1.latitude, p1.longitude);
 				var p2 = new google.maps.LatLng(p2.latitude, p2.longitude);
 				var distance = google.maps.geometry.spherical.computeDistanceBetween(p1, p2);
 				return parseFloat((distance * 0.00062137).toFixed(2));
+	};
+
+	var getDistance = function(p1, p2) {
+				var d = $q.defer();
+				var p1coord = new google.maps.LatLng(p1.latitude, p1.longitude);
+				var p2coord = new google.maps.LatLng(p2.latitude, p2.longitude);
+				var unitSystem = google.maps.UnitSystem.IMPERIAL;
+				var service = new google.maps.DistanceMatrixService();
+				var result;
+				
+				service.getDistanceMatrix(
+					  {
+					    origins: [p1coord],
+					    destinations: [p2coord],
+					    travelMode: 'DRIVING',
+					    unitSystem: unitSystem,
+					    avoidHighways: false,
+					    avoidTolls: false,
+					  }, function (response, status) {
+						console.log(response);
+						console.log(status)
+
+						if (status === "OK" && response.rows[0].elements[0].status != "ZERO_RESULTS") {
+							result = response.rows[0].elements[0].distance.value;
+						} else {
+							result = 0;
+						}
+
+						if ($scope.serviceOrder.siteAddressFrom && $scope.serviceOrder.siteAddress) {
+							 
+							 $scope.serviceOrder.siteAddress.distanceFrom = $scope.serviceOrder.siteAddressFrom.address1 && $scope.serviceOrder.siteAddress.address1 ? parseFloat((result * 0.00062137).toFixed(2)) : 0;
+							 $scope.$apply();
+
+						}
+
+						d.resolve(parseFloat((result * 0.00062137).toFixed(2)))
+					});
+
+				return d.promise;
 	};
 
 	$scope.wsClassItem = Item;
@@ -319,7 +361,6 @@ angular.module('MobileCRMApp')
 	};
 
 	$scope.setNoInvoice = function () {
-		console.log($scope.serviceOrder.status._id)
 		var array = [5,7]
 		if ($scope.serviceOrder.status._id === 5 || $scope.serviceOrder.status._id === 7) {
 			$scope.serviceOrder.invoiceNumber = "No Invoice";
@@ -333,6 +374,6 @@ angular.module('MobileCRMApp')
 	}
 
 	$scope.getBranches();
-	//$scope.recalculate();
+	$scope.recalculate();
 
 });

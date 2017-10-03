@@ -7,7 +7,7 @@ angular.module('MobileCRMApp')
 			ngModel: '=',
 			originPoint: '='
 		},
-		controller: function ($scope, Country, State, City, $timeout) {
+		controller: function ($scope, Country, State, City, $timeout, $q) {
 			$scope.ngModel = $scope.ngModel || {};
 			var Address = function(address){
 				this.address1 = address.address1 || '';
@@ -161,8 +161,12 @@ angular.module('MobileCRMApp')
 				$scope.ngModel.latitude = place.geometry ? place.geometry.location.lat() : 0;
 				$scope.ngModel.longitude = place.geometry ? place.geometry.location.lng() : 0;
 				console.log(originPoint)
-				$scope.ngModel.distanceFrom = place.geometry ? getDistance($scope.ngModel, originPoint) : 0;
+				if (place.geometry) {
+					getDistance($scope.ngModel, originPoint);
+				}
+
 				$scope.$apply();
+
 			}
 			$timeout(function(){
 				$scope.ngModel = new Address($scope.ngModel);
@@ -174,11 +178,45 @@ angular.module('MobileCRMApp')
 			};
 
 			var getDistance = function(p1, p2) {
+						//var d = $q.defer();
+						var p1coord = new google.maps.LatLng(p1.latitude, p1.longitude);
+						var p2coord = new google.maps.LatLng(p2.latitude, p2.longitude);
+						var unitSystem = google.maps.UnitSystem.IMPERIAL;
+						var service = new google.maps.DistanceMatrixService();
+						var result;
+						service.getDistanceMatrix(
+							  {
+							    origins: [p1coord],
+							    destinations: [p2coord],
+							    travelMode: 'DRIVING',
+							    unitSystem: unitSystem,
+							    avoidHighways: false,
+							    avoidTolls: false,
+							  }, function (response, status) {
+
+								if (status === "OK"  && response.rows[0].elements[0].status != "ZERO_RESULTS") {
+									result = response.rows[0].elements[0].distance.value;
+								} else {
+									result = 0;
+								}
+								  $scope.ngModel.distanceFrom = parseFloat((result * 0.00062137).toFixed(2)) ;
+								  $scope.$apply();
+
+								//d.resolve(parseFloat((result * 0.00062137).toFixed(2)))
+							});
+
+						return parseFloat((result * 0.00062137).toFixed(2));
+			};
+
+			var getDistance1 = function(p1, p2) {
 				var p1 = new google.maps.LatLng(p1.latitude, p1.longitude);
 				var p2 = new google.maps.LatLng(p2.latitude, p2.longitude);
 				var distance = google.maps.geometry.spherical.computeDistanceBetween(p1, p2);
+
 				return parseFloat((distance * 0.00062137).toFixed(2));
 			};
+
+
 			$scope.reset = function(){
 				$scope.ngModel = new Address({});
 			};
