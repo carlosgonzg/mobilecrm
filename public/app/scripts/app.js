@@ -351,7 +351,43 @@ var app = angular
 				return new Company().find({});
 			}
 		}
-	})
+		})
+		.when('/crewLeaderList', {
+			templateUrl: 'views/crewLeaderList.html',
+			controller: 'crewLeaderListCtrl',
+			resolve: {
+				roles: function (Role) {
+					return new Role().find({});
+				}
+			}
+		})
+		.when('/crewLeader/:id?', {
+			templateUrl: 'views/crewLeader.html',
+			controller: 'crewLeaderCtrl',
+			resolve: {
+				countries: function (Country) {
+					return new Country().find({});
+				},
+				roles: function (Role) {
+					return new Role().find({});
+				},
+				companies: function (Company) {
+					return new Company().find({});
+				},
+				user: function (User, $route) {
+					if ($route.current.params.id) {
+						return new User().findById(parseInt($route.current.params.id));
+					} else {
+						return new User();
+					}
+				},
+				item: function (Item, $route) {
+					var query = { typeItem: 'Labor' };
+
+					return new Item().filter(query);
+				}
+			}
+		})	
 	.when('/noaccess', {
 		templateUrl : 'views/noaccess.html'
 	})

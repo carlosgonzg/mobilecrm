@@ -7,7 +7,7 @@ angular.module('MobileCRMApp')
 	// var hasProp = Object.prototype.hasOwnProperty;
 
 	// Nombre de la clase
-	var Item;
+	var Item;	
 
 	function Item(propValues) {
 		Item.super.constructor.apply(this, arguments);

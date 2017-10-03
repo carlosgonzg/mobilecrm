@@ -13,6 +13,7 @@ var Phone = require('./phone');
 var jwt = require('jsonwebtoken');
 var _ = require('underscore');
 var md5 = require('md5')
+var crewCollection = require("./crewCollection")
 
 function User(db, secret, userLogged) {
 	this.crud = new Crud(db, 'USER', userLogged );
@@ -56,6 +57,7 @@ function User(db, secret, userLogged) {
 			}
 		}
 	};
+
 	this.schema = {
 		id : '/User',
 		type : 'object',
@@ -86,6 +88,11 @@ function User(db, secret, userLogged) {
 			status : {
 				type : 'object',
 				required : true
+			},
+			CrewCollection: {
+				type: 'array',
+				required: false,
+				items: new crewCollection().schema
 			}
 		}
 	};

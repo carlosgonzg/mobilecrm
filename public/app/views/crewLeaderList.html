@@ -1,0 +1,34 @@
+<div class="row">
+	<div class="col-xs-12">
+		<h1 class="pull-left">
+			<i class="fa fa-lg fa-book"></i> <span>Crew Leader</span>
+		</h1>
+		<hr />
+	</div>
+</div>
+
+<div>
+	<div class="col-xs-10">
+		<ul class="nav nav-tabs">
+			<li role="presentation" style="cursor: pointer" ng-class="{ active: selectedTab == role.description }" ng-repeat="role in roles track by $index"
+			 ng-click="selectTab(role)">
+				<a>{{role.description}}</a>
+			</li>
+		</ul>
+	</div>
+
+	<div ng-show="FirstOpction" class="ng-hide">
+		<div class="row">
+			<div class="col-xs-10" style="margin-left: 10px">
+				<list clase="userOpt" fields="fields" showid="false" search-fields="search" list="list" filter-field="filter1" sortList="sortList"></list>
+			</div>
+		</div>
+	</div>
+	<div ng-show="SecondOpction" class="ng-hide">
+		<div class="row">
+			<div class="col-xs-10" style="margin-left: 10px">
+				<list clase="User2ndOpt" fields="fields2Opt" showid="false" search-fields="search" list="list" filter-field="filter2"></list>
+			</div>
+		</div>
+	</div>
+</div>

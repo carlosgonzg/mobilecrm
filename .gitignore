@@ -58,3 +58,11 @@ log/*
 
 #IGNORAR LOS ARCHIVOS DE VB CODE 
 .vscode
+api/monthystatement/ms-12-13-2016 04:35.xlsx
+.idea/modules.xml
+
+.idea
+api/monthystatement/ms-12-13-2016 04:35.xlsx
+*.xlsx
+mobilecrm.rar
+package.json

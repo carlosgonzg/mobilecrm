@@ -30,6 +30,7 @@ d.run(function () {
 	var bodyParser = require('body-parser');
 	var Config = require('./config');
 	var mail = require('./api/mail');
+	var morgan = require("morgan")
 	//Configuracion del server
 	var app = express();
 	var prefix = '/api';
@@ -50,6 +51,8 @@ d.run(function () {
 	app.use('/', express.static(path.join(__dirname, config.PUBLIC_PATH)));
 	//Configuracion db
 	app.db = require('monk')(config.DB_URL);
+	app.use(morgan('dev')); // log every request to the console
+	
 	//WebAPI
 	require('./api/ws/list')('/api/list', app);
 	require('./api/ws/user')('/api/user', app, secret, config);
@@ -66,6 +69,7 @@ d.run(function () {
 	require('./api/ws/itemCollection')('/api/itemCollection', app);
 	require('./api/ws/company')('/api/company', app);
 	require('./api/ws/branch')('/api/branch', app);
+	
 	//Inicializando Server
 	http.createServer(app).listen(config.APP_PORT, function () {
 		console.log("\n[*] Server Listening on port %d", config.APP_PORT);

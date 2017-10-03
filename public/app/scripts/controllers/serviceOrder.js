@@ -308,6 +308,12 @@ angular.module('MobileCRMApp')
 		}, function (error) {
 		});
 	};
+  
+  $scope.recalculate = function () {
+    if ($scope.serviceOrder.siteAddress) {
+		  $scope.serviceOrder.siteAddress.distanceFrom = $scope.serviceOrder.siteAddressFrom && $scope.serviceOrder.siteAddressFrom.address1 && $scope.serviceOrder.siteAddress && $scope.serviceOrder.siteAddress.address1 ? getDistance($scope.serviceOrder.siteAddress, $scope.serviceOrder.siteAddressFrom) : 0;
+    }
+  }
 
 	$scope.save = function (sendMail) {
 		$scope.waiting = true;
@@ -374,6 +380,5 @@ angular.module('MobileCRMApp')
 	}
 
 	$scope.getBranches();
-	$scope.recalculate();
-
+  	$scope.recalculate();
 });

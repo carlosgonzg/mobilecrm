@@ -29,6 +29,10 @@ function Item(db, userLogged) {
 			unitOfMeasure: {
 				type: 'string',
 				required: false
+			},
+			typeItem: {
+				type: String,
+				required: false
 			}
 		}
 	};
