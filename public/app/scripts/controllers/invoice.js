@@ -86,7 +86,7 @@ angular.module('MobileCRMApp')
 			type : 'date',
 			show: true
 		},{
-			label : 'Unit #',
+			label : 'Serial #',
 			field : 'unitno',
 			type : 'text',
 			show: true

@@ -36,7 +36,7 @@ angular.module('MobileCRMApp')
 			name : 'sor',
 			type : 'text'
 		}, {
-			title : 'Unit #',
+			title : 'Serial #',
 			name : 'unitno',
 			type : 'text'
 		}, {

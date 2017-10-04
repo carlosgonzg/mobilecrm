@@ -98,7 +98,7 @@ angular.module('MobileCRMApp')
 			name: 'wor',
 			type: 'text'
 		}, {
-			title: 'Unit #',
+			title: 'Serial #',
 			name: 'unitno',
 			type: 'text'
 		}, {

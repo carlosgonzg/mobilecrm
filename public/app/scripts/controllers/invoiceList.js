@@ -36,7 +36,7 @@ angular.module('MobileCRMApp')
 			name : 'invoiceNumber',
 			type : 'text'
 		}, {
-			title : 'Unit #',
+			title : 'Serial #',
 			name : 'unitno',
 			type : 'text'
 		}, {
