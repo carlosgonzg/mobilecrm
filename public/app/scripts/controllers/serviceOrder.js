@@ -368,10 +368,12 @@ angular.module('MobileCRMApp')
 
 	$scope.setNoInvoice = function () {
 		var array = [5,7]
-		if ($scope.serviceOrder.status._id === 5 || $scope.serviceOrder.status._id === 7) {
-			$scope.serviceOrder.invoiceNumber = "No Invoice";
-		} else {
-			$scope.serviceOrder.invoiceNumber = "Pending Invoice";
+    if (!$scope.serviceOrder.invoiceNumber || $scope.serviceOrder.invoiceNumber === "Pending Invoice" || $scope.serviceOrder.invoiceNumber === "No Invoice" ) {
+			if ($scope.serviceOrder.status._id === 5 || $scope.serviceOrder.status._id === 7) {
+				$scope.serviceOrder.invoiceNumber = "No Invoice";
+			} else {
+				$scope.serviceOrder.invoiceNumber = "Pending Invoice";
+			}
 		}
 	}
 
