@@ -16,6 +16,11 @@ angular.module('MobileCRMApp')
 	$scope.branches = [];
 	$scope.readOnly = $rootScope.userData.role._id != 1;
 	$scope.showMap = $rootScope.userData.role._id == 1;
+	$scope.commentDiabled = true;
+
+	if ( $rootScope.userData.role._id == 1 || $rootScope.userData.role._id == 5) {
+		$scope.commentDiabled = false;
+	}
 
 	if($rootScope.userData.role._id != 1 && $rootScope.userData.role._id != 5) {
 		$scope.serviceOrder.client = new User($rootScope.userData);
