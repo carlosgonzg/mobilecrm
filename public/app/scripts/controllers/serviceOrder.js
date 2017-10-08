@@ -15,6 +15,8 @@ angular.module('MobileCRMApp')
 	$scope.params = {};
 	$scope.branches = [];
 	$scope.readOnly = $rootScope.userData.role._id != 1;
+	$scope.showMap = $rootScope.userData.role._id == 1;
+
 	if($rootScope.userData.role._id != 1 && $rootScope.userData.role._id != 5) {
 		$scope.serviceOrder.client = new User($rootScope.userData);
 	}

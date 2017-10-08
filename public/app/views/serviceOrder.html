@@ -176,7 +176,7 @@
 								</uib-accordion-heading>
 
 								<address-model ng-model="serviceOrder.siteAddress" origin-point="serviceOrder.siteAddressFrom" ng-class="isChanged('siteAddress')"
-								 ng-change="changed('siteAddress')" ng-disabled="isDisabled()"></address-model>
+								 ng-change="changed('siteAddress')" ng-disabled="isDisabled()" show-map="showMap"></address-model>
 
 							</uib-accordion-group>
 						</uib-accordion>
@@ -213,7 +213,7 @@
 				<div class="col-sm-6">
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
-							<label for="date">Serial #/Building ID</label>
+							<label for="date">Serial #</label>
 							<input type="text" class="form-control" ng-model="serviceOrder.unitno" ng-class="isChanged('unitno')" ng-change="changed('unitno')"
 							 ng-disabled="isDisabled()">
 						</div>
@@ -395,4 +395,7 @@
 			</div>
 		</div>
 	</div>
+
 </div>
+
+	

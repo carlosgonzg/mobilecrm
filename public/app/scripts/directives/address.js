@@ -5,7 +5,8 @@ angular.module('MobileCRMApp')
     restrict: 'E',
     scope:{
 			ngModel: '=',
-			originPoint: '='
+			originPoint: '=',
+			showMap: '=?'
 		},
 		controller: function ($scope, Country, State, City, $timeout, $q) {
 			$scope.ngModel = $scope.ngModel || {};

@@ -147,7 +147,22 @@ var createReport = function(objs, whoIs, query, queryDescription, user){
 	  	bold: true
 	};
 	var reportBgColor = {
-	    bgColor:{argb:'00000000'}
+		type:"pattern",
+		pattern:"solid",
+	    fgColor:{argb:'FFFFFFFF' }
+	};
+
+	var labelBgColor = {
+		type: "pattern",
+		pattern: "solid",
+		fgColor:{argb:"CCB680"}
+	}
+
+	var border = {
+	    top: {style:'thin'},
+	    left: {style:'thin'},
+	    bottom: {style:'thin'},
+	    right: {style:'thin'}
 	};
 	//setting columns
 	excel.worksheet.columns = [
@@ -166,7 +181,6 @@ var createReport = function(objs, whoIs, query, queryDescription, user){
 	];
 	//header
 
-
 	if (queryDescription.status === 'Completed (Pending to Pay)') {
 		queryDescription.status = 'Pending to Pay';
 	}
@@ -180,15 +194,20 @@ var createReport = function(objs, whoIs, query, queryDescription, user){
 	excel.worksheet.addRow([((queryDescription.status ? queryDescription.status + ' ' : '') + (queryDescription.po ? 'With PO Number ' : '') + (queryDescription.pendingPo ? 'Without PO Number ' : '') + (queryDescription.expenses ? 'Expenses ' : '') + 'REPORT - MOBILE ONE Restoration LLC (UPDATED)').toUpperCase() , '', '', '', '', '', '', '', '', '', moment().format('MM/DD/YYYY')]);
 	excel.worksheet.mergeCells('A1:K1');
 	excel.worksheet.lastRow.font = headerFont;
+	excel.worksheet.lastRow.fill = reportBgColor;
 	// sub header
 	excel.worksheet.addRow([((queryDescription.company || '') + ' ' + (queryDescription.branch || '')).toUpperCase(), '', '', '', '', '', '', '', '', '', '']);
 	excel.worksheet.mergeCells('A2:B2');
 	excel.worksheet.mergeCells('C2:J2');
 	excel.worksheet.lastRow.font = subHeaderFont;
+	excel.worksheet.lastRow.fill = reportBgColor;
 	//space!
 	excel.worksheet.addRow(['', '', '', '', '', '', '', '', '', '', '']);
+	excel.worksheet.lastRow.fill = reportBgColor;
 	excel.worksheet.addRow(['', '', '', '', '', '', '', '', '', '', '']);
+	excel.worksheet.lastRow.fill = reportBgColor;
 	excel.worksheet.addRow(['', '', '', '', '', '', '', '', '', '', '']);
+	excel.worksheet.lastRow.fill = reportBgColor;
 
 	//table header
 	var fieldsArray = [];
@@ -206,6 +225,13 @@ var createReport = function(objs, whoIs, query, queryDescription, user){
 
 	excel.worksheet.addRow(fieldsArray);
 	excel.worksheet.lastRow.font = boldFont;
+	// excel.worksheet.lastRow.border = border;
+
+	for (var i=0;i<fieldsArray.length;i++) {
+		excel.worksheet.getCell(6,i+1).border = border;
+		excel.worksheet.getCell(6,i+1).fill = labelBgColor;
+	}
+
 	//Now the data
 	var total = 0;
 	var totalProfit = 0;
@@ -231,6 +257,7 @@ var createReport = function(objs, whoIs, query, queryDescription, user){
 		totalProfit += subTotalProfit;
 
 		var valueArray = [];
+
 	
 		if (whoIs != "Invoice") {
 			valueArray = [moment(obj.date).format('MM-DD-YYYY'), obj.unitno, obj.pono, whoIs == 'ServiceOrder' ? obj.sor : obj.wor, obj.invoiceNumber, subTotal, obj.client.branch.name, obj.status.description, moment(obj.date).format('YYYY'), moment(obj.date).format('MM')];
@@ -244,15 +271,27 @@ var createReport = function(objs, whoIs, query, queryDescription, user){
 
 		excel.worksheet.addRow(valueArray);
 		excel.worksheet.lastRow.font = normalFont;
+		excel.worksheet.lastRow.fill = reportBgColor;
+		for (var j=0;j<fieldsArray.length;j++) {
+			excel.worksheet.getCell(i+7,j+1).border = border;
+		}
 		excel.worksheet.getCell('E' + (i + 7).toString()).numFmt = '$ #,###,###,##0.00';	
 	}
 	var key = (objs.length + 7).toString();
-	excel.worksheet.addRow(['', '', '', 'Total', total, totalExpenses, totalProfit, '',  '', '', '', '', '']);
+	excel.worksheet.addRow(['', '', '', 'Total', total, queryDescription.expenses ? totalExpenses : '', queryDescription.expenses ?  totalProfit :'', '',  '', '', '', '', '']);
 	excel.worksheet.getCell('E' + key).numFmt = '$ #,###,###,##0.00';
 	excel.worksheet.getCell('F' + key).numFmt = '$ #,###,###,##0.00';
 	excel.worksheet.getCell('G' + key).numFmt = '$ #,###,###,##0.00';
 	excel.worksheet.mergeCells('A' + key + ':C' + key);
 	excel.worksheet.lastRow.font = boldFont;
+
+	excel.worksheet.getCell("A3").value = (objs.length +1) + " " + whoIs + "s " + (queryDescription.status ? queryDescription.status + ' ' : '') + (queryDescription.po ? 'With PO Number ' : '') + (queryDescription.pendingPo ? 'Without PO Number ' : '') ;
+	excel.worksheet.getCell("A3").font = subHeaderFont;
+	excel.worksheet.getCell("A4").value = total;
+	excel.worksheet.getCell("A4").numFmt = '$ #,###,###,##0.00';
+	excel.worksheet.getCell("A4").font = subHeaderFont;
+	excel.worksheet.mergeCells('A' + 3 + ':E' + 3);
+	excel.worksheet.mergeCells('A' + 4 + ':E' + 4);
 
 	//saving file
 	var relPath =  '/report/r-' + moment().format('MM-DD-YYYY hh:mm') + '.xlsx';

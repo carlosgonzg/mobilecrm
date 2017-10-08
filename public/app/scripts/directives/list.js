@@ -20,7 +20,8 @@ angular.module('MobileCRMApp')
 				sortField: '=?',
 				showDeleteAction: '='
 			},
-			controller: function ($scope, $rootScope, $timeout, dialogs, toaster, Loading, $window, Company) {
+			controller: function ($scope, $rootScope, $timeout, dialogs, toaster, Loading, $window, Company, $location) {
+				console.log("Loading")
 				$scope.list = [];
 				$scope.companies = [];
 				$scope.currentElement = {};
@@ -51,7 +52,8 @@ angular.module('MobileCRMApp')
 					filtro = $scope.filterField ? $scope.filterField : {}
 				//filtroOrBackup = $scope.filterField && $scope.filterField.$and ? $scope.filterField.$and : [];
 				var params = {};
-				if ($window.sessionStorage.params) {
+				var actualPath = $location.path();
+				if ($window.sessionStorage.params && actualPath === $window.sessionStorage.path) {
 					$scope.params = JSON.parse($window.sessionStorage.params);
 					delete $window.sessionStorage.params;
 				}
@@ -211,7 +213,7 @@ angular.module('MobileCRMApp')
 
 					$scope.objeto.paginatedSearch(pParams).then(function (result) {
 						if (result.data.length == 0) {
-							//toaster.pop('error', 'Information', 'Couldn\'t load the items');
+							toaster.pop('error', 'Information', 'Couldn\'t load the items');
 						}
 						$scope.list = angular.copy(result.data);
 
@@ -346,6 +348,7 @@ angular.module('MobileCRMApp')
 				$scope.dblClick = function (elem, event) {
 					if ((event.pointerType == 'touch' && event.type == 'tap') || event.type == 'dblclick') {
 						$window.sessionStorage.params = JSON.stringify($scope.params);
+						$window.sessionStorage.path = $location.path();
 						if ($scope.dblClickFn) {
 							$scope.dblClickFn(elem);
 						} else {
@@ -381,14 +384,12 @@ angular.module('MobileCRMApp')
 				}
 
 				$scope.filterByCompany = function () {
-					console.log($scope.params.company)
 				if ($scope.params.company._id != -1) {
 					$scope.params.filter["client.company._id"] = $scope.params.company._id;
 				} else {
 					console.log("Sf")
 					delete $scope.params.filter["client.company._id"]
 				}
-				console.log($scope.params.filter)
 				$scope.search();
 
 
@@ -397,6 +398,7 @@ angular.module('MobileCRMApp')
 				//Ejecutar busqueda cuando se cambie algun parametro en filter
 				$scope.$watch(function () {
 					return JSON.stringify($scope.filterField);
+
 				}, function (data) {
 					$scope.getPaginatedSearch($scope.params);
 				})
