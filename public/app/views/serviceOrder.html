@@ -388,7 +388,7 @@
 				<div ng-hide="">
 					<div class="form-group">
 						<label for="comment">Comments</label>
-						<textarea id="comment" ng-model="serviceOrder.comment" class="form-control" ng-class="isChanged('comment')" ng-change="changed('comment')" ng-disabled="userData.role._id>=2" >
+						<textarea id="comment" ng-model="serviceOrder.comment" class="form-control" ng-class="isChanged('comment')" ng-change="changed('comment')" ng-disabled="commentDiabled" >
 					</textarea>
 					</div>
 				</div>
