@@ -291,7 +291,7 @@ angular.module('MobileCRMApp')
 	};
 
 	$scope.changed = function(field){
-		if($scope.serviceOrder._id && $rootScope.userData.role._id != 1){
+		if($scope.serviceOrder._id /*&& $rootScope.userData.role._id != 1*/){
 			var isHere = false;
 			$scope.serviceOrder.fieldsChanged = $scope.serviceOrder.fieldsChanged || [];
 			for(var i = 0; i < $scope.serviceOrder.fieldsChanged.length; i++){

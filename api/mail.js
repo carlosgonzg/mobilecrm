@@ -270,7 +270,14 @@ var sendInvoice = function (invoice, mails, cc, file, fileName) {
 			body = body.replace('<confirm>', !invoice.pono ? '' : 'Please confirm as received.<br/><br/>I wait for your comment.<br/>');
 
 			var attachments = setAttachment(file, fileName)
-			var subject = (invoice.client.company ? invoice.client.company.entity.name + ' - ' : '') + 'Invoice: ' + invoice.invoiceNumber;
+
+			var companyName = "";
+
+			if (invoice.client.company) {
+				companyName = invoice.client.company._id === 7 ? "Portable Storage" : invoice.client.company.entity.name + ' - ';
+			}
+
+			var subject = companyName + 'Invoice: ' + invoice.invoiceNumber;
 			if (!invoice.pono) {
 				subject += ' Without po number';
 			}
@@ -305,7 +312,14 @@ var sendInvoiceUpdate = function (invoice, mails, user, file, fileName) {
 			body = body.replace('<clientName>', invoice.client.entity.fullName);
 			body = body.replace('<invoiceNumber>', invoice.invoiceNumber);
 			body = body.replace('<pono>', invoice.pono ? 'With PO Number: ' + invoice.pono : 'Without PO Number. Please provide PO Number for this Invoice.');
-			var subject = (invoice.client.company ? invoice.client.company.entity.name + ' - ' : '') + 'Invoice: ' + invoice.invoiceNumber;
+			
+			var companyName ="";
+
+			if (invoice.client.company) {
+				companyName = invoice.client.company._id === 7 ? "Portable Storage" : invoice.client.company.entity.name + ' - ';
+			}	
+
+			var subject = companyName + 'Invoice: ' + invoice.invoiceNumber;
 			if (!invoice.pono) {
 				subject += ' Without po number';
 			}
