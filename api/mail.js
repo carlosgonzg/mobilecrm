@@ -274,7 +274,7 @@ var sendInvoice = function (invoice, mails, cc, file, fileName) {
 			var companyName = "";
 
 			if (invoice.client.company) {
-				companyName = invoice.client.company._id === 7 ? "Portable Storage" : invoice.client.company.entity.name + ' - ';
+				companyName = invoice.client.company._id === 7 ? "Portable Storage - " : invoice.client.company.entity.name + ' - ';
 			}
 
 			var subject = companyName + 'Invoice: ' + invoice.invoiceNumber;
@@ -316,7 +316,7 @@ var sendInvoiceUpdate = function (invoice, mails, user, file, fileName) {
 			var companyName ="";
 
 			if (invoice.client.company) {
-				companyName = invoice.client.company._id === 7 ? "Portable Storage" : invoice.client.company.entity.name + ' - ';
+				companyName = invoice.client.company._id === 7 ? "Portable Storage - " : invoice.client.company.entity.name + ' - ';
 			}	
 
 			var subject = companyName + 'Invoice: ' + invoice.invoiceNumber;
