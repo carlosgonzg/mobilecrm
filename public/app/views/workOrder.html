@@ -232,7 +232,7 @@
 							</button>
 						</td>
 					</tr>
-					<tr ng-repeat="item in workOrder.items track by $index">
+					<tr ng-repeat="item in workOrder.items track by $index" ng-show="workOrder.client._id">
 						<td>
 							<input type="text" class="form-control" ng-model="item.code"  ng-disabled="isDisabled()">
 						<td ng-if="item.itemCollection._id" width="15%">

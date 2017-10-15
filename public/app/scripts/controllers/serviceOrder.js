@@ -8,7 +8,7 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-.controller('ServiceOrderCtrl', function ($scope, $rootScope, $location, toaster, User, statusList, serviceOrder, Item, dialogs, $q, Branch) {
+	.controller('ServiceOrderCtrl', function ($scope, $rootScope, $location, toaster, User, statusList, serviceOrder, Item, dialogs, $q, Branch, CrewCollection, ItemDefault) {
 	$scope.serviceOrder = serviceOrder;
 
 	$scope.items = [];
@@ -27,7 +27,7 @@ angular.module('MobileCRMApp')
 	}
 	$scope.listStatus = statusList;
 	$scope.waiting = false;
-
+		
 	$scope.wsClass = User;
 	$scope.wsFilter = { 'role._id': 3};
 	$scope.wsFields = [{
@@ -247,22 +247,15 @@ angular.module('MobileCRMApp')
 			
 			$scope.serviceOrder.siteAddressFrom = $scope.serviceOrder.client.branch ? $scope.serviceOrder.client.branch.addresses[0] : {};
 		}
-
-		/*
-		$scope.items = [];
-		for(var i = 0; i < items.data.length; i++){
-			if(!items.data[i].clients && !items.data[i].companies){
-				$scope.items.push(items.data[i]);
-			}
-			else {
-				for(var j = 0; j < items.data[i].companies.length; j++){
-					if(items.data[i].companies[j]._id == (client && client.company ? client.company._id : -1)){
-						$scope.items.push(items.data[i]);
-						break;
-					}
+		if (serviceOrder.client._id) {
+			for (var row = 0; row < $scope.serviceOrder.items.length; row++) {
+				var code = $scope.serviceOrder.items[row].code;
+				if (ItemDefault.data[0].code == code){
+					return
 				}
 			}
-		}*/
+			$scope.serviceOrder.items.unshift(ItemDefault.data[0]);
+		}
 	};
 
 	$scope.addContact = function () {
@@ -279,6 +272,7 @@ angular.module('MobileCRMApp')
 		$scope.serviceOrder.items.unshift(item);
 		$scope.params.item = {};
 		$scope.changed('items');
+		console.log($scope.serviceOrder.items)
 	};
 
 	$scope.removeItem = function (index) {
@@ -420,8 +414,7 @@ angular.module('MobileCRMApp')
 			$scope.changed('siteAddress');
 		}
 
-		console.log($scope.serviceOrder);
-		$scope.serviceOrder.save()
+ 		$scope.serviceOrder.save()
 		.then(function (data) {
 			toaster.success('The Service Order was saved successfully');
 			$location.path('serviceOrderList')
@@ -431,7 +424,7 @@ angular.module('MobileCRMApp')
 			console.log(error);
 			toaster.error('The Service Order couldn\'t be saved, please check if some required field is empty or if its duplicated');
 			$scope.waiting = false;
-		});
+		}); 
 	};
 
 	$scope.delete = function(){

@@ -8,7 +8,7 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-.controller('WorkOrderCtrl', function ($scope, $rootScope, $location, toaster, User, statusList, workOrder, Item, dialogs, $q, Branch) {
+	.controller('WorkOrderCtrl', function ($scope, $rootScope, $location, toaster, User, statusList, workOrder, Item, dialogs, $q, Branch, CrewCollection, ItemDefault) {
 	$scope.workOrder = workOrder;
 	$scope.items = [];
 	$scope.params = {};
@@ -87,6 +87,33 @@ angular.module('MobileCRMApp')
 				$scope.workOrder.siteAddress = angular.copy(client.company.address);
 			})
 		}
+
+		if (workOrder.client._id) {
+			var Serv, Admfeed
+			Serv = false; Admfeed = false 
+
+			for (var row = 0; row < $scope.workOrder.items.length; row++) {
+				var code = $scope.workOrder.items[row].code;
+				if (ItemDefault.data[0].code == code) {
+					Serv = true;
+				}
+			}
+			if (Serv == false) {
+				$scope.workOrder.items.unshift(ItemDefault.data[0]);
+			}
+			
+			for (var row = 0; row < $scope.workOrder.items.length; row++) {
+				var code = $scope.workOrder.items[row].code;
+				if (ItemDefault.data[1].code == code) {
+					Admfeed = true;
+				}
+			}
+			if (Admfeed == false) {
+				$scope.workOrder.items.unshift(ItemDefault.data[1]);
+			}
+
+			console.log($scope.workOrder.items)
+		}
 	};
 
 	$scope.addContact = function () {
@@ -103,8 +130,6 @@ angular.module('MobileCRMApp')
 	};
 
 	$scope.removeItem = function (index) {
-		console.log($scope.workOrder.items)
-		console.log(index)
 		$scope.workOrder.items.splice(index, 1);
 	};
 

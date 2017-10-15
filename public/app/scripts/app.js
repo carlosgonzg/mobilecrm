@@ -147,6 +147,12 @@ var app = angular
 				} else {
 					return new ServiceOrder();
 				}
+			},
+			CrewCollection: function (CrewCollection, $route) {
+				return new CrewCollection().filter({ "role.description": 'Crew Leader' })
+			},
+			ItemDefault: function (Item) {
+				return new Item().filter({ _id: 573 })
 			}
 		}
 	})
@@ -190,6 +196,12 @@ var app = angular
 				} else {
 					return new WorkOrder();
 				}
+			},
+			CrewCollection: function (CrewCollection, $route) {
+				return new CrewCollection().filter({ "role.description": 'Crew Leader' })
+			},
+			ItemDefault: function (Item) {
+				return new Item().filter({ _id: { $in: [5, 573] } })
 			}
 		}
 	})
