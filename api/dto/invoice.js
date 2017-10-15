@@ -384,9 +384,16 @@ Invoice.prototype.getMonthlyStatement = function(params, user){
 			company: {
 				_id: '$client.company._id',
 				name: '$client.company.entity.name',
-				address: '$client.company.address'
+				address: '$client.company.address',
+				taxes: '$client.company.taxes'
 			},
-			itemType: 1
+			itemType: 1,
+			taxes: {
+				$ifNull: ['$client.company.taxes',0]
+			},
+			totalWithTaxes: {
+				$add: [{$multiply: ['$total',{$ifNull:['$client.company.taxes',0]}]},{$ifNull:['$total',0]}]
+			}
 		}
 	};
 
@@ -428,6 +435,9 @@ Invoice.prototype.getMonthlyStatement = function(params, user){
 			total: {
 				$sum: '$total'
 			},
+			totalWithTaxes: {
+				$sum: '$totalWithTaxes'
+			},
 			invoices: {
 				$push: '$$ROOT'
 			}
@@ -441,6 +451,7 @@ Invoice.prototype.getMonthlyStatement = function(params, user){
 			month: '$_id.month',
 			status: '$_id.status',
 			total: '$total',
+			totalWithTaxes: '$totalWithTaxes',
 			invoices: '$invoices'
 		}
 	};
