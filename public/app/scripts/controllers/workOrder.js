@@ -89,30 +89,13 @@ angular.module('MobileCRMApp')
 		}
 
 		if (workOrder.client._id) {
-			var Serv, Admfeed
-			Serv = false; Admfeed = false 
-
 			for (var row = 0; row < $scope.workOrder.items.length; row++) {
 				var code = $scope.workOrder.items[row].code;
 				if (ItemDefault.data[0].code == code) {
-					Serv = true;
+					return
 				}
 			}
-			if (Serv == false) {
-				$scope.workOrder.items.unshift(ItemDefault.data[0]);
-			}
-			
-			for (var row = 0; row < $scope.workOrder.items.length; row++) {
-				var code = $scope.workOrder.items[row].code;
-				if (ItemDefault.data[1].code == code) {
-					Admfeed = true;
-				}
-			}
-			if (Admfeed == false) {
-				$scope.workOrder.items.unshift(ItemDefault.data[1]);
-			}
-
-			console.log($scope.workOrder.items)
+			$scope.workOrder.items.unshift(ItemDefault.data[0]);
 		}
 	};
 
