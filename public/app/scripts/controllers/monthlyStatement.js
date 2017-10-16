@@ -22,6 +22,7 @@ angular.module('MobileCRMApp')
 	};
 	$scope.searchWhoList = [];
 	$scope.selectedTab = 'month';
+	$scope.monthsList = [];
 
 	var setMonths = function(year){
 		$scope.months = [];
@@ -31,6 +32,8 @@ angular.module('MobileCRMApp')
 				month: i
 			});
 		}
+		$scope.monthList = angular.copy($scope.months);
+		$scope.monthList.push({year: 2017, month: "All"})
 	};
 	$scope.years = [];
 	for(var i = today.getFullYear(); i >= 2015; i--){
@@ -136,8 +139,8 @@ angular.module('MobileCRMApp')
 			query.branchId = params.searchWho;
 		}
 		
-		query.from = new Date(params.year, params.month-1, 1, 0, 0, 0, 0);
-		query.to = new Date(params.year, params.month-1, 31, 23, 59, 59, 999);
+		query.from = new Date(params.year, params.month != 'All' ? params.month-1 : 0, 1, 0, 0, 0, 0);
+		query.to = new Date(params.year, params.month != 'All' ? params.month-1 : 11, 31, 23, 59, 59, 999);
 		return query;
 	};
 	$scope.search = function(params){
