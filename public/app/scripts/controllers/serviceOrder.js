@@ -248,13 +248,28 @@ angular.module('MobileCRMApp')
 			$scope.serviceOrder.siteAddressFrom = $scope.serviceOrder.client.branch ? $scope.serviceOrder.client.branch.addresses[0] : {};
 		}
 		if (serviceOrder.client._id) {
+			var Serv, Admfeed
+			Serv = false; Admfeed = false
+
 			for (var row = 0; row < $scope.serviceOrder.items.length; row++) {
 				var code = $scope.serviceOrder.items[row].code;
-				if (ItemDefault.data[0].code == code){
-					return
+				if (ItemDefault.data[0].code == code) {
+					Serv = true;
 				}
 			}
-			$scope.serviceOrder.items.unshift(ItemDefault.data[0]);
+			if (Serv == false) {
+				$scope.serviceOrder.items.unshift(ItemDefault.data[0]);
+			}
+
+			for (var row = 0; row < $scope.serviceOrder.items.length; row++) {
+				var code = $scope.serviceOrder.items[row].code;
+				if (ItemDefault.data[1].code == code) {
+					Admfeed = true;
+				}
+			}
+			if (Admfeed == false) {
+				$scope.serviceOrder.items.unshift(ItemDefault.data[1]);
+			}
 		}
 	};
 

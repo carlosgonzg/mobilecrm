@@ -152,7 +152,7 @@ var app = angular
 				return new CrewCollection().filter({ "role.description": 'Crew Leader' })
 			},
 			ItemDefault: function (Item) {
-				return new Item().filter({ _id: 573 })
+				return new Item().filter({ _id: { $in: [5, 253] } })
 			}
 		}
 	})
@@ -201,7 +201,7 @@ var app = angular
 				return new CrewCollection().filter({ "role.description": 'Crew Leader' })
 			},
 			ItemDefault: function (Item) {
-				return new Item().filter({ _id: { $in: [5, 573] } })
+				return new Item().filter({ _id: { $in: [5] } })
 			}
 		}
 	})
