@@ -512,12 +512,12 @@ Invoice.prototype.getMonthlyStatement = function(params, user){
 	.then(function(){
 		var promise = [];
 		for(var i = 0; i < results.length; i++){
-			promise.push(_this.crud.db.get('REPORT').insert(results[i]));
+			// promise.push(_this.crud.db.get('REPORT').insert(results[i]));
 		}
 		q.all(promise);
 	})
 	.then(function(){
-		_this.crud.db.get('REPORT').aggregate(pipeline, function(error, data){
+		_this.crud.db.get('INVOICE').aggregate(pipeline, function(error, data){
 			if(error){
 				d.reject(error);
 				throw new Error("Error happened: ", error);
