@@ -42,6 +42,9 @@ function List(db) {
 		},{
 			_id: 7,
 			description: 'Completed Under Warranty'
+		},{
+			_id: 8,
+			description: 'Service Miles Only'
 		}
 	];
 	this.search = [

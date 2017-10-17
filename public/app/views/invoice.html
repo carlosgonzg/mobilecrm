@@ -149,6 +149,15 @@
 				<div class="col-sm-6">
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
+							<label for="pono">ISO #</label>
+							<input type="text" class="form-control" ng-model="invoice.isono" ng-class="isChanged('isono')" ng-change="changed('isono')"
+							 ng-disabled="isDisabled()">
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="col-xs-12 pull-right">
+						<div class="form-group">
 							<label for="pono">Status</label>
 							<select class="form-control" ng-model="invoice.status" ng-class="isChanged('status')" ng-change="changed('status')" ng-options="status as status.description for status in listStatus track by status._id" ng-disabled="isDisabled() || userData.role._id != 1"></select>
 						</div>

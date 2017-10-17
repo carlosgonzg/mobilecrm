@@ -107,8 +107,26 @@
 				<div class="col-sm-6">
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
+							<label for="pono">PO #</label>
+							<input type="text" name="pono" class="form-control" ng-model="workOrder.pono" ng-class="isChanged('pono')" ng-change="changed('pono')" ng-disabled="isDisabled()">
+						</div>
+					</div>
+					
+				</div>
+				<div class="col-sm-6">
+					<div class="col-xs-12 pull-right">
+						<div class="form-group">
 							<label for="date">Unit Size</label>
 							<input type="text" class="form-control" ng-model="workOrder.unitSize" ng-class="isChanged('unitSize')" ng-change="changed('unitSize')" ng-disabled="isDisabled()">
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="col-xs-12 pull-right">
+						<div class="form-group">
+							<label for="pono">ISO #</label>
+							<input type="text" class="form-control" ng-model="workOrder.isono" ng-class="isChanged('isono')" ng-change="changed('isono')"
+							 ng-disabled="isDisabled()">
 						</div>
 					</div>
 				</div>
@@ -120,13 +138,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-sm-6">
-					<div class="col-xs-12 pull-right">
-						<div class="form-group">
-							<label for="pono">PO #</label>
-							<input type="text" name="pono" class="form-control" ng-model="workOrder.pono" ng-class="isChanged('pono')" ng-change="changed('pono')" ng-disabled="isDisabled()">
-						</div>
-					</div>
+				<div class="col-sm-6">	
 					<div class="col-xs-12 pull-right">
 						<div class="checkbox">
 						    <label>
@@ -143,8 +155,6 @@
 							</label>
 					  	</div>
 					</div>
-				</div>
-				<div class="col-sm-6">
 					<div class="col-xs-12 pull-right" ng-if="workOrder.partsFromTheYard">
 						<div class="form-group">
 							<label for="yardComment">Parts from the Yard</label>
