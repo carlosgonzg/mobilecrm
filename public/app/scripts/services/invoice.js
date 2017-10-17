@@ -184,6 +184,7 @@ angular.module('MobileCRMApp')
 		.success(function (data) {
 			for(var i = 0; i < data.length; i++){
 				for(var j = 0; j < data[i].invoices.length; j++){
+					data[i].invoices[j].itemType = data[i].invoices[j].sor ? "ServiceOrder" : "WorkOrder";
 					if(data[i].invoices[j].itemType == 'ServiceOrder'){
 						data[i].invoices[j] = new Invoice(angular.copy(data[i].invoices[j]));
 					}

@@ -475,13 +475,13 @@ Invoice.prototype.getMonthlyStatement = function(params, user){
 	})
 
 	.then(function(result){
-		invoices = _.map(result.data, function(obj){
-			return obj.invoiceNumber;
-		});
-		var array = _.map(result.data, function(element) { 
-		     return _.extend({}, element, { itemType: element.sor ? 'ServiceOrder' : 'WorkOrder'});
-		});
-		results = results.concat(array);
+		// invoices = _.map(result.data, function(obj){
+		// 	return obj.invoiceNumber;
+		// });
+		// var array = _.map(result.data, function(element) { 
+		//      return _.extend({}, element, { itemType: element.sor ? 'ServiceOrder' : 'WorkOrder'});
+		// });
+		// results = results.concat(array);
 		/*
 		return _this.crudServiceOrder.find({
 			invoiceNumber: {
