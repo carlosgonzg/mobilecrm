@@ -11,6 +11,7 @@ angular.module('MobileCRMApp')
 .controller('RoleOptionListCtrl', function ($scope, $q, roles, options, RoleOptions, toaster) {
 	$scope.roles = roles.data;
 	$scope.options = options.data;
+	console.log($scope.options)
 	var roleOptions = new RoleOptions();
 	$scope.roleOptions = {};
 	
@@ -53,8 +54,10 @@ angular.module('MobileCRMApp')
 		var promises = [];
 		for(var i = 0; i < $scope.roleOptions[$scope.selectedId].length; i++){
 			console.log($scope.roleOptions[$scope.selectedId][i]);
+			
 			promises.push($scope.roleOptions[$scope.selectedId][i].save());
 		}
+		
 		$q.all(promises)
 		.then(function(){
 			toaster.success('The role was updated successfully');

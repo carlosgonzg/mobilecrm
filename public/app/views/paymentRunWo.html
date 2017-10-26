@@ -1,0 +1,95 @@
+<style>
+	table {
+		width: 100%;
+		border-collapse: collapse;
+		border-radius: 25px;
+	}
+
+	th {
+		background: #FFFFFF;
+		color: black;
+		font-weight: normal;
+	}
+
+	td,
+	th {
+		padding: 6px;
+		border: 1px solid #ccc;
+		text-align: left;
+	}
+</style>
+<div class="form" id="WorkOrderForm" name="WorkOrderForm" novalidate>
+	<div class="row">
+		<div class="col-xs-12">
+			<h1 class="pull-left">
+				<i class="fa fa-lg fa-book"></i>
+				<span>Payment Run</span>
+			</h1>
+			<div class="btn-group pull-right" style="margin-top: 20px;" role="group" aria-label="...">
+				<button class="btn btn-primary update" ng-click="save()">
+					<i class="fa fa-save"></i>&nbsp;
+					<span>Pay</span>
+				</button>
+				<back-button></back-button>
+			</div>
+		</div>
+	</div>
+
+	<div class="pull-right" style="margin-top: 30px">
+		<i class="fa fa-lg fa-money">
+			<span style="font-size: 24px; padding-right: 5px"> Work Order</span>
+		</i>
+	</div>
+	<table>
+		<thead>
+			<tr>
+				<th width="10%" style="font-weight: bold; background-color: #F5F5F5">Service Order #</th>
+				<th width="10%" style="font-weight: bold; background-color: #F5F5F5">Date</th>
+				<th width="25%" style="font-weight: bold; background-color: #F5F5F5">Customer</th>
+				<th width="25%" style="font-weight: bold; background-color: #F5F5F5">Company</th>
+				<th width="25%" style="font-weight: bold; background-color: #F5F5F5; text-align: left">City</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<th>{{WorkOrder.wor}}</th>
+				<th>{{WorkOrder.date | date:'MMM/dd/yyyy'}}</th>
+				<th>{{WorkOrder.customer}}</th>
+				<th>{{WorkOrder.client.company.entity.name}}</th>
+				<th>{{WorkOrder.client.company.address.city.description}}</th>
+			</tr>
+		</tbody>
+	</table>
+	<div class="pull-right" style="margin-top: 30px">
+		<span style="font-size: 24px; padding-right: 5px"> Crew Leaders</span>
+	</div>
+	<table>
+		<thead>
+			<tr>
+				<th width="11%" style="font-weight: bold; background-color: #F5F5F5">Code</th>
+				<th width="9%" style="font-weight: bold; background-color: #F5F5F5; text-align: center">Quantity</th>
+				<th width="25%" style="font-weight: bold; background-color: #F5F5F5">Item</th>
+				<th width="25%" style="font-weight: bold; background-color: #F5F5F5">Name</th>
+				<th width="25%" style="font-weight: bold; background-color: #F5F5F5; text-align: right">Price</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="data in WorkOrder.items track by $index" ng-if="data.typeItem=='Labor'">
+				<th width="10%">{{data.code}}</th>
+				<th width="10%" style="text-align: center">{{data.quantity}}</th>
+				<th width="40%">{{data.description}}</th>
+				<th width="30%">{{data.crewLeaderCol.name}}</th>
+				<th width="10%" style="text-align: right">{{data.crewLeaderCol.price | currency }}</th>
+			</tr>
+		</tbody>
+		<tfoot>
+			<tr>
+				<th width="10%"></th>
+				<th width="10%" style="text-align: center"></th>
+				<th width="40%"></th>
+				<th width="30%" style="text-align: right; font-weight: bold">Total :</th>
+				<th width="10%" style="text-align: right; font-weight: bold">{{getTotal() | currency }}</th>
+			</tr>
+		</tfoot>
+	</table>
+</div>

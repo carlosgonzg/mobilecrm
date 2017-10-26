@@ -69,6 +69,7 @@ d.run(function () {
 	require('./api/ws/itemCollection')('/api/itemCollection', app);
 	require('./api/ws/company')('/api/company', app);
 	require('./api/ws/branch')('/api/branch', app);
+	require('./api/ws/technicians')('/api/technicians', app, mail, __dirname);
 	
 	//Inicializando Server
 	http.createServer(app).listen(config.APP_PORT, function () {

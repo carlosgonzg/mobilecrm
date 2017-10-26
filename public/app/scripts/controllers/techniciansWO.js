@@ -8,7 +8,7 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-	.controller('WorkOrderCtrl', function ($scope, $rootScope, $location, toaster, User, statusList, workOrder, Item, dialogs, $q, Branch, CrewCollection, ItemDefault) {
+	.controller('techniciansWOCtrl', function ($scope, $rootScope, $location, toaster, User, statusList, workOrder, Item, dialogs, $q, Branch, CrewCollection ,  ItemDefault) {
 		$scope.workOrder = workOrder;
 		$scope.CrewCollection = CrewCollection.data
 
@@ -18,21 +18,24 @@ angular.module('MobileCRMApp')
 		$scope.SendToTechShow = false;
 		$scope.crewHeader = []
 		$scope.crewHeaderAdded = []
-
+		
 		$scope.items = [];
 		$scope.params = {};
 		$scope.readOnly = $rootScope.userData.role._id != 1;
 		$scope.commentDiabled = true;
 
-		if ($rootScope.userData.role._id == 1 || $rootScope.userData.role._id == 5) {
-			$scope.commentDiabled = false;
-		}
+		$scope.RollID = $rootScope.userData.role._id;
+		$scope.address = workOrder.client.company.address.address1 + '<br />' + workOrder.client.company.address.city.description + ', ' + workOrder.client.company.address.state.description + '. ' + workOrder.client.company.address.zipcode
 
 		if ($scope.workOrder.crewHeader != undefined) {
 			$scope.crewHeaderAdded = $scope.workOrder.crewHeader
 		}
 
-		if ($rootScope.userData.role._id != 1) {
+		if ($rootScope.userData.role._id == 1 || $rootScope.userData.role._id == 5) {
+			$scope.commentDiabled = false;
+		}
+
+		if ($rootScope.userData.role._id != 1 && $rootScope.userData.role._id != 4 && $rootScope.userData.role._id != 5) {
 			$scope.workOrder.client = new User($rootScope.userData);
 		}
 		$scope.waiting = false;
@@ -63,7 +66,7 @@ angular.module('MobileCRMApp')
 		];
 
 		$scope.wsClassItem = Item;
-		$scope.wsFilterItem = $rootScope.userData.role._id != 1 ? { 'companies._id': $rootScope.userData.company._id } : {};
+		$scope.wsFilterItem = $rootScope.userData.role._id != 1 && $rootScope.userData.role._id != 4 && $rootScope.userData.role._id != 5 ? { 'companies._id': $rootScope.userData.company._id } : {};
 		$scope.wsFieldsItem = [{
 			label: 'Code',
 			field: 'code',
@@ -94,7 +97,7 @@ angular.module('MobileCRMApp')
 
 		$scope.clientChanged = function (client) {
 			if (client && client.company)
-				$scope.wsFilterItem = $rootScope.userData.role._id != 1 ? { 'companies._id': $rootScope.userData.company._id } : { 'companies._id': client.company._id };
+				$scope.wsFilterItem = $rootScope.userData.role._id != 1 && $rootScope.userData.role._id != 4 && $rootScope.userData.role._id != 5 ? { 'companies._id': $rootScope.userData.company._id } : { 'companies._id': client.company._id };
 
 			if (client && client.branch) {
 				new Branch().filter({ _id: client.branch._id })
@@ -118,7 +121,7 @@ angular.module('MobileCRMApp')
 					}
 					$scope.workOrder.items.unshift(ItemDefault.data[0]);
 				}
-			}	
+			}
 		};
 
 		$scope.addContact = function () {
@@ -202,68 +205,40 @@ angular.module('MobileCRMApp')
 		};
 
 		$scope.isDisabled = function () {
-			return $rootScope.userData.role._id != 1 && $scope.workOrder.status._id == 3;
-		};
+			if ($rootScope.userData.role._id == 1) return false
 
-		$scope.uploadFiles = function (files) {
-			$scope.files = angular.copy(files)
-			function getBase64(file) {
-				var d = $q.defer();
-				var reader = new FileReader();
-				reader.readAsDataURL(file);
-				reader.onload = function () {
-					d.resolve({
-						url: reader.result,
-						name: file.name,
-						type: file.type,
-						isNew: true
-					});
-				};
-				reader.onerror = function (error) {
-					d.reject(error);
-				};
-				return d.promise;
+			if ($scope.workOrder.crewHeader == undefined) return true
+			if ($scope.userData.techId == undefined) return true
+
+			for (var row = 0; row < $scope.workOrder.crewHeader.length; row++) {
+				var techId = $scope.workOrder.crewHeader[row].techId;
+				if (techId == $rootScope.userData.techId) {
+					return false
+				}
 			}
-			var promises = [];
-			for (var i = 0; i < files.length; i++) {
-				promises.push(getBase64(files[i]))
-			}
-			$q.all(promises)
-				.then(function (urls) {
-					$scope.workOrder.photos = $scope.workOrder.photos || [];
-					$scope.workOrder.photos = $scope.workOrder.photos.concat(urls)
-				})
+
+			return true
 		};
 
-		$scope.showPicture = function (index) {
-			$scope.workOrder.showPicture(index);
-		};
-
-		$scope.removePhoto = function (index) {
-			$scope.workOrder.photos.splice(index, 1);
-		};
-
-		$scope.save = function (sendMail, sendTotech) {
+		$scope.save = function (completed, sendMail, sendTotech) {
 			$scope.waiting = true;
 
 			delete $scope.workOrder.client.account.password;
-			if (sendMail) {
-				$scope.workOrder.sendMail = true;
+			$scope.workOrder.sendMail = sendMail || false;
+			$scope.workOrder.sendTotech = sendTotech || false;
+
+			if (completed == true) {
+				var status = {
+					_id: 3,
+					description: 'Completed'
+				}
+				$scope.workOrder.status = status;
 			}
-			if (sendTotech) {
-				$scope.workOrder.sendTotech = true;
-			} else {
-				$scope.workOrder.sendTotech = false;
-			}
-			if ($scope.crewHeaderAdded.length == 0) {
-				toaster.error('The Service Order couldn\'t be saved, please check if some required field is empty');
-				$scope.waiting = false;
-				return
-			}
+
 			$scope.workOrder.save()
 				.then(function (data) {
 					toaster.success('The Work Order was saved successfully');
-					$location.path('workOrderList')
+					$location.path('techniciansList')
 					$scope.waiting = false;
 				},
 				function (error) {
@@ -271,21 +246,6 @@ angular.module('MobileCRMApp')
 					toaster.error('The Work Order couldn\'t be saved, please check if some required field is empty or if its duplicated');
 					$scope.waiting = false;
 				});
-		};
-
-		$scope.delete = function () {
-			var dlg = dialogs.confirm('Warning', 'Are you sure you want to delete?');
-			dlg.result.then(function (btn) {
-				$scope.workOrder.remove()
-					.then(function () {
-						toaster.success('The work order was deleted successfully');
-						$location.path('/workOrderList')
-					});
-			});
-		};
-
-		$scope.export = function (showPrice) {
-			$scope.workOrder.download(showPrice);
 		};
 
 		$scope.send = function () {
@@ -303,6 +263,11 @@ angular.module('MobileCRMApp')
 		setCrewleader()
 
 		function setCrewleader() {
+
+			if ($scope.workOrder.items[0] != undefined && $scope.workOrder.items[0].crewLeaderCol != undefined) {
+				$scope.SendToTechShow = true
+			}
+
 			for (var n = 0; n < $scope.CrewCollection.length; n++) {
 				var item = $scope.CrewCollection[n];
 				$scope.newItem = {
@@ -312,7 +277,6 @@ angular.module('MobileCRMApp')
 					techId: item.techId
 				}
 				$scope.addedItem.push($scope.newItem);
-				$scope.crewHeader.push($scope.newItem);
 			}
 		}
 
@@ -350,7 +314,6 @@ angular.module('MobileCRMApp')
 			$scope.CrewLeaderSelected = []
 			$scope.CrewLeaderSelected.push(item);
 		}
-
 		$scope.addCrewHeader = function (item) {
 			for (var index = 0; index < $scope.crewHeaderAdded.length; index++) {
 				var element = $scope.crewHeaderAdded[index].name;
@@ -362,10 +325,95 @@ angular.module('MobileCRMApp')
 			}
 
 			$scope.crewHeaderAdded.push(item);
-			$scope.workOrder.crewHeader = $scope.crewHeaderAdded
+			$scope.serviceOrder.crewHeader = $scope.crewHeaderAdded
 		}
 		$scope.crewHeaderRemove = function (index) {
 			$scope.crewHeaderAdded.splice(index, 1);
-			$scope.workOrder.crewHeader = $scope.crewHeaderAdded
+			$scope.serviceOrder.crewHeader = $scope.crewHeaderAdded
 		};
+		$scope.Total = function () {
+			var totalitem = 0;
+			for (var row = 0; row < $scope.workOrder.items.length; row++) {
+				var element = $scope.workOrder.items[row];
+				var quantity = element.quantity;
+
+				if (element.crewLeaderCol != undefined) {
+					if ($rootScope.userData.role._id == 1) {
+						totalitem += element.crewLeaderCol.price
+					} else {
+						if (element.crewLeaderCol.techId == $rootScope.userData.techId) {
+							totalitem += (quantity * element.crewLeaderCol.price);
+						}
+					}
+				}
+			}
+			return totalitem
+		}
+
+		$scope.getTechId = function () {
+			for (var row = 0; row < $scope.workOrder.items.length; row++) {
+				var element = $scope.workOrder.items[row];
+				if (element.crewLeaderCol != undefined && element.crewLeaderCol.techId == $rootScope.userData.techId) {
+					return element.crewLeaderCol.techId
+				}
+			}
+			return 0
+		}
+
+		$scope.ValidHeaderCrew = function () {
+			if ($scope.RollID == 1) {
+				return true
+			}
+			if ($scope.workOrder.statusTech != undefined) {
+				if ($scope.workOrder.statusTech._id >= 1) {
+					return false
+				}
+			}
+			if ($scope.workOrder.status._id == 4) {
+				return false
+			}
+			if ($scope.workOrder.crewHeader == undefined) {
+				return false
+			}
+
+			for (var row = 0; row < $scope.workOrder.crewHeader.length; row++) {
+				var techId = $scope.workOrder.crewHeader[row].techId;
+				if (techId == $rootScope.userData.techId) {
+					return true
+				}
+			}
+			return true
+		}
+
+		$scope.visibleRowTech = function (iditems) {
+			if ($rootScope.userData.role._id == 1) {
+				return true
+			}
+
+			if ($scope.workOrder.crewHeader == undefined) {
+				return false;
+			}
+
+			//VERIFICA SI ES EL HEADER TECH
+			for (var row = 0; row < $scope.workOrder.crewHeader.length; row++) {
+				var techId = $scope.workOrder.crewHeader[row].techId;
+
+				if (techId == $rootScope.userData.techId) {
+					return true
+				}
+			}
+
+			//SI NO ES HEADER TECH ENTONCES BUS LOS ITEM QUE LE CORRESPONDA AL TECH LOGEADO			
+			for (var row = 0; row < $scope.workOrder.items.length; row++) {
+				if (iditems == $scope.workOrder.items[row]._id) {
+					if ($scope.workOrder.items[row].crewLeaderCol != undefined) {
+						if ($scope.workOrder.items[row].crewLeaderCol.techId == $rootScope.userData.techId) {
+							return true
+						}
+					}
+				}
+			}
+
+			return false
+		}
 	});

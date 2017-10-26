@@ -1,0 +1,582 @@
+<div ng-if="ValidHeaderCrew()">
+	<div class="form" id="serviceOrderForm" name="serviceOrderForm" novalidate>
+		<div class="row">
+			<div class="col-xs-12">
+				<h1 class="pull-left">
+					<i class="fa fa-lg fa-calculator"></i>
+					<span> Technicians - Service Order</span>
+				</h1>
+				<div class="btn-group pull-right" style="margin-top: 20px;" role="group" aria-label="...">
+					<button class="btn btn-primary update" ng-click="save(false, false, false)" ng-disabled="isDisabled()">
+						<i class="fa fa-save"></i>&nbsp;
+						<span>Save</span>
+					</button>
+					<button class="btn btn-primary update" ng-click="save(true, false, false)" ng-disabled="isDisabled()">
+						<i class="fa fa-save"></i>&nbsp;
+						<span>Completed</span>
+					</button>
+					<back-button></back-button>
+				</div>
+				<hr />
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12">
+				<div class="col-sm-4">
+					<div class="col-sm-12 pull-left">
+						<div class="form-group">
+							<label for="Client">Client</label>
+							<entitypicker ng-model="serviceOrder.client" ws-class="wsClass" ws-fields="wsFields" ws-filter="wsFilter" disable="true"></entitypicker>
+						</div>
+					</div>
+					<div class="col-sm-12 pull-left">
+						<div class="panel panel-default" ng-show="serviceOrder.client._id">
+							<div class="panel-heading">{{serviceOrder.client.entity.fullName}}&nbsp;-&nbsp;{{serviceOrder.client.company.entity.name}}</div>
+							<div class="panel-body">
+								<p class="col-xs-12 text-left">
+									<b>{{serviceOrder.client.branch.name}}</b>
+									<br/>
+									<p class="col-xs-12 text-left" ng-repeat="address in serviceOrder.client.branch.addresses track by $index">
+										<i class="fa fa-map"></i>&nbsp;{{ address.address1 }},&nbsp;{{ address.city.description }},&nbsp;{{ address.state.description}},&nbsp;{{
+										address.country.description }}
+									</p>
+								</p>
+								<p class="col-xs-12 text-left" ng-repeat="phone in serviceOrder.client.branch.phones track by $index">
+									<i class="fa fa-phone"></i>&nbsp;{{ phone.number }}
+								</p>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-sm-12 pull-left">
+						<div class="panel panel-default">
+							<div class="panel-body">
+								<div class="row">
+									<div style="float:left; padding-left: 10px">
+										<select class="form-control" style="width: 220px; height: 30px" ng-model="item" data-ng-options="item as item.name for item in crewHeader"
+										 ng-disabled="true">
+											<option style="display:none" value="">Select a Crew Leader</option>
+										</select>
+									</div>
+									<div style="float:left; padding-left:5px">
+										<button type="button" class="btn btn-sm btn-primary update" ng-click="addCrewHeader(item)" ng-disabled="true">
+											<i class="fa fa-plus"></i>
+										</button>
+									</div>
+									<br>
+									<br>
+									<div ng-repeat="x in crewHeaderAdded track by $index">
+										<div style="border: 1px white solid; margin-left:20px; font-size: 15px" class="col-sm-9">{{x.techId}}&nbsp;-&nbsp; {{x.name}}</div>
+										<div style="border: 1px white solid; margin-left:10px" class="col-xs-1">
+											<div class="pull-right">
+												<button type="button" class="btn btn-danger btn-xs" ng-click="crewHeaderRemove($index)" ng-disabled="true">-</button>
+											</div>
+										</div>
+									</div>
+
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+
+				<div class="col-sm-8">
+					<div class="col-sm-6">
+						<div class="col-xs-12 pull-right">
+							<div class="form-group">
+								<label for="customer">Customer</label>
+								<input type="text" name="customer" class="form-control" ng-model="serviceOrder.customer" ng-class="isChanged('customer')"
+								 ng-change="changed('customer')" disabled="true" validator="required">
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="col-xs-12 pull-right">
+							<div class="form-group">
+								<label for="sor">Service order #</label>
+								<input type="text" name="sor" class="form-control" ng-model="serviceOrder.sor" ng-class="isChanged('sor')" ng-change="changed('sor')"
+								 ng-disabled="true" validator="required" ng-disabled="DisabledControls">
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="col-xs-12 pull-right">
+							<div class="form-group">
+								<label for="status">Status</label>
+								<select class="form-control" name="status" ng-model="serviceOrder.status" ng-class="isChanged('Status')" ng-change="changed('Status')"
+								 ng-options="status as status.description for status in listStatus track by status._id" ng-disabled="true" validator="required"
+								 ng-disabled="DisabledControls"></select>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="col-xs-12 pull-right">
+							<div class="form-group">
+								<label for="date">Date</label>
+								<sc-datepicker ng-model="serviceOrder.date" ng-class="isChanged('date')" ng-change="changed('date')" ng-disabled="true"></sc-datepicker>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-12">
+						<div class="col-xs-12 pull-right">
+							<uib-accordion>
+								<uib-accordion-group class="panel-default" heading="Contacts">
+									<button class="btn btn-primary pull-right" type="button" ng-click="addContact()" ng-disabled="true">
+										<i class="fa fa-plus"></i>
+									</button>
+									<div ng-repeat="contact in serviceOrder.contacts track by $index">
+										<div class="col-xs-12">
+											<b>Contact #{{$index + 1}}</b>
+										</div>
+										<div class="col-xs-10">
+											<contact-model ng-model="serviceOrder.contacts[$index]" ng-class="isChanged('contact')" ng-change="changed('contact')"> </contact-model>
+										</div>
+										<div class="col-xs-2">
+											<button class="btn btn-danger pull-right" type="button" ng-click="removeContact($index)" ng-if="serviceOrder.contacts.length > 1"
+											 ng-disabled="true">
+												<i class="fa fa-minus"></i>
+											</button>
+										</div>
+									</div>
+								</uib-accordion-group>
+							</uib-accordion>
+						</div>
+					</div>
+					<div class="col-xs-12">
+						<div class="col-xs-12 pull-right">
+							<uib-accordion ng-disabled="userData.role._id == 5">
+								<uib-accordion-group class="panel-default" heading="Contacts">
+									<button class="btn btn-primary pull-right" type="button" ng-click="addContact()">
+										<i class="fa fa-plus"></i>
+									</button>
+									<div ng-repeat="contact in serviceOrder.contacts track by $index">
+										<div class="col-xs-12">
+											<b>Contact #{{$index + 1}}</b>
+										</div>
+										<div class="col-xs-10">
+											<contact-model ng-model="serviceOrder.contacts[$index]" ng-class="isChanged('contact')" ng-change="changed('contact')"> </contact-model>
+										</div>
+										<div class="col-xs-2">
+											<button class="btn btn-danger pull-right" type="button" ng-click="removeContact($index)" ng-if="serviceOrder.contacts.length > 1"
+											 ng-disabled="true">
+												<i class="fa fa-minus"></i>
+											</button>
+										</div>
+									</div>
+								</uib-accordion-group>
+							</uib-accordion>
+						</div>
+					</div>
+
+					<div class="col-xs-12" ng-if="userData.role._id == 1">
+						<div class="col-xs-12 pull-right">
+							<uib-accordion>
+								<uib-accordion-group class="panel-default">
+									<uib-accordion-heading>
+										<span class="fa fa-map-pin fa-lg"> </span> From Branch Address
+
+										<small ng-if="serviceOrder.siteAddressFrom.address1">{{serviceOrder.siteAddressFrom.address1 }}, {{serviceOrder.siteAddressFrom.city.description}} </small>
+									</uib-accordion-heading>
+
+
+									<select ng-model="serviceOrder.siteAddressFrom" class="form-control" ng-class="isChanged('siteAddressFrom')" ng-change="changed('siteAddressFrom');recalculate()"
+									 ng-disabled="true" ng-options="address as address.addressString for address in addresses track by address.address1">
+									</select>
+
+								</uib-accordion-group>
+							</uib-accordion>
+						</div>
+					</div>
+					<div class="col-xs-12">
+						<div class="col-xs-12 pull-right">
+							<uib-accordion>
+								<uib-accordion-group class="panel-default">
+									<uib-accordion-heading>
+										<span class="fa fa-map-marker fa-lg"></span> To Customer Address
+										<small ng-if="serviceOrder.siteAddress.city" ng-disabled="true" disable="false">{{serviceOrder.siteAddress.address1 }}, {{serviceOrder.siteAddress.city.description}} </small>
+									</uib-accordion-heading>
+
+									<address-model ng-model="serviceOrder.siteAddress" origin-point="serviceOrder.siteAddressFrom" ng-class="isChanged('siteAddress')"
+									 ng-change="changed('siteAddress')" show-map="showMap" disable="true"></address-model>
+
+								</uib-accordion-group>
+							</uib-accordion>
+						</div>
+					</div>
+
+					<div class="col-sm-6">
+						<div class="col-xs-12 pull-right">
+							<div class="form-group">
+								<label for="date">Serial #</label>
+								<input type="text" class="form-control" ng-model="serviceOrder.unitno" ng-class="isChanged('unitno')" ng-change="changed('unitno')"
+								 ng-disabled="true">
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="col-xs-12 pull-right">
+							<div class="form-group">
+								<label for="date">Unit Size</label>
+								<input type="text" class="form-control" ng-model="serviceOrder.unitSize" ng-class="isChanged('unitSize')" ng-change="changed('unitSize')"
+								 ng-disabled="true">
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="col-xs-12 pull-right">
+							<div class="checkbox">
+								<label>
+									<input type="checkbox" ng-model="serviceOrder.clientResponsibleCharges" ng-class="isChanged('clientResponsibleCharges')"
+									 ng-change="changed('clientResponsibleCharges')" id="clientResponsibleCharges" ng-disabled="isDisabled()"> Customer responsible for charges
+								</label>
+							</div>
+						</div>
+						<div class="col-xs-12 pull-right">
+							<div class="form-group">
+								<label for="distanceFrom">Service Miles (Miles)</label>
+								<input type="text" name="distanceFrom" class="form-control" ng-model="serviceOrder.siteAddress.distanceFrom" validator="required"
+								 ng-disabled="true" ng-class="isChanged('distanceFrom')" ng-change="changed('serviceMiles')">
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="col-xs-12 pull-right">
+							<div class="checkbox">
+								<label>
+									<input type="checkbox" ng-model="serviceOrder.partsFromTheYard" ng-class="isChanged('partsFromTheYard')" ng-change="changed('partsFromTheYard')"
+									 id="partsFromTheYard" ng-disabled="isDisabled()"> Parts from the yard
+								</label>
+							</div>
+						</div>
+						<div class="col-xs-12 pull-right " ng-if="serviceOrder.partsFromTheYard">
+							<div class="form-group">
+								<label for="yardComment">Parts from the Yard</label>
+								<textarea id="yardComment" ng-model="serviceOrder.yardComment" class="form-control">
+							</textarea>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-12">
+						<div class="btn btn-default" ngf-select="uploadFiles($files)" ngf-max-size="5MB" ngf-accept="'image/*'" multiple="multiple"
+						 ng-disabled="true">Upload Photo(s) (5MB Max)</div>
+					</div>
+					<div class="col-xs-12">
+						<label>Photos</label>
+					</div>
+					<div class="col-sm-3" ng-repeat="photo in serviceOrder.photos track by $index">
+						<img class="img-rounded" style="width:120px" ng-src="{{photo.url}}" ng-click="showPicture($index)" ng-disabled="true" />
+						<button type="button" ng-click="removePhoto($index)" class="btn btn-sm btn-danger" ng-disabled="true">
+							<i class="fa fa-times"></i>
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12 table-responsive">
+				<table class="table table-striped table-hover" width="100%" style="margin: 0 auto">
+					<thead>
+						<tr>
+							<th width="10%">
+								Code
+							</th>
+							<th width="20%" colspan="2">
+								Group Code / Description
+							</th>
+							<th width="10%">
+								Quantity
+							</th>
+							<th width="10%">
+								<div ng-if="serviceOrder.status._id == 3">Price</div>
+							</th>
+							<th width="5%">
+								<div ng-if="serviceOrder.status._id == 3">Total</div>
+							</th>
+							<th width="30%" style="text-align: left">
+								Crew Leader
+							</th>
+							<th width="20%">
+								
+							</th>
+							<th width="10%">
+								<button type="button" class="btn btn-sm btn-primary update" ng-click="addItem()" ng-if="userData.role._id == 1" ng-disabled="true">
+									<i class="fa fa-plus"></i>
+								</button>
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td colspan="5">
+								<entitypicker ng-model="params.item" ws-class="wsClassItem" ws-fields="wsFieldsItem" ws-filter="wsFilterItem" ws-label="'description'"
+								 disable="isDisabled()" ng-change="getCrewleaders(params.item._id)" order-by="'code'"></entitypicker>
+							</td>
+							<td>
+								<button type="button" class="btn btn-sm btn-primary update" ng-click="addItem(params.item)" ng-disabled="!params.item._id">
+									<i class="fa fa-plus"></i>
+								</button>
+							</td>
+							<td>
+								<select class="form-control" style="width: 280px" ng-model="item" ng-change="changedValue(item)" data-ng-options="item as item.name for item in addedItem"
+								 ng-show="params.item.typeItem=='Labor'" ng-disabled="!params.item._id">
+									<option style="display:none" value="">Select a Crew Leader</option>
+								</select>
+							</td>
+							<td>
+								<span>
+									<b>Add from Collection</b>
+								</span>
+							</td>
+							<td>
+								<button type="button" class="btn btn-sm btn-primary update" ng-click="addItemCollection()" ng-disabled="isDisabled()">
+									<i class="fa fa-list"></i>
+								</button>
+							</td>
+						</tr>
+						<tr ng-repeat="item in serviceOrder.items track by $index" ng-show="serviceOrder.client._id" ng-if="visibleRowTech(item._id)==true && serviceOrder.items[$index]._id != 5">
+							<td>
+								<input type="text" class="form-control" ng-model="item.code" ng-disabled="true">
+							</td>
+							<td colspan="{{ item.itemCollection._id ? '1' : '2' }}" width="20%">
+								<input type="text" name="description{{$index}}" class="form-control" ng-model="item.description" ng-disabled="true" validator="required"
+								 ng-class="isChanged('item')" ng-change="changed('item')">
+							</td>
+							<td>
+								<input type="number" name="quantity{{$index}}" class="form-control" ng-model="item.quantity" ng-disabled="isDisabled()" validator="required"
+								 step="0.01" ng-class="isChanged('item')" ng-change="changed('item')">
+							</td>
+							<td>
+								<div ng-if="false">
+									<input type="number" name="price{{$index}}" class="form-control" ng-model="item.price" ng-disabled="true" validator="required"
+									 step="0.01" ng-class="isChanged('item')" ng-change="changed('item')" ng-if="true">
+								</div>
+								<div ng-if="serviceOrder.status._id==3">
+									<input type="number" name="price{{$index}}" class="form-control" ng-model="item.crewLeaderCol.price" ng-disabled="true" validator="required"
+									 step="0.01" ng-class="isChanged('item')" ng-change="changed('item')">
+
+								</div>
+
+			</div>
+			</td>
+			<td>
+
+			</td>
+			<td>
+				<input type="text" name="part{{$index}}" class="form-control" ng-model="item.crewLeaderCol.name" ng-disabled="true" ng-class="isChanged('item')"
+				 ng-change="changed('item')">
+			</td>
+			<td>
+				<input type="text" name="part{{$index}}" class="form-control" ng-model="item.part" ng-disabled="true" ng-class="isChanged('item')"
+				 ng-change="changed('item')">
+			</td>
+			<td>
+				<button type="button" class="btn btn-sm btn-danger update" ng-click="removeItem($index)" ng-disabled="isDisabled()">
+					<i class="fa fa-times"></i>
+				</button>
+			</td>
+			</tr>
+			</tbody>
+			</table>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12">
+			<div class="col-sm-4 pull-left">
+				<div class="form-group">
+					<label for="comment">Issue/Comments</label>
+					<textarea id="comment" ng-model="serviceOrder.issue" class="form-control" ng-disabled="true" ng-class="isChanged('issue')"
+					 ng-change="changed('issue')">
+					</textarea>
+				</div>
+
+				<div ng-hide="">
+					<div class="form-group">
+						<label for="comment">Comments</label>
+						<textarea id="comment" ng-model="serviceOrder.comment" class="form-control" ng-disabled="isDisabled()" ng-class="isChanged('comment')"
+						 ng-change="changed('comment')">
+					</textarea>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</div>
+
+<!-- invoice invoice invoice invoice invoice invoice invoice invoice invoice invoice invoice invoice invoice invoice invoice invoice invoice invoice invoice invoice-->
+
+<div ng-if="!ValidHeaderCrew()">
+	<div class="row">
+		<div class="col-xs-12">
+			<h1 class="pull-left">
+				<i class="fa fa-lg fa-money"></i>
+				<span>Mobile One</span>
+			</h1>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-xs-12">
+			<h1 class="pull-left">
+				<span style="font-size: 20pt; margin-left: 15px">Services Order</span>
+			</h1>
+			<h1 class="pull-right">
+				<span style="font-size: 20pt; margin-right: 15px" ng-show="RollID==4">Invoice #&nbsp;{{serviceOrder.sor}}&nbsp;-&nbsp; {{userData.techId}}</span>
+			</h1>
+		</div>
+	</div>
+
+	<div class="col-sm-5 pull-left">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<b>SERVICE PROVIDER</b>
+			</div>
+			<div class="panel-body">
+				<b>Mobileone Restoration LLC</b>
+				<br/> 1702 Bridget's Ct
+				<br/> Kissimmee, FL. 34744
+				<br/> mobileonerestorationllc@gmail.com
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-7 pull-left">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<b>CUSTOMER</b>
+			</div>
+			<div class="panel-body">
+				<b>{{serviceOrder.client.company.entity.name}}</b>
+				<br/>
+				<div style="font-size: 11px; font-family: Open Sans" ng-bind-html="address"></div>
+				<b>
+					<div style="font-weight: normal">{{serviceOrder.client.account.email}}</div>
+				</b>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-sm-12 pull-left">
+		<div class="panel panel-default">
+			<div class="panel-heading" style="height: 30px">
+				Project Description:
+			</div>
+			<div class="panel-body">
+				<div ng-if="serviceOrder.comment != ''">1-&nbsp;{{serviceOrder.comment}}</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-sm-12 pull-left">
+		<div class="panel panel-default">
+			<div class="panel-heading" style="height: 30px">
+				<table width="100%" style="border: 0px Red solid">
+					<thead>
+						<tr>
+							<th width="10%">
+								Code
+							</th>
+							<th width="40%" colspan="2">
+								Description
+							</th>
+							<th width="10%">
+								
+							</th>
+							<th width="15%">
+								Cost per Unit
+							</th>
+							<th width="10%">
+								Qty
+							</th>
+							<th width="15%" style="text-align: right; padding-right: 10px">
+								Total
+							</th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+			<div class="panel-body">
+				<table class="table" width="100%">
+					<tbody>
+						<tr ng-repeat="item in serviceOrder.items track by $index" style="border-top: 1px white solid">
+							<th width="10%" style="font-weight: normal" ng-if="item.crewLeaderCol.techId == getTechId()">
+								{{item.code}}
+							</th>
+							<th width="40%" style="font-weight: normal" ng-if="item.crewLeaderCol.techId == getTechId()">
+								{{item.description}}
+							</th>
+							<th width="10%" style="font-weight: normal" ng-if="item.crewLeaderCol.techId == getTechId()">
+								
+							</th>
+							<th width="15%" style="font-weight: normal; text-align: left; padding-left: 25px" ng-if="item.crewLeaderCol.techId == getTechId()">
+								{{item.crewLeaderCol.price | currency}}
+							</th>
+							<th width="10%" style="font-weight: normal;" ng-if="item.crewLeaderCol.techId == getTechId()">
+								{{item.quantity}}
+							</th>
+							<th width="15%" style="text-align: right; font-weight: normal" ng-if="item.crewLeaderCol.techId == getTechId()">
+								{{item.quantity * item.crewLeaderCol.price | currency}}
+							</th>
+						</tr>
+					</tbody>
+				</table>
+				<table class="table" width="100%">
+					<tbody>
+						<tr style="border-top: 1px white solid">
+							<th width="10%">
+
+							</th>
+							<th width="40%">
+
+							</th>
+							<th width="10%">
+
+							</th>
+							<th width="15%">
+
+							</th>
+							<th width="10%">
+								<b>Total :</b>
+							</th>
+							<th width="15%" style="text-align: right; font-weight: normal">
+								<b>
+									<div>{{Total() | currency}}</div>
+								</b>
+							</th>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="col-sm-14 pull-center">
+			<div class="panel panel-default">
+				<div class="panel-heading" style="height: 30px; font-weight: bold">
+					ADDRESS:
+				</div>
+				<div class="panel-body">
+					<div ng-repeat="address in serviceOrder.client.branch.addresses track by $index">
+						{{ address.address1 }},&nbsp;{{ address.city.description }},&nbsp;{{ address.state.description }},&nbsp;{{ address.zipcode
+						}}
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-14 pull-center">
+			<div class="panel panel-default">
+				<div class="panel-body" style="height: 60px">
+					<table class="table" width="100%">
+						<tbody>
+							<tr>
+								<th width="10%">
+									Location
+								</th>
+								<th width="90%">
+									{{serviceOrder.client.branch.name}}
+								</th>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>

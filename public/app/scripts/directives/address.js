@@ -6,7 +6,8 @@ angular.module('MobileCRMApp')
     scope:{
 			ngModel: '=',
 			originPoint: '=',
-			showMap: '=?'
+			showMap: '=?',
+			disable: '=?'
 		},
 		controller: function ($scope, Country, State, City, $timeout, $q) {
 			$scope.ngModel = $scope.ngModel || {};
@@ -19,7 +20,8 @@ angular.module('MobileCRMApp')
 				this.zipcode = address.zipcode || '';
 				this.latitude = address.latitude || 0;
 				this.longitude = address.longitude || 0;
-				this.distanceFrom =  address.distanceFrom || 0;
+				this.distanceFrom = address.distanceFrom || 0;
+				this.gndi
 			};
 			// var originPoint = {
 			// 	latitude: 28.39788010000001,

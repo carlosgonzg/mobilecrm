@@ -276,6 +276,10 @@ Crud.prototype.update = function (qry, obj, overrideUniqueFields) {
 		throw new Error('obj is not defined');
 	}
 
+  //CODIGO PARA AGREGAR LA FECHA DE MODIFICACION DE LAS TABLAS.
+  obj.ModifiedDate = new Date();
+  obj.ModifiedBy = this.userLogged
+
 	obj = convertToDate(obj);
   _this.validate(obj)
 	.then(function () {

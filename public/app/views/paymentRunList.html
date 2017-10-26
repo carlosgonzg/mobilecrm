@@ -1,0 +1,43 @@
+<div class="row">
+	<div class="col-xs-12">
+		<h1 class="pull-left">
+			<i class="fa fa-lg fa-book"></i>
+			<span>Payment Run</span>
+		</h1>
+
+	</div>
+</div>
+<div>
+
+	<i class="fa fa-lg fa-list">
+		<span style="font-size: 24px"> Services Order</span>
+	</i>
+	<div class="col-xs-10">
+		<ul class="nav nav-tabs">
+			<li role="presentation" style="cursor: pointer" ng-class="{ active: selectedTab == role.description }" ng-repeat="role in roles track by $index"
+			 ng-click="selectTab(role)">
+				<a>{{role.description}}</a>
+			</li>
+		</ul>
+	</div>
+
+	<div ng-show="pending" class="ng-hide">
+		<div class="row">
+			<div class="col-xs-12">
+				<list clase="DataSO" fields="Fieldpending" showid="false" search-fields="search" filter-field="filterPayment" list="list"
+				 showMessage="false"></list>
+			</div>
+		</div>
+
+	</div>
+
+	<div ng-show="completed" class="ng-hide">
+		<div class="row">
+			<div class="col-xs-12">
+				<list clase="DataWO" fields="FieldpendingWO" showid="false" search-fields="searchWO" filter-field="filterPayment" list="list"
+				 showMessage="false"></list>
+			</div>
+		</div>
+	</div>
+
+</div>

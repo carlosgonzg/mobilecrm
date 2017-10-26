@@ -119,81 +119,6 @@ ServiceOrder.prototype.savePhotos = function (serviceOrder) {
 	return d.promise;
 };
 
-ServiceOrder.prototype.insert = function (serviceOrder, user, mail) {
-	var d = q.defer();
-	var _this = this;
-	var total = 0;
-	var crewdata;
-	var userIds = [];
-	var sendMail = serviceOrder.sendMail || false;
-	var sendMailTech = serviceOrder.sendTotech || false;
-
-
-	if (sendMailTech == true) {
-		/*
-		busco los email de los crew leader - fz
-			for (var row = 0; row < serviceOrder.items.length; row++) {
-					if (serviceOrder.items[row].crewLeaderCol != undefined) {
-						var element = serviceOrder.items[row].crewLeaderCol.id
-						userIds.push(element);
-					}
-				} */
-
-		//busco los id de los los tech en el cuerpo de la orden
-		for (var n = 0; n < serviceOrder.crewHeader.length; n++) {
-			if (serviceOrder.crewHeader != undefined) {
-				var element = serviceOrder.crewHeader[n].id
-				userIds.push(element);
-			}
-		}
-		this.crew.find({ _id: { $in: userIds } })
-			.then(function (data) {
-				crewdata = data
-			})
-	}
-
-	//sumo el total
-	for (var i = 0; i < serviceOrder.items.length; i++) {
-		total += serviceOrder.items[i].quantity * serviceOrder.items[i].price;
-	}
-	serviceOrder.total = total;
-	var photos = serviceOrder.photos;
-	//Consigo el sequencial de invoice
-	var promise = serviceOrder.invoiceNumber ? q.when(serviceOrder.invoiceNumber) : q.when('Pending Invoice');
-	promise
-		.then(function (sequence) {
-			serviceOrder.invoiceNumber = sequence;
-			delete serviceOrder.sendMail;
-			delete serviceOrder.photos;
-			//inserto
-			return _this.crud.insert(serviceOrder);
-		})
-		//Guardando las fotos
-		.then(function (obj) {
-			serviceOrder._id = obj.data._id;
-			serviceOrder.photos = photos;
-			return _this.savePhotos(serviceOrder);
-		})
-		//actualizo y mando correo
-		.then(function (photos) {
-			return _this.crud.update({ _id: serviceOrder._id }, serviceOrder)
-		})
-		.then(function (photos) {
-
-			if (sendMail || sendMailTech || user.role._id == 1)
-				_this.sendServiceOrder(serviceOrder._id, user, mail, crewdata, sendMail, sendMailTech);
-			d.resolve(serviceOrder);
-		})
-		.catch(function (err) {
-			console.log(err)
-			d.reject({
-				result: 'Not ok',
-				errors: err
-			});
-		});
-	return d.promise;
-};
-
 ServiceOrder.prototype.update = function (query, serviceOrder, user, mail) {
 	var d = q.defer();
 	var _this = this;
@@ -203,19 +128,16 @@ ServiceOrder.prototype.update = function (query, serviceOrder, user, mail) {
 	var sendMail = serviceOrder.sendMail || false;
 	var sendMailTech = serviceOrder.sendTotech || false;
 
+	//busco los email de los crew leader - fz
 	if (sendMailTech == true) {
-		/*
-		//busco los email de los crew leader - fz
 		for (var row = 0; row < serviceOrder.items.length; row++) {
-					if (serviceOrder.items[row].crewLeaderCol != undefined) {
-						var element = serviceOrder.items[row].crewLeaderCol.id
-						userIds.push(element);
-					}
-				} */
-
-		//busco los id de los los tech en el cuerpo de la orden
+			if (serviceOrder.items[row].crewLeaderCol != undefined) {
+				var element = serviceOrder.items[row].crewLeaderCol.id
+				userIds.push(element);
+			}
+		}
 		for (var n = 0; n < serviceOrder.crewHeader.length; n++) {
-			if (serviceOrder.crewHeader != undefined) {
+			if (serviceOrder.crewHeader != undefined) {  //busco los id de los los tech en el cuerpo de la orden
 				var element = serviceOrder.crewHeader[n].id
 				userIds.push(element);
 			}
@@ -262,120 +184,6 @@ ServiceOrder.prototype.update = function (query, serviceOrder, user, mail) {
 			if (sendMail || sendMailTech)
 				_this.sendServiceOrderUpdate(query._id, user, mail, crewdata, sendMail, sendMailTech);
 			d.resolve(obj);
-		})
-		.catch(function (err) {
-			d.reject({
-				result: 'Not ok',
-				errors: err
-			});
-		});
-	return d.promise;
-};
-
-ServiceOrder.prototype.sendServiceOrder = function (id, user, mail, crewdata, sendMail, sendMailTech) {
-	var d = q.defer();
-	var _this = this;
-	var serviceOrder = {};
-	var url = '';
-	var urlPdf = '';
-	var fileName = '';
-	var fileNamePdf = '';
-	var emails = [];
-
-	_this.crud.find({ _id: id })
-		.then(function (orderS) {
-			serviceOrder = orderS.data[0];
-			return _this.user.getAdminUsers();
-		})
-		.then(function (users) {
-			if (sendMail == true) {
-				emails = [serviceOrder.client.account.email];
-				for (var i = 0; i < users.data.length; i++) {
-					emails.push(users.data[i].account.email);
-				}
-			}
-			//AGREGO LOS EMAILS DE LOS TECNICOS AL ARREGLO EMAILS --FZ
-			if (sendMailTech == true) {
-				for (var row = 0; row < crewdata.data.length; row++) {
-					emails.push(crewdata.data[row].account.email)
-				}
-			}
-			emails = _.uniq(emails);
-			return mail.sendServiceOrder(serviceOrder, emails, _this.dirname);
-		})
-		.then(function () {
-			d.resolve(true);
-		})
-		.catch(function (err) {
-			console.log(err)
-			d.reject({
-				result: 'Not ok',
-				errors: err
-			});
-		});
-	return d.promise;
-};
-
-ServiceOrder.prototype.sendServiceOrderUpdate = function (id, user, mail, crewdata, sendMail, sendMailTech) {
-	var d = q.defer();
-	var _this = this;
-	var serviceOrder = {};
-	var emails = [];
-
-	_this.crud.find({ _id: id })
-		.then(function (orderS) {
-			serviceOrder = orderS.data[0];
-			return _this.user.getAdminUsers();
-		})
-		.then(function (users) {
-			emails = [];
-			if (sendMail == true) {
-				for (var i = 0; i < users.data.length; i++) {
-					emails.push(users.data[i].account.email);
-				}
-			}
-
-			//AGREGO LOS EMAILS DE LOS TECNICOS AL ARREGLO EMAILS --FZ
-			if (sendMailTech == true) {
-				for (var row = 0; row < crewdata.data.length; row++) {
-					emails.push(crewdata.data[row].account.email)
-				}
-			}
-
-			emails = _.uniq(emails);
-			// //if(user.role._id != 1){
-			// 	console.log("SERVICE ORDER UPDATE!!!", emails, serviceOrder)
-			return mail.sendServiceOrderUpdate(serviceOrder, emails, user);
-			//}
-			//else{
-			//	return q.when();
-			//}
-		})
-		.then(function () {
-			d.resolve(true);
-		})
-		.catch(function (err) {
-			console.log(err)
-			d.reject({
-				result: 'Not ok',
-				errors: err
-			});
-		});
-	return d.promise;
-};
-
-ServiceOrder.prototype.createServiceOrder = function (id, user) {
-	var d = q.defer();
-	var _this = this;
-	var query = {
-		_id: id
-	};
-	_this.crud.find(query)
-		.then(function (result) {
-			return pdf.createServiceOrder(result.data[0]);
-		})
-		.then(function (data) {
-			d.resolve(data);
 		})
 		.catch(function (err) {
 			d.reject({

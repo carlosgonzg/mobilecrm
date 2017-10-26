@@ -1,7 +1,8 @@
 'use strict';
 
 angular.module('MobileCRMApp')
-.controller('ExpensesCtrl', function ($scope, data, $uibModalInstance, User) {
+	.controller('ExpensesCtrl', function ($scope, data, $uibModalInstance, User) {
+		console.log(data)
 	$scope.expenses = angular.copy(data.expenses || []);
 	$scope.expensesComplete = angular.copy(data.expensesComplete || false);
 	$scope.technician = angular.copy(data.technician)
