@@ -286,7 +286,7 @@ var sendInvoice = function (invoice, mails, cc, file, fileName) {
 			}
 			subject += ' – MobileOne Restoration LLC';
 			mails = _.uniq(mails);
-			sendMail(mails.join(', '), subject, body, true, attachments, cc.join(', '), null, 'mf@mobileonecontainers.com; nr@mobileonecontainers.com')
+			sendMail(mails.join(', '), subject, body, true, attachments, cc.join(', '), null, 'mf@mobileonecontainers.com')
 				.then(function (response) {
 					console.log('DONE Sending Mail: ', response)
 					deferred.resolve(response);
@@ -312,12 +312,12 @@ var sendInvoiceUpdate = function (invoice, mails, user, file, fileName) {
 			body = body.replace('<clientName>', invoice.client.entity.fullName);
 			body = body.replace('<invoiceNumber>', invoice.invoiceNumber);
 			body = body.replace('<pono>', invoice.pono ? 'With PO Number: ' + invoice.pono : 'Without PO Number. Please provide PO Number for this Invoice.');
-			
-			var companyName ="";
+
+			var companyName = "";
 
 			if (invoice.client.company) {
 				companyName = invoice.client.company._id === 7 ? "Portable Storage - " : invoice.client.company.entity.name + ' - ';
-			}	
+			}
 
 			var subject = companyName + 'Invoice: ' + invoice.invoiceNumber;
 			if (!invoice.pono) {
@@ -329,7 +329,7 @@ var sendInvoiceUpdate = function (invoice, mails, user, file, fileName) {
 			subject += ' – MobileOne Restoration LLC';
 			var attachments = setAttachment(file, fileName);
 			mails = _.uniq(mails);
-			sendMail(mails.join(', '), subject, body, true, attachments, null, null, 'mf@mobileonecontainers.com; nr@mobileonecontainers.com')
+			sendMail(mails.join(', '), subject, body, true, attachments, null, null, 'mf@mobileonecontainers.com')
 				.then(function (response) {
 					console.log('DONE Sending Mail: ', response)
 					deferred.resolve(response);
@@ -387,7 +387,7 @@ var sendWorkOrder = function (workOrder, mails, dirname, file, fileName) {
 			var attachments = setAttachment(file, fileName)
 			console.log('sending mail');
 			mails = _.uniq(mails);
-			sendMail(mails.join(', '), subject, body, true, attachments, null, null, 'mf@mobileonecontainers.com; nr@mobileonecontainers.com')
+			sendMail(mails.join(', '), subject, body, true, attachments, null, null, 'mf@mobileonecontainers.com')
 				.then(function (response) {
 					console.log('DONE Sending Mail: ', response)
 					deferred.resolve(response);
@@ -449,7 +449,7 @@ var sendWorkOrderUpdate = function (workOrder, mails, user, company) {
 			var subject = companyS + ' | ' + branch + ' | Work Order: ' + workOrder.wor;
 			console.log('sending mail', subject);
 			mails = _.uniq(mails);
-			sendMail(mails.join(', '), subject, body, true, null, null, null, 'mf@mobileonecontainers.com; nr@mobileonecontainers.com')
+			sendMail(mails.join(', '), subject, body, true, null, null, null, 'mf@mobileonecontainers.com')
 				.then(function (response) {
 					console.log('DONE Sending Mail: ', response)
 					deferred.resolve(response);
