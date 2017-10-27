@@ -8,7 +8,7 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-.controller('RoleOptionListCtrl', function ($scope, $q, roles, options, RoleOptions, toaster) {
+.controller('RoleOptionListCtrl', function ($scope, $q, roles, options, RoleOptions, toaster, dialogs) {
 	$scope.roles = roles.data;
 	$scope.options = options.data;
 	var roleOptions = new RoleOptions();
@@ -48,7 +48,13 @@ angular.module('MobileCRMApp')
 			toaster.error(error.message);
 		});
 	};
-	
+	$scope.editRoles = function () {
+		var dialog = dialogs.create('views/roleList.html', 'RoleListCtrl', {});
+		dialog.result
+		.then(function (res) {
+
+		});
+	};
 	$scope.save = function(){
 		var promises = [];
 		for(var i = 0; i < $scope.roleOptions[$scope.selectedId].length; i++){
