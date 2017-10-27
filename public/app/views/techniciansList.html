@@ -1,0 +1,97 @@
+	<div class="row">
+		<div class="col-xs-12">
+			<h1 class="pull-left">
+				<i class="fa fa-lg fa-book"></i>
+				<span>Technicians</span>
+			</h1>
+
+		</div>
+	</div>
+	<div>
+
+		<i class="fa fa-lg fa-list">
+			<span style="font-size: 24px"> Services Order</span>
+		</i>
+		<div class="col-xs-10">
+			<ul class="nav nav-tabs">
+				<li role="presentation" style="cursor: pointer" ng-class="{ active: selectedTab == role.description }" ng-repeat="role in roles track by $index"
+				ng-click="selectTab(role)">
+					<a>{{role.description}}</a>
+				</li>
+			</ul>
+		</div>
+
+		<div ng-show="pending" class="ng-hide">
+			<div class="row">
+				<div class="col-xs-12">
+					<list clase="DataPending" fields="Fieldpending" showid="false" search-fields="search" filter-field="filterPending" list="list"
+					showMessage="false"></list>
+				</div>
+			</div>
+		</div>
+
+		<div ng-show="completed" class="ng-hide">
+			<div class="row">
+				<div class="col-xs-12">
+					<list clase="DataCompleted" fields="Fieldcompleted" showid="false" search-fields="search" filter-field="filterCompleted"
+					list="list"></list>
+				</div>
+			</div>
+		</div>
+
+		<div ng-show="PaymentRun" class="ng-hide">
+			<div class="row">
+				<div class="col-xs-12">
+					<list clase="DatawsPayment" fields="FieldwsPayment" showid="false" search-fields="search" filter-field="filterPayment"
+					list="list"></list>
+				</div>
+			</div>
+		</div>
+
+		<div ng-show="paid" class="ng-hide">
+			<div class="row">
+				<div class="col-xs-12">
+					<list clase="DatawsPaid" fields="FieldwsPaid" showid="false" search-fields="search" filter-field="filterPaid" list="list"></list>
+				</div>
+			</div>
+		</div>
+
+		<div class="pull-right">
+			<i class="fa fa-lg fa-money">
+				<span style="font-size: 24px"> Work Order</span>
+			</i>
+		</div>
+		<br />
+		<br />
+		<div ng-show="pending" class="ng-hide">
+			<div class="row">
+				<div class="col-xs-12">
+					<list clase="DataPendingWO" fields="FieldpendingWO" showid="false" search-fields="searchWO" filter-field="filterPending"
+					list="list"></list>
+				</div>
+			</div>
+		</div>
+
+		<div ng-show="completed" class="ng-hide">
+			<div class="row">
+				<div class="col-xs-12">
+					<list clase="DataCompletedWO" fields="FieldCompletedWO" showid="false" search-fields="searchWO" filter-field="filterCompleted"
+					list="list"></list>
+				</div>
+			</div>
+		</div>
+		<div ng-show="PaymentRun" class="ng-hide">
+			<div class="row">
+				<div class="col-xs-12">
+					<list clase="DataPaymentWO" fields="FieldCompletedWO" showid="false" search-fields="searchWO" filter-field="filterPayment" list="list"></list>
+				</div>
+			</div>
+		</div>
+		<div ng-show="paid" class="ng-hide">
+			<div class="row">
+				<div class="col-xs-12">
+					<list clase="DataPaidWO" fields="FieldPaiddWO" showid="false" search-fields="searchWO" filter-field="filterPaid" list="list"></list>
+				</div>
+			</div>
+		</div>
+	</div>

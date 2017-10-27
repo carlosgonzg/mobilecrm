@@ -13,6 +13,7 @@ angular.module('MobileCRMApp')
 				this.name = contact.name || ''
 				this.phoneType = contact.phoneType || {};
 				this.number = contact.number || '';
+				this.disabled = contact.disabled || false;
 			};
 			$scope.phoneTypes = [];
 			List.get('phoneType')

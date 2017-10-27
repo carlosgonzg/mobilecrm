@@ -213,7 +213,7 @@ angular.module('MobileCRMApp')
 
 					$scope.objeto.paginatedSearch(pParams).then(function (result) {
 						if (result.data.length == 0) {
-							toaster.pop('error', 'Information', 'Couldn\'t load the items');
+						//	toaster.pop('error', 'Information', 'Couldn\'t load the items');
 						}
 						$scope.list = angular.copy(result.data);
 
@@ -346,9 +346,11 @@ angular.module('MobileCRMApp')
 				};
 
 				$scope.dblClick = function (elem, event) {
-					if ((event.pointerType == 'touch' && event.type == 'tap') || event.type == 'dblclick') {
+					console.log(event)
+					if (event.type == 'click') {
 						$window.sessionStorage.params = JSON.stringify($scope.params);
 						$window.sessionStorage.path = $location.path();
+						console.log(event)
 						if ($scope.dblClickFn) {
 							$scope.dblClickFn(elem);
 						} else {

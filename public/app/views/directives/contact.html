@@ -2,19 +2,19 @@
 	<div class="col-xs-12 col-md-4">
 		<div class="form-group">
 			<label for="name" ng-if="!hideLabels">Name</label>
-			<input type="text" class="form-control" ng-model="ngModel.name" id="name"/>
+			<input type="text" class="form-control" ng-model="ngModel.name" id="name" ng-disabled="ngModel.disabled" />
 		</div>
 	</div>
 	<div class="col-xs-12 col-md-4">
 		<div class="form-group">
 			<label for="phoneType" ng-if="!hideLabels">Type</label>
-			<select class="form-control" ng-model="ngModel.phoneType" id="phoneType" ng-options="phoneType as phoneType.description for phoneType in phoneTypes track by phoneType._id"></select>
+			<select class="form-control" ng-model="ngModel.phoneType" id="phoneType" ng-options="phoneType as phoneType.description for phoneType in phoneTypes track by phoneType._id" ng-disabled="ngModel.disabled"></select>
 		</div>
 	</div>
 	<div class="col-xs-12 col-md-4">
 		<div class="form-group">
 			<label for="number" ng-if="!hideLabels">Number</label>
-			<input type="text" class="form-control" id="number" ng-model="ngModel.number" />
+			<input type="text" class="form-control" id="number" ng-model="ngModel.number" ng-disabled="ngModel.disabled" />
 		</div>
 	</div>
 </div>

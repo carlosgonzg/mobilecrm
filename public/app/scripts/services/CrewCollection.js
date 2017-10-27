@@ -1,16 +1,16 @@
 'use strict';
 
 angular.module('MobileCRMApp')
-	.factory('CrewCollection', function (Base, $http, $q, $window, $rootScope, $location, dialogs, toaster, RoleOptions) {
+	.factory('CrewCollection', function (Base, $http, $q, $window, $rootScope, $location, dialogs, toaster) {
 
 		// Variable que se utiliza para comprobar si un objeto tiene una propiedad
 		// var hasProp = Object.prototype.hasOwnProperty;
 
 		// Nombre de la clase
-		var User;
+		var CrewCollection;
 
-		function User(propValues) {
-			User.super.constructor.apply(this, arguments);
+		function CrewCollection(propValues) {
+			CrewCollection.super.constructor.apply(this, arguments);
 			this.baseApiPath = "/api/user";
 			this.account = this.account || {};
 			this.addresses = this.addresses || [];
@@ -34,17 +34,17 @@ angular.module('MobileCRMApp')
 			return child;
 		};
 		// Extender de la clase Base
-		extend(User, Base);
+		extend(CrewCollection, Base);
 
 		// Funcion que retorna las propiedades de una cuenta
-		User.properties = function () {
+		CrewCollection.properties = function () {
 			var at = {};
 			return at;
 		};
 
-		User.prototype.goTo = function () {
+		CrewCollection.prototype.goTo = function () {
 			$location.path('/crewLeader/' + this._id);
-		};
+		};		
 
-		return User;
+		return CrewCollection;
 	});

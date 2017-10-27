@@ -1,8 +1,10 @@
 <div class="modal-header modal-header-color dialog-header-confirm">
-  <button type="button" class="close" ng-click="close()"><i class="fa fa-times"></i></button>
-  <h4 class="modal-title">
+	<button type="button" class="close" ng-click="close()">
+		<i class="fa fa-times"></i>
+	</button>
+	<h4 class="modal-title">
 		Expenses:
-  </h4>
+	</h4>
 </div>
 <div class="modal-body">
 	<div class="row">
@@ -12,6 +14,9 @@
 					<tr>
 						<th width="50%">
 							Description
+						</th>
+						<th width="10%">
+							Quantity
 						</th>
 						<th width="10%">
 							Price
@@ -32,6 +37,9 @@
 							<input type="text" class="form-control" ng-model="expense.description" />
 						</td>
 						<td>
+							<input type="text" class="form-control" ng-model="expense.quantity" />
+						</td>
+						<td>
 							<input type="number" class="form-control" ng-model="expense.price" />
 						</td>
 						<td>
@@ -47,20 +55,23 @@
 					</tr>
 				</tbody>
 			</table>
-			<br>	
+			<br>
 			<!-- <label>Technician:</label>
 			<select class="form-control" ng-model="technician">
 				<option ng-repeat="tech in technicians">{{tech.techId}} - {{tech.entity.fullName}}</option>
 			</select> -->
 			<div class="checkbox">
 				<label>
-					<input type="checkbox" name="expensesComplete" ng-model="expensesComplete" ng-disabled="expenses.length === 0"> <strong>Expenses Complete?</strong>
+					<input type="checkbox" name="expensesComplete" ng-model="expensesComplete" ng-disabled="expenses.length === 0">
+					<strong>Expenses Complete?</strong>
 				</label>
 			</div>
 		</div>
 	</div>
 </div>
 <div class="modal-footer">
-	<button class="btn btn-primary" type="button" ng-click="assign()"><i class="fa fa-disk"></i>&nbsp;Assign</button>
-  <button class="btn btn-default" type="button" ng-click="close()"><i class="fa fa-times"></i>&nbsp;Close</button>
+	<button class="btn btn-primary" type="button" ng-click="assign()">
+		<i class="fa fa-disk"></i>&nbsp;Assign</button>
+	<button class="btn btn-default" type="button" ng-click="close()">
+		<i class="fa fa-times"></i>&nbsp;Close</button>
 </div>

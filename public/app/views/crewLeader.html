@@ -1,9 +1,3 @@
-<style>
-	.aParent div {
-		float: left;
-		clear: none;
-	}
-</style>
 
 <form class="form" id="CrewLeader" name="CrewLeader">
 	<div class="row">
@@ -33,7 +27,7 @@
 			<button style="width: 150px" class="btn btn-default dropdown-toggle makePaymentDropdownBtn" type="text" id="individualDrop"
 			 data-toggle="dropdown">Please Select<span class="caret pull-right"></span></button>
 			<ul class="dropdown-menu makePaymentDropdownUlStyle" role="menu" aria-labelledby="individualDrop">
-				<input disable-auto-close type="search" class="makePaymentDropdownSearchBox" style="font-size: 12px; width: 320px; margin-left: 8px"
+				<input disable-auto-close type="search" ng-model="serchFilter" class="makePaymentDropdownSearchBox" style="font-size: 12px; width: 320px; margin-left: 8px"
 				 placeholder="Search"></input>
 				<li role="presentation" ng-repeat="indi in item | filter: serchFilter">
 					<a role="menuitem" style="cursor: pointer" ng-click="add(indi)">{{indi.description}}</a></li>
@@ -61,7 +55,7 @@
 	<br/>
 	<br/>
 	<div style="margin-top: 10px">
-		<div class="form-control" role="presentation" ng-repeat="item in addedItem" style="height: 40px">
+		<div class="form-control" role="presentation" ng-repeat="item in addedItem track by $index" style="height: 40px">
 			<table>
 				<thead>
 					<tr>
@@ -72,9 +66,9 @@
 							<input class="pull-right" id="Text1" style="border: 1px #cccccc solid; height: 22px; width: 100px" type="number" ng-model="item.price">
 						</th>
 						<th>
-							<button class="btn btn-sm btn-danger pull-right" type="button" ng-click="removeOption(item)">
-			<i class="fa fa-times pull-right"></i>
-			</button>
+							<button class="btn btn-sm btn-danger pull-right" type="button" ng-click="removeOption($index)">
+							<i class="fa fa-times pull-right"></i>
+							</button>
 						</th>
 					</tr>
 				</thead>

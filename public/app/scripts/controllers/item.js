@@ -15,11 +15,12 @@ angular.module('MobileCRMApp')
 
 		$scope.list = [
 			{ item: 'Material' },
-			{ item: 'Labor' }
+			{ item: 'Labor' },
+			{ item: 'Service' }
 		]
 
 		$scope.save = function () {
-			
+
 			if ($scope.item.code) {
 				$scope.waiting = true;
 				$scope.item.save()
@@ -32,7 +33,7 @@ angular.module('MobileCRMApp')
 						toaster.error(error.message);
 						$scope.waiting = false;
 					});
-				
+
 			}
 
 			else {

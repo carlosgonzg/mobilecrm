@@ -34,11 +34,10 @@ angular.module('MobileCRMApp')
 
 		$scope.add = function (obj) {
 			if (obj !== 'undefined' || obj !== '') {
-
 				for (var index = 0; index < $scope.addedItem.length; index++) {
-					var element = $scope.addedItem[index].item;
+					var itemid = $scope.addedItem[index].itemid;
 
-					if (element.indexOf(obj.description) >= 0) {
+					if (itemid == obj._id) {
 						toaster.error('This item has already been added...');
 						return;
 					}
@@ -58,9 +57,8 @@ angular.module('MobileCRMApp')
 			}
 		}
 
-		$scope.removeOption = function (obj) {
-			var index = $scope.addedItem.indexOf(obj.description);
-			$scope.addedItem.splice(index, 1);
+		$scope.removeOption = function (index) {
+			$scope.addedItem.splice(index, 1); 
 		}
 
 		$scope.save = function (obj) {
