@@ -25,19 +25,19 @@
 				<i class="fa fa-save"></i>&nbsp;
 				<span>Save & Send</span>
 			</button>
-			<button type="button" class="btn btn-default" ng-click="showExpenses()" ng-if="invoice._id && userData.role._id == 1">
+			<button type="button" class="btn btn-default" ng-click="showExpenses()" ng-if="invoice._id && userData.role._id == 1" data-toggle="tooltip" title="Expenses">
 				<i class="fa fa-money"></i>&nbsp;
 				<span></span>
 			</button>
-			<button type="button" class="btn btn-danger" ng-click="delete()" ng-if="invoice._id && userData.role._id == 1">
+			<button type="button" class="btn btn-danger" ng-click="delete()" ng-if="invoice._id && userData.role._id == 1" data-toggle="tooltip" title="Detele"> 
 				<i class="fa fa-trash"></i>&nbsp;
 				<span></span>
 			</button>
-			<button type="button" class="btn btn-default" ng-click="export()" ng-if="invoice._id" tooltip="Download">
+			<button type="button" class="btn btn-default" ng-click="export()" ng-if="invoice._id"  data-toggle="tooltip" title="Download"> 
 				<i class="fa fa-download"></i>&nbsp;
 				<span></span>
 			</button>
-			<button type="button" class="btn btn-default" ng-click="send()" ng-if="invoice._id" ng-disabled="waiting">
+			<button type="button" class="btn btn-default" ng-click="send()" ng-if="invoice._id" ng-disabled="waiting" data-toggle="tooltip" title="Send"> 
 				<i class="fa fa-paper-plane"></i>&nbsp;
 				<span></span>
 			</button>
@@ -299,4 +299,5 @@
 			</div>
 		</div>
 	</div>
+
 </form>
