@@ -439,6 +439,8 @@ angular.module('MobileCRMApp')
 			delete $scope.serviceOrder.client.account.password;
 			if (sendMail) {
 				$scope.serviceOrder.sendMail = true;
+			} else {
+				$scope.serviceOrder.sendMail = false;
 			}
 			if (sendTotech) {
 				if ($scope.crewHeaderAdded.length == 0) {
@@ -447,7 +449,10 @@ angular.module('MobileCRMApp')
 					return
 				}
 				$scope.serviceOrder.sendTotech = true;
+			} else {
+				$scope.serviceOrder.sendTotech = false;
 			}
+
 			if (originalContacts != $scope.serviceOrder.contacts) {
 				$scope.changed('contacts');
 			}

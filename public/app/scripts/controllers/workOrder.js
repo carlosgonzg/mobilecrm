@@ -249,6 +249,8 @@ angular.module('MobileCRMApp')
 			delete $scope.workOrder.client.account.password;
 			if (sendMail) {
 				$scope.workOrder.sendMail = true;
+			} else {
+				$scope.workOrder.sendMail = false;
 			}
 			if (sendTotech) {
 				if ($scope.crewHeaderAdded.length == 0) {
@@ -258,7 +260,7 @@ angular.module('MobileCRMApp')
 				}
 				$scope.workOrder.sendTotech = true;
 			} else {
-				$scope.workOrder.sendTotech = false;
+				$scope.workOrder.sendTotech = false;				
 			}
 
 			$scope.workOrder.save()
