@@ -441,6 +441,11 @@ angular.module('MobileCRMApp')
 				$scope.serviceOrder.sendMail = true;
 			}
 			if (sendTotech) {
+				if ($scope.crewHeaderAdded.length == 0) {
+					toaster.error('The Service Order couldn\'t be saved, please check if some required field is empty');
+					$scope.waiting = false;
+					return
+				}
 				$scope.serviceOrder.sendTotech = true;
 			}
 			if (originalContacts != $scope.serviceOrder.contacts) {
@@ -453,12 +458,6 @@ angular.module('MobileCRMApp')
 
 			if (originalSiteAddress.address1 != $scope.serviceOrder.siteAddress.address1) {
 				$scope.changed('siteAddress');
-			}
-
-			if ($scope.crewHeaderAdded.length == 0) {
-				toaster.error('The Service Order couldn\'t be saved, please check if some required field is empty');
-				$scope.waiting = false;
-				return
 			}
 
 			$scope.serviceOrder.save()

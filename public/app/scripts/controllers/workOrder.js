@@ -251,15 +251,16 @@ angular.module('MobileCRMApp')
 				$scope.workOrder.sendMail = true;
 			}
 			if (sendTotech) {
+				if ($scope.crewHeaderAdded.length == 0) {
+					toaster.error('The Work Order couldn\'t be saved, please check if some required field is empty');
+					$scope.waiting = false;
+					return
+				}
 				$scope.workOrder.sendTotech = true;
 			} else {
 				$scope.workOrder.sendTotech = false;
 			}
-			if ($scope.crewHeaderAdded.length == 0) {
-				toaster.error('The Service Order couldn\'t be saved, please check if some required field is empty');
-				$scope.waiting = false;
-				return
-			}
+
 			$scope.workOrder.save()
 				.then(function (data) {
 					toaster.success('The Work Order was saved successfully');
