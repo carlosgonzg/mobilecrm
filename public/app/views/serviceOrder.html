@@ -130,8 +130,8 @@
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
 							<label for="status">Status</label>
-							<select class="form-control" name="status" ng-model="serviceOrder.status" ng-class="isChanged('Status')" ng-change="changed('Status')"
-							 ng-options="status as status.description for status in listStatus track by status._id" ng-disabled="isDisabled() && userData.role._id != 1 && userData.role._id != 5"
+							<select class="form-control" name="status" ng-model="serviceOrder.status" ng-class="isChanged('Status')" ng-change="changed('Status'); setAmountToZero(serviceOrder.status)"
+							 ng-options="status as status.description for status in listStatus track by status._id" ng-disabled=" userData.role._id != 1 && userData.role._id != 5"
 							 validator="required"></select>
 						</div>
 					</div>

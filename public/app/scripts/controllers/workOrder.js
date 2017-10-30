@@ -368,4 +368,12 @@ angular.module('MobileCRMApp')
 			$scope.crewHeaderAdded.splice(index, 1);
 			$scope.workOrder.crewHeader = $scope.crewHeaderAdded
 		};
+
+		$scope.setAmountToZero = function (status) {
+			if (status._id == 5 || status._id == 7) {
+				for (var i=0; i<$scope.workOrder.items.length; i++) {
+					$scope.workOrder.items[i].price = 0;
+				}
+			}
+		}
 	});

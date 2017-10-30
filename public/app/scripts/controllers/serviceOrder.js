@@ -362,7 +362,7 @@ angular.module('MobileCRMApp')
 		};
 
 		$scope.isDisabled = function () {
-			return $rootScope.userData.role._id != 1 && $scope.serviceOrder.status._id == 3 || $scope.userData.role._id == 5;
+			return ($rootScope.userData.role._id != 1 && $scope.serviceOrder.status._id == 3) || $scope.userData.role._id == 5;
 		};
 
 		$scope.uploadFiles = function (files) {
@@ -579,5 +579,13 @@ angular.module('MobileCRMApp')
 			$scope.crewHeaderAdded.splice(index, 1);
 			$scope.serviceOrder.crewHeader = $scope.crewHeaderAdded
 		};
+
+		$scope.setAmountToZero = function (status) {
+			if (status._id == 5 || status._id == 7) {
+				for (var i=0; i<$scope.serviceOrder.items.length; i++) {
+					$scope.serviceOrder.items[i].price = 0;
+				}
+			}
+		}
 	});
 
