@@ -439,10 +439,20 @@ angular.module('MobileCRMApp')
 			delete $scope.serviceOrder.client.account.password;
 			if (sendMail) {
 				$scope.serviceOrder.sendMail = true;
+			} else {
+				$scope.serviceOrder.sendMail = false;
 			}
 			if (sendTotech) {
+				if ($scope.crewHeaderAdded.length == 0) {
+					toaster.error('The Service Order couldn\'t be saved, please check if some required field is empty');
+					$scope.waiting = false;
+					return
+				}
 				$scope.serviceOrder.sendTotech = true;
+			} else {
+				$scope.serviceOrder.sendTotech = false;
 			}
+
 			if (originalContacts != $scope.serviceOrder.contacts) {
 				$scope.changed('contacts');
 			}
@@ -453,12 +463,6 @@ angular.module('MobileCRMApp')
 
 			if (originalSiteAddress.address1 != $scope.serviceOrder.siteAddress.address1) {
 				$scope.changed('siteAddress');
-			}
-
-			if ($scope.crewHeaderAdded.length == 0) {
-				toaster.error('The Service Order couldn\'t be saved, please check if some required field is empty');
-				$scope.waiting = false;
-				return
 			}
 
 			$scope.serviceOrder.save()

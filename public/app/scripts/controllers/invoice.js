@@ -277,6 +277,7 @@ angular.module('MobileCRMApp')
 								$scope.ServiceOrder = obj
 								$scope.ServiceOrder.status = $scope.invoice.status
 								$scope.ServiceOrder.sendTotech = sendTotech
+								$scope.ServiceOrder.sendMail = false; 
 							});
 							$scope.ServiceOrder.save()
 						})
@@ -286,6 +287,7 @@ angular.module('MobileCRMApp')
 								$scope.WorkOrder = obj
 								$scope.WorkOrder.status = $scope.invoice.status
 								$scope.WorkOrder.sendTotech = sendTotech 
+								$scope.WorkOrder.sendMail = false; 
 							});
 							$scope.WorkOrder.save()
 						})
@@ -310,6 +312,7 @@ angular.module('MobileCRMApp')
 								$scope.ServiceOrder = obj
 								$scope.ServiceOrder.status = $scope.invoice.status
 								$scope.ServiceOrder.sendTotech = false 
+								$scope.ServiceOrder.sendMail = false;
 							});
 							$scope.ServiceOrder.save()
 						})
@@ -319,6 +322,7 @@ angular.module('MobileCRMApp')
 								$scope.WorkOrder = obj
 								$scope.WorkOrder.status = $scope.invoice.status
 								$scope.WorkOrder.sendTotech = false 
+								$scope.WorkOrder.sendMail = false;
 							});
 							$scope.WorkOrder.save()
 						})
@@ -359,6 +363,7 @@ angular.module('MobileCRMApp')
 								$scope.ServiceOrder.statusTech = statusTech
 								$scope.ServiceOrder.status = $scope.invoice.status
 								$scope.ServiceOrder.sendTotech = false 
+								$scope.ServiceOrder.sendMail = false
 							});
 							$scope.ServiceOrder.save()
 						})
@@ -369,6 +374,7 @@ angular.module('MobileCRMApp')
 								$scope.WorkOrder.statusTech = statusTech
 								$scope.WorkOrder.status = $scope.invoice.status
 								$scope.WorkOrder.sendTotech = false  
+								$scope.WorkOrder.sendMail = false 
 							});
 							$scope.WorkOrder.save()
 						})
