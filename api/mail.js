@@ -135,6 +135,7 @@ var sendServiceOrder = function (serviceOrder, mails, dirname) {
 			console.log(url)
 			body = body.replace('<emailUrl>', url);
 			body = body.replace('<createdDate>', moment(serviceOrder.date).format('MM/DD/YYYY'));
+			body = body.replace('<createdBy>', serviceOrder.createdBy.entity ? serviceOrder.createdBy.entity.fullName : '');
 			body = body.replace('<clientCompany>', serviceOrder.client.company ? serviceOrder.client.company.entity.name : 'None');
 			body = body.replace('<clientBranch>', serviceOrder.client.branch ? serviceOrder.client.branch.name : 'None');
 			body = body.replace('<customer>', serviceOrder.customer || 'None');
@@ -377,6 +378,7 @@ var sendWorkOrder = function (workOrder, mails, dirname, file, fileName) {
 			var url = config.SERVER_URL;
 			console.log(url)
 			body = body.replace('<emailUrl>', url);
+			body = body.replace('<createdBy>', workOrder.createdBy.entity ? workOrder.createdBy.entity.fullName : '');
 			body = body.replace('<clientCompany>', workOrder.client.company ? workOrder.client.company.entity.name : 'None');
 			body = body.replace('<clientBranch>', workOrder.client.branch ? workOrder.client.branch.name : 'None');
 			body = body.replace('<wor>', workOrder.wor);
