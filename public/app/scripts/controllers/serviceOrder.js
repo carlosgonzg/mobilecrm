@@ -11,12 +11,13 @@ angular.module('MobileCRMApp')
 	.controller('ServiceOrderCtrl', function ($scope, $rootScope, $location, toaster, User, statusList, serviceOrder, Item, dialogs, $q, Branch, CrewCollection, ItemDefault) {
 		$scope.serviceOrder = serviceOrder;
 		$scope.CrewCollection = CrewCollection.data
-
+		console.log($scope.CrewCollection)
 		$scope.addedItem = []
 		$scope.Crewadded = []
 		$scope.CrewLeaderSelected = []
 		$scope.crewHeader = []
 		$scope.crewHeaderAdded = []
+		$scope.CrewHeaderSel = ""
 
 		$scope.items = [];
 		$scope.params = {};
@@ -545,13 +546,25 @@ angular.module('MobileCRMApp')
 							var item = array[n];
 							if (selectedItem == item.itemid) {
 
-								$scope.newItem = {
-									name: element.entity.fullName,
-									price: item.price,
-									id: element._id,
-									techId: element.techId
+								if ($scope.crewHeaderAdded.length > 0 && $scope.CrewHeaderSel.length > 0 ) {
+									if ($scope.crewHeaderAdded[0].name == element.entity.fullName) {
+										$scope.newItem = {
+											name: element.entity.fullName,
+											price: item.price,
+											id: element._id,
+											techId: element.techId
+										}
+										$scope.addedItem.unshift($scope.newItem);
+									}
+								} else {
+									$scope.newItem = {
+										name: element.entity.fullName,
+										price: item.price,
+										id: element._id,
+										techId: element.techId
+									}
+									$scope.addedItem.push($scope.newItem);
 								}
-								$scope.addedItem.push($scope.newItem);
 							}
 						}
 					}
@@ -586,9 +599,19 @@ angular.module('MobileCRMApp')
 
 		$scope.setAmountToZero = function (status) {
 			if (status._id == 5 || status._id == 7) {
-				for (var i=0; i<$scope.serviceOrder.items.length; i++) {
+				for (var i = 0; i < $scope.serviceOrder.items.length; i++) {
 					$scope.serviceOrder.items[i].price = 0;
 				}
+			}
+		}
+
+		$scope.addItemHeader = function () {
+			var chk = document.getElementById('chkCrew').checked
+
+			if (chk == true) {
+				$scope.CrewHeaderSel = $scope.crewHeaderAdded[0].name
+			} else {
+				$scope.CrewHeaderSel = []				
 			}
 		}
 	});

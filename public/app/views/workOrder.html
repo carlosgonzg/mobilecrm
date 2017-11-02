@@ -74,6 +74,14 @@
 					<div class="panel panel-default">
 						<div class="panel-body">
 							<div class="row">
+								<div style="float:left; padding-left: 10px">									
+									<label>
+										<input type="checkbox" name="chkCrew" ng-if="crewHeaderAdded.length > 0" id="chkCrew" ng-click="addItemHeader()"><label ng-if="crewHeaderAdded.length > 0">Include for items</label>
+									</label>
+									<br/>
+								</div>
+							</div>
+							<div class="row">
 								<div style="float:left; padding-left: 10px">
 									<select class="form-control" style="width: 220px; height: 30px" ng-model="item" data-ng-options="item as item.name for item in crewHeader">
 										<option style="display:none" value="">Select a Crew Leader</option>
@@ -288,10 +296,19 @@
 							</button>
 						</td>
 						<td>
-							<select class="form-control" style="width: 180px" ng-model="item" ng-change="changedValue(item)" data-ng-options="item as item.name for item in addedItem"
+						<div ng-if="CrewHeaderSel.length > 0 "> <!-- para la cabera -->
+							<select class="form-control" style="width: 280px" ng-model="item" ng-change="changedValue(item)" ng-options="item as item.name for item in addedItem track by $index"
+							 ng-show="params.item.typeItem=='Labor' && !commentDiabled" ng-disabled="!params.item._id">
+								<option style="display:none" value="">Select a Crew Leader</option>
+							</select>					
+						 </div>
+
+						 <div ng-if="CrewHeaderSel.length == 0 ">
+							<select class="form-control" style="width: 280px" ng-model="item" ng-change="changedValue(item)" ng-options="item as item.name for item in addedItem"
 							 ng-show="params.item.typeItem=='Labor' && !commentDiabled" ng-disabled="!params.item._id">
 								<option style="display:none" value="">Select a Crew Leader</option>
 							</select>
+	 					</div>
 						</td>
 						<td>
 							<span>

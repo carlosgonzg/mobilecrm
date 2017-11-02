@@ -18,6 +18,7 @@ angular.module('MobileCRMApp')
 		$scope.SendToTechShow = false;
 		$scope.crewHeader = []
 		$scope.crewHeaderAdded = []
+$scope.CrewHeaderSel = ""
 
 		$scope.items = [];
 		$scope.params = {};
@@ -333,13 +334,25 @@ angular.module('MobileCRMApp')
 							var item = array[n];
 							if (selectedItem == item.itemid) {
 
-								$scope.newItem = {
-									name: element.entity.fullName,
-									price: item.price,
-									id: element._id,
-									techId: element.techId
+								if ($scope.crewHeaderAdded.length > 0 && $scope.CrewHeaderSel.length > 0 ) {
+									if ($scope.crewHeaderAdded[0].name == element.entity.fullName) {
+										$scope.newItem = {
+											name: element.entity.fullName,
+											price: item.price,
+											id: element._id,
+											techId: element.techId
+										}
+										$scope.addedItem.unshift($scope.newItem);
+									}
+								} else {
+									$scope.newItem = {
+										name: element.entity.fullName,
+										price: item.price,
+										id: element._id,
+										techId: element.techId
+									}
+									$scope.addedItem.push($scope.newItem);
 								}
-								$scope.addedItem.push($scope.newItem);
 							}
 						}
 					}
@@ -377,6 +390,16 @@ angular.module('MobileCRMApp')
 				for (var i=0; i<$scope.workOrder.items.length; i++) {
 					$scope.workOrder.items[i].price = 0;
 				}
+			}
+		}
+
+		$scope.addItemHeader = function () {
+			var chk = document.getElementById('chkCrew').checked
+
+			if (chk == true) {
+				$scope.CrewHeaderSel = $scope.crewHeaderAdded[0].name
+			} else {
+				$scope.CrewHeaderSel = []				
 			}
 		}
 	});
