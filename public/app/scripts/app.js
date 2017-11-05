@@ -475,6 +475,32 @@ var app = angular
 					}
 				}
 			})
+			.when('/DeliveryOrderList', {
+				templateUrl: 'views/DeliveryOrderList.html',
+				controller: 'DeliveryOrderListCtrl'
+			})
+			.when('/DeliveryOrder/:id?', {
+				templateUrl: 'views/DeliveryOrder.html',
+				controller: 'DeliveryOrderCtrl',
+				resolve: {
+					statusList: function (List) {
+						return List.get('statusDelivery');
+					},
+					EntranceList: function (List) {
+						return List.get('Entrance');
+					},					
+					DeliveryOrder: function (DeliveryOrder, $route) {
+						if ($route.current.params.id) {
+							return new DeliveryOrder().findById(parseInt($route.current.params.id));
+						} else {
+							return new DeliveryOrder();
+						}
+					},
+					ItemDefault: function (Item) {
+						return new Item().filter({ _id: { $in: [789, 761] } })
+					},
+				}
+			})
 			.when('/noaccess', {
 				templateUrl: 'views/noaccess.html'
 			})

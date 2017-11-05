@@ -62,6 +62,30 @@ function List(db) {
 			description: 'Branch'
 		}
 	];
+	this.statusDelivery = [
+		{
+			_id: 1,
+			description: 'Waiting for Availability'
+		}, {
+			_id: 2,
+			description: 'Confim'
+		}, {
+			_id: 3,
+			description: 'Delivery'
+		}, {
+			_id: 4,
+			description: 'Cancelled'
+		}
+	];
+	this.Entrance = [
+		{
+			_id: 1,
+			description: 'Big truck'
+		}, {
+			_id: 2,
+			description: 'Small truck'
+		}
+	];
 };
 
 List.prototype.getList = function(list){

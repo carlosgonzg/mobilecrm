@@ -1,0 +1,373 @@
+<div class="form" id="DeliveryOrderForm" name="DeliveryOrderForm" novalidate>
+	<div class="row">
+		<div class="col-xs-12">
+			<h1 class="pull-left">
+				<i class="fa fa-lg fa-truck"></i>
+				<span> Delivery Order</span>
+			</h1>
+			<div class="btn-group pull-right" style="margin-top: 20px;" role="group" aria-label="...">
+				<button class="btn btn-primary update" ng-click="save()" ng-disabled="isDisabled()">
+					<i class="fa fa-save"></i>&nbsp;
+					<span>Save</span>
+				</button>
+				<button class="btn btn-primary update" ng-click="save(true, false)" ng-disabled="isDisabled()">
+					<i class="fa fa-save"></i>&nbsp;
+					<span>Save & Send to MobileOne</span>
+				</button>
+				<button type="button" class="btn btn-danger" ng-click="delete()" ng-if="DeliveryOrder._id && userData.role._id == 1">
+					<i class="fa fa-trash"></i>&nbsp;
+					<span>Delete</span>
+				</button>
+				<button type="button" class="btn btn-default" ng-click="export()" ng-if="DeliveryOrder._id">
+					<i class="fa fa-download"></i>&nbsp;
+					<span>Download</span>
+				</button>
+				<button type="button" class="btn btn-default" ng-click="send()" ng-if="DeliveryOrder._id">
+					<i class="fa fa-paper-plane"></i>&nbsp;
+					<span>Send</span>
+				</button>
+				<back-button></back-button>
+			</div>
+			<hr />
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-xs-12">
+			<div class="col-sm-4">
+				<div class="col-sm-12 pull-left">
+					<div class="form-group">
+						<label for="Client">Client</label>
+						<entitypicker ng-model="DeliveryOrder.client" ng-change="clientChanged(DeliveryOrder.client)" ws-class="wsClass" ws-fields="wsFields"
+						 ws-filter="wsFilter" disable="userData.role._id != 1"></entitypicker>
+					</div>
+				</div>
+				<div class="col-sm-12 pull-left">
+					<div class="panel panel-default" ng-show="DeliveryOrder.client._id">
+						<div class="panel-heading">{{DeliveryOrder.client.entity.fullName}}&nbsp;-&nbsp;{{DeliveryOrder.client.company.entity.name}}</div>
+						<div class="panel-body">
+							<p class="col-xs-12 text-left">
+								<b>{{DeliveryOrder.client.branch.name}}</b>
+								<br/>
+								<p class="col-xs-12 text-left" ng-repeat="address in DeliveryOrder.client.branch.addresses track by $index">
+									<i class="fa fa-map"></i>&nbsp;{{ address.address1 }},&nbsp;{{ address.city.description }},&nbsp;{{ address.state.description}},&nbsp;{{
+									address.country.description }}
+								</p>
+							</p>
+							<p class="col-xs-12 text-left" ng-repeat="phone in DeliveryOrder.client.branch.phones track by $index">
+								<i class="fa fa-phone"></i>&nbsp;{{ phone.number }}
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+			<div class="col-sm-8">
+				<div class="col-sm-6">
+					<div class="col-xs-12 pull-right">
+						<div class="form-group">
+							<label for="customer">Customer</label>
+							<input type="text" name="customer" class="form-control" ng-model="DeliveryOrder.customer" ng-class="isChanged('customer')"
+							 ng-change="changed('customer')" ng-disabled="isDisabled()" validator="required">
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="col-xs-12 pull-right">
+						<div class="form-group">
+							<label for="dor">Delivery order #</label>
+							<input type="text" name="dor" class="form-control" ng-model="DeliveryOrder.dor" ng-class="isChanged('dor')" ng-change="changed('dor')"
+							 ng-disabled="isDisabled()" validator="required">
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="col-xs-12 pull-right">
+						<div class="form-group">
+							<label for="contract">Entrance</label>
+							<select class="form-control" name="typeTruck" ng-model="DeliveryOrder.typeTruck" ng-class="isChanged('typeTruck')" ng-change="changed('typeTruck')"
+							ng-options="typeTruck as typeTruck.description for typeTruck in entranceList track by typeTruck._id" ng-disabled="isDisabled()" validator="required"></select>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="col-xs-12 pull-right">
+						<div class="form-group">
+							<label for="invoiceNumber">Invoice #</label>
+							<input type="text" name="invoiceNumber" class="form-control" ng-model="DeliveryOrder.invoiceNumber" ng-class="isChanged('invoiceNumber')" disabled="disabled" readonly>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="col-xs-12 pull-right">
+						<div class="form-group">
+							<label for="contract">Status</label>
+							<select class="form-control" name="status" ng-model="DeliveryOrder.status" ng-class="isChanged('Status')" ng-change="changed('Status')"
+							 ng-options="status as status.description for status in listStatus track by status._id" ng-disabled="isDisabled()"
+							 validator="required"></select>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="col-xs-12 pull-right">
+						<div class="form-group">
+							<label for="date">Date</label>
+							<sc-datepicker ng-model="DeliveryOrder.pickupDate" ng-class="isChanged('date')" ng-change="changed('date')" ng-disabled="isDisabled()"></sc-datepicker>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="col-xs-12 pull-right">
+						<div class="form-group">
+							<label for="date">Time</label>
+							<input type="time" class="form-control" ng-model="DeliveryOrder.pickupTime" ng-disabled="isDisabled()" />
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="col-xs-12 pull-right">
+						<div class="form-group">
+							<label for="originalShipDate"></label>
+
+						</div>
+					</div>
+				</div>
+				<div class="col-xs-12">
+					<div class="col-xs-12 pull-right">
+						<uib-accordion ng-disabled="isDisabled()">
+							<uib-accordion-group class="panel-default" heading="Contacts">
+								<button class="btn btn-primary pull-right" type="button" ng-click="addContact()">
+									<i class="fa fa-plus"></i>
+								</button>
+								<div ng-repeat="contact in DeliveryOrder.contacts track by $index">
+									<div class="col-xs-12">
+										<b>Contact #{{$index + 1}}</b>
+									</div>
+									<div class="col-xs-10">
+										<contact-model ng-model="DeliveryOrder.contacts[$index]" ng-class="isChanged('contact')" ng-change="changed('contact')">
+										</contact-model>
+									</div>
+									<div class="col-xs-2">
+										<button class="btn btn-danger pull-right" type="button" ng-click="removeContact($index)" ng-if="DeliveryOrder.contacts.length > 1">
+											<i class="fa fa-minus"></i>
+										</button>
+									</div>
+								</div>
+							</uib-accordion-group>
+						</uib-accordion>
+					</div>
+				</div>
+				<div class="col-xs-12">
+					<div class="col-xs-12 pull-right">
+						<uib-accordion ng-disabled="isDisabled()">
+							<uib-accordion-group class="panel-default" heading="Contacts">
+								<button class="btn btn-primary pull-right" type="button" ng-click="addContact()">
+									<i class="fa fa-plus"></i>
+								</button>
+								<div ng-repeat="contact in DeliveryOrder.contacts track by $index">
+									<div class="col-xs-12">
+										<b>Contact #{{$index + 1}}</b>
+									</div>
+									<div class="col-xs-10">
+										<contact-model ng-model="DeliveryOrder.contacts[$index]" ng-class="isChanged('contact')" ng-change="changed('contact')">
+										</contact-model>
+									</div>
+									<div class="col-xs-2">
+										<button class="btn btn-danger pull-right" type="button" ng-click="removeContact($index)" ng-if="DeliveryOrder.contacts.length > 1">
+											<i class="fa fa-minus"></i>
+										</button>
+									</div>
+								</div>
+							</uib-accordion-group>
+						</uib-accordion>
+					</div>
+				</div>
+				<div class="col-xs-12">
+					<div class="col-xs-12 pull-right">
+						<uib-accordion ng-click="meclick()">
+							<uib-accordion-group>
+								<uib-accordion-heading>
+									<span class="fa fa-map-pin fa-lg"> </span> From Pickup Address
+
+									<small>{{DeliveryOrder.siteAddressFrom.address1 }}, {{DeliveryOrder.siteAddressFrom.city.description}} </small>
+								</uib-accordion-heading>
+
+								<div class="input-group">
+									<input type="text" class="form-control" ng-model="DeliveryOrder.addresstr" id="addressFromsId" ng-focus="geoLocate();recalculate();melost()" origin-point="address.addressString" ng-change="recalculate()" />
+									<span class="input-group-btn">
+										<button type="button" id="lostIdFocus" class="btn btn-default" ng-click="reset()" ng-disabled="disable">
+											<i class="fa fa-times"></i>
+										</button>
+									</span>
+								</div>
+							</uib-accordion-group>
+						</uib-accordion>
+					</div>
+				</div>
+				<div class="col-xs-12">					
+					<div class="col-xs-12 pull-right">						
+						<uib-accordion id="grouptoId" ng-click="meclick()">
+							<uib-accordion-group class="panel-default">
+								<uib-accordion-heading>
+									<span class="fa fa-map-marker fa-lg"></span> To Delivery Address
+									<small ng-if="DeliveryOrder.siteAddress.city">{{DeliveryOrder.siteAddress.address1 }}, {{DeliveryOrder.siteAddress.city.description}} </small>
+								</uib-accordion-heading>
+
+								<address-model ng-model="DeliveryOrder.siteAddress" origin-point="DeliveryOrder.siteAddressFrom" ng-class="isChanged('siteAddress')"
+								 ng-change="changed('siteAddress')" ng-disabled="isDisabled()" show-map="true"></address-model>
+							</uib-accordion-group>
+						</uib-accordion>
+					</div>
+				</div>
+
+				<div class="col-sm-6">
+					<div class="col-xs-12 pull-right">
+						<div class="form-group">
+							<label for="distanceFrom">Service Miles (Miles)</label>
+							<input type="text" name="distanceFrom" id="distanceFrom" class="form-control" ng-model="DeliveryOrder.siteAddress.distanceFrom" validator="required"
+							 ng-disabled="true" ng-class="isChanged('distanceFrom')" ng-change="changed('serviceMiles')">
+						</div>
+					</div>
+				</div>
+				<div class="col-xs-12">
+					<div class="btn btn-default" ngf-select="uploadFiles($files)" ngf-max-size="5MB" ngf-accept="'image/*'" multiple="multiple">Upload Photo(s) (5MB Max)</div>
+				</div>
+				<div class="col-xs-12">
+					<label>Photos</label>
+				</div>
+				<div class="col-sm-3" ng-repeat="photo in DeliveryOrder.photos track by $index">
+					<img class="img-rounded" style="width:120px" ng-src="{{photo.url}}" ng-click="showPicture($index)" />
+					<button type="button" ng-click="removePhoto($index)" class="btn btn-sm btn-danger">
+						<i class="fa fa-times"></i>
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12 table-responsive">
+			<table class="table table-striped table-hover" width="100%" style="margin: 0 auto">
+				<thead>
+					<tr>
+						<th width="10%">
+							Code
+						</th>
+						<th width="20%" colspan="2">
+							Group Code / Description
+						</th>
+						<th width="10%">
+							Quantity
+						</th>
+						<th width="10%">
+							Price
+						</th>
+						<th width="5%">
+							Total
+						</th>
+						<th width="20%">
+							Part
+						</th>
+						<th width="10%">
+						
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td colspan="5">
+							<entitypicker ng-model="params.item" ws-class="wsClassItem" ws-fields="wsFieldsItem" ws-filter="wsFilterItem" ws-label="'description'"
+							 disable="true" ng-change="getCrewleaders(params.item._id)" order-by="'code'"></entitypicker>
+						</td>
+						<td>
+							<button type="button" class="btn btn-sm btn-primary update" ng-click="addItem(params.item)" ng-disabled="!params.item._id">
+								<i class="fa fa-plus"></i>
+							</button>
+						</td>
+						<td>
+							<span>
+								<b>Add from Collection</b>
+							</span>
+						</td>
+						<td>
+							<button type="button" class="btn btn-sm btn-primary update" ng-click="addItemCollection()" ng-disabled="true">
+								<i class="fa fa-list"></i>
+							</button>
+						</td>
+					</tr>
+					<tr ng-repeat="item in DeliveryOrder.items track by $index" ng-show="DeliveryOrder.client._id">
+						<td>
+							<input type="text" class="form-control" ng-model="item.code" ng-disabled="isDisabled()">
+						</td>
+						<td ng-if="item.itemCollection._id" width="15%">
+							{{item.itemCollection.description}}
+						</td>
+						<td colspan="{{ item.itemCollection._id ? '1' : '2' }}" width="15%">
+							<input type="text" name="description{{$index}}" class="form-control" ng-model="item.description" ng-disabled="isDisabled()"
+							 validator="required" ng-class="isChanged('item')" ng-change="changed('item')">
+						</td>
+						<td>
+							<input type="number" name="quantity{{$index}}" class="form-control" ng-model="DeliveryOrder.siteAddress.distanceFrom"
+							 step="0.01" ng-class="isChanged('item')" ng-change="changed('item')" ng-if="item._id==789">
+
+							<input type="number" name="quantity{{$index}}" class="form-control" ng-model="item.quantity" step="0.01"
+							 ng-class="isChanged('item')" ng-change="changed('item')" ng-if="item._id!=789" >
+						</td>
+						<td>
+							<input type="number" name="price{{$index}}" class="form-control" ng-model="item.price" ng-disabled="isDisabled()"
+							 step="0.01" ng-class="isChanged('item')" ng-change="changed('item')">
+						</td>
+						<td>
+							{{item.getTotalPriceDelivery(DeliveryOrder.siteAddress.distanceFrom) | currency }}
+						</td>
+						<td>
+							<input type="text" name="part{{$index}}" class="form-control" ng-model="item.crewLeaderCol.name" ng-disabled="true" ng-class="isChanged('item')"
+							 ng-change="changed('item')">
+						</td>
+						<td>
+							<button type="button" class="btn btn-sm btn-danger update" ng-click="removeItem($index)" ng-disabled="isDisabled()" >
+								<i class="fa fa-times"></i>
+							</button>
+						</td>
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<th colspan="4">
+							<span class="pull-right">
+								Total
+							</span>
+						</th>
+						<th colspan="4">
+							<span class="pull-left">
+								{{DeliveryOrder.getTotal() | currency}}
+							</span>
+						</th>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12">
+			<div class="col-sm-4 pull-left">
+				<div class="form-group">
+					<label for="comment">Issue/Comments</label>
+					<textarea id="comment" ng-model="DeliveryOrder.issue" class="form-control" ng-disabled="isDisabled()" ng-class="isChanged('issue')"
+					 ng-change="changed('issue')">
+					</textarea>
+				</div>
+
+				<div ng-hide="">
+					<div class="form-group">
+						<label for="comment">Comments</label>
+						<textarea id="comment" ng-model="DeliveryOrder.comment" class="form-control" ng-class="isChanged('comment')" ng-change="changed('comment')"
+						 ng-disabled="commentDiabled">
+					</textarea>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>

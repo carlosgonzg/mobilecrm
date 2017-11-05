@@ -39,7 +39,37 @@ angular.module('MobileCRMApp')
 		var at = {};
 		return at;
 	};
-	
+	Item.prototype.getTotalPriceDelivery = function (quantitymiles) {
+		var total = 0;
+
+		if (this._id == 789) {
+			var InitPrice = this.price;
+			var qtity = 0;
+
+			if (quantitymiles) {
+				qtity = quantitymiles;
+			} else {
+				qtity = this.quantity;
+			}
+
+			if (qtity <= 30) {
+				total += InitPrice
+			} else {
+				var minMiles = 30;
+				var miles = qtity;
+				var miles30 = 0;
+
+				total += (miles - minMiles) * 3.25 + (InitPrice)
+			}
+			return total;
+		} else if (this._id == 761) {
+			if (this.quantity == 0) { return 0 }
+			return this.price * (this.quantity || 1);
+		} else {
+			return this.price * (this.quantity || 1);
+		}
+	};
+
 	Item.prototype.getTotalPrice = function(){
 		return this.price * (this.quantity || 1);
 	};
