@@ -93,7 +93,7 @@ angular.module('MobileCRMApp')
 
 				for (var row = 0; row < $scope.DeliveryOrder.items.length; row++) {
 					var id = $scope.DeliveryOrder.items[row]._id;
-					if (id == 789) {
+					if (id == 253) {
 						var miles = $scope.DeliveryOrder.siteAddress.distanceFrom
 
 						$scope.DeliveryOrder.items[row].quantity = miles
@@ -141,7 +141,7 @@ angular.module('MobileCRMApp')
 
 						for (var row = 0; row < $scope.DeliveryOrder.items.length; row++) {
 							var id = $scope.DeliveryOrder.items[row]._id;
-							if (id == 789) {
+							if (id == 253) {
 								var miles = $scope.DeliveryOrder.siteAddress.distanceFrom
 
 								$scope.DeliveryOrder.items[row].quantity = miles
@@ -454,12 +454,12 @@ angular.module('MobileCRMApp')
 
 			for (var row = 0; row < $scope.DeliveryOrder.items.length; row++) {
 				var id = $scope.DeliveryOrder.items[row]._id;
-				if (id == 789 && $scope.DeliveryOrder.items[row].quantity == 0) {
+				if (id == 253 && $scope.DeliveryOrder.items[row].quantity == 0) {
 					toaster.error('The service miles can not be 0 or empty');
 					$scope.waiting = false;
 					return;
 				}
-				if (id == 789) {
+				if (id == 253) {
 					$scope.DeliveryOrder.items[row].quantity = DeliveryOrder.siteAddress.distanceFrom
 				}
 			}

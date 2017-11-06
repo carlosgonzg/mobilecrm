@@ -68,12 +68,15 @@ function List(db) {
 			description: 'Waiting for Availability'
 		}, {
 			_id: 2,
-			description: 'Confim'
+			description: 'Confirm'
 		}, {
 			_id: 3,
-			description: 'Delivery'
+			description: 'Delivered'
 		}, {
 			_id: 4,
+			description: 'On Route'
+		}, {
+			_id: 5,
 			description: 'Cancelled'
 		}
 	];

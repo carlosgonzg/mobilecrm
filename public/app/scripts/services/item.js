@@ -42,7 +42,7 @@ angular.module('MobileCRMApp')
 	Item.prototype.getTotalPriceDelivery = function (quantitymiles) {
 		var total = 0;
 
-		if (this._id == 789) {
+		if (this._id == 253) {
 			var InitPrice = this.price;
 			var qtity = 0;
 
