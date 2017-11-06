@@ -71,10 +71,10 @@ function List(db) {
 			description: 'Confirm'
 		}, {
 			_id: 3,
-			description: 'Delivered'
+			description: 'On Route'
 		}, {
 			_id: 4,
-			description: 'On Route'
+			description: 'Delivered'
 		}, {
 			_id: 5,
 			description: 'Cancelled'

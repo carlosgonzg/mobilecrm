@@ -51,10 +51,14 @@ function DeliveryOrder(db, userLogged, dirname) {
 				required: false,
 				items: new Item().schema
 			},
-			comment: {
+			clientcomment: {
 				type: 'string',
 				required: false
 			},
+			drivercomments: {
+				type: 'string',
+				required: false
+			},			
 			total: {
 				type: 'int',
 				required: false
@@ -158,7 +162,7 @@ DeliveryOrder.prototype.insert = function (deliveryOrder, user, mail) {
 		var qtity = deliveryOrder.items[i].quantity;
 		var InitPrice = deliveryOrder.items[i].price;
 
-		if (deliveryOrder.items[i]._id == 789) {
+		if (deliveryOrder.items[i]._id == 805) {
 			if (qtity <= 30) {
 				total += InitPrice;
 			} else {
@@ -247,7 +251,7 @@ DeliveryOrder.prototype.update = function (query, deliveryOrder, user, mail) {
 		var qtity = deliveryOrder.items[i].quantity;
 		var InitPrice = deliveryOrder.items[i].price;
 
-		if (deliveryOrder.items[i]._id == 789) {
+		if (deliveryOrder.items[i]._id == 805) {
 			if (qtity <= 30) {
 				total += InitPrice;
 			} else {

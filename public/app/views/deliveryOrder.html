@@ -87,7 +87,8 @@
 						<div class="form-group">
 							<label for="contract">Entrance</label>
 							<select class="form-control" name="typeTruck" ng-model="DeliveryOrder.typeTruck" ng-class="isChanged('typeTruck')" ng-change="changed('typeTruck')"
-							ng-options="typeTruck as typeTruck.description for typeTruck in entranceList track by typeTruck._id" ng-disabled="isDisabled()" validator="required"></select>
+							 ng-options="typeTruck as typeTruck.description for typeTruck in entranceList track by typeTruck._id" ng-disabled="isDisabled()"
+							 validator="required"></select>
 						</div>
 					</div>
 				</div>
@@ -95,7 +96,8 @@
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
 							<label for="invoiceNumber">Invoice #</label>
-							<input type="text" name="invoiceNumber" class="form-control" ng-model="DeliveryOrder.invoiceNumber" ng-class="isChanged('invoiceNumber')" disabled="disabled" readonly>
+							<input type="text" name="invoiceNumber" class="form-control" ng-model="DeliveryOrder.invoiceNumber" ng-class="isChanged('invoiceNumber')"
+							 disabled="disabled" readonly>
 						</div>
 					</div>
 				</div>
@@ -160,6 +162,31 @@
 				</div>
 				<div class="col-xs-12">
 					<div class="col-xs-12 pull-right">
+						<uib-accordion ng-disabled="isDisabled()">
+							<uib-accordion-group class="panel-default" heading="Contacts">
+								<button class="btn btn-primary pull-right" type="button" ng-click="addContact()">
+									<i class="fa fa-plus"></i>
+								</button>
+								<div ng-repeat="contact in DeliveryOrder.contacts track by $index">
+									<div class="col-xs-12">
+										<b>Contact #{{$index + 1}}</b>
+									</div>
+									<div class="col-xs-10">
+										<contact-model ng-model="DeliveryOrder.contacts[$index]" ng-class="isChanged('contact')" ng-change="changed('contact')">
+										</contact-model>
+									</div>
+									<div class="col-xs-2">
+										<button class="btn btn-danger pull-right" type="button" ng-click="removeContact($index)" ng-if="DeliveryOrder.contacts.length > 1">
+											<i class="fa fa-minus"></i>
+										</button>
+									</div>
+								</div>
+							</uib-accordion-group>
+						</uib-accordion>
+					</div>
+				</div>
+				<div class="col-xs-12">
+					<div class="col-xs-12 pull-right">
 						<uib-accordion ng-click="meclick()">
 							<uib-accordion-group>
 								<uib-accordion-heading>
@@ -169,7 +196,8 @@
 								</uib-accordion-heading>
 
 								<div class="input-group">
-									<input type="text" class="form-control" ng-model="DeliveryOrder.addresstr" id="addressFromsId" ng-focus="geoLocate();recalculate()" origin-point="address.addressString" ng-change="recalculate()" />
+									<input type="text" class="form-control" ng-model="DeliveryOrder.addresstr" id="addressFromsId" ng-focus="geoLocate();recalculate();melost()"
+									 origin-point="address.addressString" ng-change="recalculate()" />
 									<span class="input-group-btn">
 										<button type="button" id="lostIdFocus" class="btn btn-default" ng-click="reset()" ng-disabled="disable">
 											<i class="fa fa-times"></i>
@@ -180,9 +208,9 @@
 						</uib-accordion>
 					</div>
 				</div>
-				<div class="col-xs-12">					
-					<div class="col-xs-12 pull-right">						
-						<uib-accordion id="grouptoId">
+				<div class="col-xs-12">
+					<div class="col-xs-12 pull-right">
+						<uib-accordion id="grouptoId" ng-click="meclick()">
 							<uib-accordion-group class="panel-default">
 								<uib-accordion-heading>
 									<span class="fa fa-map-marker fa-lg"></span> To Delivery Address
@@ -200,8 +228,8 @@
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
 							<label for="distanceFrom">Service Miles (Miles)</label>
-							<input type="text" name="distanceFrom" id="distanceFrom" class="form-control" ng-model="DeliveryOrder.siteAddress.distanceFrom" validator="required"
-							 ng-disabled="true" ng-class="isChanged('distanceFrom')" ng-change="changed('serviceMiles')">
+							<input type="text" name="distanceFrom" id="distanceFrom" class="form-control" ng-model="DeliveryOrder.siteAddress.distanceFrom"
+							 validator="required" ng-disabled="true" ng-class="isChanged('distanceFrom')" ng-change="changed('serviceMiles')">
 						</div>
 					</div>
 				</div>
@@ -244,7 +272,7 @@
 							Part
 						</th>
 						<th width="10%">
-						
+
 						</th>
 					</tr>
 				</thead>
@@ -282,15 +310,15 @@
 							 validator="required" ng-class="isChanged('item')" ng-change="changed('item')">
 						</td>
 						<td>
-							<input type="number" name="quantity{{$index}}" class="form-control" ng-model="DeliveryOrder.siteAddress.distanceFrom"
-							 step="0.01" ng-class="isChanged('item')" ng-change="changed('item')" ng-if="item._id==789">
+							<input type="number" name="quantity{{$index}}" class="form-control" ng-model="DeliveryOrder.siteAddress.distanceFrom" step="0.01"
+							 ng-class="isChanged('item')" ng-change="changed('item')" ng-if="item._id==805">
 
-							<input type="number" name="quantity{{$index}}" class="form-control" ng-model="item.quantity" step="0.01"
-							 ng-class="isChanged('item')" ng-change="changed('item')" ng-if="item._id!=789" >
+							<input type="number" name="quantity{{$index}}" class="form-control" ng-model="item.quantity" step="0.01" ng-class="isChanged('item')"
+							 ng-change="changed('item')" ng-if="item._id==761">
 						</td>
 						<td>
-							<input type="number" name="price{{$index}}" class="form-control" ng-model="item.price" ng-disabled="isDisabled()"
-							 step="0.01" ng-class="isChanged('item')" ng-change="changed('item')">
+							<input type="number" name="price{{$index}}" class="form-control" ng-model="item.price" ng-disabled="isDisabled()" step="0.01"
+							 ng-class="isChanged('item')" ng-change="changed('item')">
 						</td>
 						<td>
 							{{item.getTotalPriceDelivery(DeliveryOrder.siteAddress.distanceFrom) | currency }}
@@ -300,7 +328,7 @@
 							 ng-change="changed('item')">
 						</td>
 						<td>
-							<button type="button" class="btn btn-sm btn-danger update" ng-click="removeItem($index)" ng-disabled="isDisabled()" >
+							<button type="button" class="btn btn-sm btn-danger update" ng-click="removeItem($index)" ng-disabled="isDisabled()">
 								<i class="fa fa-times"></i>
 							</button>
 						</td>
@@ -327,12 +355,19 @@
 		<div class="col-xs-12">
 			<div class="col-sm-4 pull-left">
 				<div class="form-group">
-					<label for="comment">Client's / Comments</label>
-					<textarea id="comment" ng-model="DeliveryOrder.issue" class="form-control" ng-disabled="isDisabled()" ng-class="isChanged('issue')"
+					<label for="comment">Client's Comments</label>
+					<textarea id="comment" ng-model="DeliveryOrder.clientcomment" class="form-control" ng-disabled="isDisabled()" ng-class="isChanged('issue')"
+					 ng-change="changed('issue')">
+					</textarea>
+				</div>
+				<div class="form-group">
+					<label for="comment">Driver Comments</label>
+					<textarea id="comment" ng-model="DeliveryOrder.drivercomments" class="form-control" ng-disabled="isDisabled()" ng-class="isChanged('issue')"
 					 ng-change="changed('issue')">
 					</textarea>
 				</div>
 			</div>
+
 		</div>
 	</div>
 

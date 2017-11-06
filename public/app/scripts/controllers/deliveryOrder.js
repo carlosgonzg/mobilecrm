@@ -13,7 +13,7 @@ angular.module('MobileCRMApp')
 		$scope.DeliveryOrder = DeliveryOrder;
 
 		Concatenate();
-
+		console.log(ItemDefault)
 		$scope.addedItem = []
 		$scope.items = [];
 		$scope.params = {};
@@ -93,11 +93,12 @@ angular.module('MobileCRMApp')
 
 				for (var row = 0; row < $scope.DeliveryOrder.items.length; row++) {
 					var id = $scope.DeliveryOrder.items[row]._id;
-					if (id == 253) {
+					if (id == 805) {
 						var miles = $scope.DeliveryOrder.siteAddress.distanceFrom
 
 						$scope.DeliveryOrder.items[row].quantity = miles
 					}
+					console.log($scope.DeliveryOrder)
 				}
 			}
 		}
@@ -141,7 +142,7 @@ angular.module('MobileCRMApp')
 
 						for (var row = 0; row < $scope.DeliveryOrder.items.length; row++) {
 							var id = $scope.DeliveryOrder.items[row]._id;
-							if (id == 253) {
+							if (id == 805) {
 								var miles = $scope.DeliveryOrder.siteAddress.distanceFrom
 
 								$scope.DeliveryOrder.items[row].quantity = miles
@@ -300,6 +301,11 @@ angular.module('MobileCRMApp')
 					if (Admfeed == false) {
 						$scope.DeliveryOrder.items.unshift(ItemDefault.data[1]);
 					}
+					for (var row = 0; row < $scope.DeliveryOrder.items.length; row++) {
+						if ($scope.DeliveryOrder.items[row]._id == 761) {
+							$scope.DeliveryOrder.items[row].quantity = 0
+						}
+					}
 				}
 			}
 		};
@@ -454,12 +460,13 @@ angular.module('MobileCRMApp')
 
 			for (var row = 0; row < $scope.DeliveryOrder.items.length; row++) {
 				var id = $scope.DeliveryOrder.items[row]._id;
-				if (id == 253 && $scope.DeliveryOrder.items[row].quantity == 0) {
+				console.log($scope.DeliveryOrder)
+				if (id == 805 && $scope.DeliveryOrder.siteAddress.distanceFrom == 0) {
 					toaster.error('The service miles can not be 0 or empty');
 					$scope.waiting = false;
 					return;
 				}
-				if (id == 253) {
+				if (id == 805) {
 					$scope.DeliveryOrder.items[row].quantity = DeliveryOrder.siteAddress.distanceFrom
 				}
 			}
@@ -730,7 +737,9 @@ angular.module('MobileCRMApp')
 		$scope.recalculate();
 
 		$scope.meclick = function (isopen) {
-			angular.element(document.getElementById('addressFromsId'))[0].focus();
+			if ($scope.fistLoad == 0) {
+				angular.element(document.getElementById('addressFromsId'))[0].focus();
+			}
 		}
 		$scope.melost = function () {
 			console.log($scope.fistLoad)
