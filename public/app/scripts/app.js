@@ -476,11 +476,11 @@ var app = angular
 				}
 			})
 			.when('/DeliveryOrderList', {
-				templateUrl: 'views/DeliveryOrderList.html',
+				templateUrl: 'views/deliveryOrderList.html',
 				controller: 'DeliveryOrderListCtrl'
 			})
 			.when('/DeliveryOrder/:id?', {
-				templateUrl: 'views/DeliveryOrder.html',
+				templateUrl: 'views/deliveryOrder.html',
 				controller: 'DeliveryOrderCtrl',
 				resolve: {
 					statusList: function (List) {
