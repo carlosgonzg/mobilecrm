@@ -13,7 +13,7 @@ var a;
 		a = document.createElement("a");
 			document.body.appendChild(a);
 		DeliveryOrder.super.constructor.apply(this, arguments);
-		this.baseApiPath = "/api/DeliveryOrder";
+		this.baseApiPath = "/api/deliveryOrder";
 		this.client = this.client || {};
 		this.invoiceNumber = this.invoiceNumber || '';
 		this.sor = this.sor || '';
