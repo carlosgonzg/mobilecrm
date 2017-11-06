@@ -70,7 +70,7 @@ var a;
 	
 	
 	DeliveryOrder.prototype.goTo = function () {
-		$location.path('/deliveryOrder/' + this._id);
+		$location.path('/DeliveryOrder/' + this._id);
 	};
 
 	DeliveryOrder.prototype.download = function(){
