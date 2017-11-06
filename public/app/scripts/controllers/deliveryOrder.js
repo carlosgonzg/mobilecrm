@@ -91,16 +91,16 @@ angular.module('MobileCRMApp')
 
 				var distance = getDistance($scope.DeliveryOrder.siteAddress, $scope.DeliveryOrder.siteAddressFrom);
 
-						for (var row = 0; row < $scope.DeliveryOrder.items.length; row++) {
-							var id = $scope.DeliveryOrder.items[row]._id;
-							if (id == 789) {
-								var miles = $scope.DeliveryOrder.siteAddress.distanceFrom
+				for (var row = 0; row < $scope.DeliveryOrder.items.length; row++) {
+					var id = $scope.DeliveryOrder.items[row]._id;
+					if (id == 789) {
+						var miles = $scope.DeliveryOrder.siteAddress.distanceFrom
 
-								$scope.DeliveryOrder.items[row].quantity = miles								
-							}
-						}
+						$scope.DeliveryOrder.items[row].quantity = miles
 					}
 				}
+			}
+		}
 
 		var getDistance1 = function (p1, p2) {
 			var p1 = new google.maps.LatLng(p1.latitude, p1.longitude);
@@ -138,15 +138,15 @@ angular.module('MobileCRMApp')
 						$scope.DeliveryOrder.siteAddress.distanceFrom = $scope.DeliveryOrder.siteAddressFrom.address1 && $scope.DeliveryOrder.siteAddress.address1 ? parseFloat((result * 0.00062137).toFixed(2)) : 0;
 						initMap(p1coord, p2coord);
 						$scope.$apply();
-						
- 						for (var row = 0; row < $scope.DeliveryOrder.items.length; row++) {
+
+						for (var row = 0; row < $scope.DeliveryOrder.items.length; row++) {
 							var id = $scope.DeliveryOrder.items[row]._id;
 							if (id == 789) {
 								var miles = $scope.DeliveryOrder.siteAddress.distanceFrom
 
 								$scope.DeliveryOrder.items[row].quantity = miles
 							}
-						} 
+						}
 
 					}
 
@@ -434,7 +434,7 @@ angular.module('MobileCRMApp')
 
 		$scope.save = function (sendMail) {
 			$scope.waiting = true;
-			$scope.DeliveryOrder.sendMail = false;			
+			$scope.DeliveryOrder.sendMail = false;
 
 			if (sendMail) {
 				$scope.DeliveryOrder.sendMail = true;
@@ -660,7 +660,7 @@ angular.module('MobileCRMApp')
 
 		$scope.reset = function () {
 			$scope.DeliveryOrder.siteAddressFrom = [];
-			angular.element(document.getElementById('addressFromsId'))[0].value = "";			
+			angular.element(document.getElementById('addressFromsId'))[0].value = "";
 			DeliveryOrder.siteAddress = []
 			DeliveryOrder.siteAddress.distanceFrom = 0
 		}
@@ -704,16 +704,17 @@ angular.module('MobileCRMApp')
 
 			var add = ""
 
-			if (DeliveryOrder.siteAddressFrom.address1) {
-				add = DeliveryOrder.siteAddressFrom.address1 || ""
+			if (DeliveryOrder.siteAddressFrom != undefined) {
+				if (DeliveryOrder.siteAddressFrom.address1) {
+					add = DeliveryOrder.siteAddressFrom.address1 || ""
+				}
+				if (DeliveryOrder.siteAddressFrom.city) {
+					add = add + ', ' + DeliveryOrder.siteAddressFrom.city.description;
+				}
+				if (DeliveryOrder.siteAddressFrom.state) {
+					add = add + ', ' + DeliveryOrder.siteAddressFrom.state.id + ', ' + DeliveryOrder.siteAddressFrom.state.description
+				}
 			}
-			if (DeliveryOrder.siteAddressFrom.city) {
-				add = add + ', ' + DeliveryOrder.siteAddressFrom.city.description;
-			}
-			if (DeliveryOrder.siteAddressFrom.state) {
-				add = add + ', ' + DeliveryOrder.siteAddressFrom.state.id + ', ' + DeliveryOrder.siteAddressFrom.state.description
-			}
-
 			DeliveryOrder.addresstr = add;
 
 			for (var row = 0; row < $scope.DeliveryOrder.items.length; row++) {
@@ -733,9 +734,9 @@ angular.module('MobileCRMApp')
 		}
 		$scope.melost = function () {
 			console.log($scope.fistLoad)
-			if ($scope.fistLoad == 0){
-			angular.element(document.getElementById('lostIdFocus'))[0].focus();
-			$scope.fistLoad = 1;
+			if ($scope.fistLoad == 0) {
+				angular.element(document.getElementById('lostIdFocus'))[0].focus();
+				$scope.fistLoad = 1;
 			}
 		}
 	});
