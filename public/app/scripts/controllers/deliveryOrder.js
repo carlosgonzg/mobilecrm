@@ -88,7 +88,7 @@ angular.module('MobileCRMApp')
 
 		$scope.recalculate = function () {
 			if ($scope.DeliveryOrder.siteAddressFrom.address1 && $scope.DeliveryOrder.siteAddress.address1) {
-
+				console.log($scope.DeliveryOrder)
 				var distance = getDistance($scope.DeliveryOrder.siteAddress, $scope.DeliveryOrder.siteAddressFrom);
 
 				for (var row = 0; row < $scope.DeliveryOrder.items.length; row++) {
@@ -98,7 +98,7 @@ angular.module('MobileCRMApp')
 
 						$scope.DeliveryOrder.items[row].quantity = miles
 					}
-					console.log($scope.DeliveryOrder)
+				
 				}
 			}
 		}
@@ -748,5 +748,7 @@ angular.module('MobileCRMApp')
 				$scope.fistLoad = 1;
 			}
 		}
+
+
 	});
 
