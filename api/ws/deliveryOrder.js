@@ -1,6 +1,6 @@
 'use strict';
 
-var ServiceOrder = require('../dto/DeliveryOrder');
+var ServiceOrder = require('../dto/deliveryOrder');
 var util = require('../dto/util');
 
 module.exports = function (prefix, app, mail, dirname) {
