@@ -445,6 +445,19 @@ angular.module('MobileCRMApp')
 					$scope.invoice.technician = angular.copy(res.technician);
 				});
 		};
+		$scope.setAmountToZero = function (status) {
+			if (status._id == 5 || status._id == 7) {
+				for (var i=0; i<$scope.invoice.items.length; i++) {
+					$scope.invoice.items[i].originalPrice = $scope.invoice.items[i].price;
+					$scope.invoice.items[i].price = 0;
+				}
+			} else {
+				for (var i=0; i<$scope.invoice.items.length; i++) {
+					$scope.invoice.items[i].price = $scope.invoice.items[i].originalPrice ? $scope.invoice.items[i].originalPrice : $scope.invoice.items[i].price; 
+					delete $scope.invoice.items[i].originalPrice;
+				}
+			}
+		}
 		if (invoice.client) {
 			$scope.clientChanged(invoice.client);
 		}

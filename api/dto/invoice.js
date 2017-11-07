@@ -412,7 +412,8 @@ Invoice.prototype.getMonthlyStatement = function(params, user){
 			date: {
 				$gte: fromDate,
 				$lte: toDate
-			}
+			},
+			'status._id' : {$nin: [5,7]}
 		}
 	};
 	if(params.clientId){

@@ -388,7 +388,13 @@ $scope.CrewHeaderSel = ""
 		$scope.setAmountToZero = function (status) {
 			if (status._id == 5 || status._id == 7) {
 				for (var i=0; i<$scope.workOrder.items.length; i++) {
+					$scope.workOrder.items[i].originalPrice = $scope.workOrder.items[i].price;
 					$scope.workOrder.items[i].price = 0;
+				}
+			} else {
+				for (var i=0; i<$scope.workOrder.items.length; i++) {
+					$scope.workOrder.items[i].price = $scope.workOrder.items[i].originalPrice ? $scope.workOrder.items[i].originalPrice : $scope.workOrder.items[i].price; 
+					delete $scope.workOrder.items[i].originalPrice;
 				}
 			}
 		}

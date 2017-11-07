@@ -72,7 +72,10 @@ angular.module('MobileCRMApp')
 		var originalContacts = $scope.serviceOrder.contacts;
 		var originalSiteAddress = $scope.serviceOrder.siteAddress;
 
-		$scope.serviceOrder.siteAddressFrom = $scope.serviceOrder.client && $scope.serviceOrder.client.branch ? $scope.serviceOrder.client.branch.addresses[0] : {};
+		// if (!$scope.serviceOrder.siteAddressFrom) {
+		// 	console.log($scope.serviceOrder.siteAddressFrom)
+		// 	$scope.serviceOrder.siteAddressFrom = $scope.serviceOrder.client && $scope.serviceOrder.client.branch ? $scope.serviceOrder.client.branch.addresses[0] : {};
+		// }
 
 		$scope.getBranches = function () {
 
@@ -260,7 +263,9 @@ angular.module('MobileCRMApp')
 			if (client && client.company) {
 				$scope.wsFilterItem = $rootScope.userData.role._id != 1 && $rootScope.userData.role._id != 5 ? { 'companies._id': $rootScope.userData.company._id } : { 'companies._id': client.company._id };
 
-				$scope.serviceOrder.siteAddressFrom = $scope.serviceOrder.client.branch ? $scope.serviceOrder.client.branch.addresses[0] : {};
+				if (!$scope.serviceOrder.siteAddressFrom) {
+					$scope.serviceOrder.siteAddressFrom = $scope.serviceOrder.client.branch ? $scope.serviceOrder.client.branch.addresses[0] : {};
+				}
 			}
 
 			if (serviceOrder.client == undefined) {
@@ -599,8 +604,14 @@ angular.module('MobileCRMApp')
 
 		$scope.setAmountToZero = function (status) {
 			if (status._id == 5 || status._id == 7) {
-				for (var i = 0; i < $scope.serviceOrder.items.length; i++) {
+				for (var i=0; i<$scope.serviceOrder.items.length; i++) {
+					$scope.serviceOrder.items[i].originalPrice = $scope.serviceOrder.items[i].price;
 					$scope.serviceOrder.items[i].price = 0;
+				}
+			} else {
+				for (var i=0; i<$scope.serviceOrder.items.length; i++) {
+					$scope.serviceOrder.items[i].price = $scope.serviceOrder.items[i].originalPrice ? $scope.serviceOrder.items[i].originalPrice : $scope.serviceOrder.items[i].price; 
+					delete $scope.serviceOrder.items[i].originalPrice;
 				}
 			}
 		}

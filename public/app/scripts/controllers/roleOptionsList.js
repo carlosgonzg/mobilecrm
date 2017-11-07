@@ -72,5 +72,13 @@ angular.module('MobileCRMApp')
 			toaster.error(error.message);
 		});
 	};
+	$scope.editOrder = function (rOption) {
+		rOption.sort2 = rOption.sort;
+		rOption.edition = true;
+	}
+	$scope.setOrder = function (rOption) {
+		rOption.sort = rOption.sort2;
+		rOption.edition = false;
+	}
 	$scope.selectTab(angular.copy($scope.roles[0]));
 });

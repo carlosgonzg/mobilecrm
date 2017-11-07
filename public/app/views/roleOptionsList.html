@@ -73,9 +73,16 @@
 						<input type="checkbox" ng-model="rOption.update" />
 					</td>
 					<td>
-						<input type="number" class="form-control" ng-model="rOption.sort" />
+						<span ng-show="!rOption.edition">{{rOption.sort}}</span>
+						<input type="number" class="form-control" ng-model="rOption.sort2" ng-show="rOption.edition" />
 					</td>
 					<td>
+						<button type="button" class="btn btn-sm btn-default" ng-click="editOrder(rOption)" ng-show="!rOption.edition" >
+							<i class="fa fa-pencil" ></i>
+						</button>
+						<button type="button" class="btn btn-sm btn-default" ng-click="setOrder(rOption)" ng-show="rOption.edition" >
+							<i class="fa fa-check" ></i>
+						</button>
 						<button type="button" class="btn btn-sm btn-danger" ng-click="removeOption($index)">
 							<i class="fa fa-times"></i>
 						</button>
