@@ -282,7 +282,7 @@ angular.module('MobileCRMApp')
 				$scope.DeliveryOrder.items = [];
 			} else {
 				if ($scope.DeliveryOrder.client._id) {
-					LoadItemDefault();
+					$scope.LoadItemDefault();
 				}
 			}
 		};
@@ -708,7 +708,10 @@ angular.module('MobileCRMApp')
 			}
 		}
 
-		$scope.LoadItemDefault = function() {
+		$scope.LoadItemDefault = function () {
+			var Serv, Admfeed
+			Serv = false; Admfeed = false
+
 			for (var row = 0; row < $scope.DeliveryOrder.items.length; row++) {
 				var code = $scope.DeliveryOrder.items[row].code;
 				if (ItemDefault.data[0].code == code) {
@@ -728,11 +731,6 @@ angular.module('MobileCRMApp')
 			}
 			if (Admfeed == false) {
 				$scope.DeliveryOrder.items.unshift(ItemDefault.data[1]);
-			}
-			for (var row = 0; row < $scope.DeliveryOrder.items.length; row++) {
-				if ($scope.DeliveryOrder.items[row]._id == 761) {
-					$scope.DeliveryOrder.items[row].quantity = 0
-				}
 			}
 		}
 
