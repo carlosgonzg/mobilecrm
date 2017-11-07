@@ -13,7 +13,7 @@ angular.module('MobileCRMApp')
 		$scope.DeliveryOrder = DeliveryOrder;
 
 		Concatenate();
-		console.log(ItemDefault)
+
 		$scope.addedItem = []
 		$scope.items = [];
 		$scope.params = {};
@@ -32,9 +32,36 @@ angular.module('MobileCRMApp')
 			$scope.DeliveryOrder.client = new User($rootScope.userData);
 		}
 
+		var Serv, Admfeed
+		Serv = false; Admfeed = false
+
+		console.log($scope.DeliveryOrder)
+
+		for (var row = 0; row < $scope.DeliveryOrder.items.length; row++) {
+			var code = $scope.DeliveryOrder.items[row].code;
+			if (ItemDefault.data[0].code == code) {
+				Serv = true;
+			}
+		}
+
+		if (Serv == false) {
+			$scope.DeliveryOrder.items.unshift(ItemDefault.data[0]);
+		}
+
+		for (var row = 0; row < $scope.DeliveryOrder.items.length; row++) {
+			var code = $scope.DeliveryOrder.items[row].code;
+			if (ItemDefault.data[1].code == code) {
+				Admfeed = true;
+			}
+		}
+		if (Admfeed == false) {
+			$scope.DeliveryOrder.items.unshift(ItemDefault.data[1]);
+		}
+
+		console.log($scope.DeliveryOrder)
+
 		$scope.listStatus = statusList;
 		$scope.entranceList = EntranceList;
-
 		$scope.waiting = false;
 
 
@@ -69,36 +96,39 @@ angular.module('MobileCRMApp')
 		var originalContacts = $scope.DeliveryOrder.contacts;
 		var originalSiteAddress = $scope.DeliveryOrder.siteAddress;
 
-		$scope.DeliveryOrder.siteAddressFrom = $scope.DeliveryOrder.client && $scope.DeliveryOrder.client.branch ? $scope.DeliveryOrder.client.branch.addresses[0] : {};
+		//	$scope.DeliveryOrder.siteAddressFrom = $scope.DeliveryOrder.client && $scope.DeliveryOrder.client.branch ? $scope.DeliveryOrder.client.branch.addresses[0] : {};
 
-		$scope.getBranches = function () {
-			$scope.branches = [];
-			new Branch().filter({})
-				.then(function (res) {
-					$scope.branches = res.data;
-					for (var i = 0; i < $scope.branches.length; i++) {
-						if ($scope.branches[i].addresses.length > 0) {
-							address = $scope.branches[i].addresses[0];
-							address.addressString = $scope.branches[i].company.entity.name + " - " + (address ? (address.city.description ? address.city.description + " - " : "") + address.address1 + (address.state.id ? ", " + address.state.id : "") : "");
-							$scope.addresses.push(address)
-						}
-					}
-				});
-		};
+		/* 		$scope.getBranches = function () {
+					$scope.branches = [];
+					new Branch().filter({})
+						.then(function (res) {
+							$scope.branches = res.data;
+							for (var i = 0; i < $scope.branches.length; i++) {
+								if ($scope.branches[i].addresses.length > 0) {
+									address = $scope.branches[i].addresses[0];
+									address.addressString = $scope.branches[i].company.entity.name + " - " + (address ? (address.city.description ? address.city.description + " - " : "") + address.address1 + (address.state.id ? ", " + address.state.id : "") : "");
+									$scope.addresses.push(address)
+								}
+							}
+						});
+				}; */
 
 		$scope.recalculate = function () {
-			if ($scope.DeliveryOrder.siteAddressFrom.address1 && $scope.DeliveryOrder.siteAddress.address1) {
-				console.log($scope.DeliveryOrder)
-				var distance = getDistance($scope.DeliveryOrder.siteAddress, $scope.DeliveryOrder.siteAddressFrom);
+			if ($scope.DeliveryOrder.siteAddressFrom) {
+				if ($scope.DeliveryOrder.siteAddressFrom.address1 && $scope.DeliveryOrder.siteAddress.address1) {
 
-				for (var row = 0; row < $scope.DeliveryOrder.items.length; row++) {
-					var id = $scope.DeliveryOrder.items[row]._id;
-					if (id == 805) {
-						var miles = $scope.DeliveryOrder.siteAddress.distanceFrom
+					console.log($scope.DeliveryOrder.siteAddressFrom.city.description)
+					var distance = getDistance($scope.DeliveryOrder.siteAddress, $scope.DeliveryOrder.siteAddressFrom);
 
-						$scope.DeliveryOrder.items[row].quantity = miles
+					for (var row = 0; row < $scope.DeliveryOrder.items.length; row++) {
+						var id = $scope.DeliveryOrder.items[row]._id;
+						if (id == 805) {
+							var miles = $scope.DeliveryOrder.siteAddress.distanceFrom
+
+							$scope.DeliveryOrder.items[row].quantity = miles
+						}
+
 					}
-				
 				}
 			}
 		}
@@ -136,6 +166,7 @@ angular.module('MobileCRMApp')
 					SetAddress();
 
 					if ($scope.DeliveryOrder.siteAddressFrom && $scope.DeliveryOrder.siteAddress) {
+						console.log(444)
 						$scope.DeliveryOrder.siteAddress.distanceFrom = $scope.DeliveryOrder.siteAddressFrom.address1 && $scope.DeliveryOrder.siteAddress.address1 ? parseFloat((result * 0.00062137).toFixed(2)) : 0;
 						initMap(p1coord, p2coord);
 						$scope.$apply();
@@ -279,33 +310,7 @@ angular.module('MobileCRMApp')
 				$scope.DeliveryOrder.items = [];
 			} else {
 				if ($scope.DeliveryOrder.client._id) {
-					var Serv, Admfeed
-					Serv = false; Admfeed = false
-
-					for (var row = 0; row < $scope.DeliveryOrder.items.length; row++) {
-						var code = $scope.DeliveryOrder.items[row].code;
-						if (ItemDefault.data[0].code == code) {
-							Serv = true;
-						}
-					}
-					if (Serv == false) {
-						$scope.DeliveryOrder.items.unshift(ItemDefault.data[0]);
-					}
-
-					for (var row = 0; row < $scope.DeliveryOrder.items.length; row++) {
-						var code = $scope.DeliveryOrder.items[row].code;
-						if (ItemDefault.data[1].code == code) {
-							Admfeed = true;
-						}
-					}
-					if (Admfeed == false) {
-						$scope.DeliveryOrder.items.unshift(ItemDefault.data[1]);
-					}
-					for (var row = 0; row < $scope.DeliveryOrder.items.length; row++) {
-						if ($scope.DeliveryOrder.items[row]._id == 761) {
-							$scope.DeliveryOrder.items[row].quantity = 0
-						}
-					}
+					setItems();
 				}
 			}
 		};
@@ -708,7 +713,6 @@ angular.module('MobileCRMApp')
 		}
 
 		function Concatenate() {
-
 			var add = ""
 
 			if (DeliveryOrder.siteAddressFrom != undefined) {
@@ -732,8 +736,35 @@ angular.module('MobileCRMApp')
 			}
 		}
 
+		function setItem() {
+			for (var row = 0; row < $scope.DeliveryOrder.items.length; row++) {
+				var code = $scope.DeliveryOrder.items[row].code;
+				if (ItemDefault.data[0].code == code) {
+					Serv = true;
+				}
+			}
 
-		$scope.getBranches();
+			if (Serv == false) {
+				$scope.DeliveryOrder.items.unshift(ItemDefault.data[0]);
+			}
+
+			for (var row = 0; row < $scope.DeliveryOrder.items.length; row++) {
+				var code = $scope.DeliveryOrder.items[row].code;
+				if (ItemDefault.data[1].code == code) {
+					Admfeed = true;
+				}
+			}
+			if (Admfeed == false) {
+				$scope.DeliveryOrder.items.unshift(ItemDefault.data[1]);
+			}
+			for (var row = 0; row < $scope.DeliveryOrder.items.length; row++) {
+				if ($scope.DeliveryOrder.items[row]._id == 761) {
+					$scope.DeliveryOrder.items[row].quantity = 0
+				}
+			}
+		}
+
+		//$scope.getBranches();
 		$scope.recalculate();
 
 		$scope.meclick = function (isopen) {
@@ -749,6 +780,7 @@ angular.module('MobileCRMApp')
 			}
 		}
 
+		setItem()
 
 	});
 
