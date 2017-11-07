@@ -77,7 +77,8 @@
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
 							<label for="dor">Delivery order #</label>
-							<input type="text" name="dor" class="form-control" ng-model="DeliveryOrder.dor" ng-class="isChanged('dor')" ng-change="changed('dor')" validator="required">
+							<input type="text" name="dor" class="form-control" ng-model="DeliveryOrder.dor" ng-class="isChanged('dor')" ng-change="changed('dor')"
+							 validator="required">
 						</div>
 					</div>
 				</div>
@@ -86,8 +87,7 @@
 						<div class="form-group">
 							<label for="contract">Entrance</label>
 							<select class="form-control" name="typeTruck" ng-model="DeliveryOrder.typeTruck" ng-class="isChanged('typeTruck')" ng-change="changed('typeTruck')"
-							 ng-options="typeTruck as typeTruck.description for typeTruck in entranceList track by typeTruck._id"
-							 validator="required"></select>
+							 ng-options="typeTruck as typeTruck.description for typeTruck in entranceList track by typeTruck._id" validator="required"></select>
 						</div>
 					</div>
 				</div>
@@ -129,8 +129,7 @@
 				<div class="col-sm-6">
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
-							<label for="originalShipDate"></label>
-
+						
 						</div>
 					</div>
 				</div>
@@ -298,8 +297,8 @@
 							{{item.getTotalPriceDelivery(DeliveryOrder.siteAddress.distanceFrom) | currency }}
 						</td>
 						<td>
-							<input type="text" name="part{{$index}}" class="form-control" ng-model="item.crewLeaderCol.name" ng-disabled="isDisabled()" ng-class="isChanged('item')"
-							 ng-change="changed('item')">
+							<input type="text" name="part{{$index}}" class="form-control" ng-model="item.crewLeaderCol.name" ng-disabled="isDisabled()"
+							 ng-class="isChanged('item')" ng-change="changed('item')">
 						</td>
 						<td>
 							<button type="button" class="btn btn-sm btn-danger update" ng-click="removeItem($index)" ng-disabled="isDisabled()">
@@ -330,8 +329,7 @@
 			<div class="col-sm-4 pull-left">
 				<div class="form-group">
 					<label for="comment">Client's Comments</label>
-					<textarea id="comment" ng-model="DeliveryOrder.clientcomment" class="form-control" ng-class="isChanged('issue')"
-					 ng-change="changed('issue')">
+					<textarea id="comment" ng-model="DeliveryOrder.clientcomment" class="form-control" ng-class="isChanged('issue')" ng-change="changed('issue')">
 					</textarea>
 				</div>
 				<br />

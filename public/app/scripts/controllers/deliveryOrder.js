@@ -32,34 +32,6 @@ angular.module('MobileCRMApp')
 			$scope.DeliveryOrder.client = new User($rootScope.userData);
 		}
 
-		var Serv, Admfeed
-		Serv = false; Admfeed = false
-
-		console.log($scope.DeliveryOrder)
-
-		for (var row = 0; row < $scope.DeliveryOrder.items.length; row++) {
-			var code = $scope.DeliveryOrder.items[row].code;
-			if (ItemDefault.data[0].code == code) {
-				Serv = true;
-			}
-		}
-
-		if (Serv == false) {
-			$scope.DeliveryOrder.items.unshift(ItemDefault.data[0]);
-		}
-
-		for (var row = 0; row < $scope.DeliveryOrder.items.length; row++) {
-			var code = $scope.DeliveryOrder.items[row].code;
-			if (ItemDefault.data[1].code == code) {
-				Admfeed = true;
-			}
-		}
-		if (Admfeed == false) {
-			$scope.DeliveryOrder.items.unshift(ItemDefault.data[1]);
-		}
-
-		console.log($scope.DeliveryOrder)
-
 		$scope.listStatus = statusList;
 		$scope.entranceList = EntranceList;
 		$scope.waiting = false;
@@ -310,7 +282,7 @@ angular.module('MobileCRMApp')
 				$scope.DeliveryOrder.items = [];
 			} else {
 				if ($scope.DeliveryOrder.client._id) {
-					setItems();
+					LoadItemDefault();
 				}
 			}
 		};
@@ -736,7 +708,7 @@ angular.module('MobileCRMApp')
 			}
 		}
 
-		function setItem() {
+		$scope.LoadItemDefault = function() {
 			for (var row = 0; row < $scope.DeliveryOrder.items.length; row++) {
 				var code = $scope.DeliveryOrder.items[row].code;
 				if (ItemDefault.data[0].code == code) {
@@ -780,7 +752,6 @@ angular.module('MobileCRMApp')
 			}
 		}
 
-		setItem()
-
+		$scope.LoadItemDefault()
 	});
 
