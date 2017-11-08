@@ -497,7 +497,7 @@ var app = angular
 						}
 					},
 					ItemDefault: function (Item) {
-						return new Item().filter({ _id: { $in: [805, 761] } })
+						return new Item().filter({ _id: { $in: [805, 806] } })
 					},
 				}
 			})
