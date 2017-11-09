@@ -12,14 +12,15 @@ angular.module('MobileCRMApp')
 		$scope.DeliveryOrder = DeliveryOrder;
 
 		Concatenate();
+		console.log($scope.DeliveryOrder)
 
-		$scope.company = [];
 		$scope.addedItem = [];
 		$scope.items = [];
 		$scope.params = {};
 		$scope.branches = [];
 		$scope.fistLoad = 0;
 		$scope.priceInitial = ItemDefault.data[0].price
+		$scope.company = []
 
 		$scope.readOnly = $rootScope.userData.role._id != 1;
 		$scope.showMap = $rootScope.userData.role._id == 1;
@@ -33,10 +34,15 @@ angular.module('MobileCRMApp')
 			$scope.DeliveryOrder.client = new User($rootScope.userData);
 		}
 
+		if ($scope.DeliveryOrder.client.company != undefined) {
+			if ($scope.DeliveryOrder.client.company.perHours != undefined) {
+				$scope.company = $scope.DeliveryOrder.client.company
+			}
+		}
+
 		$scope.listStatus = statusList;
 		$scope.entranceList = EntranceList;
 		$scope.waiting = false;
-
 
 		$scope.wsClass = User;
 		$scope.wsFilter = { 'role._id': 3 };
@@ -89,8 +95,6 @@ angular.module('MobileCRMApp')
 		$scope.recalculate = function () {
 			if ($scope.DeliveryOrder.siteAddressFrom) {
 				if ($scope.DeliveryOrder.siteAddressFrom.address1 && $scope.DeliveryOrder.siteAddress.address1) {
-
-					console.log($scope.DeliveryOrder.siteAddressFrom.city.description)
 					var distance = getDistance($scope.DeliveryOrder.siteAddress, $scope.DeliveryOrder.siteAddressFrom);
 
 					for (var row = 0; row < $scope.DeliveryOrder.items.length; row++) {
@@ -139,7 +143,7 @@ angular.module('MobileCRMApp')
 					SetAddress();
 
 					if ($scope.DeliveryOrder.siteAddressFrom && $scope.DeliveryOrder.siteAddress) {
-						console.log(444)
+
 						$scope.DeliveryOrder.siteAddress.distanceFrom = $scope.DeliveryOrder.siteAddressFrom.address1 && $scope.DeliveryOrder.siteAddress.address1 ? parseFloat((result * 0.00062137).toFixed(2)) : 0;
 						initMap(p1coord, p2coord);
 						$scope.$apply();
@@ -279,7 +283,7 @@ angular.module('MobileCRMApp')
 					.then(function (res) {
 						_.map(res.data, function (obj) {
 							$scope.company = obj
-							
+							console.log(1)
 							$scope.LoadItemDefault();
 						})
 					})
@@ -296,7 +300,7 @@ angular.module('MobileCRMApp')
 				$scope.ItemDefault = []
 			} else {
 				if ($scope.DeliveryOrder.client._id) {
-					
+					console.log(2)
 					$scope.LoadItemDefault();
 				}
 			}
@@ -397,12 +401,49 @@ angular.module('MobileCRMApp')
 				})
 		};
 
+		$scope.uploadPDF = function (files) {
+			$scope.files = angular.copy(files)
+			function getBase64(file) {
+				var d = $q.defer();
+				var reader = new FileReader();
+				reader.readAsDataURL(file);
+				reader.onload = function () {
+					d.resolve({
+						url: reader.result,
+						name: file.name,
+						type: file.type,
+						isNew: true
+					});
+				};
+				reader.onerror = function (error) {
+					d.reject(error);
+				};
+				return d.promise;
+			}
+			var promises = [];
+			for (var i = 0; i < files.length; i++) {
+				promises.push(getBase64(files[i]))
+			}
+			$q.all(promises)
+				.then(function (urls) {
+					$scope.DeliveryOrder.docs = $scope.DeliveryOrder.docs || [];
+					$scope.DeliveryOrder.docs = $scope.DeliveryOrder.docs.concat(urls)
+				})
+		};
+
+		$scope.downloadFile = function (index) {
+			console.log(index)
+		};
+
 		$scope.showPicture = function (index) {
 			$scope.DeliveryOrder.showPicture(index);
 		};
 
 		$scope.removePhoto = function (index) {
 			$scope.DeliveryOrder.photos.splice(index, 1);
+		};
+		$scope.removeDoc = function (index) {
+			$scope.DeliveryOrder.docs.splice(index, 1);
 		};
 
 		$scope.addItemCollection = function () {
@@ -452,7 +493,7 @@ angular.module('MobileCRMApp')
 
 			for (var row = 0; row < $scope.DeliveryOrder.items.length; row++) {
 				var id = $scope.DeliveryOrder.items[row]._id;
-				console.log($scope.DeliveryOrder)
+
 				if (id == 805 && $scope.DeliveryOrder.siteAddress.distanceFrom == 0) {
 					toaster.error('The service miles can not be 0 or empty');
 					$scope.waiting = false;
@@ -465,15 +506,23 @@ angular.module('MobileCRMApp')
 
 			if (!$route.current.params.id) { $scope.DeliveryOrder.date = new Date() }
 
+			if ($scope.DeliveryOrder.status.description == "Pending") {
+				$scope.DeliveryOrder.status.description = "Waiting for Availability"
+			}
+
+			if ($scope.company) {
+				$scope.DeliveryOrder.client.company = $scope.company;
+			}
+			
 			$scope.DeliveryOrder.save()
 				.then(function (data) {
-					toaster.success('The Service Order was saved successfully');
+					toaster.success('The Delivery Order was saved successfully');
 					$location.path('DeliveryOrderList')
 					$scope.waiting = false;
 				},
 				function (error) {
 					console.log(error);
-					toaster.error('The Service Order couldn\'t be saved, please check if some required field is empty or if its duplicated');
+					toaster.error('The Delivery Order couldn\'t be saved, please check if some required field is empty or if its duplicated');
 					$scope.waiting = false;
 				});
 		};
@@ -730,6 +779,12 @@ angular.module('MobileCRMApp')
 			$scope.ItemDefault = ItemDefault;
 			$scope.DeliveryOrder.items = []
 
+			console.log(4)
+			if ($scope.company == undefined) {
+				$scope.DeliveryOrder.items.unshift($scope.ItemDefault.data[0]);
+				return
+			}
+
 			if ($scope.company.perHours != undefined) { //SI ESTA DEFINIDO EN COMPANY
 				if ($scope.company.perHours == true) { //SI ES POR HORA 
 					console.log(1)
@@ -768,6 +823,6 @@ angular.module('MobileCRMApp')
 			}
 		}
 
-		$scope.LoadItemDefault()
+		//$scope.LoadItemDefault()
 	});
 

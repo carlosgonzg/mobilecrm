@@ -15,8 +15,8 @@ var fs = require('fs')
 function DeliveryOrder(db, userLogged, dirname) {
 	this.crud = new Crud(db, 'DELIVERYORDER', userLogged);
 	this.crudInvoice = new Crud(db, 'INVOICE', userLogged);
+	this.company = new Crud(db, 'COMPANY', userLogged);
 	this.user = new User(db, '', userLogged);
-	this.crew = new Crud(db, 'USER', userLogged);
 
 	this.dirname = dirname;
 	//DB Table Schema
@@ -58,7 +58,7 @@ function DeliveryOrder(db, userLogged, dirname) {
 			drivercomments: {
 				type: 'string',
 				required: false
-			},			
+			},
 			total: {
 				type: 'int',
 				required: false
@@ -87,7 +87,7 @@ function DeliveryOrder(db, userLogged, dirname) {
 
 DeliveryOrder.prototype.savePhotos = function (deliveryOrder) {
 	var d = q.defer();
-	var dirname = this.dirname + '/public/app/images/uploads';
+	var dirname = this.dirname + '/public/app/images/uploads/deliveryOrder';
 	var deliveryOrderDir = dirname + '/' + deliveryOrder._id;
 	if (deliveryOrder.photos && deliveryOrder.photos.length > 0) {
 		var urlPhotos = [];
@@ -103,7 +103,7 @@ DeliveryOrder.prototype.savePhotos = function (deliveryOrder) {
 				var data = photo.url.replace(new RegExp('data:' + photo.type + ';base64,'), '');
 				urlPhotos.push({
 					id: i,
-					url: '/images/uploads/' + deliveryOrder._id + '/' + photo.name
+					url: '/images/uploads/deliveryOrder/' + deliveryOrder._id + '/' + photo.name
 				})
 				fs.writeFileSync(fileDir, data, 'base64');
 			}
@@ -124,60 +124,98 @@ DeliveryOrder.prototype.savePhotos = function (deliveryOrder) {
 	return d.promise;
 };
 
+DeliveryOrder.prototype.saveDocs = function (deliveryOrder) {
+	var d = q.defer();
+	var dirname = this.dirname + '/public/app/images/uploads/deliveryOrder';
+	var deliveryOrderDir = dirname + '/' + deliveryOrder._id;
+	if (deliveryOrder.docs && deliveryOrder.docs.length > 0) {
+		var urldocs = [];
+		for (var i = 0; i < deliveryOrder.docs.length; i++) {
+			var photo = deliveryOrder.docs[i];
+			//chequeo que existe la carpeta exista
+			if (!fs.existsSync(deliveryOrderDir)) {
+				fs.mkdirSync(deliveryOrderDir);
+			}
+			//chequeo que existe el doc, si no la creo y cambio el url del doc por el relative path
+			var fileDir = deliveryOrderDir + '/' + photo.name;
+			if (!fs.existsSync(fileDir)) {
+				var data = photo.url.replace(new RegExp('data:' + photo.type + ';base64,'), '');
+				urldocs.push({
+					id: i,
+					url: '/images/uploads/deliveryOrder/' + deliveryOrder._id + '/' + photo.name
+				})
+				fs.writeFileSync(fileDir, data, 'base64');
+			}
+		}
+		for (var i = 0; i < urldocs.length; i++) {
+			for (var j = 0; j < deliveryOrder.docs.length; j++) {
+				if (urldocs[i].id == j) {
+					deliveryOrder.docs[j].url = urldocs[i].url.toString();
+					break;
+				}
+			}
+		}
+		d.resolve(deliveryOrder.docs);
+	}
+	else {
+		d.resolve([]);
+	}
+	return d.promise;
+};
+
 DeliveryOrder.prototype.insert = function (deliveryOrder, user, mail) {
 	var d = q.defer();
 	var _this = this;
 	var total = 0;
-	var crewdata;
-	var userIds = [];
+	var InitPrice = 0;
+	var initialMile = 30;
+	var costPerMile = 3.25;
+	var costPerHours = 0;
 	var sendMail = deliveryOrder.sendMail || false;
-	var sendMailTech = deliveryOrder.sendTotech || false;
+	var comp = deliveryOrder.client.company;
 
-
-	if (sendMailTech == true) {
-		/*
-		busco los email de los crew leader - fz
-			for (var row = 0; row < deliveryOrder.items.length; row++) {
-					if (deliveryOrder.items[row].crewLeaderCol != undefined) {
-						var element = deliveryOrder.items[row].crewLeaderCol.id
-						userIds.push(element);
-					}
-				} */
-
-		//busco los id de los los tech en el cuerpo de la orden
-		for (var n = 0; n < deliveryOrder.crewHeader.length; n++) {
-			if (deliveryOrder.crewHeader != undefined) {
-				var element = deliveryOrder.crewHeader[n].id
-				userIds.push(element);
-			}
+	if (comp.perHours != undefined) {
+		if (comp.perHours == false) {
+			InitPrice = comp.initialCost;
+			initialMile = comp.initialMile;
+			costPerMile = comp.costPerMile;
+		} else {
+			costPerHours = comp.costPerHours;
 		}
-		this.crew.find({ _id: { $in: userIds } })
-			.then(function (data) {
-				crewdata = data
-			})
 	}
 
-	//sumo el total
-	for (var i = 0; i < deliveryOrder.items.length; i++) {
-		var qtity = deliveryOrder.items[i].quantity;
-		var InitPrice = deliveryOrder.items[i].price;
+	if (deliveryOrder.items[0]._id == 805 && costPerHours == 0 && comp.perHours != undefined) {
+		var qtity = deliveryOrder.items[0].quantity
 
-		if (deliveryOrder.items[i]._id == 805) {
-			if (qtity <= 30) {
-				total += InitPrice;
-			} else {
-				var minMiles = 30;
-				var miles = qtity;
-				var miles30 = 0;
-				total += (miles - minMiles) * 3.25 + (InitPrice)
-			}
+		if (qtity <= initialMile) {
+			total += InitPrice
 		} else {
-			total += qtity * InitPrice;
+			var minMiles = initialMile;
+			var miles = qtity;
+			var miles30 = 0;
+
+			total += (miles - minMiles) * costPerMile + (InitPrice)
+		}
+	} else if (costPerHours > 0) {
+		qtity = deliveryOrder.items[0].quantity;
+
+		total += costPerHours * (qtity || 1);
+	} else {
+		var miles = (deliveryOrder.items[0].quantity || 1);;
+		InitPrice = deliveryOrder.items[0].price;
+
+		if (miles > 30) {
+			total += (miles - initialMile) * costPerMile + (InitPrice)
+		} else {
+			total += InitPrice;
 		}
 	}
 
 	deliveryOrder.total = total;
+
 	var photos = deliveryOrder.photos;
+	var docs = deliveryOrder.docs;
+
 	//Consigo el sequencial de invoice
 	var promise = deliveryOrder.invoiceNumber ? q.when(deliveryOrder.invoiceNumber) : q.when('Pending Invoice');
 	promise
@@ -194,14 +232,19 @@ DeliveryOrder.prototype.insert = function (deliveryOrder, user, mail) {
 			deliveryOrder.photos = photos;
 			return _this.savePhotos(deliveryOrder);
 		})
+		//Guardando los documentos
+		.then(function (obj) {
+			deliveryOrder.docs = docs;
+			return _this.saveDocs(deliveryOrder);
+		})
 		//actualizo y mando correo
 		.then(function (photos) {
 			return _this.crud.update({ _id: deliveryOrder._id }, deliveryOrder)
 		})
 		.then(function (photos) {
 
-			if (sendMail || sendMailTech || user.role._id == 1)
-				_this.sendDeliveryOrder(deliveryOrder._id, user, mail, crewdata, sendMail, sendMailTech);
+			if (sendMail || user.role._id == 1)
+				_this.sendDeliveryOrder(deliveryOrder._id, user, mail, sendMail);
 			d.resolve(deliveryOrder);
 		})
 		.catch(function (err) {
@@ -212,60 +255,60 @@ DeliveryOrder.prototype.insert = function (deliveryOrder, user, mail) {
 			});
 		});
 	return d.promise;
+
 };
 
 DeliveryOrder.prototype.update = function (query, deliveryOrder, user, mail) {
 	var d = q.defer();
 	var _this = this;
 	var total = 0;
-	var crewdata;
-	var userIds = [];
+	var total = 0;
+	var InitPrice = 0;
+	var initialMile = 30;
+	var costPerMile = 3.25;
+	var costPerHours = 0;
 	var sendMail = deliveryOrder.sendMail || false;
-	var sendMailTech = deliveryOrder.sendTotech || false;
+	var comp = deliveryOrder.client.company;
 
-	if (sendMailTech == true) {
-		/*
-		//busco los email de los crew leader - fz
-		for (var row = 0; row < deliveryOrder.items.length; row++) {
-					if (deliveryOrder.items[row].crewLeaderCol != undefined) {
-						var element = deliveryOrder.items[row].crewLeaderCol.id
-						userIds.push(element);
-					}
-				} */
-
-		//busco los id de los los tech en el cuerpo de la orden
-		for (var n = 0; n < deliveryOrder.crewHeader.length; n++) {
-			if (deliveryOrder.crewHeader != undefined) {
-				var element = deliveryOrder.crewHeader[n].id
-				userIds.push(element);
-			}
+	if (comp.perHours != undefined) {
+		if (comp.perHours == false) {
+			InitPrice = comp.initialCost;
+			initialMile = comp.initialMile;
+			costPerMile = comp.costPerMile;
+		} else {
+			costPerHours = comp.costPerHours;
 		}
-		this.crew.find({ _id: { $in: userIds } })
-			.then(function (data) {
-				crewdata = data
-			})
 	}
 
-	//sumo el total
-	for (var i = 0; i < deliveryOrder.items.length; i++) {
-		var qtity = deliveryOrder.items[i].quantity;
-		var InitPrice = deliveryOrder.items[i].price;
+	if (deliveryOrder.items[0]._id == 805 && costPerHours == 0 && comp.perHours != undefined) {
+		var qtity = deliveryOrder.items[0].quantity
 
-		if (deliveryOrder.items[i]._id == 805) {
-			if (qtity <= 30) {
-				total += InitPrice;
-			} else {
-				var minMiles = 30;
-				var miles = qtity;
-				var miles30 = 0;
-				total += (miles - minMiles) * 3.25 + (InitPrice)
-			}
+		if (qtity <= initialMile) {
+			total += InitPrice
 		} else {
-			total += qtity * InitPrice;
+			var minMiles = initialMile;
+			var miles = qtity;
+			var miles30 = 0;
+
+			total += (miles - minMiles) * costPerMile + (InitPrice)
+		}
+	} else if (costPerHours > 0) {
+		qtity = deliveryOrder.items[0].quantity;
+
+		total += costPerHours * (qtity || 1);
+	} else {
+		var miles = (deliveryOrder.items[0].quantity || 1);;
+		InitPrice = deliveryOrder.items[0].price;
+
+		if (miles > 30) {
+			total += (miles - initialMile) * costPerMile + (InitPrice)
+		} else {
+			total += InitPrice;
 		}
 	}
 
 	deliveryOrder.total = total;
+
 	_this.savePhotos(deliveryOrder)
 		.then(function (photos) {
 			deliveryOrder.photos = photos;
@@ -279,22 +322,40 @@ DeliveryOrder.prototype.update = function (query, deliveryOrder, user, mail) {
 				setObj = { invoiceNumber: deliveryOrder.invoiceNumber };
 			}
 
-			if (deliveryOrder.pono)
-				setObj.pono = deliveryOrder.pono;
-			if (deliveryOrder.unitno)
-				setObj.unitno = deliveryOrder.unitno;
 			if (deliveryOrder.items.length > 0)
 				setObj.items = deliveryOrder.items;
 			if (deliveryOrder.total)
 				setObj.total = deliveryOrder.total;
 
-			_this.crudInvoice.update({ sor: deliveryOrder.sor }, setObj, true);
+			_this.crudInvoice.update({ dor: deliveryOrder.dor }, setObj, true);
+
+			return _this.crud.update(query, deliveryOrder);
+		})
+	_this.saveDocs(deliveryOrder)
+		.then(function (docs) {
+			deliveryOrder.docs = docs;
+			delete deliveryOrder.sendMail;
+
+			var setObj = {};
+			if ([5, 7].indexOf(deliveryOrder.status._id) != -1) {
+				setObj = { invoiceNumber: "No Invoice" };
+			}
+			else {
+				setObj = { invoiceNumber: deliveryOrder.invoiceNumber };
+			}
+
+			if (deliveryOrder.items.length > 0)
+				setObj.items = deliveryOrder.items;
+			if (deliveryOrder.total)
+				setObj.total = deliveryOrder.total;
+
+			_this.crudInvoice.update({ dor: deliveryOrder.dor }, setObj, true);
 
 			return _this.crud.update(query, deliveryOrder);
 		})
 		.then(function (obj) {
-			if (sendMail || sendMailTech)
-				_this.sendDeliveryOrderUpdate(query._id, user, mail, crewdata, sendMail, sendMailTech);
+			if (sendMail)
+				_this.sendDeliveryOrderUpdate(query._id, user, mail, sendMail);
 			d.resolve(obj);
 		})
 		.catch(function (err) {
@@ -306,7 +367,7 @@ DeliveryOrder.prototype.update = function (query, deliveryOrder, user, mail) {
 	return d.promise;
 };
 
-DeliveryOrder.prototype.sendDeliveryOrder = function (id, user, mail, crewdata, sendMail, sendMailTech) {
+DeliveryOrder.prototype.sendDeliveryOrder = function (id, user, mail, sendMail) {
 	var d = q.defer();
 	var _this = this;
 	var deliveryOrder = {};
@@ -327,15 +388,9 @@ DeliveryOrder.prototype.sendDeliveryOrder = function (id, user, mail, crewdata, 
 				for (var i = 0; i < users.data.length; i++) {
 					emails.push(users.data[i].account.email);
 				}
+				emails = _.uniq(emails);
+				return mail.sendDeliveryOrder(deliveryOrder, emails, _this.dirname);
 			}
-			//AGREGO LOS EMAILS DE LOS TECNICOS AL ARREGLO EMAILS --FZ
-			if (sendMailTech == true) {
-				for (var row = 0; row < crewdata.data.length; row++) {
-					emails.push(crewdata.data[row].account.email)
-				}
-			}
-			emails = _.uniq(emails);
-			return mail.sendDeliveryOrder(deliveryOrder, emails, _this.dirname);
 		})
 		.then(function () {
 			d.resolve(true);
@@ -350,7 +405,7 @@ DeliveryOrder.prototype.sendDeliveryOrder = function (id, user, mail, crewdata, 
 	return d.promise;
 };
 
-DeliveryOrder.prototype.sendDeliveryOrderUpdate = function (id, user, mail, crewdata, sendMail, sendMailTech) {
+DeliveryOrder.prototype.sendDeliveryOrderUpdate = function (id, user, mail, sendMail) {
 	var d = q.defer();
 	var _this = this;
 	var deliveryOrder = {};
@@ -367,23 +422,9 @@ DeliveryOrder.prototype.sendDeliveryOrderUpdate = function (id, user, mail, crew
 				for (var i = 0; i < users.data.length; i++) {
 					emails.push(users.data[i].account.email);
 				}
+				emails = _.uniq(emails);
+				return mail.sendDeliveryOrder(deliveryOrder, emails, user);
 			}
-
-			//AGREGO LOS EMAILS DE LOS TECNICOS AL ARREGLO EMAILS --FZ
-			if (sendMailTech == true) {
-				for (var row = 0; row < crewdata.data.length; row++) {
-					emails.push(crewdata.data[row].account.email)
-				}
-			}
-
-			emails = _.uniq(emails);
-			// //if(user.role._id != 1){
-			// 	console.log("SERVICE ORDER UPDATE!!!", emails, deliveryOrder)
-			return mail.sendDeliveryOrderUpdate(deliveryOrder, emails, user);
-			//}
-			//else{
-			//	return q.when();
-			//}
 		})
 		.then(function () {
 			d.resolve(true);

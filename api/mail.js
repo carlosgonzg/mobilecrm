@@ -407,6 +407,7 @@ var sendWorkOrder = function (workOrder, mails, dirname, file, fileName) {
 	return deferred.promise;
 };
 
+
 var sendWorkOrderUpdate = function (workOrder, mails, user, company) {
 	var deferred = q.defer();
 	bringTemplateData('/email/templateWorkOrderUpdate.html')
@@ -447,10 +448,9 @@ var sendWorkOrderUpdate = function (workOrder, mails, user, company) {
 			changesByUser += fieldsChanged == '' ? 'None' : fieldsChanged;
 			body = body.replace('<client>', changesByUser);
 
-			var companyS = '' + company.entity.name;
-			var branch = workOrder && workOrder.client && workOrder.client.branch ? '' + workOrder.client.branch.name : '' + workOrder.client.entity.fullName;
-			var subject = 'Work Order: ' + workOrder.wor + ' | ' + companyS + ' | ' + branch ;
-
+			var companyS = 'Company: ' + company.entity.name;
+			var branch = workOrder && workOrder.client && workOrder.client.branch ? 'Branch: ' + workOrder.client.branch.name : 'Client: ' + workOrder.client.entity.fullName;
+			var subject = companyS + ' | ' + branch + ' | Work Order: ' + workOrder.wor;
 			console.log('sending mail', subject);
 			mails = _.uniq(mails);
 			sendMail(mails.join(', '), subject, body, true, null, null, null, 'mf@mobileonecontainers.com')
@@ -470,6 +470,68 @@ var sendWorkOrderUpdate = function (workOrder, mails, user, company) {
 	return deferred.promise;
 };
 
+var sendDeliveryOrder = function (deliveryOrder, mails, dirname) {
+	var deferred = q.defer();
+	bringTemplateData('/deliveryorder.html')
+		.then(function (body) {
+			var url = config.SERVER_URL;
+			console.log(url)
+			body = body.replace('<emailUrl>', url);
+			body = body.replace('<createdDate>', moment(deliveryOrder.date).format('MM/DD/YYYY'));
+			body = body.replace('<createdBy>', deliveryOrder.createdBy.entity ? deliveryOrder.createdBy.entity.fullName : '');
+			body = body.replace('<clientCompany>', deliveryOrder.client.company ? deliveryOrder.client.company.entity.name : 'None');
+			body = body.replace('<dor>', deliveryOrder.dor);
+			body = body.replace('<clientBranch>', deliveryOrder.client.branch ? deliveryOrder.client.branch.name : 'None');
+			body = body.replace('<customer>', deliveryOrder.customer || 'None');
+			body = body.replace('<customerPhone>', deliveryOrder.phone ? (deliveryOrder.phone.number || '') : 'None');
+			body = body.replace('<entrance>', deliveryOrder.typeTruck.description);
+			body = body.replace('<pickupdate>', moment(deliveryOrder.pickupDate).format('MM/DD/YYYY'));
+			body = body.replace('<pickuptime>', moment(deliveryOrder.pickupTime).format('HH:mm'));
+			body = body.replace('<clientName>', deliveryOrder.client.entity.fullName);
+			body = body.replace('<pickAddress>', deliveryOrder.addresstr);
+			body = body.replace('<deliveryAddress>', deliveryOrder.siteAddress.address1 + ', ' + deliveryOrder.siteAddress.city.description + ', ' + deliveryOrder.siteAddress.state.description + ' ' + deliveryOrder.siteAddress.zipcode);
+			body = body.replace('<Clientcomment>', deliveryOrder.clientcomment || 'None');
+			body = body.replace('<comment>', deliveryOrder.comments || 'None');
+			var contacts = '';
+			for (var i = 0; i < deliveryOrder.contacts.length; i++) {
+				if (deliveryOrder.contacts[i].name)
+					contacts += '<b>Contact #' + (i + 1) + ':&nbsp;</b>' + (deliveryOrder.contacts[i].name || '') + '.&nbsp;<b>Phone(' + (deliveryOrder.contacts[i].phoneType.description || '') + '):</b>&nbsp;' + (deliveryOrder.contacts[i].number || '') + '<br/>';
+			}
+			body = body.replace('<contacts>', contacts || '');
+			var company = 'Company: ' + (deliveryOrder && deliveryOrder.client && deliveryOrder.client.company && deliveryOrder.client.company.entity ? deliveryOrder.client.company.entity.name : 'Not Defined');
+			var branch = deliveryOrder && deliveryOrder.client && deliveryOrder.client.branch ? 'Branch: ' + deliveryOrder.client.branch.name : 'Client: ' + deliveryOrder.client.entity.fullName;
+			var subject = company + ' | ' + branch + ' | Delivery Order: ' + deliveryOrder.sor;
+
+			var deliveryOrderAttachments = [];
+			if (deliveryOrder.docs) {
+				for (var i = 0; i < deliveryOrder.docs.length; i++) {
+					var docDir = dirname + '/public/app' + deliveryOrder.docs[i].url;
+
+					deliveryOrderAttachments.push({
+						filename: deliveryOrder.docs[i].name,
+						contentType: deliveryOrder.docs[i].type,
+						path: docDir
+					});
+				}
+			}
+			console.log('sending mail', subject);
+			mails = _.uniq(mails);
+			sendMail(mails.join(', '), subject, body, true, deliveryOrderAttachments, null, null, 'mf@mobileonecontainers.com')
+				.then(function (response) {
+					console.log('DONE Sending Mail: ', response)
+					deferred.resolve(response);
+				},
+				function (err) {
+					console.log('error?', err)
+					deferred.reject(err);
+				});
+		},
+		function (err) {
+			console.log('error!', err)
+			deferred.reject(err);
+		});
+	return deferred.promise;
+};
 
 exports.sendInvoice = sendInvoice;
 exports.sendInvoiceUpdate = sendInvoiceUpdate;
@@ -481,3 +543,4 @@ exports.init = init;
 exports.sendMail = sendMail;
 exports.sendActivationEmail = sendActivationEmail;
 exports.sendForgotPasswordMail = sendForgotPasswordMail;
+exports.sendDeliveryOrder = sendDeliveryOrder;
