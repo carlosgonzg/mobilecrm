@@ -59,16 +59,16 @@ var a;
 		return at;
 	};
 	
-	DeliveryOrder.prototype.getTotal = function(){
+	DeliveryOrder.prototype.getTotal = function(comp){
 		var total = 0;
+
 		for(var i = 0; i < this.items.length; i++){
-			total += this.items[i].getTotalPriceDelivery(this.siteAddress.distanceFrom);
+			total += this.items[i].getTotalPriceDelivery(this.siteAddress.distanceFrom, comp);
 		}
 		this.total = total;
 		return total;
 	};
-	
-	
+		
 	DeliveryOrder.prototype.goTo = function () {
 		$location.path('/DeliveryOrder/' + this._id);
 	};

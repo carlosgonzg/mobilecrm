@@ -113,7 +113,7 @@
 				<div class="col-sm-6">
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
-							<label for="date">Date</label>
+							<label for="date">Pickup Date</label>
 							<sc-datepicker ng-model="DeliveryOrder.pickupDate" ng-class="isChanged('date')" ng-change="changed('date')"></sc-datepicker>
 						</div>
 					</div>
@@ -121,15 +121,15 @@
 				<div class="col-sm-6">
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
-							<label for="date">Time</label>
-							<input type="time" class="form-control" ng-model="DeliveryOrder.pickupTime" />
+						
 						</div>
 					</div>
 				</div>
 				<div class="col-sm-6">
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
-						
+							<label for="date">Pickup Time</label>
+							<input type="time" class="form-control" ng-model="DeliveryOrder.pickupTime" />
 						</div>
 					</div>
 				</div>
@@ -287,14 +287,14 @@
 							 ng-class="isChanged('item')" ng-change="changed('item')" ng-if="item._id==805" ng-disabled="isDisabled()">
 
 							<input type="number" name="quantity{{$index}}" class="form-control" ng-model="item.quantity" step="0.01" ng-class="isChanged('item')"
-							 ng-change="changed('item')" ng-if="item._id==761" ng-disabled="isDisabled()">
+							 ng-change="changed('item')" ng-if="item._id==806" ng-disabled="isDisabled()">
 						</td>
 						<td>
 							<input type="number" name="price{{$index}}" class="form-control" ng-model="item.price" ng-disabled="isDisabled()" step="0.01"
 							 ng-class="isChanged('item')" ng-change="changed('item')">
 						</td>
 						<td>
-							{{item.getTotalPriceDelivery(DeliveryOrder.siteAddress.distanceFrom) | currency }}
+							{{item.getTotalPriceDelivery(DeliveryOrder.siteAddress.distanceFrom, company) | currency }}
 						</td>
 						<td>
 							<input type="text" name="part{{$index}}" class="form-control" ng-model="item.crewLeaderCol.name" ng-disabled="isDisabled()"
@@ -316,7 +316,7 @@
 						</th>
 						<th colspan="4">
 							<span class="pull-left">
-								{{DeliveryOrder.getTotal() | currency}}
+								{{DeliveryOrder.getTotal(company) | currency}}
 							</span>
 						</th>
 					</tr>
