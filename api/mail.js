@@ -156,9 +156,9 @@ var sendServiceOrder = function (serviceOrder, mails, dirname) {
 					contacts += '<b>Contact #' + (i + 1) + ':&nbsp;</b>' + (serviceOrder.contacts[i].name || '') + '.&nbsp;<b>Phone(' + (serviceOrder.contacts[i].phoneType.description || '') + '):</b>&nbsp;' + (serviceOrder.contacts[i].number || '') + '<br/>';
 			}
 			body = body.replace('<contacts>', contacts || '');
-			var company = 'Company: ' + (serviceOrder && serviceOrder.client && serviceOrder.client.company && serviceOrder.client.company.entity ? serviceOrder.client.company.entity.name : 'Not Defined');
-			var branch = serviceOrder && serviceOrder.client && serviceOrder.client.branch ? 'Branch: ' + serviceOrder.client.branch.name : 'Client: ' + serviceOrder.client.entity.fullName;
-			var subject = company + ' | ' + branch + ' | Service Order: ' + serviceOrder.sor;
+			var company = '' + (serviceOrder && serviceOrder.client && serviceOrder.client.company && serviceOrder.client.company.entity ? serviceOrder.client.company.entity.name : 'Not Defined');
+			var branch = serviceOrder && serviceOrder.client && serviceOrder.client.branch ? '' + serviceOrder.client.branch.name : '' + serviceOrder.client.entity.fullName;
+			var subject = 'Service Order: ' + serviceOrder.sor + ' | ' + company + ' | ' + branch;
 
 			var serviceOrderAttachments = [];
 			if (serviceOrder.photos) {
@@ -237,9 +237,10 @@ var sendServiceOrderUpdate = function (serviceOrder, mails, user) {
 			}
 			body = body.replace('<contacts>', contacts || '');
 
-			var company = 'Company: ' + (serviceOrder && serviceOrder.client && serviceOrder.client.company && serviceOrder.client.company.entity ? serviceOrder.client.company.entity.name : 'Not Defined');
-			var branch = serviceOrder && serviceOrder.client && serviceOrder.client.branch ? 'Branch: ' + serviceOrder.client.branch.name : 'Client: ' + serviceOrder.client.entity.fullName;
-			var subject = company + ' | ' + branch + ' | Service Order: ' + serviceOrder.sor;
+			var company = '' + (serviceOrder && serviceOrder.client && serviceOrder.client.company && serviceOrder.client.company.entity ? serviceOrder.client.company.entity.name : 'Not Defined');
+			var branch = serviceOrder && serviceOrder.client && serviceOrder.client.branch ? '' + serviceOrder.client.branch.name : '' + serviceOrder.client.entity.fullName;
+			var subject = 'Service Order: ' + serviceOrder.sor +' | ' + company + ' | ' + branch;
+
 			console.log('sending mail', subject);
 			mails = _.uniq(mails);
 			sendMail(mails.join(', '), subject, body, true, null, null, null, 'mf@mobileonecontainers.com')
@@ -383,9 +384,9 @@ var sendWorkOrder = function (workOrder, mails, dirname, file, fileName) {
 			body = body.replace('<clientBranch>', workOrder.client.branch ? workOrder.client.branch.name : 'None');
 			body = body.replace('<wor>', workOrder.wor);
 			body = body.replace('<pono>', workOrder.pono ? 'With PO Number: ' + workOrder.pono : 'Without PO Number. Please provide PO Number for this Work Order.');
-			var company = 'Company: ' + (workOrder && workOrder.client && workOrder.client.company && workOrder.client.company.entity ? workOrder.client.company.entity.name : 'Not Defined');
-			var branch = workOrder && workOrder.client && workOrder.client.branch ? 'Branch: ' + workOrder.client.branch.name : 'Client: ' + workOrder.client.entity.fullName;
-			var subject = company + ' | ' + branch + ' | Work Order: ' + workOrder.wor;
+			var company = '' + (workOrder && workOrder.client && workOrder.client.company && workOrder.client.company.entity ? workOrder.client.company.entity.name : 'Not Defined');
+			var branch = workOrder && workOrder.client && workOrder.client.branch ? '' + workOrder.client.branch.name : '' + workOrder.client.entity.fullName;
+			var subject = 'Work Order: ' + workOrder.wor + ' | ' + company + ' | ' + branch;
 			var attachments = setAttachment(file, fileName)
 			console.log('sending mail');
 			mails = _.uniq(mails);
@@ -446,9 +447,10 @@ var sendWorkOrderUpdate = function (workOrder, mails, user, company) {
 			changesByUser += fieldsChanged == '' ? 'None' : fieldsChanged;
 			body = body.replace('<client>', changesByUser);
 
-			var companyS = 'Company: ' + company.entity.name;
-			var branch = workOrder && workOrder.client && workOrder.client.branch ? 'Branch: ' + workOrder.client.branch.name : 'Client: ' + workOrder.client.entity.fullName;
-			var subject = companyS + ' | ' + branch + ' | Work Order: ' + workOrder.wor;
+			var companyS = '' + company.entity.name;
+			var branch = workOrder && workOrder.client && workOrder.client.branch ? '' + workOrder.client.branch.name : '' + workOrder.client.entity.fullName;
+			var subject = 'Work Order: ' + workOrder.wor + ' | ' + companyS + ' | ' + branch ;
+
 			console.log('sending mail', subject);
 			mails = _.uniq(mails);
 			sendMail(mails.join(', '), subject, body, true, null, null, null, 'mf@mobileonecontainers.com')
