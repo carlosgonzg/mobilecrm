@@ -42,12 +42,15 @@
 		</div>
 		<div class="row">
 			<div class="col-xs-12">
-				<label for="address">Address</label>
+				<label for="address"></label>
 				<address-model id="address" ng-model="company.address"></address-model>
 			</div>
 		</div>
 		<div class="col-xs-12 col-md-12">
 			<h1>Invoice Sequence</h1>
+		</div>
+		<div class="col-xs-10 col-xs-10">
+			<h3>Service Order and Work Order</h3>
 		</div>
 		<div class="col-xs-12 col-md-12">
 			<div class="form-group">
@@ -73,25 +76,55 @@
 				<input type="number" class="form-control" ng-model="company.seqNumber" id="seqNumber" placeholder="Actual Number" ng-disabled="userData.role._id != 1">
 			</div>
 		</div>
+		<div class="col-xs-10 col-xs-10">
+			<h3>Delivery</h3>
+		</div>
+		<div class="col-xs-12 col-md-12">
+			<div class="form-group">
+				<label for="code"> Code</label>
+				<input type="text" class="form-control" ng-model="company.seqCodeDor" id="seqCodeDor" placeholder="Sequence Code (eg MMxxxxxx)">
+			</div>
+		</div>
+		<div class="col-xs-12 col-md-12">
+			<div class="form-group">
+				<label for="mask"> Mask</label>
+				<input type="number" class="form-control" ng-model="company.seqMaskDor" id="seqMaskDor" placeholder="Digits (How many digits do you want)">
+			</div>
+		</div>
+		<div class="col-xs-12 col-md-6">
+			<div class="form-group">
+				<label for="seqStart"> Starting point</label>
+				<input type="number" class="form-control" ng-model="company.seqStartDor" id="seqStartDor" placeholder="Starting Point">
+			</div>
+		</div>
+		<div class="col-xs-12 col-md-6">
+			<div class="form-group">
+				<label for="seqNumber"> Actual Number</label>
+				<input type="number" class="form-control" ng-model="company.seqNumberDor" id="seqNumberDor" placeholder="Actual Number" ng-disabled="userData.role._id != 1">
+			</div>
+		</div>
 		<div class="col-xs-12 col-md-12">
 			<h1>Delivery & Freight</h1>
 		</div>
 		<div class="col-xs-12 col-md-6">
 			<div class="form-group">
 				<label for="initialCost">Initial Cost</label>
-				<input type="number" class="form-control" ng-model="company.initialCost" ng-disabled="company.perHours" id="initialCost" placeholder="Initial Cost">
+				<input type="number" class="form-control" ng-model="company.initialCost" ng-disabled="company.perHours" id="initialCost"
+				 placeholder="Initial Cost">
 			</div>
 		</div>
 		<div class="col-xs-12 col-md-6">
 			<div class="form-group">
 				<label for="costPerMile">Cost per Mile</label>
-				<input type="number" class="form-control" ng-model="company.costPerMile" ng-disabled="company.perHours" id="costPerMile" placeholder="Cost per Mile" ng-disabled="userData.role._id != 1">
+				<input type="number" class="form-control" ng-model="company.costPerMile" ng-disabled="company.perHours" id="costPerMile"
+				 placeholder="Cost per Mile" ng-disabled="userData.role._id != 1">
 			</div>
 		</div>
 		<div class="col-xs-12 col-md-6">
 			<div class="form-group">
 				<label for="initialMile">Initial Mile</label>
-				<input type="number" class="form-control" ng-model="company.initialMile" ng-disabled="company.perHours" id="initialMile" placeholder="Initial Mile">
+				<input type="number" class="form-control" ng-model="company.initialMile" ng-disabled="company.perHours" id="initialMile"
+				 placeholder="Initial Mile">
 			</div>
 		</div>
 		<div class="col-xs-12 col-md-6">
@@ -101,9 +134,11 @@
 		</div>
 		<div class="col-xs-12 col-md-6">
 			<div class="form-group">
-				<input type="checkbox" ng-init="checkStatus=false" ng-model="company.perHours" ng-click="checkedHours(company.perHours)" style="cursor: pointer">
+				<input type="checkbox" ng-init="checkStatus=false" ng-model="company.perHours" ng-click="checkedHours(company.perHours)"
+				 style="cursor: pointer">
 				<label for="initialMile">Cost Per Hours</label>
-				<input type="number" class="form-control" ng-model="company.costPerHours" ng-disabled="!company.perHours" id="costPerHours" placeholder="Cost Per Hours">
+				<input type="number" class="form-control" ng-model="company.costPerHours" ng-disabled="!company.perHours" id="costPerHours"
+				 placeholder="Cost Per Hours">
 			</div>
 		</div>
 	</form>

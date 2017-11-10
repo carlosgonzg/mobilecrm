@@ -8,11 +8,10 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-	.controller('DeliveryOrderCtrl', function ($scope, $rootScope, $location, toaster, User, statusList, EntranceList, Item, dialogs, $q, Branch, DeliveryOrder, $timeout, ItemDefault, $route, Company) {
+	.controller('DeliveryOrderCtrl', function ($scope, $rootScope, $location, toaster, User, statusList, EntranceList, Item, dialogs, $q, Branch, DeliveryOrder, $timeout, ItemDefault, $route, Company, Driver) {
 		$scope.DeliveryOrder = DeliveryOrder;
 
 		Concatenate();
-		console.log($scope.DeliveryOrder)
 
 		$scope.addedItem = [];
 		$scope.items = [];
@@ -21,6 +20,7 @@ angular.module('MobileCRMApp')
 		$scope.fistLoad = 0;
 		$scope.priceInitial = ItemDefault.data[0].price
 		$scope.company = []
+		$scope.driver = []
 
 		$scope.readOnly = $rootScope.userData.role._id != 1;
 		$scope.showMap = $rootScope.userData.role._id == 1;
@@ -42,7 +42,9 @@ angular.module('MobileCRMApp')
 
 		$scope.listStatus = statusList;
 		$scope.entranceList = EntranceList;
+		$scope.Driver = Driver;
 		$scope.waiting = false;
+		$scope.selectVals = [{ name: '1st', id: 1 }, { name: '2nd', id: 2 }];
 
 		$scope.wsClass = User;
 		$scope.wsFilter = { 'role._id': 3 };
@@ -513,7 +515,7 @@ angular.module('MobileCRMApp')
 			if ($scope.company) {
 				$scope.DeliveryOrder.client.company = $scope.company;
 			}
-			
+			console.log($scope.DeliveryOrder)
 			$scope.DeliveryOrder.save()
 				.then(function (data) {
 					toaster.success('The Delivery Order was saved successfully');
@@ -823,6 +825,6 @@ angular.module('MobileCRMApp')
 			}
 		}
 
-		//$scope.LoadItemDefault()
+		$scope.LoadItemDefault()
 	});
 

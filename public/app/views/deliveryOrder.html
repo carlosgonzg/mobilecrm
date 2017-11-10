@@ -6,11 +6,11 @@
 				<span> Delivery Order</span>
 			</h1>
 			<div class="btn-group pull-right" style="margin-top: 20px;" role="group" aria-label="...">
-				<button class="btn btn-primary update" ng-click="save()">
+				<button class="btn btn-primary update" ng-disabled="!DeliveryOrder.client._id" ng-click="save()">
 					<i class="fa fa-save"></i>&nbsp;
 					<span>Save</span>
 				</button>
-				<button class="btn btn-primary update" ng-click="save(true)">
+				<button class="btn btn-primary update" ng-disabled="!DeliveryOrder.client._id" ng-click="save(true)">
 					<i class="fa fa-save"></i>&nbsp;
 					<span>Save & Send to MobileOne</span>
 				</button>
@@ -144,7 +144,22 @@
 				<div class="col-sm-6">
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
-
+							<label for="date">PO #</label>
+							<input type="text" class="form-control" ng-model="DeliveryOrder.pono" />
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="col-xs-12 pull-right">
+						<div class="form-group">
+<!-- 							<label for="date">Driver</label>
+							<select ng-model="DeliveryOrder.chofer.id" class="form-control" data-ng-options="v as v.name for v in selectVals"></select> -->
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="col-xs-12 pull-right">
+						<div class="form-group">
 						</div>
 					</div>
 				</div>

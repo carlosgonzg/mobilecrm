@@ -168,6 +168,9 @@ var app = angular
 					statusList: function (List) {
 						return List.get('status');
 					},
+					statusDelivery: function (List) {
+						return List.get('statusDelivery');
+					},
 					companies: function (Company) {
 						return new Company().filter({});
 					},
@@ -498,6 +501,9 @@ var app = angular
 					},
 					ItemDefault: function (Item) {
 						return new Item().filter({ _id: { $in: [805, 806] } })
+					},
+					Driver: function (User) {
+						return new User().filter({ 'role._id' : 6 })
 					},
 				}
 			})

@@ -11,7 +11,7 @@ angular.module('MobileCRMApp')
 	.controller('ServiceOrderCtrl', function ($scope, $rootScope, $location, toaster, User, statusList, serviceOrder, Item, dialogs, $q, Branch, CrewCollection, ItemDefault) {
 		$scope.serviceOrder = serviceOrder;
 		$scope.CrewCollection = CrewCollection.data
-		console.log($scope.CrewCollection)
+		
 		$scope.addedItem = []
 		$scope.Crewadded = []
 		$scope.CrewLeaderSelected = []

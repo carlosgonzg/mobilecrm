@@ -485,6 +485,7 @@ var sendDeliveryOrder = function (deliveryOrder, mails, dirname) {
 			body = body.replace('<customer>', deliveryOrder.customer || 'None');
 			body = body.replace('<customerPhone>', deliveryOrder.phone ? (deliveryOrder.phone.number || '') : 'None');
 			body = body.replace('<entrance>', deliveryOrder.typeTruck.description);
+			body = body.replace('<pono>', deliveryOrder.pono || '');
 			body = body.replace('<pickupdate>', moment(deliveryOrder.pickupDate).format('MM/DD/YYYY'));
 			body = body.replace('<pickuptime>', moment(deliveryOrder.pickupTime).format('HH:mm'));
 			body = body.replace('<clientName>', deliveryOrder.client.entity.fullName);

@@ -39,11 +39,16 @@ var createInvoiceBody = function (obj, company, branch) {
 	body = body.replace(/<companyState>/g, (company.address.state.description ? (company.address.state.description + ' ' + company.address.zipcode) || '' : ''));
 	//Cliente
 	body = body.replace(/<clientName>/g, obj.client.entity.fullName || '');
-	// body = body.replace(/<clientAddress>/g, obj.sor ? obj.siteAddress.address1 : company.address.address1 || '');
-	body = body.replace(/<clientAddress>/g, obj.sor ? obj.siteAddress.address1 : obj.client.branch.addresses.length > 0 ? obj.client.branch.addresses[0].address1 : company.address.address1 || '');
-	// body = body.replace(/<clientState>/g, obj.sor ? (obj.siteAddress.state.description + ' ' + obj.siteAddress.zipcode || '') : (company.address.state.description + ' ' + company.address.zipcode || ''));
 
-	body = body.replace(/<clientState>/g, obj.sor ? (obj.siteAddress.city.description + ', ' + obj.siteAddress.state.id + ', ' + obj.siteAddress.zipcode || '') : obj.client.branch.addresses.length > 0 ? obj.client.branch.addresses[0].city.description + ', ' + obj.client.branch.addresses[0].state.id + ', ' + obj.client.branch.addresses[0].zipcode : (company.address.city.description + ', ' + company.address.state.id + ', ' + company.address.zipcode || ''));
+	// body = body.replace(/<clientState>/g, obj.sor ? (obj.siteAddress.state.description + ' ' + obj.siteAddress.zipcode || '') : (company.address.state.description + ' ' + company.address.zipcode || ''));
+	if (obj.dor) {
+		body = body.replace(/<clientAddress>/g, obj.dor ? obj.siteAddress.address1 : obj.client.branch.addresses.length > 0 ? obj.client.branch.addresses[0].address1 : company.address.address1 || '');
+		body = body.replace(/<clientState>/g, obj.dor ? (obj.siteAddress.city.description + ', ' + obj.siteAddress.state.id + ', ' + obj.siteAddress.zipcode || '') : obj.client.branch.addresses.length > 0 ? obj.client.branch.addresses[0].city.description + ', ' + obj.client.branch.addresses[0].state.id + ', ' + obj.client.branch.addresses[0].zipcode : (company.address.city.description + ', ' + company.address.state.id + ', ' + company.address.zipcode || ''));
+	} else {
+		body = body.replace(/<clientAddress>/g, obj.sor ? obj.siteAddress.address1 : obj.client.branch.addresses.length > 0 ? obj.client.branch.addresses[0].address1 : company.address.address1 || '');
+		body = body.replace(/<clientState>/g, obj.sor ? (obj.siteAddress.city.description + ', ' + obj.siteAddress.state.id + ', ' + obj.siteAddress.zipcode || '') : obj.client.branch.addresses.length > 0 ? obj.client.branch.addresses[0].city.description + ', ' + obj.client.branch.addresses[0].state.id + ', ' + obj.client.branch.addresses[0].zipcode : (company.address.city.description + ', ' + company.address.state.id + ', ' + company.address.zipcode || ''));
+	}	
+
 	body = body.replace(/<clientPhone>/g, obj.phone.number || '');
 	body = body.replace(/<clientMail>/g, obj.client.account.email || '');
 	body = body.replace(/<comment>/g, obj.comment || '');
@@ -51,8 +56,8 @@ var createInvoiceBody = function (obj, company, branch) {
 	body = body.replace(/<unitno>/g, obj.unitno || '');
 	body = body.replace(/<isono>/g, obj.isono || '');
 	body = body.replace(/<clientCity>/g, obj.client && obj.client.branch ? (obj.client.branch.name || '') : '');
-	body = body.replace(/<labelDocument>/g, obj.sor ? 'SOR:' : (obj.wor ? 'WOR:' : ''));
-	body = body.replace(/<sor>/g, obj.sor ? obj.sor : obj.wor ? obj.wor : '');
+	body = body.replace(/<labelDocument>/g, obj.sor ? 'SOR:' : (obj.wor ? 'WOR:' : obj.dor ? 'DOR:' : ''));
+	body = body.replace(/<sor>/g, obj.sor ? obj.sor : obj.wor ? obj.wor : obj.dor ? obj.dor : '');
 	//Inserting table of items
 	var total = 0;
 	var tableItems = '';
@@ -75,12 +80,21 @@ var createInvoiceBody = function (obj, company, branch) {
 		tableItems += item.quantity || 1;
 		tableItems += '</td>';
 		tableItems += '<td style="text-align: right;border: thin solid black; border-top: none;">';
-		tableItems += numeral((item.price || 0) * (item.quantity || 1)).format('$0,0.00');
+		if (obj.dor) {
+			tableItems += numeral(obj.total || 1).format('$0,0.00');
+		} else {
+			tableItems += numeral((item.price || 0) * (item.quantity || 1)).format('$0,0.00');
+		}	
 		tableItems += '</td>';
 		total += (item.price || 0) * (item.quantity || 1);
 		tableItems += '</tr>';
 	}
 	body = body.replace('<tableItems>', tableItems || '');
+
+	if (obj.dor) {
+		total = obj.total;
+	}
+
 	total = total || 0;
 	var taxes = (company.taxes || 0);
 	body = body.replace('<subtotal>', numeral(total).format('$0,0.00'));

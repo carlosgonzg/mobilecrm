@@ -8,18 +8,21 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-	.controller('InvoiceCtrl', function ($scope, $rootScope, $location, toaster, $window, User, invoice, statusList, Item, ServiceOrder, WorkOrder, dialogs, Invoice, Company, companies) {
+	.controller('InvoiceCtrl', function ($scope, $rootScope, $location, toaster, $window, User, invoice, statusList, statusDelivery, Item, ServiceOrder, WorkOrder, DeliveryOrder, dialogs, Invoice, Company, companies) {
 		$scope.invoice = invoice;
 		$scope.items = [];
 		$scope.waiting = false;
 		$scope.readOnly = $rootScope.userData.role._id != 1;
 		$scope.expenses = []
 
+		console.log(new DeliveryOrder)
+
 		if ($rootScope.userData.role._id != 1) {
 			$scope.invoice.client = new User($rootScope.userData);
 		}
 		$scope.listStatus = statusList;
 		$scope.listCompany = companies.data;
+		$scope.statusDelivery = statusDelivery;
 		$scope.Math = $window.Math;
 
 		$scope.wsClassOS = ServiceOrder;
@@ -141,6 +144,51 @@ angular.module('MobileCRMApp')
 			show: true
 		}
 		];
+
+		$scope.WsClassDO = DeliveryOrder
+		$scope.WsfieldsDO = [{
+			label: 'Delivery Order #',
+			field: 'dor',
+			type: 'text',
+			show: true
+		}, {
+			label: 'Invoice #',
+			field: 'invoiceNumber',
+			type: 'text',
+			show: true
+		}, {
+			label: 'Date',
+			field: 'createdDate',
+			type: 'date',
+			show: true
+		}, {
+			label: 'Company',
+			field: 'client.company.entity.name',
+			type: 'text',
+			show: true
+		}, {
+			label: 'Branch',
+			field: 'client.branch.name',
+			type: 'text',
+			show: true
+		}, {
+			label: 'Customer',
+			field: 'client.entity.fullName',
+			type: 'text',
+			show: true
+		}, {
+			label: 'Status',
+			field: 'status.description',
+			type: 'text',
+			show: true
+		}, {
+			label: 'Total Amount',
+			field: 'total',
+			type: 'currency',
+			show: true
+		}
+		];
+
 		$scope.filterOS = {
 			'status._id': {
 				$in: [1, 2, 3]
@@ -153,6 +201,11 @@ angular.module('MobileCRMApp')
 		};
 		$scope.filterC = {
 			'role._id': 3
+		};
+		$scope.filterDO = {
+			'status._id': {
+				$in: [1, 2, 3, 4]
+			}
 		};
 
 		$scope.wsClassItem = Item;
@@ -185,10 +238,12 @@ angular.module('MobileCRMApp')
 		}
 		];
 
+
 		$scope.setInvoice = function (doc) {
 			$scope.invoice = new Invoice(doc);
 			$scope.invoice.date = new Date();
 			$scope.expensesNewItem = {}
+			console.log($scope.invoice);
 
 			for (var row = 0; row < $scope.invoice.items.length; row++) {
 				var element = $scope.invoice.items[row].crewLeaderCol
@@ -216,7 +271,7 @@ angular.module('MobileCRMApp')
 				$scope.wsFilterItem = $rootScope.userData.role._id != 1 ? { 'companies._id': $rootScope.userData.company._id } : { 'companies._id': client.company._id };
 			if (!$scope.invoice._id && (!$scope.invoice.invoiceNumber || $scope.invoice.invoiceNumber == 'Pending Invoice')) {
 				var company = new Company(client.company);
-				company.peek()
+				company.peek($scope.invoice.dor)
 					.then(function (sequence) {
 						$scope.invoice.invoiceNumber = sequence;
 					});
@@ -268,28 +323,39 @@ angular.module('MobileCRMApp')
 		$scope.save = function (sendTotech) {
 			$scope.waiting = true;
 			delete $scope.invoice.client.account.password;
-			
-			$scope.invoice.save()
+
+			console.log($scope.invoice)
+
+		 	$scope.invoice.save()
 				.then(function (data) {
 					new ServiceOrder().filter({ "sor": $scope.invoice.sor })
 						.then(function (result) {
-							 _.map(result.data, function (obj) {
+							_.map(result.data, function (obj) {
 								$scope.ServiceOrder = obj
 								$scope.ServiceOrder.status = $scope.invoice.status
 								$scope.ServiceOrder.sendTotech = sendTotech
-								$scope.ServiceOrder.sendMail = false; 
+								$scope.ServiceOrder.sendMail = false;
 							});
 							$scope.ServiceOrder.save()
 						})
 					new WorkOrder().filter({ "wor": $scope.invoice.wor })
 						.then(function (result) {
-							 _.map(result.data, function (obj) {
+							_.map(result.data, function (obj) {
 								$scope.WorkOrder = obj
 								$scope.WorkOrder.status = $scope.invoice.status
-								$scope.WorkOrder.sendTotech = sendTotech 
-								$scope.WorkOrder.sendMail = false; 
+								$scope.WorkOrder.sendTotech = sendTotech
+								$scope.WorkOrder.sendMail = false;
 							});
 							$scope.WorkOrder.save()
+						})
+					new DeliveryOrder().filter({ "dor": $scope.invoice.dor })
+						.then(function (result) {
+							_.map(result.data, function (obj) {
+								$scope.DeliveryOrder = obj
+								$scope.DeliveryOrder.status = $scope.invoice.status
+								$scope.DeliveryOrder.sendMail = false;
+							});
+							$scope.DeliveryOrder.save()
 						})
 					toaster.success('The Invoice was saved successfully');
 					$location.path('invoiceList')
@@ -300,7 +366,7 @@ angular.module('MobileCRMApp')
 					toaster.error('The Invoice couldn\'t be saved, please check if some required field is empty or if its duplicated');
 					$scope.waiting = false;
 				});
-		};
+		}; 
 		$scope.saveBranch = function () {
 			$scope.waiting = true;
 			delete $scope.invoice.client.account.password;
@@ -311,7 +377,7 @@ angular.module('MobileCRMApp')
 							_.map(result.data, function (obj) {
 								$scope.ServiceOrder = obj
 								$scope.ServiceOrder.status = $scope.invoice.status
-								$scope.ServiceOrder.sendTotech = false 
+								$scope.ServiceOrder.sendTotech = false
 								$scope.ServiceOrder.sendMail = false;
 							});
 							$scope.ServiceOrder.save()
@@ -321,7 +387,7 @@ angular.module('MobileCRMApp')
 							_.map(result.data, function (obj) {
 								$scope.WorkOrder = obj
 								$scope.WorkOrder.status = $scope.invoice.status
-								$scope.WorkOrder.sendTotech = false 
+								$scope.WorkOrder.sendTotech = false
 								$scope.WorkOrder.sendMail = false;
 							});
 							$scope.WorkOrder.save()
@@ -362,19 +428,19 @@ angular.module('MobileCRMApp')
 								$scope.ServiceOrder = obj
 								$scope.ServiceOrder.statusTech = statusTech
 								$scope.ServiceOrder.status = $scope.invoice.status
-								$scope.ServiceOrder.sendTotech = false 
+								$scope.ServiceOrder.sendTotech = false
 								$scope.ServiceOrder.sendMail = false
 							});
 							$scope.ServiceOrder.save()
 						})
 					new WorkOrder().filter({ "wor": $scope.invoice.wor })
 						.then(function (result) {
-							 _.map(result.data, function (obj) {
+							_.map(result.data, function (obj) {
 								$scope.WorkOrder = obj
 								$scope.WorkOrder.statusTech = statusTech
 								$scope.WorkOrder.status = $scope.invoice.status
-								$scope.WorkOrder.sendTotech = false  
-								$scope.WorkOrder.sendMail = false 
+								$scope.WorkOrder.sendTotech = false
+								$scope.WorkOrder.sendMail = false
 							});
 							$scope.WorkOrder.save()
 						})
@@ -447,13 +513,13 @@ angular.module('MobileCRMApp')
 		};
 		$scope.setAmountToZero = function (status) {
 			if (status._id == 5 || status._id == 7) {
-				for (var i=0; i<$scope.invoice.items.length; i++) {
+				for (var i = 0; i < $scope.invoice.items.length; i++) {
 					$scope.invoice.items[i].originalPrice = $scope.invoice.items[i].price;
 					$scope.invoice.items[i].price = 0;
 				}
 			} else {
-				for (var i=0; i<$scope.invoice.items.length; i++) {
-					$scope.invoice.items[i].price = $scope.invoice.items[i].originalPrice ? $scope.invoice.items[i].originalPrice : $scope.invoice.items[i].price; 
+				for (var i = 0; i < $scope.invoice.items.length; i++) {
+					$scope.invoice.items[i].price = $scope.invoice.items[i].originalPrice ? $scope.invoice.items[i].originalPrice : $scope.invoice.items[i].price;
 					delete $scope.invoice.items[i].originalPrice;
 				}
 			}

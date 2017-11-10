@@ -49,7 +49,6 @@ angular.module('MobileCRMApp')
 			var qtity = 0;
 			
 			if (comp == undefined) {
-				console.log(1)
 				var miles = (quantitymiles || 1);;
 
 				if (miles > 30) {
@@ -70,8 +69,6 @@ angular.module('MobileCRMApp')
 			}
 
 			if (this._id == 805 && costPerHours == 0) {
-				console.log(3333)
-				console.log(quantitymiles)
 
 				if (quantitymiles == 0) {
 					return 0
@@ -93,7 +90,6 @@ angular.module('MobileCRMApp')
 				}
 				return total;
 			} else if (costPerHours > 0) {
-				console.log(3)
 				qtity = this.quantity;
 
 				return costPerHours * (qtity || 1);
@@ -101,7 +97,6 @@ angular.module('MobileCRMApp')
 		};
 
 		Item.prototype.getTotalPrice = function () {
-			console.log(2)
 			return this.price * (this.quantity || 1);
 		};
 
