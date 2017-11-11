@@ -20,15 +20,27 @@ angular.module('MobileCRMApp')
 		}
 
 		$scope.save = function () {
-			if ($scope.company.perHours == true) {
-				company.initialCost = ""
-				company.costPerMile = ""
-				company.initialMile = ""
-			} else {
-				company.costPerHours = ""
-			}
+			
+			if ($scope.company.perHours == true) { //SI ES POR HORA
+				if ($scope.company.costPerHours == "") {
+					toaster.error('Cost Per Hours can not be empty');
+					return 
+				}
+				delete $scope.company.initialCost
+				delete $scope.company.costPerMile
+				delete $scope.company.initialMile
+				console.log(1)
+			} else if ($scope.company.perHours == false && $scope.company.initialCost == "" && $scope.company.costPerMile == "" && $scope.company.initialMile == "" ) {
+				delete $scope.company.costPerHours
+				delete $scope.company.initialCost
+				delete $scope.company.costPerMile
+				delete $scope.company.initialMile
+			} else if ($scope.company.perHours == false) { // SI NO ES POR HORA
+				delete $scope.company.costPerHours
+				delete $scope.company.perHours 
+			}			
 
-			$scope.company.save()
+ 			$scope.company.save()
 				.then(function (data) {
 					toaster.success('The company was registered successfully');
 					$location.path('companyList')
@@ -36,7 +48,7 @@ angular.module('MobileCRMApp')
 				function (error) {
 					console.log(error);
 					toaster.error(error.message);
-				});
+				}); 
 		};
 
 		$scope.checkedHours = function (e) {

@@ -58,7 +58,7 @@ angular.module('MobileCRMApp')
 	
 	DeliveryOrder.prototype.getTotal = function(comp){
 		var total = 0;
-
+//console.log(this.items)
 		for(var i = 0; i < this.items.length; i++){
 			total += this.items[i].getTotalPriceDelivery(this.siteAddress.distanceFrom, comp);
 		}

@@ -500,7 +500,7 @@ var app = angular
 						}
 					},
 					ItemDefault: function (Item) {
-						return new Item().filter({ _id: { $in: [805, 806] } })
+						return new Item().filter({})
 					},
 					Driver: function (User) {
 						return new User().filter({ 'role._id' : 6 })

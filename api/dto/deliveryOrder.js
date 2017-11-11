@@ -174,40 +174,46 @@ DeliveryOrder.prototype.insert = function (deliveryOrder, user, mail) {
 	var sendMail = deliveryOrder.sendMail || false;
 	var comp = deliveryOrder.client.company;
 
-	if (comp.perHours != undefined) {
-		if (comp.perHours == false) {
-			InitPrice = comp.initialCost;
-			initialMile = comp.initialMile;
-			costPerMile = comp.costPerMile;
-		} else {
-			costPerHours = comp.costPerHours;
+	for (var index = 0; index < deliveryOrder.items.length; index++) {
+		InitPrice = deliveryOrder.items[index].price;
+
+		if (comp == undefined) {
+			var miles = (deliveryOrder.items[index].quantity || 1);;
+
+			if (deliveryOrder.items[index]._id == 805) {
+				if (miles > 30) {
+					total += (miles - initialMile) * costPerMile + (deliveryOrder.items[index].price)
+				} else {
+					total += deliveryOrder.items[index].price
+				}
+			} else {
+				total += (deliveryOrder.items[index].price * (miles || 1));
+			}
 		}
-	}
-
-	if (deliveryOrder.items[0]._id == 805 && costPerHours == 0 && comp.perHours != undefined) {
-		var qtity = deliveryOrder.items[0].quantity
-
-		if (qtity <= initialMile) {
-			total += InitPrice
-		} else {
-			var minMiles = initialMile;
-			var miles = qtity;
-			var miles30 = 0;
-
-			total += (miles - minMiles) * costPerMile + (InitPrice)
+		if (deliveryOrder.items[index]._id == 806) {
+			if (comp.perHours != undefined) {
+				if (comp.perHours == false) {
+					InitPrice = comp.initialCost;
+					initialMile = comp.initialMile;
+					costPerMile = comp.costPerMile;
+				} else {
+					costPerHours = comp.costPerHours;
+				}
+			}
 		}
-	} else if (costPerHours > 0) {
-		qtity = deliveryOrder.items[0].quantity;
+		if (deliveryOrder.items[index]._id == 805 && costPerHours == 0) {
+			if (deliveryOrder.items[index].quantity <= initialMile) {
+				total += InitPrice
+			} else {
+				var minMiles = initialMile;
+				var miles = deliveryOrder.items[index].quantity;
 
-		total += costPerHours * (qtity || 1);
-	} else {
-		var miles = (deliveryOrder.items[0].quantity || 1);;
-		InitPrice = deliveryOrder.items[0].price;
-
-		if (miles > 30) {
-			total += (miles - initialMile) * costPerMile + (InitPrice)
+				total += (miles - minMiles) * costPerMile + (InitPrice)
+			}
+		} else if (costPerHours > 0) {
+			total += (costPerHours * (deliveryOrder.items[index].quantity || 1));
 		} else {
-			total += InitPrice;
+			total += (deliveryOrder.items[index].price * (deliveryOrder.items[index].quantity || 1));
 		}
 	}
 
@@ -262,7 +268,6 @@ DeliveryOrder.prototype.update = function (query, deliveryOrder, user, mail) {
 	var d = q.defer();
 	var _this = this;
 	var total = 0;
-	var total = 0;
 	var InitPrice = 0;
 	var initialMile = 30;
 	var costPerMile = 3.25;
@@ -270,40 +275,46 @@ DeliveryOrder.prototype.update = function (query, deliveryOrder, user, mail) {
 	var sendMail = deliveryOrder.sendMail || false;
 	var comp = deliveryOrder.client.company;
 
-	if (comp.perHours != undefined) {
-		if (comp.perHours == false) {
-			InitPrice = comp.initialCost;
-			initialMile = comp.initialMile;
-			costPerMile = comp.costPerMile;
-		} else {
-			costPerHours = comp.costPerHours;
+	for (var index = 0; index < deliveryOrder.items.length; index++) {
+		InitPrice = deliveryOrder.items[index].price;
+
+		if (comp == undefined) {
+			var miles = (deliveryOrder.items[index].quantity || 1);;
+
+			if (deliveryOrder.items[index]._id == 805) {
+				if (miles > 30) {
+					total += (miles - initialMile) * costPerMile + (deliveryOrder.items[index].price)
+				} else {
+					total += deliveryOrder.items[index].price
+				}
+			} else {
+				total += (deliveryOrder.items[index].price * (miles || 1));
+			}
 		}
-	}
-
-	if (deliveryOrder.items[0]._id == 805 && costPerHours == 0 && comp.perHours != undefined) {
-		var qtity = deliveryOrder.items[0].quantity
-
-		if (qtity <= initialMile) {
-			total += InitPrice
-		} else {
-			var minMiles = initialMile;
-			var miles = qtity;
-			var miles30 = 0;
-
-			total += (miles - minMiles) * costPerMile + (InitPrice)
+		if (deliveryOrder.items[index]._id == 806) {
+			if (comp.perHours != undefined) {
+				if (comp.perHours == false) {
+					InitPrice = comp.initialCost;
+					initialMile = comp.initialMile;
+					costPerMile = comp.costPerMile;
+				} else {
+					costPerHours = comp.costPerHours;
+				}
+			}
 		}
-	} else if (costPerHours > 0) {
-		qtity = deliveryOrder.items[0].quantity;
+		if (deliveryOrder.items[index]._id == 805 && costPerHours == 0) {
+			if (deliveryOrder.items[index].quantity <= initialMile) {
+				total += InitPrice
+			} else {
+				var minMiles = initialMile;
+				var miles = deliveryOrder.items[index].quantity;
 
-		total += costPerHours * (qtity || 1);
-	} else {
-		var miles = (deliveryOrder.items[0].quantity || 1);;
-		InitPrice = deliveryOrder.items[0].price;
-
-		if (miles > 30) {
-			total += (miles - initialMile) * costPerMile + (InitPrice)
+				total += (miles - minMiles) * costPerMile + (InitPrice)
+			}
+		} else if (costPerHours > 0) {
+			total += (costPerHours * (deliveryOrder.items[index].quantity || 1));
 		} else {
-			total += InitPrice;
+			total += (deliveryOrder.items[index].price * (deliveryOrder.items[index].quantity || 1));
 		}
 	}
 
