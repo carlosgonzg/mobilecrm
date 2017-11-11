@@ -2,11 +2,13 @@
 
 var Crud = require('./crud');
 var User = require('./user');
+var invoice = require('./invoice');
 var q = require('q')
 
 function Company(db, userLogged) {
 	this.user = new User(db, '', userLogged);
 	this.crud = new Crud(db, 'COMPANY', userLogged);
+	this.invoice = new Crud(db, 'INVOICE', userLogged);
 
 	//DB Table Schema
 	this.schema = {
@@ -26,38 +28,67 @@ function pad(number, mask) {
 	for(var i = 0; i < dif; i++){ s+= '0'; }
     return s + number;
 }
-Company.prototype.getSequence = function(id, peek){
+Company.prototype.getSequence = function(id, peek, delivery){
 	var d = q.defer();
 	var _this = this;
+	console.log(this.invoice)
+
 	_this.crud.find({ _id: Number(id) })
 	.then(function (company) {
 		company = company.data[0];
-		if(!company || !company.seqCode){
-			d.resolve('Pending Invoice');
-		}
-		else{
-			var seqNumber = Number(company.seqNumber);
-			if(!company.seqNumber){
-				seqNumber = Number(company.seqStart || 0);
-			}
-			var sequence = company.seqCode + pad(seqNumber.toString(), company.seqMask);
+
+		if (delivery == undefined) {
+			if (!company || !company.seqCode) {
+				d.resolve('Pending Invoice');
+			} else {
+				var seqNumber = Number(company.seqNumber);
+				if (!company.seqNumber) {
+					seqNumber = Number(company.seqStart || 0);
+				}
+				var sequence = company.seqCode + pad(seqNumber.toString(), company.seqMask);
 
 				console.log("UPDATING SEQUENCEEE!!!", peek)
-			if(!peek){
-				//actualizo company
-				company.seqNumber = seqNumber + 1;
+				if (!peek) {
+					//actualizo company
+					company.seqNumber = seqNumber + 1;
 
-				_this.crud.update({ _id: Number(id) }, company, true)
-					.then(function(){
-						d.resolve(sequence);
-					}, function(err){
-						console.log(err)
-						d.resolve(sequence);
-					});
-			} else {
-				d.resolve(sequence);
+					_this.crud.update({ _id: Number(id) }, company, true)
+						.then(function () {
+							d.resolve(sequence);
+						}, function (err) {
+							console.log(err)
+							d.resolve(sequence);
+						});
+				} else {
+					d.resolve(sequence);
+				}
 			}
+		} else {
+			if (!company || !company.seqCodeDor) {
+				d.resolve('Pending Invoice');
+			} else {
+				var seqNumberDor = Number(company.seqNumberDor);
+				if (!company.seqNumberDor) {
+					seqNumberDor = Number(company.seqStartDor || 0);
+				}
+				var sequenceDor = company.seqCodeDor + pad(seqNumberDor.toString(), company.seqMaskDor);
 
+				console.log("UPDATING SEQUENCEEE!!!", peek)
+				if (!peek) {
+					//actualizo company
+					company.seqNumberDor = seqNumberDor + 1;
+
+					_this.crud.update({ _id: Number(id) }, company, true)
+						.then(function () {
+							d.resolve(sequenceDor);
+						}, function (err) {
+							console.log(err)
+							d.resolve(sequenceDor);
+						});
+				} else {
+					d.resolve(sequenceDor);
+				}
+			}
 		}
 	})
 	.catch (function (err) {

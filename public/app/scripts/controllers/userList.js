@@ -100,6 +100,10 @@ angular.module('MobileCRMApp')
 		'role._id':5
 	}
 
+	$scope.filter5 = {
+		'role._id': 6
+	}
+
 	$scope.createNew = function () {
 		$location.path('user');
 	};

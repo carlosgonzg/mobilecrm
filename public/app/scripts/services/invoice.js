@@ -67,18 +67,26 @@ angular.module('MobileCRMApp')
 		this.total = total;
 		return total;
 	};
-	
+
+
 	Invoice.prototype.getTaxes = function(){
 		var total = 0;
-		for(var i = 0; i < this.items.length; i++){
-			total += this.items[i].getTotalPrice();
-		}
 		var taxes = 0;
-		if(this.client && this.client.company){
-			taxes = this.client.company.taxes || 0;
-		}
-		console.log(total, taxes)
-		return total * taxes;
+		if (this.dor) {
+			if (this.client && this.client.company) {
+				taxes = this.client.company.taxes || 0;
+			}
+			return this.total * taxes;
+		} else {
+			for (var i = 0; i < this.items.length; i++) {
+				total += this.items[i].getTotalPrice();
+			}
+			
+			if (this.client && this.client.company) {
+				taxes = this.client.company.taxes || 0;
+			}
+			return total * taxes;
+		}	
 	};
 	
 	Invoice.prototype.goTo = function () {

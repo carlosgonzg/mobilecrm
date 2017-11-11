@@ -8,7 +8,7 @@ angular.module('MobileCRMApp')
 
 	// Nombre de la clase
 	var DeliveryOrder;
-var a;
+	var a;
 	function DeliveryOrder(propValues) {
 		a = document.createElement("a");
 			document.body.appendChild(a);
@@ -16,20 +16,17 @@ var a;
 		this.baseApiPath = "/api/deliveryOrder";
 		this.client = this.client || {};
 		this.invoiceNumber = this.invoiceNumber || '';
-		this.sor = this.sor || '';
-		this.pono = this.pono || '';
 		this.unitno = this.unitno || '';
-		this.isono = this.isono || '';
 		this.siteAddress = this.siteAddress || {};
 		this.phone = this.phone || {};
 		this.comment = this.comment || '';
-		this.status = this.status || { _id: 1, description: 'Pending' };
+		this.status = this.status || { _id: 1, description: 'Waiting for Availability' };
+		this.typeTruck = this.typeTruck || { _id: 1, description: 'Big truck' };
+		this.driver = this.driver || [];
 		this.total = this.total || '';
 		this.items = this.items || [];
 		this.contacts = this.contacts || [{}, {}, {}];
-		for(var i = 0; i < this.items.length; i++){
-			this.items[i] = new Item(this.items[i]);
-		}
+
 		if($rootScope.userData.role._id != 1 && $rootScope.userData.role._id != 5){
 			this.invoiceNumber = 'Pending Invoice';
 		}

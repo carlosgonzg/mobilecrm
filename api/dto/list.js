@@ -78,6 +78,12 @@ function List(db) {
 		}, {
 			_id: 5,
 			description: 'Cancelled'
+		}, {
+			_id: 6,
+			description: 'Pending to Pay'
+		}, {
+			_id: 7,
+			description: 'Paid'
 		}
 	];
 	this.Entrance = [

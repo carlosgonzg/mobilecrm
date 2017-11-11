@@ -18,6 +18,10 @@ angular.module('MobileCRMApp')
 		this.seqCode = this.seqCode || '';
 		this.seqMask = this.seqMask || 0;
 		this.seqStart = this.seqStart || 0;
+		this.seqCodeDor = this.seqCodeDor || '';
+		this.seqMaskDor = this.seqMaskDor || 0;
+		this.seqStartDor = this.seqStartDor || 0;
+
 		if(!this.seqNumber){
 			this.seqNumber = angular.copy(this.seqStart);
 		}
@@ -50,9 +54,10 @@ angular.module('MobileCRMApp')
 		$location.path('/company/' + this._id);
 	};
 
-	Company.prototype.peek = function(){
+	Company.prototype.peek = function(dor){
 		var d = $q.defer();
-		$http.get(this.baseApiPath + '/sequence/peek/' + this._id)
+		console.log(dor)
+		$http.get(this.baseApiPath + '/sequence/peek/' + this._id + '&' + dor)
 		.success(function (data) {
 			console.log(data)
 			d.resolve(data);
