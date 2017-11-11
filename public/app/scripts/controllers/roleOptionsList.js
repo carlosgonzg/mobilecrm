@@ -16,7 +16,6 @@ angular.module('MobileCRMApp')
 	$scope.roleOptions = {};
 	
 	$scope.selectTab = function(role){
-		console.log(role)
 		$scope.selectedId = role._id.toString();
 		$scope.selectedTab = role.description;
 		if(!$scope.roleOptions[$scope.selectedId]){
@@ -40,13 +39,11 @@ angular.module('MobileCRMApp')
 		$scope.roleOptions[$scope.selectedId].push(roleOptions);
 	};
 	$scope.removeOption = function(index, rOption){
-		console.log(rOption)
 		rOption
 		.remove()
 		.then(function(data){
 			new Role().filter({_id: rOption.roleId})
 				.then(function(result) {
-					console.log(result)
 					$scope.selectTab(result.data[0])	
 				})
 			// $scope.roleOptions[$scope.selectedId].splice(index, 1);
