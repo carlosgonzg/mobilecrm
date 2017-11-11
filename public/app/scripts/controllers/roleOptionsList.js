@@ -8,7 +8,7 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-.controller('RoleOptionListCtrl', function ($scope, $q, roles, options, RoleOptions, toaster, dialogs) {
+.controller('RoleOptionListCtrl', function ($scope, $q, roles, options, RoleOptions, toaster, dialogs, Role) {
 	$scope.roles = roles.data;
 	$scope.options = options.data;
 	console.log($scope.options)
@@ -16,6 +16,7 @@ angular.module('MobileCRMApp')
 	$scope.roleOptions = {};
 	
 	$scope.selectTab = function(role){
+		console.log(role)
 		$scope.selectedId = role._id.toString();
 		$scope.selectedTab = role.description;
 		if(!$scope.roleOptions[$scope.selectedId]){
@@ -38,12 +39,18 @@ angular.module('MobileCRMApp')
 		});
 		$scope.roleOptions[$scope.selectedId].push(roleOptions);
 	};
-	$scope.removeOption = function(index){
-		$scope.roleOptions[$scope.selectedId][index]
+	$scope.removeOption = function(index, rOption){
+		console.log(rOption)
+		rOption
 		.remove()
 		.then(function(data){
-			$scope.roleOptions[$scope.selectedId].splice(index, 1);
-			toaster.success('The option was removed successfully');
+			new Role().filter({_id: rOption.roleId})
+				.then(function(result) {
+					console.log(result)
+					$scope.selectTab(result.data[0])	
+				})
+			// $scope.roleOptions[$scope.selectedId].splice(index, 1);
+			// toaster.success('The option was removed successfully');
 		})
 		.catch(function(error){
 			toaster.error(error.message);
@@ -80,5 +87,17 @@ angular.module('MobileCRMApp')
 		rOption.sort = rOption.sort2;
 		rOption.edition = false;
 	}
+	$scope.showOptions = function (rOption) {
+
+			var dialog = dialogs.create('views/subOptions.html', 'SubOptionsCtrl', {
+				rOption: rOption,
+				roles: $scope.roles,
+				options: $scope.options
+			});
+			dialog.result
+			.then(function (res) {
+				rOption.options = res.rOption.options;
+			});
+	};
 	$scope.selectTab(angular.copy($scope.roles[0]));
 });

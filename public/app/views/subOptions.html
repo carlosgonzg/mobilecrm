@@ -1,33 +1,17 @@
-<div class="row">
-	<div class="col-xs-12">
-		<h1 class="pull-left">
-				<i class="fa fa-lg fa-list"></i> <span> Role Options</span>
-		</h1>
-		<div class="btn-group pull-right" style="margin-top: 20px;" role="group" aria-label="...">
-			<back-button></back-button>
-			<button type="button" class="btn btn-default" ng-click="addOption()"><i class="fa fa-plus"></i>&nbsp;<span>Add Option</span></button>
-			<button type="submit" form="userForm" class="btn btn-primary" ng-click="save()"><i class="fa fa-save"></i>&nbsp;<span>Save</span></button>
-		</div>
-		<hr />
-	</div>
+<div class="modal-header modal-header-color dialog-header-confirm">
+	<button type="button" class="close" ng-click="close()">
+		<i class="fa fa-times"></i>
+	</button>
+	<h4 class="modal-title">
+		Submenu Options:
+	</h4>
+	<button type="button" class="btn btn-default" ng-click="addOption()"><i class="fa fa-plus"></i>&nbsp;<span>Add Option</span></button>
 </div>
-<div class="row">
-  <div class="col-xs-12">
-		<ul class="nav nav-tabs">
-			<li role="presentation" ng-class="{ active: selectedTab == role.description }" ng-repeat="role in roles track by $index" ng-click="selectTab(role)">
-				<a>{{role.description}}</a>
-			</li>
-		</ul>
-  </div>
-</div>
-<div class="row">
-  <div class="col-xs-12">
+<div class="modal-body">
+	<div class="row">
 		<table class="table">
 			<thead>
 				<tr>
-					<th class="col-xs-1">
-						Submenu
-					</th>
 					<th class="col-xs-3">
 						Option
 					</th>
@@ -51,12 +35,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr ng-repeat="rOption in roleOptions[selectedId] | orderBy:'sort' track by $index">
-					<td>
-						<input type="checkbox" ng-model="rOption.submenu" />
-						<a class="" ng-show="rOption.submenu" ng-click="showOptions(rOption)">{{rOption.options.length ||0}} Options</a>
-						
-					</td>
+				<tr ng-repeat="rOption in roleOption.options | orderBy:'sort' track by $index">
 					<td>
 						<ui-select ng-model="rOption.option" theme="bootstrap">
 			            	<ui-select-match placeholder="Select the option you want on the list...">
@@ -91,12 +70,18 @@
 						<button type="button" class="btn btn-sm btn-default" ng-click="setOrder(rOption)" ng-show="rOption.edition" >
 							<i class="fa fa-check" ></i>
 						</button>
-						<button type="button" class="btn btn-sm btn-danger" ng-click="removeOption($index,rOption)">
+						<button type="button" class="btn btn-sm btn-danger" ng-click="removeOption($index)">
 							<i class="fa fa-times"></i>
 						</button>
 					</td>
 				</tr>
 			</tbody>
 		</table>
-  </div>
+	</div>
+</div>
+<div class="modal-footer">
+	<button class="btn btn-primary" type="button" ng-click="assign()">
+		<i class="fa fa-disk"></i>&nbsp;Assign</button>
+	<button class="btn btn-default" type="button" ng-click="close()">
+		<i class="fa fa-times"></i>&nbsp;Close</button>
 </div>

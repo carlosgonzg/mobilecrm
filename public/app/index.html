@@ -48,11 +48,22 @@
 							<a href="#/user/{{userData._id}}"><i class="fa fa-user"></i>&nbsp;My Profile</a>
 						</li>
 						<li ng-repeat="rOptions in roleOptions | orderBy: 'sort' track by $index" ng-if="rOptions.sort != 0">
-							<a ng-href="{{ '#' + rOptions.option.url}}">
+					
+							<a  ng-href="{{ '#' + rOptions.option.url}}" ng-click="collapse(rOptions)">
 								<i class="fa" ng-class="rOptions.option.icon"></i>
 								&nbsp;
 								{{rOptions.option.description}}
+								<i class="fa fa-plus pull-right" ng-show="!rOptions.collapsed && rOptions.submenu" ></i>
+								<i class="fa fa-minus pull-right" ng-show="rOptions.collapsed && rOptions.submenu" ></i>
+								
 							</a>
+							<a ng-href="{{ '#' + option.option.url}}" ng-repeat="option in rOptions.options" ng-show="rOptions.collapsed">
+								<!-- <i class="fa" ng-class="option.icon"></i> -->
+								--
+								&nbsp;
+								{{option.option.description}}
+							</a>
+
 						</li>
 						<li>
 							<a ng-click="userData.logout()"><i class="fa fa-sign-out"></i>&nbsp;Log out</a>
@@ -170,6 +181,7 @@
 		<script src="scripts/controllers/monthlyStatement.js"></script>
 		<script src="scripts/controllers/addItemCollection.js"></script>
 		<script src="scripts/controllers/expenses.js"></script>
+		<script src="scripts/controllers/subOptions.js"></script>
 		<script src="scripts/controllers/profit.js"></script>
 		<script src="scripts/controllers/crewLeaderList.js"></script>
 		<script src="scripts/controllers/crewLeader.js"></script>
