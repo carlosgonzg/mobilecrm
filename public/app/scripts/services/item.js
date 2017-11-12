@@ -47,15 +47,19 @@ angular.module('MobileCRMApp')
 			var costPerMile = 3.25;
 			var costPerHours = 0;
 			var qtity = 0;
-			
-			if (comp == undefined) {
-				var miles = (quantitymiles || 1);;
 
-				if (miles > 30) {
-					total += (miles - initialMile) * costPerMile + (InitPrice)
+			if (comp == undefined) {
+				var miles = (this.quantity || 1);;
+
+				if (this._id == 805) {
+					if (miles > 30) {
+						total += (miles - initialMile) * costPerMile + (InitPrice)
+					} else {
+						return InitPrice
+					}
 				} else {
-					total += InitPrice;
-				}
+					return this.price * (this.quantity || 1);
+				}	
 				return total;
 			}
 			if (comp.perHours != undefined) {
@@ -69,7 +73,6 @@ angular.module('MobileCRMApp')
 			}
 
 			if (this._id == 805 && costPerHours == 0) {
-
 				if (quantitymiles == 0) {
 					return 0
 				} else if (quantitymiles) {
@@ -83,16 +86,16 @@ angular.module('MobileCRMApp')
 				} else {
 					var minMiles = initialMile;
 					var miles = qtity;
-					var miles30 = 0;
 
 					total += (miles - minMiles) * costPerMile + (InitPrice)
-					return total;
 				}
 				return total;
-			} else if (costPerHours > 0) {
+			} else if (this._id == 806 && costPerHours > 0) {
 				qtity = this.quantity;
 
 				return costPerHours * (qtity || 1);
+			} else {
+				return this.price * (this.quantity || 1);
 			}
 		};
 
