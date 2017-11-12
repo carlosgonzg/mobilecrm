@@ -77,6 +77,19 @@ angular.module('MobileCRMApp')
 					result.update = rOption.update;
 					isHere = true;
 				}
+				if (rOption.submenu) {
+					console.log("SII")
+					for (var i=0; i<rOption.options.length;i++) {
+						console.log(rOption.options[i])
+						if(rOption.options[i].option.url == path){
+							result.read = rOption.options[i].read;
+							result.write = rOption.options[i].write;
+							result.delete = rOption.options[i].delete;
+							result.update = rOption.options[i].update;
+							isHere = true;
+						}
+					}
+				}
 			});
 			if(!isHere && !dontRedirect){
 				$location.path('/noaccess');
