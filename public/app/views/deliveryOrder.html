@@ -331,7 +331,7 @@
 						</td>
 						<td>
 							<input type="number" name="quantity{{$index}}" class="form-control" ng-model="DeliveryOrder.siteAddress.distanceFrom" step="0.01"
-							 ng-class="isChanged('item')" ng-change="changed('item')" ng-if="item._id==805" ng-disabled="isDisabled()">
+							 ng-class="isChanged('item')" ng-change="changed('item')" ng-if="item._id==805" ng-disabled="true">
 
 							<input type="number" name="quantity{{$index}}" class="form-control" ng-model="item.quantity" step="0.01" ng-class="isChanged('item')"
 							 ng-change="changed('item')" ng-if="item._id !=805" ng-disabled="isDisabled()">
@@ -341,7 +341,7 @@
 							 ng-class="isChanged('item')" ng-change="changed('item')">
 						</td>
 						<td>
-							{{item.getTotalPriceDelivery(DeliveryOrder.siteAddress.distanceFrom, company) | currency }}
+							{{DeliveryOrder.getTotalPriceDelivery(DeliveryOrder.siteAddress.distanceFrom, company, $index) | currency }}
 						</td>
 						<td>
 							<input type="text" name="part{{$index}}" class="form-control" ng-model="item.crewLeaderCol.name" ng-disabled="isDisabled()"
@@ -363,7 +363,7 @@
 						</th>
 						<th colspan="4">
 							<span class="pull-left">
-								{{DeliveryOrder.getTotal(company) | currency}}
+								 {{DeliveryOrder.getTotal(DeliveryOrder.siteAddress.distanceFrom, company) | currency}} 
 							</span>
 						</th>
 					</tr>

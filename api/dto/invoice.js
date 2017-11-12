@@ -123,7 +123,7 @@ Invoice.prototype.insert = function (invoice, username, mail) {
 			}
 			if (invoice.items[index]._id == 806) {
 				if (comp.perHours != undefined) {
-					if (comp.perHours == false) {
+					if (comp.perHours == false && comp.initialCost != undefined) {	
 						InitPrice = comp.initialCost;
 						initialMile = comp.initialMile;
 						costPerMile = comp.costPerMile;
@@ -141,7 +141,7 @@ Invoice.prototype.insert = function (invoice, username, mail) {
 
 					total += (miles - minMiles) * costPerMile + (InitPrice)
 				}
-			} else if (costPerHours > 0) {
+			} else if (invoice.items[index]._id == 806 && costPerHours > 0) {
 				total += (costPerHours * (invoice.items[index].quantity || 1));
 			} else {
 				total += (invoice.items[index].price * (invoice.items[index].quantity || 1));
@@ -207,40 +207,46 @@ Invoice.prototype.update = function (query, invoice, user, mail) {
 		var costPerHours = 0;
 		var comp = invoice.client.company;
 
-		if (comp.perHours != undefined) {
-			if (comp.perHours == false) {
-				InitPrice = comp.initialCost;
-				initialMile = comp.initialMile;
-				costPerMile = comp.costPerMile;
-			} else {
-				costPerHours = comp.costPerHours;
+		for (var index = 0; index < invoice.items.length; index++) {
+			InitPrice = invoice.items[index].price;
+
+			if (comp == undefined) {
+				var miles = (invoice.items[index].quantity || 1);;
+
+				if (invoice.items[index]._id == 805) {
+					if (miles > 30) {
+						total += (miles - initialMile) * costPerMile + (invoice.items[index].price)
+					} else {
+						total += invoice.items[index].price
+					}
+				} else {
+					total += (invoice.items[index].price * (miles || 1));
+				}
 			}
-		}
-
-		if (invoice.items[0]._id == 805 && costPerHours == 0 && comp.perHours != undefined) {
-			var qtity = invoice.items[0].quantity
-
-			if (qtity <= initialMile) {
-				total += InitPrice
-			} else {
-				var minMiles = initialMile;
-				var miles = qtity;
-				var miles30 = 0;
-
-				total += (miles - minMiles) * costPerMile + (InitPrice)
+			if (invoice.items[index]._id == 806) {
+				if (comp.perHours != undefined) {
+					if (comp.perHours == false && comp.initialCost != undefined) {
+						InitPrice = comp.initialCost;
+						initialMile = comp.initialMile;
+						costPerMile = comp.costPerMile;
+					} else {
+						costPerHours = comp.costPerHours;
+					}
+				}
 			}
-		} else if (costPerHours > 0) {
-			qtity = invoice.items[0].quantity;
+			if (invoice.items[index]._id == 805 && costPerHours == 0) {
+				if (invoice.items[index].quantity <= initialMile) {
+					total += InitPrice
+				} else {
+					var minMiles = initialMile;
+					var miles = invoice.items[index].quantity;
 
-			total += costPerHours * (qtity || 1);
-		} else {
-			var miles = (invoice.items[0].quantity || 1);;
-			InitPrice = invoice.items[0].price;
-
-			if (miles > 30) {
-				total += (miles - initialMile) * costPerMile + (InitPrice)
+					total += (miles - minMiles) * costPerMile + (InitPrice)
+				}
+			} else if (invoice.items[index]._id == 806 && costPerHours > 0) {
+				total += (costPerHours * (invoice.items[index].quantity || 1));
 			} else {
-				total += InitPrice;
+				total += (invoice.items[index].price * (invoice.items[index].quantity || 1));
 			}
 		}
 	} else {

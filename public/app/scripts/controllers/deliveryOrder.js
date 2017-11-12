@@ -266,6 +266,7 @@ angular.module('MobileCRMApp')
 						_.map(res.data, function (obj) {
 							$scope.company = obj
 							$scope.LoadItemDefault();
+							console.log(3333333)
 						})
 					})
 			}
@@ -480,11 +481,7 @@ angular.module('MobileCRMApp')
 				$scope.DeliveryOrder.status.description = "Waiting for Availability"
 			}
 
-			if ($scope.company) {
-				$scope.DeliveryOrder.client.company = $scope.company;
-			}
-			console.log($scope.DeliveryOrder)
-			$scope.DeliveryOrder.save()
+ 			$scope.DeliveryOrder.save()
 				.then(function (data) {
 					toaster.success('The Delivery Order was saved successfully');
 					$location.path('DeliveryOrderList')
@@ -494,7 +491,7 @@ angular.module('MobileCRMApp')
 					console.log(error);
 					toaster.error('The Delivery Order couldn\'t be saved, please check if some required field is empty or if its duplicated');
 					$scope.waiting = false;
-				});
+				}); 
 		};
 
 		$scope.delete = function () {
@@ -733,13 +730,6 @@ angular.module('MobileCRMApp')
 				}
 			}
 			DeliveryOrder.addresstr = add;
-
-			for (var row = 0; row < $scope.DeliveryOrder.items.length; row++) {
-				var id = $scope.DeliveryOrder.items[row]._id;
-				if (id == 761) {
-					$scope.DeliveryOrder.items[row].quantity = 0
-				}
-			}
 		}
 
 		$scope.LoadItemDefault = function () {
@@ -800,12 +790,10 @@ angular.module('MobileCRMApp')
 					}
 				}
 			} else {
-
 				for (var row = 0; row < $scope.DeliveryOrder.items.length; row++) {
 					for (var index = 0; index < $scope.item.length; index++) {
 						var element = $scope.item[index]
 						if (element._id == $scope.DeliveryOrder.items[row]._id) {
-							console.log(element)
 							$scope.DeliveryOrder.items.push(element)
 							break
 						}
@@ -841,7 +829,8 @@ angular.module('MobileCRMApp')
 		}
 
 		//if (!$scope.DeliveryOrder.client._id) {
-		$scope.LoadItemDefault()
+		//$scope.LoadItemDefault()
 		//}
+		//console.log($scope.DeliveryOrder.client.company)
 	});
 
