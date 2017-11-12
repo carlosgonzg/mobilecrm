@@ -78,9 +78,7 @@ angular.module('MobileCRMApp')
 					isHere = true;
 				}
 				if (rOption.submenu) {
-					console.log("SII")
 					for (var i=0; i<rOption.options.length;i++) {
-						console.log(rOption.options[i])
 						if(rOption.options[i].option.url == path){
 							result.read = rOption.options[i].read;
 							result.write = rOption.options[i].write;
