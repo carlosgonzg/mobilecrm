@@ -48,8 +48,13 @@
 							<a href="#/user/{{userData._id}}"><i class="fa fa-user"></i>&nbsp;My Profile</a>
 						</li>
 						<li ng-repeat="rOptions in roleOptions | orderBy: 'sort' track by $index" ng-if="rOptions.sort != 0">
-					
-							<a  ng-href="{{ '#' + rOptions.option.url}}" ng-click="collapse(rOptions)">
+							<a  ng-href="{{ '#' + rOptions.option.url}}" ng-click="collapse(rOptions)" ng-show="!rOptions.submenu">
+								<i class="fa" ng-class="rOptions.option.icon"></i>
+								&nbsp;
+								{{rOptions.option.description}}
+								
+							</a>
+							<a  ng-href="" ng-click="collapse(rOptions)" ng-show="rOptions.submenu">
 								<i class="fa" ng-class="rOptions.option.icon"></i>
 								&nbsp;
 								{{rOptions.option.description}}
