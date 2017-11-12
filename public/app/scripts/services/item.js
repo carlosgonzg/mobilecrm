@@ -47,7 +47,7 @@ angular.module('MobileCRMApp')
 			var costPerMile = 3.25;
 			var costPerHours = 0;
 			var qtity = 0;
-
+console.log(454545)
 			if (comp == undefined) {
 				var miles = (this.quantity || 1);;
 

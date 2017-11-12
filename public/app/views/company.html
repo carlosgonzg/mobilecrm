@@ -136,9 +136,17 @@
 			<div class="form-group">
 				<input type="checkbox" ng-init="checkStatus=false" ng-model="company.perHours" ng-click="checkedHours(company.perHours)"
 				 style="cursor: pointer">
-				<label for="initialMile">Cost Per Hours</label>
+				<label for="initialMile">Cost Per Hours</label><br/>
+				<label for="initialMile">Big Truck</label>
 				<input type="number" class="form-control" ng-model="company.costPerHours" ng-disabled="!company.perHours" id="costPerHours"
-				 placeholder="Cost Per Hours">
+				 placeholder="Big Truck">
+			</div>
+		</div>
+		<div class="col-xs-12 col-md-6">
+			<div class="form-group">
+				<label for="initialMile" style="margin-top: 27px">Small Truck</label>
+				<input type="number" style="margin-top: 0px" class="form-control" ng-model="company.smallTruck" ng-disabled="!company.perHours" id="costPerHours"
+				 placeholder="Small Truck">
 			</div>
 		</div>
 	</form>

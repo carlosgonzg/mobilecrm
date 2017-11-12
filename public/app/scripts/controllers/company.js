@@ -22,7 +22,7 @@ angular.module('MobileCRMApp')
 		$scope.save = function () {
 			
 			if ($scope.company.perHours == true) { //SI ES POR HORA
-				if ($scope.company.costPerHours == "") {
+				if ($scope.company.costPerHours == "" || $scope.company.smallTruck == "") {
 					toaster.error('Cost Per Hours can not be empty');
 					return 
 				}
@@ -35,9 +35,11 @@ angular.module('MobileCRMApp')
 				delete $scope.company.initialCost
 				delete $scope.company.costPerMile
 				delete $scope.company.initialMile
+				 delete $scope.company.smallTruck
 			} else if ($scope.company.perHours == false) { // SI NO ES POR HORA
 				delete $scope.company.costPerHours
 				delete $scope.company.perHours 
+				delete  $scope.company.smallTruck
 			}			
 
  			$scope.company.save()

@@ -192,12 +192,16 @@ DeliveryOrder.prototype.insert = function (deliveryOrder, user, mail) {
 		}
 		if (deliveryOrder.items[index]._id == 806) {
 			if (comp.perHours != undefined) {
-				if (comp.perHours == false) {
+				if (comp.perHours == false && comp.initialCost != undefined) {	
 					InitPrice = comp.initialCost;
 					initialMile = comp.initialMile;
 					costPerMile = comp.costPerMile;
 				} else {
-					costPerHours = comp.costPerHours;
+					if (deliveryOrder.typeTruck._id == 1) {
+						costPerHours = comp.costPerHours;
+					} else {
+						costPerHours = comp.smallTruck;
+					}	
 				}
 			}
 		}
@@ -210,7 +214,7 @@ DeliveryOrder.prototype.insert = function (deliveryOrder, user, mail) {
 
 				total += (miles - minMiles) * costPerMile + (InitPrice)
 			}
-		} else if (costPerHours > 0) {
+		} else if (deliveryOrder.items[index]._id == 806 && costPerHours > 0) {
 			total += (costPerHours * (deliveryOrder.items[index].quantity || 1));
 		} else {
 			total += (deliveryOrder.items[index].price * (deliveryOrder.items[index].quantity || 1));
@@ -293,12 +297,16 @@ DeliveryOrder.prototype.update = function (query, deliveryOrder, user, mail) {
 		}
 		if (deliveryOrder.items[index]._id == 806) {
 			if (comp.perHours != undefined) {
-				if (comp.perHours == false) {
+				if (comp.perHours == false && comp.initialCost != undefined) {	
 					InitPrice = comp.initialCost;
 					initialMile = comp.initialMile;
 					costPerMile = comp.costPerMile;
 				} else {
-					costPerHours = comp.costPerHours;
+					if (deliveryOrder.typeTruck._id == 1) {
+						costPerHours = comp.costPerHours;
+					} else {
+						costPerHours = comp.smallTruck;
+					}	
 				}
 			}
 		}
@@ -311,7 +319,7 @@ DeliveryOrder.prototype.update = function (query, deliveryOrder, user, mail) {
 
 				total += (miles - minMiles) * costPerMile + (InitPrice)
 			}
-		} else if (costPerHours > 0) {
+		} else if (deliveryOrder.items[index]._id == 806 && costPerHours > 0) {
 			total += (costPerHours * (deliveryOrder.items[index].quantity || 1));
 		} else {
 			total += (deliveryOrder.items[index].price * (deliveryOrder.items[index].quantity || 1));

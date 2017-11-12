@@ -180,7 +180,7 @@ var app = angular
 						} else {
 							return new Invoice();
 						}
-					},					
+					},
 				}
 			})
 			.when('/workOrderList', {
@@ -491,7 +491,7 @@ var app = angular
 					},
 					EntranceList: function (List) {
 						return List.get('Entrance');
-					},					
+					},
 					DeliveryOrder: function (DeliveryOrder, $route) {
 						if ($route.current.params.id) {
 							return new DeliveryOrder().findById(parseInt($route.current.params.id));
@@ -500,10 +500,10 @@ var app = angular
 						}
 					},
 					ItemDefault: function (Item) {
-						return new Item().filter({})
+						return new Item().filter({ _id: { $in: [5, 805, 806, 761] } })
 					},
 					Driver: function (User) {
-						return new User().filter({ 'role._id' : 6 })
+						return new User().filter({ 'role._id': 6 })
 					},
 				}
 			})

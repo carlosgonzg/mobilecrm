@@ -266,6 +266,7 @@ angular.module('MobileCRMApp')
 						_.map(res.data, function (obj) {
 							$scope.company = obj
 							$scope.LoadItemDefault();
+							console.log(3333333)
 						})
 					})
 			}
@@ -306,8 +307,7 @@ angular.module('MobileCRMApp')
 		};
 
 		$scope.changed = function (field) {
-
-			if ($scope.DeliveryOrder._id /*&& $rootScope.userData.role._id != 1*/) {
+			if ($scope.DeliveryOrder._id) {
 				var isHere = false;
 				$scope.DeliveryOrder.fieldsChanged = $scope.DeliveryOrder.fieldsChanged || [];
 				for (var i = 0; i < $scope.DeliveryOrder.fieldsChanged.length; i++) {
@@ -318,6 +318,21 @@ angular.module('MobileCRMApp')
 				}
 				if (!isHere) {
 					$scope.DeliveryOrder.fieldsChanged.push({ field: field + (field === "Status" ? " - " + $scope.DeliveryOrder.status.description : ""), by: $rootScope.userData._id });
+				}
+			}
+
+			if (field == 'typeTruck') {
+				if ($scope.DeliveryOrder.client.company.costPerHours == undefined) {
+					new Company().filter({ _id: $scope.DeliveryOrder.client.company._id })
+						.then(function (res) {
+							_.map(res.data, function (obj) {
+								console.log(obj)
+								$scope.company = obj
+								$scope.LoadItemDefault();
+							})
+						})
+				} else {
+					$scope.LoadItemDefault();
 				}
 			}
 		};
@@ -480,10 +495,6 @@ angular.module('MobileCRMApp')
 				$scope.DeliveryOrder.status.description = "Waiting for Availability"
 			}
 
-			if ($scope.company) {
-				$scope.DeliveryOrder.client.company = $scope.company;
-			}
-			console.log($scope.DeliveryOrder)
 			$scope.DeliveryOrder.save()
 				.then(function (data) {
 					toaster.success('The Delivery Order was saved successfully');
@@ -733,13 +744,6 @@ angular.module('MobileCRMApp')
 				}
 			}
 			DeliveryOrder.addresstr = add;
-
-			for (var row = 0; row < $scope.DeliveryOrder.items.length; row++) {
-				var id = $scope.DeliveryOrder.items[row]._id;
-				if (id == 761) {
-					$scope.DeliveryOrder.items[row].quantity = 0
-				}
-			}
 		}
 
 		$scope.LoadItemDefault = function () {
@@ -752,10 +756,13 @@ angular.module('MobileCRMApp')
 			}
 
 			if ($scope.company.perHours != undefined) { //SI ESTA DEFINIDO EN COMPANY
-				if ($scope.company.perHours == true) { //SI ES POR HORA 
-					console.log(2)
+				if ($scope.company.perHours == true) { //SI ES POR HORA 					
 					SetDefaulItems(5, 806)
-					$scope.DeliveryOrder.items[1].price = $scope.company.costPerHours
+					if ($scope.DeliveryOrder.typeTruck._id == 1) {
+						$scope.DeliveryOrder.items[1].price = $scope.company.costPerHours
+					} else {
+						$scope.DeliveryOrder.items[1].price = $scope.company.smallTruck
+					}
 					return;
 				} else if ($scope.company.initialCost) { // SI NO ES POR HORA
 					console.log(3)
@@ -800,12 +807,10 @@ angular.module('MobileCRMApp')
 					}
 				}
 			} else {
-
 				for (var row = 0; row < $scope.DeliveryOrder.items.length; row++) {
 					for (var index = 0; index < $scope.item.length; index++) {
 						var element = $scope.item[index]
 						if (element._id == $scope.DeliveryOrder.items[row]._id) {
-							console.log(element)
 							$scope.DeliveryOrder.items.push(element)
 							break
 						}
@@ -841,7 +846,8 @@ angular.module('MobileCRMApp')
 		}
 
 		//if (!$scope.DeliveryOrder.client._id) {
-		$scope.LoadItemDefault()
+		//$scope.LoadItemDefault()
 		//}
+		//console.log($scope.DeliveryOrder.client.company)
 	});
 
