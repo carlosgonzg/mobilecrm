@@ -17,7 +17,7 @@
 		<link rel="stylesheet" type="text/css" href="css/map.css"/>
 		<link rel="icon" href="./favicon.ico"/>
 	</head>
-	<body ng-app="MobileCRMApp">
+	<body ng-app="MobileCRMApp"  >
 		<header class="navbar navbar-fixed-top" ng-show="isAuthenticated">
 			<div class="container-fluid">
 				<div class="navbar-header" style="width: 100%">
@@ -34,7 +34,7 @@
 			<div class="row">
 				<toaster-container></toaster-container>
 				<div ng-controller="SessionCtrl"></div>
-				<div id="sidebar" class="col-xs-10 col-md-2 sidebar" ng-controller="NavigationCtrl" ng-show="isAuthenticated">
+				<div id="sidebar" class="col-xs-10 col-md-2 sidebar" ng-controller="NavigationCtrl" ng-show="isAuthenticated" ng-show="loadedMain" ng-cloak>
 					<ul class="nav nav-sidebar">
 						<li style="background-color: #999999; color: white; padding: 20px;">
 							<button class="navbar-toggle pull-right" >

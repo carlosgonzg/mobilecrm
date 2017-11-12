@@ -2,6 +2,7 @@
 
 angular.module('MobileCRMApp')
 .controller('SessionCtrl', function ($scope, $rootScope, $location, $timeout, $window, User) {
+	$scope.loadedMain = false;
 	if (!$window.sessionStorage.token) {
 		$rootScope.isAuthenticated = false;
 		$rootScope.userData = {};
@@ -15,6 +16,7 @@ angular.module('MobileCRMApp')
 		.then(function (obj) {
 			$rootScope.userData = obj;
 			$window.sessionStorage.user = JSON.stringify(obj);
+			$scope.loadedMain = true;
 			return $rootScope.userData.getRoleOptions();
 		})
 		.then(function(data){
