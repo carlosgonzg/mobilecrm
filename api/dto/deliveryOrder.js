@@ -197,7 +197,11 @@ DeliveryOrder.prototype.insert = function (deliveryOrder, user, mail) {
 					initialMile = comp.initialMile;
 					costPerMile = comp.costPerMile;
 				} else {
-					costPerHours = comp.costPerHours;
+					if (deliveryOrder.typeTruck._id == 1) {
+						costPerHours = comp.costPerHours;
+					} else {
+						costPerHours = comp.smallTruck;
+					}	
 				}
 			}
 		}
@@ -298,7 +302,11 @@ DeliveryOrder.prototype.update = function (query, deliveryOrder, user, mail) {
 					initialMile = comp.initialMile;
 					costPerMile = comp.costPerMile;
 				} else {
-					costPerHours = comp.costPerHours;
+					if (deliveryOrder.typeTruck._id == 1) {
+						costPerHours = comp.costPerHours;
+					} else {
+						costPerHours = comp.smallTruck;
+					}	
 				}
 			}
 		}

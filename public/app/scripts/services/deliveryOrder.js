@@ -93,7 +93,11 @@ angular.module('MobileCRMApp')
 						initialMile = comp.initialMile;
 						costPerMile = comp.costPerMile;
 					} else {
-						costPerHours = comp.costPerHours;
+						if (this.typeTruck._id == 1) {
+							costPerHours = comp.costPerHours;
+						} else {
+							costPerHours = comp.smallTruck;
+						}	
 					}
 				}
 
@@ -156,7 +160,11 @@ angular.module('MobileCRMApp')
 					initialMile = comp.initialMile;
 					costPerMile = comp.costPerMile;
 				} else {
-					costPerHours = comp.costPerHours;
+					if (this.typeTruck._id == 1) {
+						costPerHours = comp.costPerHours;
+					} else {
+						costPerHours = comp.smallTruck;
+					}	
 				}
 			}
 

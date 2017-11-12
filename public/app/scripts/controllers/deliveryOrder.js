@@ -307,8 +307,7 @@ angular.module('MobileCRMApp')
 		};
 
 		$scope.changed = function (field) {
-
-			if ($scope.DeliveryOrder._id /*&& $rootScope.userData.role._id != 1*/) {
+			if ($scope.DeliveryOrder._id) {
 				var isHere = false;
 				$scope.DeliveryOrder.fieldsChanged = $scope.DeliveryOrder.fieldsChanged || [];
 				for (var i = 0; i < $scope.DeliveryOrder.fieldsChanged.length; i++) {
@@ -319,6 +318,21 @@ angular.module('MobileCRMApp')
 				}
 				if (!isHere) {
 					$scope.DeliveryOrder.fieldsChanged.push({ field: field + (field === "Status" ? " - " + $scope.DeliveryOrder.status.description : ""), by: $rootScope.userData._id });
+				}
+			}
+
+			if (field == 'typeTruck') {
+				if ($scope.DeliveryOrder.client.company.costPerHours == undefined) {
+					new Company().filter({ _id: $scope.DeliveryOrder.client.company._id })
+						.then(function (res) {
+							_.map(res.data, function (obj) {
+								console.log(obj)
+								$scope.company = obj
+								$scope.LoadItemDefault();
+							})
+						})
+				} else {
+					$scope.LoadItemDefault();
 				}
 			}
 		};
@@ -481,7 +495,7 @@ angular.module('MobileCRMApp')
 				$scope.DeliveryOrder.status.description = "Waiting for Availability"
 			}
 
- 			$scope.DeliveryOrder.save()
+			$scope.DeliveryOrder.save()
 				.then(function (data) {
 					toaster.success('The Delivery Order was saved successfully');
 					$location.path('DeliveryOrderList')
@@ -491,7 +505,7 @@ angular.module('MobileCRMApp')
 					console.log(error);
 					toaster.error('The Delivery Order couldn\'t be saved, please check if some required field is empty or if its duplicated');
 					$scope.waiting = false;
-				}); 
+				});
 		};
 
 		$scope.delete = function () {
@@ -742,10 +756,13 @@ angular.module('MobileCRMApp')
 			}
 
 			if ($scope.company.perHours != undefined) { //SI ESTA DEFINIDO EN COMPANY
-				if ($scope.company.perHours == true) { //SI ES POR HORA 
-					console.log(2)
+				if ($scope.company.perHours == true) { //SI ES POR HORA 					
 					SetDefaulItems(5, 806)
-					$scope.DeliveryOrder.items[1].price = $scope.company.costPerHours
+					if ($scope.DeliveryOrder.typeTruck._id == 1) {
+						$scope.DeliveryOrder.items[1].price = $scope.company.costPerHours
+					} else {
+						$scope.DeliveryOrder.items[1].price = $scope.company.smallTruck
+					}
 					return;
 				} else if ($scope.company.initialCost) { // SI NO ES POR HORA
 					console.log(3)

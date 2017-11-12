@@ -149,7 +149,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-sm-6">
+				<div class="col-sm-6" style="display: none">
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
 <!-- 							<label for="date">Driver</label>
@@ -157,7 +157,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-sm-6">
+				<div class="col-sm-6" style="display: none">
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
 						</div>
@@ -337,7 +337,7 @@
 							 ng-change="changed('item')" ng-if="item._id !=805" ng-disabled="isDisabled()">
 						</td>
 						<td>
-							<input type="number" name="price{{$index}}" class="form-control" ng-model="item.price" ng-disabled="isDisabled()" step="0.01"
+							<input type="number" name="price{{$index}}" class="form-control" ng-model="item.price" ng-disabled="item._id == 805 || item._id == 806" step="0.01"
 							 ng-class="isChanged('item')" ng-change="changed('item')">
 						</td>
 						<td>
