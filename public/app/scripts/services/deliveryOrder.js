@@ -87,19 +87,21 @@ angular.module('MobileCRMApp')
 					}
 					total += total;
 				}
-				if (comp.perHours != undefined) {
-					if (comp.perHours == false && comp.initialCost != undefined) {	
-						InitPrice = comp.initialCost;
-						initialMile = comp.initialMile;
-						costPerMile = comp.costPerMile;
-					} else {
-						if (this.typeTruck._id == 1) {
-							costPerHours = comp.costPerHours;
+				if (this.items[index]._id == 806 || this.items[index]._id == 805) {
+					if (comp.perHours != undefined) {
+						if (comp.perHours == false && comp.initialCost != undefined) {
+							InitPrice = comp.initialCost;
+							initialMile = comp.initialMile;
+							costPerMile = comp.costPerMile;
 						} else {
-							costPerHours = comp.smallTruck;
-						}	
+							if (this.typeTruck._id == 1) {
+								costPerHours = comp.costPerHours;
+							} else {
+								costPerHours = comp.smallTruck;
+							}
+						}
 					}
-				}
+				}	
 
 				if (this.items[index]._id == 805 && costPerHours == 0) {
 					if (quantitymiles == 0) {
@@ -139,7 +141,7 @@ angular.module('MobileCRMApp')
 			var costPerMile = 3.25;
 			var costPerHours = 0;
 			var qtity = 0;
-			
+
 			if (comp == undefined) {
 				var miles = (this.items[index].quantity || 1);;
 
@@ -154,19 +156,21 @@ angular.module('MobileCRMApp')
 				}
 				return total;
 			}
-			if (comp.perHours != undefined) {
-				if (comp.perHours == false && comp.initialCost != undefined) {					
-					InitPrice = comp.initialCost;
-					initialMile = comp.initialMile;
-					costPerMile = comp.costPerMile;
-				} else {
-					if (this.typeTruck._id == 1) {
-						costPerHours = comp.costPerHours;
+			if (this.items[index]._id == 806 || this.items[index]._id == 805) {
+				if (comp.perHours != undefined) {
+					if (comp.perHours == false && comp.initialCost != undefined) {
+						InitPrice = comp.initialCost;
+						initialMile = comp.initialMile;
+						costPerMile = comp.costPerMile;
 					} else {
-						costPerHours = comp.smallTruck;
-					}	
+						if (this.typeTruck._id == 1) {
+							costPerHours = comp.costPerHours;
+						} else {
+							costPerHours = comp.smallTruck;
+						}
+					}
 				}
-			}
+			}	
 
 			if (this.items[index]._id == 805 && costPerHours == 0) {
 				if (quantitymiles == 0) {

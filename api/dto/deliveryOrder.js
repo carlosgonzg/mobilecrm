@@ -190,7 +190,7 @@ DeliveryOrder.prototype.insert = function (deliveryOrder, user, mail) {
 				total += (deliveryOrder.items[index].price * (miles || 1));
 			}
 		}
-		if (deliveryOrder.items[index]._id == 806) {
+		if (deliveryOrder.items[index]._id == 806 || deliveryOrder.items[index]._id == 805) {
 			if (comp.perHours != undefined) {
 				if (comp.perHours == false && comp.initialCost != undefined) {	
 					InitPrice = comp.initialCost;
@@ -295,7 +295,7 @@ DeliveryOrder.prototype.update = function (query, deliveryOrder, user, mail) {
 				total += (deliveryOrder.items[index].price * (miles || 1));
 			}
 		}
-		if (deliveryOrder.items[index]._id == 806) {
+		if (deliveryOrder.items[index]._id == 806 || deliveryOrder.items[index]._id == 805) {
 			if (comp.perHours != undefined) {
 				if (comp.perHours == false && comp.initialCost != undefined) {	
 					InitPrice = comp.initialCost;

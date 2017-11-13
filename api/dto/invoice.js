@@ -121,7 +121,7 @@ Invoice.prototype.insert = function (invoice, username, mail) {
 					total += (invoice.items[index].price * (miles || 1));
 				}
 			}
-			if (invoice.items[index]._id == 806) {
+			if (invoice.items[index]._id == 806 || invoice.items[index]._id == 805) {
 				if (comp.perHours != undefined) {
 					if (comp.perHours == false && comp.initialCost != undefined) {	
 						InitPrice = comp.initialCost;
@@ -227,7 +227,7 @@ Invoice.prototype.update = function (query, invoice, user, mail) {
 					total += (invoice.items[index].price * (miles || 1));
 				}
 			}
-			if (invoice.items[index]._id == 806) {
+			if (invoice.items[index]._id == 806 || invoice.items[index]._id == 805) {
 				if (comp.perHours != undefined) {
 					if (comp.perHours == false && comp.initialCost != undefined) {
 						InitPrice = comp.initialCost;
