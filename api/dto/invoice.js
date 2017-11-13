@@ -167,7 +167,11 @@ Invoice.prototype.insert = function (invoice, username, mail) {
 		})
 		.then(function (obj) {
 			if (invoice.invoiceNumber != "Pending Invoice") {
-				_this.company.setSequence(invoice.client.company._id)
+				if (invoice.dor) {
+					_this.company.setSequenceDor(invoice.client.company._id)
+				} else {
+					_this.company.setSequence(invoice.client.company._id)
+				}	
 			}
 
 			d.resolve(obj);
