@@ -373,26 +373,6 @@ angular.module('MobileCRMApp')
 			delete $scope.invoice.client.account.password;
 			$scope.invoice.save()
 				.then(function (data) {
-					new ServiceOrder().filter({ "sor": $scope.invoice.sor })
-						.then(function (result) {
-							_.map(result.data, function (obj) {
-								$scope.ServiceOrder = obj
-								$scope.ServiceOrder.status = $scope.invoice.status
-								$scope.ServiceOrder.sendTotech = false
-								$scope.ServiceOrder.sendMail = false;
-							});
-							$scope.ServiceOrder.save()
-						})
-					new WorkOrder().filter({ "wor": $scope.invoice.wor })
-						.then(function (result) {
-							_.map(result.data, function (obj) {
-								$scope.WorkOrder = obj
-								$scope.WorkOrder.status = $scope.invoice.status
-								$scope.WorkOrder.sendTotech = false
-								$scope.WorkOrder.sendMail = false;
-							});
-							$scope.WorkOrder.save()
-						})
 					new User().filter({ 'branch._id': $scope.invoice.client.branch._id })
 						.then(function (result) {
 							var emails = _.map(result.data, function (obj) {
@@ -423,28 +403,6 @@ angular.module('MobileCRMApp')
 
 			$scope.invoice.save()
 				.then(function (data) {
-					new ServiceOrder().filter({ "sor": $scope.invoice.sor })
-						.then(function (result) {
-							_.map(result.data, function (obj) {
-								$scope.ServiceOrder = obj
-								$scope.ServiceOrder.statusTech = statusTech
-								$scope.ServiceOrder.status = $scope.invoice.status
-								$scope.ServiceOrder.sendTotech = false
-								$scope.ServiceOrder.sendMail = false
-							});
-							$scope.ServiceOrder.save()
-						})
-					new WorkOrder().filter({ "wor": $scope.invoice.wor })
-						.then(function (result) {
-							_.map(result.data, function (obj) {
-								$scope.WorkOrder = obj
-								$scope.WorkOrder.statusTech = statusTech
-								$scope.WorkOrder.status = $scope.invoice.status
-								$scope.WorkOrder.sendTotech = false
-								$scope.WorkOrder.sendMail = false
-							});
-							$scope.WorkOrder.save()
-						})
 					new Company().filter({ _id: $scope.invoice.client.company._id })
 						.then(function (result) {
 							var emails = _.map(result.data, function (obj) {
