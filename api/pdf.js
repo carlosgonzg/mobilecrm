@@ -74,14 +74,14 @@ var createInvoiceBody = function (obj, company, branch) {
 		tableItems += item.part || '';
 		tableItems += '</td>';
 		tableItems += '<td style="text-align: right;border: thin solid black; border-top: none; border-right: none;">';
-		tableItems += numeral(item.price || 0).format('$0,0.00');
+		tableItems += numeral(item.price || 0).format('$0,0.00'); 
 		tableItems += '</td>';
 		tableItems += '<td style="text-align: right;border: thin solid black; border-top: none; border-right: none;">';
 		tableItems += item.quantity || 1;
 		tableItems += '</td>';
 		tableItems += '<td style="text-align: right;border: thin solid black; border-top: none;">';
 		if (obj.dor) {
-			tableItems += numeral(obj.total || 1).format('$0,0.00');
+			tableItems += numeral(item.price || 1).format('$0,0.00');
 		} else {
 			tableItems += numeral((item.price || 0) * (item.quantity || 1)).format('$0,0.00');
 		}	
