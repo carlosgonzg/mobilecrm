@@ -15,8 +15,6 @@ angular.module('MobileCRMApp')
 		$scope.readOnly = $rootScope.userData.role._id != 1;
 		$scope.expenses = []
 
-		console.log(new DeliveryOrder)
-
 		if ($rootScope.userData.role._id != 1) {
 			$scope.invoice.client = new User($rootScope.userData);
 		}
@@ -328,13 +326,14 @@ angular.module('MobileCRMApp')
 
 		 	$scope.invoice.save()
 				.then(function (data) {
-					new ServiceOrder().filter({ "sor": $scope.invoice.sor })
+/* 					new ServiceOrder().filter({ "sor": $scope.invoice.sor })
 						.then(function (result) {
 							_.map(result.data, function (obj) {
 								$scope.ServiceOrder = obj
 								$scope.ServiceOrder.status = $scope.invoice.status
 								$scope.ServiceOrder.sendTotech = sendTotech
 								$scope.ServiceOrder.sendMail = false;
+								console.log($scope.invoice.sor)
 							});
 							$scope.ServiceOrder.save()
 						})
@@ -345,6 +344,7 @@ angular.module('MobileCRMApp')
 								$scope.WorkOrder.status = $scope.invoice.status
 								$scope.WorkOrder.sendTotech = sendTotech
 								$scope.WorkOrder.sendMail = false;
+								console.log($scope.invoice.wor)
 							});
 							$scope.WorkOrder.save()
 						})
@@ -354,9 +354,10 @@ angular.module('MobileCRMApp')
 								$scope.DeliveryOrder = obj
 								$scope.DeliveryOrder.status = $scope.invoice.status
 								$scope.DeliveryOrder.sendMail = false;
+								console.log($scope.invoice.dor)
 							});
 							$scope.DeliveryOrder.save()
-						})
+						}) */
 					toaster.success('The Invoice was saved successfully');
 					$location.path('invoiceList')
 					$scope.waiting = false;

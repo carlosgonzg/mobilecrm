@@ -40,6 +40,14 @@ function DeliveryOrder(db, userLogged, dirname) {
 				type: 'string',
 				required: true
 			},
+			pono: {
+				type: 'string',
+				required: false
+			},
+			unitno: {
+				type: 'string',
+				required: true
+			},
 			siteAddressFrom: new Address().schema,
 			siteAddressTo: new Address().schema,
 			phone: {
@@ -327,6 +335,7 @@ DeliveryOrder.prototype.update = function (query, deliveryOrder, user, mail) {
 	}
 
 	deliveryOrder.total = total;
+	delete deliveryOrder.sor
 
 	_this.savePhotos(deliveryOrder)
 		.then(function (photos) {
@@ -341,6 +350,10 @@ DeliveryOrder.prototype.update = function (query, deliveryOrder, user, mail) {
 				setObj = { invoiceNumber: deliveryOrder.invoiceNumber };
 			}
 
+			if (deliveryOrder.pono)
+				setObj.pono = deliveryOrder.pono;
+			if (deliveryOrder.unitno)
+				setObj.unitno = deliveryOrder.unitno;
 			if (deliveryOrder.items.length > 0)
 				setObj.items = deliveryOrder.items;
 			if (deliveryOrder.total)
@@ -363,6 +376,10 @@ DeliveryOrder.prototype.update = function (query, deliveryOrder, user, mail) {
 				setObj = { invoiceNumber: deliveryOrder.invoiceNumber };
 			}
 
+			if (deliveryOrder.pono)
+				setObj.pono = deliveryOrder.pono;
+			if (deliveryOrder.unitno)
+				setObj.unitno = deliveryOrder.unitno;
 			if (deliveryOrder.items.length > 0)
 				setObj.items = deliveryOrder.items;
 			if (deliveryOrder.total)

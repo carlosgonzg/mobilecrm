@@ -128,7 +128,7 @@ Invoice.prototype.insert = function (invoice, username, mail) {
 						initialMile = comp.initialMile;
 						costPerMile = comp.costPerMile;
 					} else {
-						if (deliveryOrder.typeTruck._id == 1) {
+						if (invoice.typeTruck._id == 1) {
 							costPerHours = comp.costPerHours;
 						} else {
 							costPerHours = comp.smallTruck;
@@ -234,7 +234,7 @@ Invoice.prototype.update = function (query, invoice, user, mail) {
 						initialMile = comp.initialMile;
 						costPerMile = comp.costPerMile;
 					} else {
-						if (deliveryOrder.typeTruck._id == 1) {
+						if (invoice.typeTruck._id == 1) {
 							costPerHours = comp.costPerHours;
 						} else {
 							costPerHours = comp.smallTruck;
