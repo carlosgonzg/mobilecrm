@@ -22,7 +22,7 @@ angular.module('MobileCRMApp')
 			this.comment = this.comment || '';
 			this.status = this.status || { _id: 1, description: 'Waiting for Availability' };
 			this.typeTruck = this.typeTruck || { _id: 1, description: 'Big truck' };
-			this.driver = this.driver || [];
+			this.driver = this.driver || {};
 			this.total = this.total || '';
 			this.items = this.items || [];
 			this.contacts = this.contacts || [{}, {}, {}];

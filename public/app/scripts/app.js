@@ -181,6 +181,9 @@ var app = angular
 							return new Invoice();
 						}
 					},
+					Driver: function (User) {
+						return new User().filter({ 'role._id': 6 })
+					},
 				}
 			})
 			.when('/workOrderList', {

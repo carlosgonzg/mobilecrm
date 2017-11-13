@@ -19,7 +19,7 @@ angular.module('MobileCRMApp')
 		$scope.fistLoad = 0;
 
 		$scope.company = []
-		$scope.driver = []
+		$scope.driver = Driver.data || {};
 
 		$scope.readOnly = $rootScope.userData.role._id != 1;
 		$scope.showMap = $rootScope.userData.role._id == 1;
@@ -41,7 +41,6 @@ angular.module('MobileCRMApp')
 
 		$scope.listStatus = statusList;
 		$scope.entranceList = EntranceList;
-		$scope.Driver = Driver;
 		$scope.waiting = false;
 
 		$scope.wsClass = User;
