@@ -259,20 +259,20 @@
 							 disable="!invoice.client._id || invoice.dor" order-by="'code'"></entitypicker>
 						</td>
 						<td>
-							<input type="text" class="form-control" ng-model="item.code" ng-disabled="invoice.dor || isDisabled()">
+							<input type="text" class="form-control" ng-model="item.code" ng-disabled="isDisabled()">
 						</td>
 						<td>
-							<input type="text" class="form-control" ng-model="item.description" ng-disabled="invoice.dor || isDisabled()">
+							<input type="text" class="form-control" ng-model="item.description" ng-disabled="isDisabled()">
 						</td>
 						<td>
-							<input type="number" class="form-control" ng-model="item.quantity" ng-disabled="invoice.dor || isDisabled()">
+							<input type="number" class="form-control" ng-model="item.quantity" ng-disabled="isDisabled()">
 						</td>
 						<td>
-							<input type="number" class="form-control" ng-model="item.price" ng-disabled="invoice.dor || isDisabled()">
+							<input type="number" class="form-control" ng-model="item.price" ng-disabled="isDisabled()">
 						</td>
 						<td>
 							<div ng-if="invoice.dor">
-								{{item.getTotalPriceDelivery(invoice.siteAddress.distanceFrom, invoice.client.company) | currency }}
+								{{item.getTotalPriceDelivery(item.quantity, invoice.client.company, $index) | currency }}
 							</div>
 							<div ng-if="!invoice.dor">
 								{{item.getTotalPrice(invoice.client.company) | currency }}
@@ -295,7 +295,7 @@
 						<th colspan="4">
 							<span class="pull-left">
 								<div ng-if="invoice.dor">
-									{{invoice.total | currency}}
+									{{invoice.getTotalDelivery() | currency}}
 								</div>
 								<div ng-if="!invoice.dor">
 									{{invoice.getTotal() | currency}}
@@ -324,7 +324,7 @@
 						<th colspan="4">
 							<span class="pull-left">
 								<div ng-if="invoice.dor">
-									{{invoice.total + invoice.getTaxes() | currency}}
+									{{invoice.getTotalDelivery() + invoice.getTaxes() | currency}}
 								</div>
 								<div ng-if="!invoice.dor">
 									{{invoice.getTotal() + invoice.getTaxes() | currency}}
