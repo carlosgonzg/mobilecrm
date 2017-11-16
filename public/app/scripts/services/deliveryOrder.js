@@ -22,7 +22,7 @@ angular.module('MobileCRMApp')
 			this.comment = this.comment || '';
 			this.status = this.status || { _id: 1, description: 'Waiting for Availability' };
 			this.typeTruck = this.typeTruck || { _id: 1, description: 'Big truck' };
-			this.driver = this.driver || [];
+			this.driver = this.driver || {};
 			this.total = this.total || '';
 			this.items = this.items || [];
 			this.contacts = this.contacts || [{}, {}, {}];
@@ -87,19 +87,21 @@ angular.module('MobileCRMApp')
 					}
 					total += total;
 				}
-				if (comp.perHours != undefined) {
-					if (comp.perHours == false && comp.initialCost != undefined) {	
-						InitPrice = comp.initialCost;
-						initialMile = comp.initialMile;
-						costPerMile = comp.costPerMile;
-					} else {
-						if (this.typeTruck._id == 1) {
-							costPerHours = comp.costPerHours;
+				if (this.items[index]._id == 806 || this.items[index]._id == 805) {
+					if (comp.perHours != undefined) {
+						if (comp.perHours == false && comp.initialCost != undefined) {
+							InitPrice = comp.initialCost;
+							initialMile = comp.initialMile;
+							costPerMile = comp.costPerMile;
 						} else {
-							costPerHours = comp.smallTruck;
-						}	
+							if (this.typeTruck._id == 1) {
+								costPerHours = comp.costPerHours;
+							} else {
+								costPerHours = comp.smallTruck;
+							}
+						}
 					}
-				}
+				}	
 
 				if (this.items[index]._id == 805 && costPerHours == 0) {
 					if (quantitymiles == 0) {
@@ -117,16 +119,13 @@ angular.module('MobileCRMApp')
 						var miles = qtity;
 
 						total += (miles - minMiles) * costPerMile + (InitPrice)
-						//console.log(888888888888)
 					}
 				} else if (this.items[index]._id == 806 && costPerHours > 0) {
 					qtity = this.items[index].quantity;
 
 					total += costPerHours * (qtity || 1);
-					//console.log(111111111111)
 				} else {
 					total += this.items[index].price * (this.items[index].quantity || 1);
-					//console.log(44444)
 				}
 			}
 			return total;
@@ -139,7 +138,7 @@ angular.module('MobileCRMApp')
 			var costPerMile = 3.25;
 			var costPerHours = 0;
 			var qtity = 0;
-			
+
 			if (comp == undefined) {
 				var miles = (this.items[index].quantity || 1);;
 
@@ -154,19 +153,21 @@ angular.module('MobileCRMApp')
 				}
 				return total;
 			}
-			if (comp.perHours != undefined) {
-				if (comp.perHours == false && comp.initialCost != undefined) {					
-					InitPrice = comp.initialCost;
-					initialMile = comp.initialMile;
-					costPerMile = comp.costPerMile;
-				} else {
-					if (this.typeTruck._id == 1) {
-						costPerHours = comp.costPerHours;
+			if (this.items[index]._id == 806 || this.items[index]._id == 805) {
+				if (comp.perHours != undefined) {
+					if (comp.perHours == false && comp.initialCost != undefined) {
+						InitPrice = comp.initialCost;
+						initialMile = comp.initialMile;
+						costPerMile = comp.costPerMile;
 					} else {
-						costPerHours = comp.smallTruck;
-					}	
+						if (this.typeTruck._id == 1) {
+							costPerHours = comp.costPerHours;
+						} else {
+							costPerHours = comp.smallTruck;
+						}
+					}
 				}
-			}
+			}	
 
 			if (this.items[index]._id == 805 && costPerHours == 0) {
 				if (quantitymiles == 0) {

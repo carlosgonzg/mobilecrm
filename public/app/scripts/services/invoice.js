@@ -88,7 +88,76 @@ angular.module('MobileCRMApp')
 			return total * taxes;
 		}	
 	};
-	
+
+	Invoice.prototype.getTotalDelivery = function () {
+		var total = 0;
+		var InitPrice = 0
+		var initialMile = 30;
+		var costPerMile = 3.25;
+		var costPerHours = 0;
+		var qtity = 0;
+
+		if (this.client._id == undefined) {
+			return 0
+		}
+		var comp = this.client.company
+
+		for (var index = 0; index < this.items.length; index++) {
+			InitPrice = this.items[index].price;
+
+			if (comp == undefined) {
+				//console.log(22222)
+				var miles = (this.items[index].quantity || 1);;
+
+				if (this.items[index]._id == 805) {
+					if (miles > 30) {
+						total += (miles - initialMile) * costPerMile + (InitPrice)
+					} else {
+						total += InitPrice
+					}
+				} else {
+					total += this.items[index].price * (this.items[index].quantity || 1);
+				}
+				total += total;
+			}
+			if (this.items[index]._id == 806 || this.items[index]._id == 805) {
+				if (comp.perHours != undefined) {
+					if (comp.perHours == false && comp.initialCost != undefined) {
+						InitPrice = comp.initialCost;
+						initialMile = comp.initialMile;
+						costPerMile = comp.costPerMile;
+					} else {
+						if (this.typeTruck._id == 1) {
+							costPerHours = comp.costPerHours;
+						} else {
+							costPerHours = comp.smallTruck;
+						}
+					}
+				}
+			}
+
+			if (this.items[index]._id == 805 && costPerHours == 0) {
+				qtity = this.items[index].quantity;				
+
+				if (qtity <= initialMile) {
+					total += InitPrice
+				} else {
+					var minMiles = initialMile;
+					var miles = qtity;
+
+					total += (miles - minMiles) * costPerMile + (InitPrice)
+				}
+			} else if (this.items[index]._id == 806 && costPerHours > 0) {
+				qtity = this.items[index].quantity;
+
+				total += costPerHours * (qtity || 1);
+			} else {
+				total += this.items[index].price * (this.items[index].quantity || 1);
+			}
+		}
+		return total;
+	};
+
 	Invoice.prototype.goTo = function () {
 		$location.path('/invoice/' + this._id);
 	};

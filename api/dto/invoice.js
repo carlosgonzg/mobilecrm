@@ -121,14 +121,14 @@ Invoice.prototype.insert = function (invoice, username, mail) {
 					total += (invoice.items[index].price * (miles || 1));
 				}
 			}
-			if (invoice.items[index]._id == 806) {
+			if (invoice.items[index]._id == 806 || invoice.items[index]._id == 805) {
 				if (comp.perHours != undefined) {
 					if (comp.perHours == false && comp.initialCost != undefined) {	
 						InitPrice = comp.initialCost;
 						initialMile = comp.initialMile;
 						costPerMile = comp.costPerMile;
 					} else {
-						if (deliveryOrder.typeTruck._id == 1) {
+						if (invoice.typeTruck._id == 1) {
 							costPerHours = comp.costPerHours;
 						} else {
 							costPerHours = comp.smallTruck;
@@ -167,7 +167,11 @@ Invoice.prototype.insert = function (invoice, username, mail) {
 		})
 		.then(function (obj) {
 			if (invoice.invoiceNumber != "Pending Invoice") {
-				_this.company.setSequence(invoice.client.company._id)
+				if (invoice.dor) {
+					_this.company.setSequenceDor(invoice.client.company._id)
+				} else {
+					_this.company.setSequence(invoice.client.company._id)
+				}	
 			}
 
 			d.resolve(obj);
@@ -227,14 +231,14 @@ Invoice.prototype.update = function (query, invoice, user, mail) {
 					total += (invoice.items[index].price * (miles || 1));
 				}
 			}
-			if (invoice.items[index]._id == 806) {
+			if (invoice.items[index]._id == 806 || invoice.items[index]._id == 805) {
 				if (comp.perHours != undefined) {
 					if (comp.perHours == false && comp.initialCost != undefined) {
 						InitPrice = comp.initialCost;
 						initialMile = comp.initialMile;
 						costPerMile = comp.costPerMile;
 					} else {
-						if (deliveryOrder.typeTruck._id == 1) {
+						if (invoice.typeTruck._id == 1) {
 							costPerHours = comp.costPerHours;
 						} else {
 							costPerHours = comp.smallTruck;

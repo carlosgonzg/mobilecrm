@@ -19,7 +19,7 @@ angular.module('MobileCRMApp')
 		$scope.fistLoad = 0;
 
 		$scope.company = []
-		$scope.driver = []
+		$scope.driver = Driver.data || {};
 
 		$scope.readOnly = $rootScope.userData.role._id != 1;
 		$scope.showMap = $rootScope.userData.role._id == 1;
@@ -41,7 +41,6 @@ angular.module('MobileCRMApp')
 
 		$scope.listStatus = statusList;
 		$scope.entranceList = EntranceList;
-		$scope.Driver = Driver;
 		$scope.waiting = false;
 
 		$scope.wsClass = User;
@@ -266,7 +265,7 @@ angular.module('MobileCRMApp')
 						_.map(res.data, function (obj) {
 							$scope.company = obj
 							$scope.LoadItemDefault();
-							console.log(3333333)
+							console.log($scope.company)
 						})
 					})
 			}
@@ -494,18 +493,21 @@ angular.module('MobileCRMApp')
 			if ($scope.DeliveryOrder.status.description == "Pending") {
 				$scope.DeliveryOrder.status.description = "Waiting for Availability"
 			}
-
-			$scope.DeliveryOrder.save()
-				.then(function (data) {
-					toaster.success('The Delivery Order was saved successfully');
-					$location.path('DeliveryOrderList')
-					$scope.waiting = false;
-				},
-				function (error) {
-					console.log(error);
-					toaster.error('The Delivery Order couldn\'t be saved, please check if some required field is empty or if its duplicated');
-					$scope.waiting = false;
-				});
+			if ($scope.DeliveryOrder.client.company.perHours == undefined) {
+				$scope.addConfigComp()
+			} else {
+				$scope.DeliveryOrder.save()
+					.then(function (data) {
+						toaster.success('The Delivery Order was saved successfully');
+						$location.path('DeliveryOrderList')
+						$scope.waiting = false;
+					},
+					function (error) {
+						console.log(error);
+						toaster.error('The Delivery Order couldn\'t be saved, please check if some required field is empty or if its duplicated');
+						$scope.waiting = false;
+					});
+			}
 		};
 
 		$scope.delete = function () {
@@ -843,6 +845,33 @@ angular.module('MobileCRMApp')
 				}
 
 			}
+		}
+
+		$scope.addConfigComp = function () {
+			new Company().filter({ _id: $scope.DeliveryOrder.client.company._id })
+				.then(function (res) {
+					_.map(res.data, function (obj) {
+						$scope.DeliveryOrder.client.company.perHours = obj.perHours
+						$scope.DeliveryOrder.client.company.initialCost = obj.initialCost
+						$scope.DeliveryOrder.client.company.initialMile = obj.initialMile
+						$scope.DeliveryOrder.client.company.costPerMile = obj.costPerMile
+						$scope.DeliveryOrder.client.company.costPerHours = obj.costPerHours
+					
+						$scope.DeliveryOrder.save()
+							.then(function (data) {
+								toaster.success('The Delivery Order was saved successfully');
+								$location.path('DeliveryOrderList')
+								$scope.waiting = false;
+							},
+							function (error) {
+								console.log(error);
+								toaster.error('The Delivery Order couldn\'t be saved, please check if some required field is empty or if its duplicated');
+								$scope.waiting = false;
+							});
+						
+					})
+				})
+
 		}
 
 		//if (!$scope.DeliveryOrder.client._id) {

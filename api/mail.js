@@ -52,8 +52,8 @@ var setAttachment = function (url, fileName) {
 
 var sendMail = function (to, subject, body, isHtmlBody, attached, cc, cco, replyTo) {
 	var deferred = q.defer();
-	mailOptions.to =  to;
-    mailOptions.cc = cc ? cc : '';
+	mailOptions.to = to;
+	mailOptions.cc = cc ? cc : '';
 	mailOptions.cco = cco ? cco : '';
 	mailOptions.subject = subject;
 	mailOptions.replyTo = replyTo || '';
@@ -307,7 +307,7 @@ var sendServiceOrderUpdate = function (serviceOrder, mails, user) {
 
 			var company = '' + (serviceOrder && serviceOrder.client && serviceOrder.client.company && serviceOrder.client.company.entity ? serviceOrder.client.company.entity.name : 'Not Defined');
 			var branch = serviceOrder && serviceOrder.client && serviceOrder.client.branch ? '' + serviceOrder.client.branch.name : '' + serviceOrder.client.entity.fullName;
-			var subject = 'Service Order: ' + serviceOrder.sor +' | ' + company + ' | ' + branch;
+			var subject = 'Service Order: ' + serviceOrder.sor + ' | ' + company + ' | ' + branch;
 
 			console.log('sending mail', subject);
 			mails = _.uniq(mails);
@@ -629,6 +629,7 @@ var sendDeliveryOrder = function (deliveryOrder, mails, dirname) {
 			body = body.replace('<createdBy>', deliveryOrder.createdBy.entity ? deliveryOrder.createdBy.entity.fullName : '');
 			body = body.replace('<clientCompany>', deliveryOrder.client.company ? deliveryOrder.client.company.entity.name : 'None');
 			body = body.replace('<dor>', deliveryOrder.dor);
+			body = body.replace('<unitSize>', deliveryOrder.unitSize);
 			body = body.replace('<clientBranch>', deliveryOrder.client.branch ? deliveryOrder.client.branch.name : 'None');
 			body = body.replace('<customer>', deliveryOrder.customer || 'None');
 			body = body.replace('<customerPhone>', deliveryOrder.phone ? (deliveryOrder.phone.number || '') : 'None');

@@ -29,17 +29,18 @@ angular.module('MobileCRMApp')
 				delete $scope.company.initialCost
 				delete $scope.company.costPerMile
 				delete $scope.company.initialMile
+				$scope.company.perHours = true
 				console.log(1)
 			} else if ($scope.company.perHours == false && $scope.company.initialCost == "" && $scope.company.costPerMile == "" && $scope.company.initialMile == "" ) {
 				delete $scope.company.costPerHours
 				delete $scope.company.initialCost
 				delete $scope.company.costPerMile
 				delete $scope.company.initialMile
-				 delete $scope.company.smallTruck
+				delete $scope.company.smallTruck
 			} else if ($scope.company.perHours == false) { // SI NO ES POR HORA
 				delete $scope.company.costPerHours
-				delete $scope.company.perHours 
-				delete  $scope.company.smallTruck
+				delete $scope.company.smallTruck
+				$scope.company.perHours = false
 			}			
 
  			$scope.company.save()
