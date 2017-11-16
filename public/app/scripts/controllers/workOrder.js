@@ -284,6 +284,9 @@ $scope.CrewHeaderSel = ""
 					.then(function () {
 						toaster.success('The work order was deleted successfully');
 						$location.path('/workOrderList')
+					})
+					.then(function () {
+						$scope.workOrder.sendDelete($scope.workOrder);
 					});
 			});
 		};

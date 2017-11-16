@@ -390,6 +390,54 @@ Invoice.prototype.sendInvoiceUpdate = function (id, username, mail) {
 	return d.promise;
 };
 
+Invoice.prototype.sendInvoiceDelete	 = function (id, username, mail, invoice) {
+	var d = q.defer();
+	var _this = this;
+	var emails = [];
+	var urlPdf = '';
+	var fileName = '';
+	var fileNamePdf = '';
+	var cc = [];
+	var company = {};
+	var branch = {};
+	_this.crudCompany.find({ _id: invoice.client.company._id })
+	//busco compañia
+		.then(function (companyS) {
+			company = companyS.data[0];
+			return invoice.client.branch && invoice.client.branch._id ? _this.crudBranch.find({ _id: invoice.client.branch._id }) : q.when({ data: [{ name: 'None' }] });
+		})
+		//busco branch
+		.then(function (branchS) {
+			branch = branchS.data[0];
+			return _this.user.getAdminUsers();
+		})
+		.then(function (users) {
+			emails = [];
+			for (var i = 0; i < users.data.length; i++) {
+				emails.push(users.data[i].account.email);
+			}
+		})
+		.then(function () {
+			fileNamePdf = invoice.invoiceNumber + '.pdf';
+			urlPdf = _this.dirname + '/api/invoices/' + fileNamePdf;
+			return pdf.createInvoice(invoice, company, branch);
+		})
+		.then(function () {
+			return mail.sendInvoiceDelete(invoice, emails, cc, urlPdf, fileNamePdf);
+		})
+		.then(function () {
+			d.resolve(true);
+		})
+		.catch(function (err) {
+			console.log(err)
+			d.reject({
+				result: 'Not ok',
+				errors: err
+			});
+		});
+	return d.promise;
+};
+
 Invoice.prototype.getReport = function (query, queryDescription, res) {
 
 	this.createReport(query, queryDescription)

@@ -491,6 +491,9 @@ angular.module('MobileCRMApp')
 					.then(function () {
 						toaster.success('The service order was deleted successfully');
 						$location.path('/serviceOrderList')
+					})
+					.then(function () {
+						$scope.serviceOrder.sendDelete($scope.serviceOrder)
 					});
 			});
 		};

@@ -157,6 +157,23 @@ angular.module('MobileCRMApp')
 		return d.promise;
 	};
 
+	WorkOrder.prototype.sendDelete = function(workOrder){
+		var d = $q.defer();
+		var _this = this;
+		var email = _this.client ? _this.client.account.email : null;
+			toaster.warning('Sending the email');
+			console.log(workOrder)
+			$http.post(_this.baseApiPath + '/sendDelete', { id: _this._id, workOrder: workOrder })
+			.success(function (data) {
+				toaster.success('The work order has been sent!.');
+		    })
+		    .error(function (data, status, headers, config) {
+		    	toaster.error('There was an error sending the file, please try again')
+		        d.reject(data);
+		    });
+		return d.promise;
+	};
+
 	WorkOrder.prototype.showPicture = function(index){
 		var dialog = dialogs.create('views/photo.html', 'PhotoCtrl', { photos: this.photos, index: (index || 0) });
 		dialog.result

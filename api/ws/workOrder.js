@@ -32,6 +32,13 @@ module.exports = function (prefix, app, mail, dirname) {
 		.then(util.success(res), util.error(res));
 	});
 
+	app.post(prefix + '/sendDelete', function (req, res) {
+		var workOrder = new WorkOrder(app.db, req.user, dirname);
+		console.log(req.body.workOrder)
+		workOrder.sendWorkOrderDelete(req.body.id, req.user, mail, req.body.workOrder)
+		.then(util.success(res), util.error(res));
+	});
+
 	app.post(prefix + '/filter', function (req, res) {
 		var workOrder = new WorkOrder(app.db, req.user, dirname);
 		var sort = null;

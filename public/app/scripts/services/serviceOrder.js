@@ -151,6 +151,20 @@ var a;
 		return d.promise;
 	};
 
+	ServiceOrder.prototype.sendDelete = function(serviceOrder){
+		var d = $q.defer();
+		toaster.warning('Sending the email');
+		$http.post(this.baseApiPath + '/sendDelete', { id: this._id, serviceOrder: serviceOrder })
+		.success(function (data) {
+			toaster.success('The Service Order has been sent!.');
+	    })
+	    .error(function (data, status, headers, config) {
+	    	toaster.error('There was an error sending the file, please try again')
+	        d.reject(data);
+	    });
+		return d.promise;
+	};
+
 	ServiceOrder.prototype.showPicture = function(index){
 		var dialog = dialogs.create('views/photo.html', 'PhotoCtrl', { photos: this.photos, index: (index || 0) });
 		dialog.result

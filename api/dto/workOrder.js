@@ -359,6 +359,43 @@ WorkOrder.prototype.sendWorkOrderUpdate = function (id, user, mail) {
 	return d.promise;
 };
 
+WorkOrder.prototype.sendWorkOrderDelete = function (id, user, mail, workOrder) {
+	console.log(workOrder)
+	var d = q.defer();
+	var _this = this;
+	var emails = [];
+	var company = {};
+	_this.user.getAdminUsers()
+		.then(function (users) {
+			emails = [];
+			for (var i = 0; i < users.data.length; i++) {
+				emails.push(users.data[i].account.email);
+			}
+			emails = _.uniq(emails);
+		})
+		.then(function () {
+			return _this.crudCompany.find({ _id: workOrder.client.company._id });
+		})
+		.then(function (companyS) {
+			company = companyS.data[0];
+			return pdf.createWorkOrder(workOrder, company, true);
+		})
+		.then(function (data) {
+			return mail.sendWorkOrderDelete(workOrder, emails, _this.dirname, data.path, data.fileName);
+		})
+		.then(function () {
+			d.resolve(true);
+		})
+		.catch(function (err) {
+			console.log(err)
+			d.reject({
+				result: 'Not ok',
+				errors: err
+			});
+		});
+	return d.promise;
+};
+
 //WO - simple
 WorkOrder.prototype.createWorkOrder = function (id, user, showPrice) {
 	var d = q.defer();

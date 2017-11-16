@@ -364,6 +364,34 @@ ServiceOrder.prototype.sendServiceOrderUpdate = function (id, user, mail, crewda
 	return d.promise;
 };
 
+ServiceOrder.prototype.sendServiceOrderDelete = function (id, user, mail, serviceOrder) {
+	var d = q.defer();
+	var _this = this;
+	var emails = [];
+
+	 _this.user.getAdminUsers()
+		.then(function (users) {
+			emails = [];
+			for (var i = 0; i < users.data.length; i++) {
+				emails.push(users.data[i].account.email);
+			}
+
+			emails = _.uniq(emails);
+			return mail.sendServiceOrderDelete(serviceOrder, emails, user);
+		})
+		.then(function () {
+			d.resolve(true);
+		})
+		.catch(function (err) {
+			console.log(err)
+			d.reject({
+				result: 'Not ok',
+				errors: err
+			});
+		});
+	return d.promise;
+};
+
 ServiceOrder.prototype.createServiceOrder = function (id, user) {
 	var d = q.defer();
 	var _this = this;

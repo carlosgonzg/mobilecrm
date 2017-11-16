@@ -185,6 +185,21 @@ angular.module('MobileCRMApp')
 	    });
 		return d.promise;
 	};
+	Invoice.prototype.sendDelete = function(emails, invoice){
+		var d = $q.defer();
+		var _this = this;
+		toaster.warning('Sending the email');
+		$http.post(_this.baseApiPath + '/sendDelete', { id: _this._id, emails: emails, invoice: invoice })
+		.success(function (data) {
+			toaster.success('The invoice has been sent!.');
+			$location.path('invoiceList');
+	    })
+	    .error(function (data, status, headers, config) {
+	    	toaster.error('There was an error sending the email, please try again')
+	        d.reject(data);
+	    });
+		return d.promise;
+	};
 	Invoice.prototype.getMonthlyStatement = function(query){
 		var d = $q.defer();
 		var _this = this;

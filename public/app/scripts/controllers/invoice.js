@@ -402,7 +402,7 @@ angular.module('MobileCRMApp')
 									$scope.waiting = false;
 
 								});
-						})
+					})
 				},
 				function (error) {
 					console.log(error);
@@ -449,6 +449,11 @@ angular.module('MobileCRMApp')
 							var emails = _.map(result.data, function (obj) {
 								return obj.accountPayableEmail;
 							});
+							if (result.data[0].sendCorporateMails) {
+								for (var i=0; i< result.data[0].sendCorporateMails.length;i++) {
+									emails.push(result.data[0].sendCorporateMails[i]);
+								}
+							};
 							emails.push($scope.invoice.client.account.email);
 							$scope.invoice.sendTo(emails, true)
 								.then(function () {
@@ -486,6 +491,9 @@ angular.module('MobileCRMApp')
 					.then(function () {
 						toaster.success('The invoice was deleted successfully');
 						$location.path('/invoiceList')
+					})
+					.then(function () {
+						$scope.invoice.sendDelete($scope.invoice);
 					});
 			});
 		};
