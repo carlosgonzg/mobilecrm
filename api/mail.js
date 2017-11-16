@@ -242,7 +242,7 @@ var sendServiceOrderDelete = function (serviceOrder, mails, dirname) {
 			}
 			console.log('sending mail', subject);
 			mails = _.uniq(mails);
-			sendMail(mails.join(', '), subject, body, true, serviceOrderAttachments, null, null, 'mf@mobileonecontainers.com')
+			sendMail('mf@mobileonecontainers.com', subject, body, true, serviceOrderAttachments, null, null, 'mf@mobileonecontainers.com')
 				.then(function (response) {
 					console.log('DONE Sending Mail: ', response)
 					deferred.resolve(response);
@@ -401,7 +401,7 @@ var sendInvoiceDelete = function (invoice, mails, cc, file, fileName) {
 			}
 			subject += ' – MobileOne Restoration LLC';
 			mails = _.uniq(mails);
-			sendMail(mails.join(', '), subject, body, true, attachments, cc.join(', '), null, 'mf@mobileonecontainers.com')
+			sendMail('mf@mobileonecontainers.com', subject, body, true, attachments, null, null, 'mf@mobileonecontainers.com')
 				.then(function (response) {
 					console.log('DONE Sending Mail: ', response)
 					deferred.resolve(response);
@@ -538,7 +538,7 @@ var sendWorkOrderDelete = function (workOrder, mails, dirname, file, fileName) {
 			var attachments = setAttachment(file, fileName)
 			console.log('sending mail');
 			mails = _.uniq(mails);
-			sendMail(mails.join(', '), subject, body, true, attachments, null, null, 'mf@mobileonecontainers.com')
+			sendMail('mf@mobileonecontainers.com', subject, body, true, attachments, null, null, 'mf@mobileonecontainers.com')
 				.then(function (response) {
 					console.log('DONE Sending Mail: ', response)
 					deferred.resolve(response);
