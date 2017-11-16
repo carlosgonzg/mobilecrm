@@ -8,7 +8,7 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-	.controller('CompanyCtrl', function ($scope, $rootScope, $location, toaster, company) {
+	.controller('CompanyCtrl', function ($scope, $rootScope, $location, toaster, company, dialogs) {
 		$scope.company = company;
 
 		if ($scope.company.perHours == undefined) {
@@ -59,6 +59,15 @@ angular.module('MobileCRMApp')
 			} else {
 				$scope.company.perHours = false;
 			}
+		};
+
+		$scope.editMails = function () {
+			var emails = $scope.company.sendCorporateMails ? $scope.company.sendCorporateMails : [];
+
+			var dialog = dialogs.create('views/aditionalEmails.html', 'AditionalEmailsCtrl', { emails: emails });
+			dialog.result.then(function (emails) {
+				$scope.company.sendCorporateMails = emails;
+			});
 		}
 
 	});
