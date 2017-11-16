@@ -272,7 +272,7 @@
 						</td>
 						<td>
 							<div ng-if="invoice.dor">
-								{{item.getTotalPriceDelivery(item.quantity, invoice.client.company, $index) | currency }}
+								{{item.getTotalPriceDelivery(item.quantity, invoice.client.company, $index, invoice.typeTruck) | currency }}
 							</div>
 							<div ng-if="!invoice.dor">
 								{{item.getTotalPrice(invoice.client.company) | currency }}
