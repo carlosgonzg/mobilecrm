@@ -615,7 +615,6 @@ Invoice.prototype.getMonthlyStatement = function (params, user) {
 			query.$match['dor'] = {'$exists': true}
 		}
 	}
-	console.log(query)
 
 	var group = {
 		$group: {
