@@ -38,6 +38,13 @@ angular.module('MobileCRMApp')
 					reverse: false,
 					field: '_id'
 				};
+				$scope.invoiceTypeList = [
+					{_id: 'sor', description: 'Service Order'},
+					{_id: 'wor', description: 'Work Order'},
+					{_id: 'dor', description: 'Delivery Order'},
+					{_id: 'All', description: 'All Types'}
+				];
+
 				var today = new Date();
 				$scope.filterDateOptions = {
 					fromDate: new Date(today.getFullYear(), today.getMonth() - 1, today.getDate()),
@@ -52,6 +59,7 @@ angular.module('MobileCRMApp')
 					filtro = $scope.filterField ? $scope.filterField : {}
 				//filtroOrBackup = $scope.filterField && $scope.filterField.$and ? $scope.filterField.$and : [];
 				var params = {};
+
 				var actualPath = $location.path();
 				if ($window.sessionStorage.params && actualPath === $window.sessionStorage.path) {
 					$scope.params = JSON.parse($window.sessionStorage.params);
@@ -83,6 +91,9 @@ angular.module('MobileCRMApp')
 							_id: 1
 						};
 					};
+
+					if ($scope.objeto.baseApiPath === '/api/invoice')
+						$scope.params['invoiceType'] = {_id:'All', description: 'All Types'};
 
 
 					if ($scope.filterDate && $scope.filterDateOptions.enabled) {
@@ -386,15 +397,28 @@ angular.module('MobileCRMApp')
 				}
 
 				$scope.filterByCompany = function () {
-				if ($scope.params.company._id != -1) {
-					$scope.params.filter["client.company._id"] = $scope.params.company._id;
-				} else {
-					console.log("Sf")
-					delete $scope.params.filter["client.company._id"]
+					if ($scope.params.company._id != -1) {
+						$scope.params.filter["client.company._id"] = $scope.params.company._id;
+					} else {
+						console.log("Sf")
+						delete $scope.params.filter["client.company._id"]
+					}
+					$scope.search();
 				}
-				$scope.search();
 
+				$scope.filterByOrigin = function () {
+					delete $scope.params.filter.sor;
+					delete $scope.params.filter.wor;
+					delete $scope.params.filter.dor;
 
+					if ($scope.params.invoiceType._id === 'sor') 
+						$scope.params.filter["sor"] = {$exists:true};
+					else if ($scope.params.invoiceType._id === 'wor') 
+						$scope.params.filter["wor"] = {$exists:true};
+					else if ($scope.params.invoiceType._id === 'dor') 
+						$scope.params.filter["dor"] = {$exists:true};
+
+					$scope.search();
 				}
 
 				//Ejecutar busqueda cuando se cambie algun parametro en filter

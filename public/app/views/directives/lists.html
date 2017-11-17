@@ -36,6 +36,12 @@
         <label for="date">Company:</label>
         <select class="form-control" ng-model="params.company" ng-options="company as company.entity.name for company in companies track by company._id"
           ng-change="filterByCompany()"></select>
+       
+      </div>
+      <div class="col-xs-12 col-md-2" ng-if="objeto.baseApiPath ==='/api/invoice'">
+         <label for="date">Invoice Type:</label>
+          <select class="form-control" ng-model="params.invoiceType" ng-options="type as type.description for type in invoiceTypeList track by type._id"
+            ng-change="filterByOrigin()"></select>
       </div>
       <div class="col-xs-12 text-center" ng-if="!list.length">
         <br>
