@@ -54,7 +54,7 @@
 	<div class="col-xs-2">
 		<div class="form-group">
 	    	<label for="year">Invoice Type:</label>
-		    <select class="form-control" name="type" ng-model="params.invoiceType" ng-options="o as o.description for o in invoiceTypeList track by o._id"></select>
+		    <select class="form-control" name="type" ng-model="params.invoiceType" ng-options="o._id as o.description for o in invoiceTypeList"></select>
   		</div>
 	</div>
 </div>
