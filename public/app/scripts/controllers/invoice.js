@@ -190,7 +190,7 @@ $scope.driver = Driver.data || {};
 
 		$scope.filterOS = {
 			'status._id': {
-				$in: [1, 2, 3]
+				$in: [1, 2, 3, 8]
 			}
 		};
 		$scope.filterWO = {
