@@ -23,6 +23,13 @@ angular.module('MobileCRMApp')
 	$scope.searchWhoList = [];
 	$scope.selectedTab = 'month';
 	$scope.monthsList = [];
+	$scope.invoiceTypeList = [
+		{_id: 'sor', description: 'Service Order'},
+		{_id: 'wor', description: 'Work Order'},
+		{_id: 'dor', description: 'Delivery Order'},
+		{_id: 'All', description: 'All'}
+	];
+
 
 	var setMonths = function(year){
 		$scope.months = [];
@@ -46,7 +53,9 @@ angular.module('MobileCRMApp')
 			description: 'MobileOne'
 		},
 		searchWho: null,
-		year: today.getFullYear()
+		year: today.getFullYear(),
+		month: 'All',
+		invoiceType: {_id: 'All', description: 'All'}
 	};
 
 	$scope.getActiveTab = function(tab){
@@ -141,6 +150,10 @@ angular.module('MobileCRMApp')
 		
 		query.from = new Date(params.year, params.month != 'All' ? params.month-1 : 0, 1, 0, 0, 0, 0);
 		query.to = new Date(params.year, params.month != 'All' ? params.month-1 : 11, 31, 23, 59, 59, 999);
+
+		if (params.invoiceType != 'All')
+				query.invoiceType = params.invoiceType;
+		
 		return query;
 	};
 	$scope.search = function(params){

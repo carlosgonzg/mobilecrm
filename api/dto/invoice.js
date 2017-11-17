@@ -563,6 +563,9 @@ Invoice.prototype.getMonthlyStatement = function (params, user) {
 				address: '$client.company.address',
 				taxes: '$client.company.taxes'
 			},
+			sor: 1,
+			wor: 1,
+			sor: 1,
 			itemType: 1,
 			taxes: {
 				$ifNull: ['$client.company.taxes', 0]
@@ -601,6 +604,18 @@ Invoice.prototype.getMonthlyStatement = function (params, user) {
 	if (params.branchId) {
 		query.$match['branch._id'] = Number(params.branchId);
 	}
+	if (params.invoiceType) {
+		if (params.invoiceType == 'sor') {
+			query.$match['sor'] = {'$exists': true}
+		}
+		if (params.invoiceType == 'wor') {
+			query.$match['wor'] = {'$exists': true}
+		}
+		if (params.invoiceType == 'dor') {
+			query.$match['dor'] = {'$exists': true}
+		}
+	}
+	console.log(query)
 
 	var group = {
 		$group: {

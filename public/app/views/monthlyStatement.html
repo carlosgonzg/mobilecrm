@@ -39,7 +39,7 @@
 	</div>
 </div>
 <div class="row">
-	<div class="col-xs-4">
+	<div class="col-xs-2">
 		<div class="form-group">
 	    	<label for="year">Year:</label>
 		    <select class="form-control" name="years" ng-model="params.year" ng-options="o as o for o in years track by o"></select>
@@ -49,6 +49,12 @@
 		<div class="form-group">
 	    	<label for="year">Month:</label>
 		    <select class="form-control" name="months" ng-model="params.month" ng-options="o.month as o.month for o in monthList"></select>
+  		</div>
+	</div>
+	<div class="col-xs-2">
+		<div class="form-group">
+	    	<label for="year">Invoice Type:</label>
+		    <select class="form-control" name="type" ng-model="params.invoiceType" ng-options="o._id as o.description for o in invoiceTypeList track by o._id"></select>
   		</div>
 	</div>
 </div>
