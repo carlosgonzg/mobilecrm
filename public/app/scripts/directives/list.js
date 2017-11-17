@@ -400,7 +400,6 @@ angular.module('MobileCRMApp')
 					if ($scope.params.company._id != -1) {
 						$scope.params.filter["client.company._id"] = $scope.params.company._id;
 					} else {
-						console.log("Sf")
 						delete $scope.params.filter["client.company._id"]
 					}
 					$scope.search();

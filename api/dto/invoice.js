@@ -565,7 +565,7 @@ Invoice.prototype.getMonthlyStatement = function (params, user) {
 			},
 			sor: 1,
 			wor: 1,
-			sor: 1,
+			dor: 1,
 			itemType: 1,
 			taxes: {
 				$ifNull: ['$client.company.taxes', 0]

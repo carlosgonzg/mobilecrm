@@ -162,7 +162,6 @@ angular.module('MobileCRMApp')
 		$scope.invoices = [];
 		new Invoice().getMonthlyStatement(query)
 		.then(function(result){
-			console.log(result)
 			setMonths($scope.params.year);
 			$scope.invoices = result;
 			$scope.branches = {};
