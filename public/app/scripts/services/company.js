@@ -56,14 +56,11 @@ angular.module('MobileCRMApp')
 
 	Company.prototype.peek = function(dor){
 		var d = $q.defer();
-		console.log(dor)
 		$http.get(this.baseApiPath + '/sequence/peek/' + this._id + '&' + dor)
 		.success(function (data) {
-			console.log(data)
 			d.resolve(data);
 	    })
 	    .error(function (data, status, headers, config) {
-	    	console.log('err', data)
 	        d.reject(data);
 	    });
 		return d.promise;

@@ -40,7 +40,7 @@ angular.module('MobileCRMApp')
 			return at;
 		};
 
-		Item.prototype.getTotalPriceDelivery = function (quantitymiles, comp, index) {
+		Item.prototype.getTotalPriceDelivery = function (quantitymiles, comp, index, typetruck) {
 			var total = 0;
 			var InitPrice = this.price;
 			var initialMile = 30;
@@ -69,7 +69,7 @@ angular.module('MobileCRMApp')
 						initialMile = comp.initialMile;
 						costPerMile = comp.costPerMile;
 					} else {
-						if (this.typeTruck._id == 1) {
+						if (typetruck._id == 1) {
 							costPerHours = comp.costPerHours;
 						} else {
 							costPerHours = comp.smallTruck;

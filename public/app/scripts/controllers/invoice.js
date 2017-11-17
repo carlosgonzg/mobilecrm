@@ -14,7 +14,7 @@ angular.module('MobileCRMApp')
 		$scope.waiting = false;
 		$scope.readOnly = $rootScope.userData.role._id != 1;
 		$scope.expenses = []
-$scope.driver = Driver.data || {};
+		$scope.driver = Driver.data || {};
 
 		if ($rootScope.userData.role._id != 1) {
 			$scope.invoice.client = new User($rootScope.userData);
@@ -259,7 +259,6 @@ $scope.driver = Driver.data || {};
 			}
 			if ($scope.expenses != undefined) {
 				$scope.invoice.expenses = $scope.expenses
-				console.log($scope.invoice)
 			}
 			delete $scope.invoice._id;
 			$scope.clientChanged(doc.client);
@@ -323,42 +322,11 @@ $scope.driver = Driver.data || {};
 			$scope.waiting = true;
 			delete $scope.invoice.client.account.password;
 
-			console.log($scope.invoice)
-
-		 	$scope.invoice.save()
+			$scope.invoice.save()
 				.then(function (data) {
-/* 					new ServiceOrder().filter({ "sor": $scope.invoice.sor })
-						.then(function (result) {
-							_.map(result.data, function (obj) {
-								$scope.ServiceOrder = obj
-								$scope.ServiceOrder.status = $scope.invoice.status
-								$scope.ServiceOrder.sendTotech = sendTotech
-								$scope.ServiceOrder.sendMail = false;
-								console.log($scope.invoice.sor)
-							});
-							$scope.ServiceOrder.save()
-						})
-					new WorkOrder().filter({ "wor": $scope.invoice.wor })
-						.then(function (result) {
-							_.map(result.data, function (obj) {
-								$scope.WorkOrder = obj
-								$scope.WorkOrder.status = $scope.invoice.status
-								$scope.WorkOrder.sendTotech = sendTotech
-								$scope.WorkOrder.sendMail = false;
-								console.log($scope.invoice.wor)
-							});
-							$scope.WorkOrder.save()
-						})
-					new DeliveryOrder().filter({ "dor": $scope.invoice.dor })
-						.then(function (result) {
-							_.map(result.data, function (obj) {
-								$scope.DeliveryOrder = obj
-								$scope.DeliveryOrder.status = $scope.invoice.status
-								$scope.DeliveryOrder.sendMail = false;
-								console.log($scope.invoice.dor)
-							});
-							$scope.DeliveryOrder.save()
-						}) */
+					if (data.nModified == 1) {
+						$scope.updateDoc()
+					}	
 					toaster.success('The Invoice was saved successfully');
 					$location.path('invoiceList')
 					$scope.waiting = false;
@@ -368,12 +336,15 @@ $scope.driver = Driver.data || {};
 					toaster.error('The Invoice couldn\'t be saved, please check if some required field is empty or if its duplicated');
 					$scope.waiting = false;
 				});
-		}; 
+		};
 		$scope.saveBranch = function () {
 			$scope.waiting = true;
 			delete $scope.invoice.client.account.password;
 			$scope.invoice.save()
 				.then(function (data) {
+					if (data.nModified == 1) {
+						$scope.updateDoc()
+					}	
 					new User().filter({ 'branch._id': $scope.invoice.client.branch._id })
 						.then(function (result) {
 							var emails = _.map(result.data, function (obj) {
@@ -384,7 +355,7 @@ $scope.driver = Driver.data || {};
 									$scope.waiting = false;
 
 								});
-					})
+						})
 				},
 				function (error) {
 					console.log(error);
@@ -404,13 +375,16 @@ $scope.driver = Driver.data || {};
 
 			$scope.invoice.save()
 				.then(function (data) {
+					if (data.nModified == 1) {
+						$scope.updateDoc()
+					}	
 					new Company().filter({ _id: $scope.invoice.client.company._id })
 						.then(function (result) {
 							var emails = _.map(result.data, function (obj) {
 								return obj.accountPayableEmail;
 							});
 							if (result.data[0].sendCorporateMails) {
-								for (var i=0; i< result.data[0].sendCorporateMails.length;i++) {
+								for (var i = 0; i < result.data[0].sendCorporateMails.length; i++) {
 									emails.push(result.data[0].sendCorporateMails[i]);
 								}
 							};
@@ -432,6 +406,9 @@ $scope.driver = Driver.data || {};
 			delete $scope.invoice.client.account.password;
 			$scope.invoice.save()
 				.then(function (data) {
+					if (data.nModified == 1) {
+						$scope.updateDoc()
+					}
 					toaster.success('The Invoice was saved successfully');
 					$scope.invoice.send();
 					$scope.waiting = false;
@@ -494,5 +471,46 @@ $scope.driver = Driver.data || {};
 		}
 		if (invoice.client) {
 			$scope.clientChanged(invoice.client);
+		}
+
+		$scope.updateDoc = function () {
+			if ($scope.invoice.typeTruck == undefined && $scope.invoice.sor != "") {
+				new ServiceOrder().filter({ "sor": $scope.invoice.sor })
+					.then(function (result) {
+						_.map(result.data, function (obj) {
+							$scope.ServiceOrder = obj
+							$scope.ServiceOrder.status = $scope.invoice.status
+							$scope.ServiceOrder.sendTotech = sendTotech
+							$scope.ServiceOrder.sendMail = false;
+							console.log($scope.invoice.sor)
+						});
+						$scope.ServiceOrder.save()
+					})
+			}
+			if ($scope.invoice.typeTruck == undefined && $scope.invoice.wor != "") {
+				new WorkOrder().filter({ "wor": $scope.invoice.wor })
+					.then(function (result) {
+						_.map(result.data, function (obj) {
+							$scope.WorkOrder = obj
+							$scope.WorkOrder.status = $scope.invoice.status
+							$scope.WorkOrder.sendTotech = sendTotech
+							$scope.WorkOrder.sendMail = false;
+							console.log($scope.invoice.wor)
+						});
+						$scope.WorkOrder.save()
+					})
+			}
+			if ($scope.invoice.typeTruck && $scope.invoice.dor) {
+				new DeliveryOrder().filter({ "dor": $scope.invoice.dor })
+					.then(function (result) {
+						_.map(result.data, function (obj) {
+							$scope.DeliveryOrder = obj
+							$scope.DeliveryOrder.status = $scope.invoice.status
+							$scope.DeliveryOrder.sendMail = false;
+							console.log($scope.invoice.dor)
+						});
+						$scope.DeliveryOrder.save()
+					})
+			}
 		}
 	});

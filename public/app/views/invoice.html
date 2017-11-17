@@ -162,11 +162,37 @@
 						</div>
 					</div>
 				</div>
+								<div class="col-sm-6">
+					<div class="col-xs-12 pull-right">
+						<div class="form-group">
+							<div ng-if="!invoice.dor">
+								<label for="pono">Status</label>
+								<select class="form-control" ng-model="invoice.status" ng-class="isChanged('status')" ng-change="changed('status'); setAmountToZero(invoice.status)"
+								 ng-options="status as status.description for status in listStatus track by status._id" ng-disabled="isDisabled() || userData.role._id != 1"></select>
+							</div>
+							<div ng-if="invoice.dor">
+								<label for="pono">Status</label>
+								<select class="form-control" name="status" ng-model="invoice.status" ng-class="isChanged('Status')" ng-change="changed('Status')"
+								 ng-options="status as status.description for status in statusDelivery track by status._id" ng-disabled="isDisabled()"
+								 validator="required"></select>
+							</div>
+						</div>
+					</div>
+				</div>
 				<div class="col-sm-6">
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
 							<label for="pono">PO #</label>
 							<input type="text" class="form-control" ng-model="invoice.pono" ng-class="isChanged('pono')" ng-change="changed('pono')"
+							 ng-disabled="isDisabled()">
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="col-xs-12 pull-right">
+						<div class="form-group">
+							<label for="pono">Unit Size</label>
+							<input type="text" class="form-control" ng-model="invoice.unitSize" ng-class="isChanged('unitSize')" ng-change="changed('unitSize')"
 							 ng-disabled="isDisabled()">
 						</div>
 					</div>
@@ -181,33 +207,14 @@
 					</div>
 				</div>
 				<div class="col-sm-6">
-					<div class="col-xs-12 pull-right">
+					<div class="col-xs-12 pull-right" ng-if="!invoice.dor">
 						<div class="form-group">
-							<div ng-if="!invoice.dor">
-								<label for="pono">Status</label>
-								<select class="form-control" ng-model="invoice.status" ng-class="isChanged('status')" ng-change="changed('status'); setAmountToZero(invoice.status)"
-								 ng-options="status as status.description for status in listStatus track by status._id" ng-disabled="isDisabled() || userData.role._id != 1"></select>
-							</div>
-							<div ng-if="invoice.dor">
-								<label for="pono">Status</label>
-								<select class="form-control" name="status" ng-model="invoice.status" ng-class="isChanged('Status')" ng-change="changed('Status')"
-								 ng-options="status as status.description for status in statusDelivery track by status._id" ng-disabled="isDisabled()"
-								 validator="required"></select>
-							</div>
-
-						</div>
-					</div>
-				</div>
-				<div class="col-sm-6">
-					<div class="col-xs-12 pull-right">
-						<div class="form-group">
-							<label for="pono">Unit Size</label>
-							<input type="text" class="form-control" ng-model="invoice.unitSize" ng-class="isChanged('unitSize')" ng-change="changed('unitSize')"
+							<label for="isono">ISO #</label>
+							<input type="text" class="form-control" ng-model="invoice.isono" ng-class="isChanged('isono')" ng-change="changed('isono')"
 							 ng-disabled="isDisabled()">
 						</div>
 					</div>
 				</div>
-
 				<div class="col-sm-6">
 					<div class="col-xs-12 pull-right">
 						<div class="form-group" ng-if="invoice.dor">
@@ -272,7 +279,7 @@
 						</td>
 						<td>
 							<div ng-if="invoice.dor">
-								{{item.getTotalPriceDelivery(item.quantity, invoice.client.company, $index) | currency }}
+								{{item.getTotalPriceDelivery(item.quantity, invoice.client.company, $index, invoice.typeTruck) | currency }}
 							</div>
 							<div ng-if="!invoice.dor">
 								{{item.getTotalPrice(invoice.client.company) | currency }}
