@@ -772,12 +772,14 @@ angular.module('MobileCRMApp')
 		function calculateAndShowRoute(directionsService, directionsDisplay) {
 			var waypts = [];
 
-			for (let index = 0; index < $scope.DeliveryOrder.additionalRoute.waypts.length; index++) {
-				waypts.push({
-					location: document.getElementById('way_' + index).value,
-					stopover: true
-				});
-			}
+			if ($scope.DeliveryOrder.additionalRoute.waypts) {
+				for (let index = 0; index < $scope.DeliveryOrder.additionalRoute.waypts.length; index++) {
+					waypts.push({
+						location: document.getElementById('way_' + index).value,
+						stopover: true
+					});
+				}
+			}	
 			console.log(waypts)
 
 			directionsService.route({
