@@ -113,18 +113,17 @@ angular.module('MobileCRMApp')
 					avoidHighways: false,
 					avoidTolls: false,
 				}, function (response, status) {
-					console.log(response);
-					console.log(status)
-
 					if (status === "OK" && response.rows[0].elements[0].status != "ZERO_RESULTS") {
 						result = response.rows[0].elements[0].distance.value;
 					} else {
-						result = 0;
+						result = 0; ``
 					}
 
 					if ($scope.DeliveryOrder.siteAddressFrom && $scope.DeliveryOrder.siteAddress) {
 
 						$scope.DeliveryOrder.siteAddress.distanceFrom = $scope.DeliveryOrder.siteAddressFrom.address1 && $scope.DeliveryOrder.siteAddress.address1 ? parseFloat((result * 0.00062137).toFixed(2)) : 0;
+						$scope.DeliveryOrder.siteAddress.distanceFrom += $scope.DeliveryOrder.RouteMile
+
 						initMap(p1coord, p2coord);
 						$scope.$apply();
 
@@ -482,6 +481,8 @@ angular.module('MobileCRMApp')
 			if ($scope.DeliveryOrder.status.description == "Pending") {
 				$scope.DeliveryOrder.status.description = "Waiting for Availability"
 			}
+			console.log($scope.DeliveryOrder)
+
 			if ($scope.DeliveryOrder.client.company.perHours == undefined) {
 				$scope.addConfigComp()
 			} else {
@@ -497,6 +498,7 @@ angular.module('MobileCRMApp')
 						$scope.waiting = false;
 					});
 			}
+
 		};
 
 		$scope.delete = function () {
@@ -699,7 +701,7 @@ angular.module('MobileCRMApp')
 						$scope.DeliveryOrder.client.company.initialMile = obj.initialMile
 						$scope.DeliveryOrder.client.company.costPerMile = obj.costPerMile
 						$scope.DeliveryOrder.client.company.costPerHours = obj.costPerHours
-					
+
 						$scope.DeliveryOrder.save()
 							.then(function (data) {
 								toaster.success('The Delivery Order was saved successfully');
@@ -711,15 +713,151 @@ angular.module('MobileCRMApp')
 								toaster.error('The Delivery Order couldn\'t be saved, please check if some required field is empty or if its duplicated');
 								$scope.waiting = false;
 							});
-						
+
 					})
 				})
 
 		}
 
-		//if (!$scope.DeliveryOrder.client._id) {
-		//$scope.LoadItemDefault()
-		//}
-		//console.log($scope.DeliveryOrder.client.company)
+		var originPointRoute = {};
+		var placeSearchRoute, autocompleteRoute, mapRoute, directionsServiceRoute, directionsDisplayRoute;
+
+		function initAutocomplete() {
+			autocompleteRoute = new google.maps.places.Autocomplete((document.getElementById('start')), { types: ['geocode'] });
+			autocompleteRoute = new google.maps.places.Autocomplete((document.getElementById('end')), { types: ['geocode'] });
+
+			//autocomplete.addListener('place_changed', fillInAddress);
+		}
+
+		$scope.AutoC = function (e) {
+			autocompleteRoute = new google.maps.places.Autocomplete((document.getElementById('way_' + e)), { types: ['geocode'] });
+		}
+
+		$timeout(function () {
+			initAutocomplete();
+		});
+
+
+		$scope.addWaypoints = function () {		
+			var newArr = {}
+
+			$scope.DeliveryOrder.additionalRoute.waypts.push(newArr)
+			console.log($scope.additionalRoutes)
+		}
+
+		$scope.deleteWaypoints = function (index) {
+			$scope.DeliveryOrder.additionalRoute.waypts.splice(index, 1)
+		}
+
+		function initMapRoute() {
+
+			var directionsService = new google.maps.DirectionsService;
+			var directionsDisplay = new google.maps.DirectionsRenderer;
+			var map = new google.maps.Map(document.getElementById('map'), {
+				zoom: 6,
+				center: {
+					lat: 28.39788010000001,
+					lng: -81.33288979999998
+				}
+			});
+
+			directionsDisplay.setMap(map);
+
+			document.getElementById('submit').addEventListener('click', function () {
+				calculateAndShowRoute(directionsService, directionsDisplay);
+			});
+
+		}
+
+		function calculateAndShowRoute(directionsService, directionsDisplay) {
+			var waypts = [];
+
+			for (let index = 0; index < $scope.DeliveryOrder.additionalRoute.waypts.length; index++) {
+				waypts.push({
+					location: document.getElementById('way_' + index).value,
+					stopover: true
+				});
+			}
+			console.log(waypts)
+
+			directionsService.route({
+				origin: document.getElementById('start').value,
+				destination: document.getElementById('end').value,
+				waypoints: waypts,
+				optimizeWaypoints: true,
+				travelMode: 'DRIVING'
+			}, function (response, status) {
+				if (status === 'OK') {
+					directionsDisplay.setDirections(response);
+					var route = response.routes[0];
+					var summaryPanel = document.getElementById('directions-panel');
+					summaryPanel.innerHTML = '';
+					var miles = 0;
+					// For each route, display summary information.
+					for (var i = 0; i < route.legs.length; i++) {
+						var routeSegment = i + 1;
+						summaryPanel.innerHTML += '<b>Route Segment: ' + routeSegment +
+							'</b><br>';
+						summaryPanel.innerHTML += route.legs[i].start_address + ' to ';
+						summaryPanel.innerHTML += route.legs[i].end_address + '<br>';
+						summaryPanel.innerHTML += '<strong>' + route.legs[i].distance.text + '</strong><br><br>';
+
+						miles += parseInt(route.legs[i].distance.text.replace(' mi', ''));
+						console.log(miles)
+					}
+
+					$scope.DeliveryOrder.additionalRoute.Start = route.legs[0].start_address
+					$scope.DeliveryOrder.additionalRoute.waypts = waypts
+					$scope.DeliveryOrder.additionalRoute.End = route.legs[route.legs.length - 1].end_address
+
+				
+					$scope.DeliveryOrder.RouteMile = miles
+					$scope.recalculate()
+				} else {
+					//	toaster.success('Directions request failed due to ' + status);
+					$scope.DeliveryOrder.RouteMile = 0
+					$scope.recalculate()
+				}
+			});
+		}
+
+		$scope.resetRoute = function (e) {
+			if (e == 1) {
+				document.getElementById('start').value = ''
+			} else {
+				document.getElementById('end').value = ''
+			}
+
+			if (document.getElementById('start').value == '' && document.getElementById('end').value == '') {
+				$scope.DeliveryOrder.RouteMile = 0
+				document.getElementById('directions-panel').innerHTML = ""
+				initMapRoute()
+			}
+		}
+
+		$scope.showdiv = function () {
+			if (document.getElementById('divMap').style.display == 'none') {
+				document.getElementById('divMap').style.display = 'block'
+			} else {
+				document.getElementById('divMap').style.display = 'none'
+			}
+			if (document.getElementById('start').value && document.getElementById('end').value) {
+				var directionsService = new google.maps.DirectionsService;
+				var directionsDisplay = new google.maps.DirectionsRenderer;
+				var map = new google.maps.Map(document.getElementById('map'), {
+					zoom: 6,
+					center: {
+						lat: 28.39788010000001,
+						lng: -81.33288979999998
+					}
+				});
+
+				directionsDisplay.setMap(map);
+				calculateAndShowRoute(directionsService, directionsDisplay);
+			}
+		}
+
+		initMapRoute();
+		document.getElementById('divMap').style.display = 'none'
 	});
 
