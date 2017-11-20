@@ -599,13 +599,13 @@ angular.module('MobileCRMApp')
 			dMiles = false; hour = false
 			if ($scope.company == undefined) {
 				console.log(1)
-				SetDefaulItems(5, 805)
+				SetDefaulItems(805)
 				return
 			}
 
 			if ($scope.company.perHours != undefined) { //SI ESTA DEFINIDO EN COMPANY
 				if ($scope.company.perHours == true) { //SI ES POR HORA 					
-					SetDefaulItems(5, 806)
+					SetDefaulItems(806)
 					if ($scope.DeliveryOrder.typeTruck._id == 1) {
 						$scope.DeliveryOrder.items[1].price = $scope.company.costPerHours
 					} else {
@@ -614,17 +614,17 @@ angular.module('MobileCRMApp')
 					return;
 				} else if ($scope.company.initialCost) { // SI NO ES POR HORA
 					console.log(3)
-					SetDefaulItems(5, 805)
+					SetDefaulItems(805)
 					$scope.DeliveryOrder.items[1].price = $scope.company.initialCost;
 					return;
 				} else {
 					console.log(4)
-					SetDefaulItems(5, 805)
+					SetDefaulItems(805)
 					return;
 				}
 			} else {
 				console.log(5)
-				SetDefaulItems(5, 805)
+				SetDefaulItems(805)
 				return
 			}
 
@@ -651,7 +651,7 @@ angular.module('MobileCRMApp')
 				console.log('m')
 				for (var index = 0; index < $scope.item.length; index++) {
 					var element = $scope.item[index]
-					if (element._id == 5 || element._id == 805 || element._id == 806) {
+					if (element._id == 805 || element._id == 806) {
 						$scope.DeliveryOrder.items.push(element)
 					}
 				}
