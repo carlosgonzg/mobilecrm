@@ -23,7 +23,7 @@ angular.module('MobileCRMApp')
 
 		$scope.readOnly = $rootScope.userData.role._id != 1;
 		$scope.showMap = $rootScope.userData.role._id == 1;
-		$scope.commentDiabled = true;
+		$scope.commentDiabled = true;		
 
 		if ($rootScope.userData.role._id == 1 || $rootScope.userData.role._id == 6) {
 			$scope.commentDiabled = false;
@@ -37,6 +37,11 @@ angular.module('MobileCRMApp')
 			if ($scope.DeliveryOrder.client.company.perHours != undefined) {
 				$scope.company = $scope.DeliveryOrder.client.company
 			}
+		}
+
+		if ($scope.DeliveryOrder.fromwriteAddress == undefined) {
+			$scope.DeliveryOrder.fromwriteAddress = true
+			$scope.DeliveryOrder.fromCompanyAddress = false
 		}
 
 		$scope.listStatus = statusList;
@@ -74,7 +79,6 @@ angular.module('MobileCRMApp')
 		var originalContacts = $scope.DeliveryOrder.contacts;
 		var originalSiteAddress = $scope.DeliveryOrder.siteAddress;
 
-
 		$scope.getBranches = function () {
 			$scope.branches = [];
 			new Branch().filter({})
@@ -91,9 +95,28 @@ angular.module('MobileCRMApp')
 		};
 
 		$scope.recalculate = function () {
-			if ($scope.DeliveryOrder.siteAddress) {
-				$scope.DeliveryOrder.siteAddress.distanceFrom = $scope.DeliveryOrder.siteAddressFrom && $scope.DeliveryOrder.siteAddressFrom.address1 && $scope.DeliveryOrder.siteAddress && $scope.DeliveryOrder.siteAddress.address1 ? getDistance($scope.DeliveryOrder.siteAddress, $scope.DeliveryOrder.siteAddressFrom) : 0;
+			if ($scope.DeliveryOrder.siteAddressFrom) {
+				if ($scope.DeliveryOrder.siteAddressFrom.address1 && $scope.DeliveryOrder.siteAddress.address1) {
+					var distance = getDistance($scope.DeliveryOrder.siteAddress, $scope.DeliveryOrder.siteAddressFrom);
+
+					for (var row = 0; row < $scope.DeliveryOrder.items.length; row++) {
+						var id = $scope.DeliveryOrder.items[row]._id;
+						if (id == 805) {
+							var miles = $scope.DeliveryOrder.siteAddress.distanceFrom
+
+							$scope.DeliveryOrder.items[row].quantity = miles
+						}
+
+					}
+				}
 			}
+		}
+
+		var getDistance1 = function (p1, p2) {
+			var p1 = new google.maps.LatLng(p1.latitude, p1.longitude);
+			var p2 = new google.maps.LatLng(p2.latitude, p2.longitude);
+			var distance = google.maps.geometry.spherical.computeDistanceBetween(p1, p2);
+			return parseFloat((distance * 0.00062137).toFixed(2));
 		}
 
 		var getDistance = function (p1, p2) {
@@ -116,18 +139,25 @@ angular.module('MobileCRMApp')
 					if (status === "OK" && response.rows[0].elements[0].status != "ZERO_RESULTS") {
 						result = response.rows[0].elements[0].distance.value;
 					} else {
-						result = 0; ``
+						result = 0;
 					}
 
+					SetAddress();
+					console.log($scope.DeliveryOrder.siteAddressFrom, $scope.DeliveryOrder.siteAddress)
 					if ($scope.DeliveryOrder.siteAddressFrom && $scope.DeliveryOrder.siteAddress) {
 
 						$scope.DeliveryOrder.siteAddress.distanceFrom = $scope.DeliveryOrder.siteAddressFrom.address1 && $scope.DeliveryOrder.siteAddress.address1 ? parseFloat((result * 0.00062137).toFixed(2)) : 0;
-					
-						$scope.DeliveryOrder.siteAddress.distanceFrom += $scope.DeliveryOrder.RouteMile || 0
-
 						initMap(p1coord, p2coord);
 						$scope.$apply();
-						console.log($scope.DeliveryOrder.siteAddress.distanceFrom)
+
+						for (var row = 0; row < $scope.DeliveryOrder.items.length; row++) {
+							var id = $scope.DeliveryOrder.items[row]._id;
+							if (id == 805) {
+								var miles = $scope.DeliveryOrder.siteAddress.distanceFrom
+
+								$scope.DeliveryOrder.items[row].quantity = miles
+							}
+						}
 
 					}
 
@@ -483,8 +513,6 @@ angular.module('MobileCRMApp')
 			if ($scope.DeliveryOrder.status.description == "Pending") {
 				$scope.DeliveryOrder.status.description = "Waiting for Availability"
 			}
-			console.log($scope.DeliveryOrder)
-
 			if ($scope.DeliveryOrder.client.company.perHours == undefined) {
 				$scope.addConfigComp()
 			} else {
@@ -500,7 +528,6 @@ angular.module('MobileCRMApp')
 						$scope.waiting = false;
 					});
 			}
-
 		};
 
 		$scope.delete = function () {
@@ -522,6 +549,143 @@ angular.module('MobileCRMApp')
 			$scope.DeliveryOrder.send();
 		};
 
+		var originPoint = {};
+		var placeSearch, autocomplete, map, directionsService, directionsDisplay;
+
+		function fillInAddress() {
+			// Get the place details from the autocomplete object.
+			originPoint = $scope.originPoint && $scope.originPoint.latitude != 0 && $scope.originPoint.longitude != 0 ? $scope.originPoint : {
+				latitude: 28.39788010000001,
+				longitude: -81.33288979999998
+			};
+
+			var place = autocomplete.getPlace();
+			var data = {
+				streetNumber: '',
+				route: '',
+				city: {
+					id: '',
+					description: ''
+				},
+				county: {
+					id: '',
+					description: ''
+				},
+				state: {
+					id: '',
+					description: ''
+				},
+				country: {
+					id: '',
+					description: ''
+				},
+				zipcode: {
+					postal: '',
+					subpostal: ''
+				}
+			};
+			if (place.address_components) {
+				for (var i = 0; i < place.address_components.length; i++) {
+					//Getting all data
+					if (place.address_components[i].types.indexOf('street_number') != -1) {
+						data.streetNumber = place.address_components[i].long_name
+					}
+					else if (place.address_components[i].types.indexOf('route') != -1) {
+						data.route = place.address_components[i].long_name
+					}
+					else if (place.address_components[i].types.indexOf('locality') != -1) {
+						data.city.id = place.address_components[i].short_name
+						data.city.description = place.address_components[i].long_name
+					}
+					else if (place.address_components[i].types.indexOf('administrative_area_level_2') != -1) {
+						data.county.id = place.address_components[i].short_name
+						data.county.description = place.address_components[i].long_name
+					}
+					else if (place.address_components[i].types.indexOf('administrative_area_level_1') != -1) {
+						data.state.id = place.address_components[i].short_name
+						data.state.description = place.address_components[i].long_name
+					}
+					else if (place.address_components[i].types.indexOf('country') != -1) {
+						data.country.id = place.address_components[i].short_name
+						data.country.description = place.address_components[i].long_name
+					}
+					else if (place.address_components[i].types.indexOf('postal_code') != -1) {
+						data.zipcode.postal = place.address_components[i].long_name
+					}
+					else if (place.address_components[i].types.indexOf('postal_code_suffix') != -1) {
+						data.zipcode.subpostal = place.address_components[i].long_name
+					}
+				}
+			}
+			else {
+				var data = {
+					streetNumber: '',
+					route: place.name,
+					city: {
+						id: 0,
+						description: 'N/A'
+					},
+					county: {
+						id: 0,
+						description: 'N/A'
+					},
+					state: {
+						id: 0,
+						description: 'N/A'
+					},
+					country: {
+						id: 0,
+						description: 'N/A'
+					},
+					zipcode: {
+						postal: 'N/A',
+						subpostal: 'N/A'
+					}
+				};
+			}
+
+			$scope.DeliveryOrder.address1 = data.streetNumber + ' ' + data.route;
+			$scope.DeliveryOrder.address2 = '';
+			$scope.DeliveryOrder.city = data.city;
+			$scope.DeliveryOrder.city.stateId = data.state.id;
+			$scope.DeliveryOrder.county = data.county;
+			$scope.DeliveryOrder.state = data.state;
+			$scope.DeliveryOrder.state.country = data.country.id;
+			$scope.DeliveryOrder.country = data.country;
+			$scope.DeliveryOrder.zipcode = data.zipcode.postal;
+			$scope.DeliveryOrder.latitude = place.geometry ? place.geometry.location.lat() : 0;
+			$scope.DeliveryOrder.longitude = place.geometry ? place.geometry.location.lng() : 0;
+
+			console.log(88777)
+
+			if (place.geometry) {
+				getDistance($scope.DeliveryOrder, originPoint);
+			}
+
+			if (originPoint) {
+				initMap();
+			}
+
+			$scope.$apply();
+			$scope.recalculate();
+		}
+
+		$scope.geolocate = function () {
+			if (navigator.geolocation) {
+				navigator.geolocation.getCurrentPosition(function (position) {
+					var geolocation = {
+						lat: position.coords.latitude,
+						lng: position.coords.longitude
+					};
+					var circle = new google.maps.Circle({
+						center: geolocation,
+						radius: position.coords.accuracy
+					});
+					autocomplete.setBounds(circle.getBounds());
+				});
+			}
+		};
+
 		var Address = function (address) {
 			this.address1 = address.address1 || '';
 			this.address2 = address.address2 || '';
@@ -534,6 +698,18 @@ angular.module('MobileCRMApp')
 			this.distanceFrom = address.distanceFrom || 0;
 			this.gndi
 		};
+
+		function initAutocomplete() {
+			autocomplete = new google.maps.places.Autocomplete((document.getElementById('addressFromsId')), { types: ['geocode'] });
+
+			autocomplete.addListener('place_changed', fillInAddress);
+		}
+
+		$timeout(function () {
+			//	console.log($scope.addresses)
+			//	$scope.ngModel = new Address($scope.ngModel);
+			initAutocomplete();
+		});
 
 		$scope.reset = function () {
 			$scope.DeliveryOrder.siteAddressFrom = [];
@@ -574,6 +750,7 @@ angular.module('MobileCRMApp')
 				}
 
 				$scope.DeliveryOrder.siteAddressFrom = siteAddressFrom;
+				console.log($scope.DeliveryOrder.siteAddressFrom)
 			}
 		}
 
@@ -585,12 +762,23 @@ angular.module('MobileCRMApp')
 					add = DeliveryOrder.siteAddressFrom.address1 || ""
 				}
 				if (DeliveryOrder.siteAddressFrom.city) {
-					add = add + ', ' + DeliveryOrder.siteAddressFrom.city.description;
+					if (add == '') {
+						add = DeliveryOrder.siteAddressFrom.city.description;						
+					} else {
+						add = add + ', ' + DeliveryOrder.siteAddressFrom.city.description;
+					}			
 				}
 				if (DeliveryOrder.siteAddressFrom.state) {
-					add = add + ', ' + DeliveryOrder.siteAddressFrom.state.id + ', ' + DeliveryOrder.siteAddressFrom.state.description
+					if (add == '') {
+						add = DeliveryOrder.siteAddressFrom.state.id + ', ' + DeliveryOrder.siteAddressFrom.state.description
+					} else {
+						add = add + ', ' + DeliveryOrder.siteAddressFrom.state.id + ', ' + DeliveryOrder.siteAddressFrom.state.description
+					}					
 				}
+
+				add = add.replace(" , ", "")
 			}
+			
 			DeliveryOrder.addresstr = add;
 		}
 
@@ -639,7 +827,6 @@ angular.module('MobileCRMApp')
 			}
 		}
 		$scope.melost = function () {
-			console.log($scope.fistLoad)
 			if ($scope.fistLoad == 0) {
 				angular.element(document.getElementById('lostIdFocus'))[0].focus();
 				$scope.fistLoad = 1;
@@ -648,7 +835,6 @@ angular.module('MobileCRMApp')
 
 		function LoadData() {
 			if (!$route.current.params.id) {
-				console.log('m')
 				for (var index = 0; index < $scope.item.length; index++) {
 					var element = $scope.item[index]
 					if (element._id == 805 || element._id == 806) {
@@ -721,147 +907,18 @@ angular.module('MobileCRMApp')
 
 		}
 
-		var originPointRoute = {};
-		var placeSearchRoute, autocompleteRoute, mapRoute, directionsServiceRoute, directionsDisplayRoute;
-
-		function initAutocomplete() {
-			autocompleteRoute = new google.maps.places.Autocomplete((document.getElementById('start')), { types: ['geocode'] });
-			autocompleteRoute = new google.maps.places.Autocomplete((document.getElementById('end')), { types: ['geocode'] });
-
-			//autocomplete.addListener('place_changed', fillInAddress);
-		}
-
-		$scope.AutoC = function (e) {
-			autocompleteRoute = new google.maps.places.Autocomplete((document.getElementById('way_' + e)), { types: ['geocode'] });
-		}
-
-		$timeout(function () {
-			initAutocomplete();
-		});
-
-
-		$scope.addWaypoints = function () {		
-			var newArr = {}
-
-			$scope.DeliveryOrder.additionalRoute.waypts.push(newArr)
-			console.log($scope.additionalRoutes)
-		}
-
-		$scope.deleteWaypoints = function (index) {
-			$scope.DeliveryOrder.additionalRoute.waypts.splice(index, 1)
-		}
-
-		function initMapRoute() {
-
-			var directionsService = new google.maps.DirectionsService;
-			var directionsDisplay = new google.maps.DirectionsRenderer;
-			var map = new google.maps.Map(document.getElementById('map'), {
-				zoom: 6,
-				center: {
-					lat: 28.39788010000001,
-					lng: -81.33288979999998
-				}
-			});
-
-			directionsDisplay.setMap(map);
-
-			document.getElementById('submit').addEventListener('click', function () {
-				calculateAndShowRoute(directionsService, directionsDisplay);
-			});
-
-		}
-
-		function calculateAndShowRoute(directionsService, directionsDisplay) {
-			var waypts = [];
-
-			if ($scope.DeliveryOrder.additionalRoute.waypts) {
-				for (let index = 0; index < $scope.DeliveryOrder.additionalRoute.waypts.length; index++) {
-					waypts.push({
-						location: document.getElementById('way_' + index).value,
-						stopover: true
-					});
-				}
-			}	
-			console.log(waypts)
-
-			directionsService.route({
-				origin: document.getElementById('start').value,
-				destination: document.getElementById('end').value,
-				waypoints: waypts,
-				optimizeWaypoints: true,
-				travelMode: 'DRIVING'
-			}, function (response, status) {
-				if (status === 'OK') {
-					directionsDisplay.setDirections(response);
-					var route = response.routes[0];
-					var summaryPanel = document.getElementById('directions-panel');
-					summaryPanel.innerHTML = '';
-					var miles = 0;
-					// For each route, display summary information.
-					for (var i = 0; i < route.legs.length; i++) {
-						var routeSegment = i + 1;
-						summaryPanel.innerHTML += '<b>Route Segment: ' + routeSegment +
-							'</b><br>';
-						summaryPanel.innerHTML += route.legs[i].start_address + ' to ';
-						summaryPanel.innerHTML += route.legs[i].end_address + '<br>';
-						summaryPanel.innerHTML += '<strong>' + route.legs[i].distance.text + '</strong><br><br>';
-
-						miles += parseInt(route.legs[i].distance.text.replace(' mi', ''));
-						console.log(miles)
-					}
-
-					$scope.DeliveryOrder.additionalRoute.Start = route.legs[0].start_address
-					$scope.DeliveryOrder.additionalRoute.waypts = waypts
-					$scope.DeliveryOrder.additionalRoute.End = route.legs[route.legs.length - 1].end_address
-
-				
-					$scope.DeliveryOrder.RouteMile = miles
-					$scope.recalculate()
-				} else {
-					//	toaster.success('Directions request failed due to ' + status);
-					$scope.DeliveryOrder.RouteMile = 0
-					$scope.recalculate()
-				}
-			});
-		}
-
-		$scope.resetRoute = function (e) {
+		$scope.FromCompany = function (e) {
 			if (e == 1) {
-				document.getElementById('start').value = ''
+				$scope.DeliveryOrder.fromwriteAddress = true
+				$scope.DeliveryOrder.fromCompanyAddress = false
 			} else {
-				document.getElementById('end').value = ''
+				$scope.DeliveryOrder.fromwriteAddress = false
+				$scope.DeliveryOrder.fromCompanyAddress = true
 			}
+		};
 
-			if (document.getElementById('start').value == '' && document.getElementById('end').value == '') {
-				$scope.DeliveryOrder.RouteMile = 0
-				document.getElementById('directions-panel').innerHTML = ""
-				initMapRoute()
-			}
-		}
-
-		$scope.showdiv = function () {
-			if (document.getElementById('divMap').style.display == 'none') {
-				document.getElementById('divMap').style.display = 'block'
-			} else {
-				document.getElementById('divMap').style.display = 'none'
-			}
-			if (document.getElementById('start').value && document.getElementById('end').value) {
-				var directionsService = new google.maps.DirectionsService;
-				var directionsDisplay = new google.maps.DirectionsRenderer;
-				var map = new google.maps.Map(document.getElementById('map'), {
-					zoom: 6,
-					center: {
-						lat: 28.39788010000001,
-						lng: -81.33288979999998
-					}
-				});
-
-				directionsDisplay.setMap(map);
-				calculateAndShowRoute(directionsService, directionsDisplay);
-			}
-		}
-
-		initMapRoute();
-		document.getElementById('divMap').style.display = 'none'
+		//if (!$scope.DeliveryOrder.client._id) {
+		//$scope.LoadItemDefault()
+		//}
+		//console.log($scope.DeliveryOrder.client.company)
 	});
-
