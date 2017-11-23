@@ -11,7 +11,7 @@ angular.module('MobileCRMApp')
 	.controller('DeliveryOrderCtrl', function ($scope, $rootScope, $location, toaster, User, statusList, EntranceList, Item, dialogs, $q, Branch, DeliveryOrder, $timeout, ItemDefault, $route, Company, Driver) {
 		$scope.DeliveryOrder = DeliveryOrder;
 		$scope.item = ItemDefault
-
+		
 		LoadData()
 		ConcatenateAddress();
 
@@ -112,13 +112,6 @@ angular.module('MobileCRMApp')
 			}
 		}
 
-		var getDistance1 = function (p1, p2) {
-			var p1 = new google.maps.LatLng(p1.latitude, p1.longitude);
-			var p2 = new google.maps.LatLng(p2.latitude, p2.longitude);
-			var distance = google.maps.geometry.spherical.computeDistanceBetween(p1, p2);
-			return parseFloat((distance * 0.00062137).toFixed(2));
-		}
-
 		var getDistance = function (p1, p2) {
 			var d = $q.defer();
 			var p1coord = new google.maps.LatLng(p1.latitude, p1.longitude);
@@ -147,6 +140,10 @@ angular.module('MobileCRMApp')
 					if ($scope.DeliveryOrder.siteAddressFrom && $scope.DeliveryOrder.siteAddress) {
 
 						$scope.DeliveryOrder.siteAddress.distanceFrom = $scope.DeliveryOrder.siteAddressFrom.address1 && $scope.DeliveryOrder.siteAddress.address1 ? parseFloat((result * 0.00062137).toFixed(2)) : 0;
+
+						$scope.DeliveryOrder.siteAddress.distanceFrom += $scope.DeliveryOrder.RouteMile || 0
+						$scope.DeliveryOrder.xx = 100
+
 						initMap(p1coord, p2coord);
 						$scope.$apply();
 
@@ -285,7 +282,6 @@ angular.module('MobileCRMApp')
 						_.map(res.data, function (obj) {
 							$scope.company = obj
 							$scope.LoadItemDefault();
-							console.log($scope.company)
 						})
 					})
 			}
@@ -700,6 +696,8 @@ angular.module('MobileCRMApp')
 		};
 
 		function initAutocomplete() {
+			new google.maps.places.Autocomplete((document.getElementById('start')), { types: ['geocode'] });
+			new google.maps.places.Autocomplete((document.getElementById('end')), { types: ['geocode'] });
 			autocomplete = new google.maps.places.Autocomplete((document.getElementById('addressFromsId')), { types: ['geocode'] });
 
 			autocomplete.addListener('place_changed', fillInAddress);
@@ -806,9 +804,9 @@ angular.module('MobileCRMApp')
 										$scope.DeliveryOrder.items[0].price = $scope.company.smallTruck
 									})
 								})
-						} else {							
+						} else {
 							$scope.DeliveryOrder.items[0].price = $scope.company.smallTruck
-						}	
+						}
 					}
 					return;
 				} else if ($scope.company.initialCost) { // SI NO ES POR HORA
@@ -823,6 +821,7 @@ angular.module('MobileCRMApp')
 				}
 			} else {
 				console.log(5)
+				console.log($scope.DeliveryOrder.items)
 				SetDefaulItems(805)
 				return
 			}
@@ -869,8 +868,8 @@ angular.module('MobileCRMApp')
 		function SetDefaulItems(idAdd, id) {
 			$scope.itemsData = $scope.DeliveryOrder.items;
 			$scope.DeliveryOrder.items = []
-			
-			
+
+
 			for (var index = 0; index < $scope.item.data.length; index++) {
 				var element = $scope.item.data[index]
 				if (element._id == idAdd || element._id == id) {
@@ -933,4 +932,146 @@ angular.module('MobileCRMApp')
 			$scope.LoadItemDefault()
 		}
 		//console.log($scope.DeliveryOrder.client.company)
+
+
+		var originPointRoute = {};
+		var placeSearchRoute, autocompleteRoute, mapRoute, directionsServiceRoute, directionsDisplayRoute;
+
+		$scope.AutoC = function (e) {
+			autocompleteRoute = new google.maps.places.Autocomplete((document.getElementById('way_' + e)), { types: ['geocode'] });
+		}
+
+		$scope.addWaypoints = function () {
+			var newArr = {}
+			var waypts = [];
+
+			if ($scope.DeliveryOrder.additionalRoute.waypts == undefined) {
+				$scope.DeliveryOrder.additionalRoute.waypts = waypts;
+			}
+
+			$scope.DeliveryOrder.additionalRoute.waypts.push(newArr)
+		}
+
+		$scope.deleteWaypoints = function (index) {
+			$scope.DeliveryOrder.additionalRoute.waypts.splice(index, 1)
+		}
+
+		function initMapRoute() {
+			var directionsService = new google.maps.DirectionsService;
+			var directionsDisplay = new google.maps.DirectionsRenderer;
+			var map = new google.maps.Map(document.getElementById('map'), {
+				zoom: 6,
+				center: {
+					lat: 28.39788010000001,
+					lng: -81.33288979999998
+				}
+			});
+
+			directionsDisplay.setMap(map);
+
+			document.getElementById('submit').addEventListener('click', function () {
+				calculateAndShowRoute(directionsService, directionsDisplay);
+			});
+		}
+
+		function calculateAndShowRoute(directionsService, directionsDisplay) {
+			var waypts = [];
+
+			if ($scope.DeliveryOrder.additionalRoute.waypts) {
+				for (let index = 0; index < $scope.DeliveryOrder.additionalRoute.waypts.length; index++) {
+					waypts.push({
+						location: document.getElementById('way_' + index).value,
+						stopover: true
+					});
+				}
+			}
+
+			directionsService.route({
+				origin: document.getElementById('start').value,
+				destination: document.getElementById('end').value,
+				waypoints: waypts,
+				optimizeWaypoints: true,
+				travelMode: 'DRIVING'
+			}, function (response, status) {
+				if (status === 'OK') {
+					directionsDisplay.setDirections(response);
+					var route = response.routes[0];
+					var summaryPanel = document.getElementById('directions-panel');
+					summaryPanel.innerHTML = '';
+					var miles = 0;
+					// For each route, display summary information.
+					for (var i = 0; i < route.legs.length; i++) {
+						var routeSegment = i + 1;
+						summaryPanel.innerHTML += '<b>Route Segment: ' + routeSegment +
+							'</b><br>';
+						summaryPanel.innerHTML += route.legs[i].start_address + ' to ';
+						summaryPanel.innerHTML += route.legs[i].end_address + '<br>';
+						summaryPanel.innerHTML += '<strong>' + route.legs[i].distance.text + '</strong><br><br>';
+
+						miles += parseFloat(route.legs[i].distance.text.replace(' mi', ''));
+					}
+
+					$scope.DeliveryOrder.additionalRoute.Start = route.legs[0].start_address
+					$scope.DeliveryOrder.additionalRoute.waypts = waypts
+					$scope.DeliveryOrder.additionalRoute.End = route.legs[route.legs.length - 1].end_address
+
+					$scope.DeliveryOrder.RouteMile = miles;
+					document.getElementById('totalMiles').innerHTML = miles;
+					$scope.recalculate()
+				} else {
+					$scope.DeliveryOrder.RouteMile = 0
+					document.getElementById('totalMiles').innerHTML = 0;
+					$scope.recalculate()
+				}
+				console.log($scope.DeliveryOrder.RouteMile)
+			});
+		}
+
+		$scope.resetRoute = function (e) {
+			if (e == 1) {
+				document.getElementById('start').value = ''
+			} else {
+				document.getElementById('end').value = ''
+			}
+
+			if (document.getElementById('start').value == '' && document.getElementById('end').value == '') {
+				$scope.DeliveryOrder.RouteMile = 0
+				document.getElementById('directions-panel').innerHTML = ""
+				initMapRoute()
+			}
+		}
+
+		$scope.showdiv = function () {
+			if (document.getElementById('divMap').style.display == 'none') {
+				document.getElementById('divMap').style.display = 'block'
+			} else {
+				document.getElementById('divMap').style.display = 'none'
+			}
+			if (document.getElementById('start').value && document.getElementById('end').value) {
+				var directionsService = new google.maps.DirectionsService;
+				var directionsDisplay = new google.maps.DirectionsRenderer;
+				var map = new google.maps.Map(document.getElementById('map'), {
+					zoom: 6,
+					center: {
+						lat: 28.39788010000001,
+						lng: -81.33288979999998
+					}
+				});
+
+				directionsDisplay.setMap(map);
+				calculateAndShowRoute(directionsService, directionsDisplay);
+			}
+		}
+
+		initMapRoute();
+		document.getElementById('divMap').style.display = 'none'
+
+		$scope.checkedHours = function (e) {
+			if (e == true) {
+				$scope.DeliveryOrder.fromCompanyAddress = true;
+			} else {
+				$scope.DeliveryOrder.fromCompanyAddress = false;
+			}
+		};
 	});
+

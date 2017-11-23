@@ -210,13 +210,13 @@
 									</span>
 								</div>
 								<br />
-								<div class="input-group" style="width: 100%">									
+								<div class="input-group" style="width: 100%">
 									<input type="checkbox" name="chkaddress" id="chkaddress" style="cursor: pointer" ng-checked="DeliveryOrder.fromwriteAddress"
 									 ng-click="FromCompany(1)"> From write address
 
 									<input type="text" class="form-control" ng-model="DeliveryOrder.addresstr" id="addressFromsId" ng-focus="geoLocate();recalculate();melost()"
-									 origin-point="address.addressString" ng-change="recalculate()" ng-disabled="DeliveryOrder.fromCompanyAddress == true" width="400px"
-									/>
+									 origin-point="address.addressString" ng-change="recalculate()" ng-disabled="DeliveryOrder.fromCompanyAddress == true"
+									 width="400px" />
 								</div>
 								<br/>
 								<div class="input-group">
@@ -246,6 +246,78 @@
 								 ng-change="changed('siteAddress')" show-map="true"></address-model>
 							</uib-accordion-group>
 						</uib-accordion>
+					</div>
+				</div>
+
+				<div class="col-xs-12">
+					<div class="col-xs-12 pull-right">
+						<div style="height: 40px; border: 1px #DDDDDD solid; background-color: #F5F5F5; cursor: pointer;" ng-click="showdiv(); initMapRoute()">
+							<span class="fa fa-map-marker fa-lg" style="padding-left: 15px; padding-top: 10px" ng-click="showdiv()">&nbsp;
+								<span style="font-family: OpenSans" ng-click="showdiv()"> Add additional Routes</span>
+							</span>
+						</div>
+					</div>
+				</div>
+				<div class="col-xs-12">
+					<div class="col-xs-12 pull-right">
+						<div id="divMap" style="display: block; border: 1px #DDDDDD solid">
+							<br />
+							<div class="pull-right" style="padding-right: 30px">
+								<button type="button" class="btn btn-sm btn-primary update" ng-click="addWaypoints()" tooltip="Add new Route">
+									<i class="fa fa-plus"></i>
+								</button>
+							</div>
+							<br/>
+							<br/>
+							<div class="input-group" style="padding-left: 30px; padding-right: 30px">
+								<label style="padding-top: 5px">Start Address</label>
+								<input type="text" class="form-control" id="start" ng-model="DeliveryOrder.additionalRoute.Start" />
+								<span class="input-group-btn" style="padding-top: 27px">
+									<button type="button" id="lostIdFocus" class="btn btn-default" ng-click="resetRoute(1)" ng-disabled="disable">
+										<i class="fa fa-times"></i>
+									</button>
+								</span>
+							</div>
+
+							<div ng-repeat="route in DeliveryOrder.additionalRoute.waypts track by $index">
+								<div class="input-group" style="padding-left: 30px; padding-right: 30px">
+									<label>Way Points # {{$index + 1}}</label>
+									<input type="text" class="form-control" id="way_{{$index}}" ng-model="route.location" ng-focus="AutoC($index)" />
+									<span class="input-group-btn" style="padding-top: 22px">
+										<button type="button" id="lostIdFocus" class="btn btn-danger" ng-click="deleteWaypoints($index)" ng-disabled="disable">
+											<i class="fa fa-times"></i>
+										</button>
+									</span>
+								</div>
+							</div>
+							<div class="input-group" style="padding-left: 30px; padding-right: 30px">
+								<label style="padding-top: 5px">End Address</label>
+								<input type="text" class="form-control" id="end" ng-model="DeliveryOrder.additionalRoute.End" />
+								<span class="input-group-btn" style="padding-top: 27px">
+									<button type="button" id="lostIdFocus" class="btn btn-default" ng-click="resetRoute(2)" ng-disabled="disable">
+										<i class="fa fa-times"></i>
+									</button>
+								</span>
+							</div>
+							<br/>
+							<div style="padding-left: 30px">
+								<input type="submit" class="btn btn-secondary" id="submit" value="Get Route">
+							</div>
+							<br/>
+							<div style="padding-left: 30px">
+								<div id="directions-panel" style="font-size: 14px"></div>
+								<div style="width: 550px; height: 400px; padding-left: 0px">
+									<div id="map"></div>
+								</div>
+
+								<div style="font-size: 14px">
+									<label>Total additional Routes: </label>
+									<strong>
+										<span id="totalMiles"></span>
+									</strong>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 
