@@ -153,7 +153,7 @@ var app = angular
 						return new CrewCollection().filter({ "role.description": 'Crew Leader' })
 					},
 					ItemDefault: function (Item) {
-						return new Item().filter({ _id: { $in: [5, 253] } })
+						return new Item().filter({ _id: { $in: [253] } })
 					}
 				}
 			})
@@ -426,7 +426,7 @@ var app = angular
 						}
 					},
 					ItemDefault: function (Item) {
-						return new Item().filter({ _id: { $in: [5, 253] } })
+						return new Item().filter({ _id: { $in: [253] } })
 					},
 					CrewCollection: function (CrewCollection, $route) {
 						return new CrewCollection().filter({ "role.description": 'Crew Leader' })
@@ -451,7 +451,7 @@ var app = angular
 						return new CrewCollection().filter({ "role.description": 'Crew Leader' })
 					},
 					ItemDefault: function (Item) {
-						return new Item().filter({ _id: { $in: [5, 253] } })
+						return new Item().filter({ _id: { $in: [253] } })
 					},
 				}
 			})
