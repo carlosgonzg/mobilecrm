@@ -26,6 +26,7 @@ angular.module('MobileCRMApp')
 			this.total = this.total || '';
 			this.items = this.items || [];
 			this.contacts = this.contacts || [{}, {}, {}];
+			this.additionalRoute = this.additionalRoute || {};
 
 			if ($rootScope.userData.role._id != 1 && $rootScope.userData.role._id != 5) {
 				this.invoiceNumber = 'Pending Invoice';

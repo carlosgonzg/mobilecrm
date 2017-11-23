@@ -39,6 +39,11 @@ angular.module('MobileCRMApp')
 			}
 		}
 
+		if ($scope.DeliveryOrder.fromwriteAddress == undefined) {
+			$scope.DeliveryOrder.fromwriteAddress = true
+			$scope.DeliveryOrder.fromCompanyAddress = false
+		}
+
 		$scope.listStatus = statusList;
 		$scope.entranceList = EntranceList;
 		$scope.waiting = false;
@@ -73,6 +78,21 @@ angular.module('MobileCRMApp')
 		var originalPhotos = $scope.DeliveryOrder.photos;
 		var originalContacts = $scope.DeliveryOrder.contacts;
 		var originalSiteAddress = $scope.DeliveryOrder.siteAddress;
+
+		$scope.getBranches = function () {
+			$scope.branches = [];
+			new Branch().filter({})
+				.then(function (res) {
+					$scope.branches = res.data;
+					for (var i = 0; i < $scope.branches.length; i++) {
+						if ($scope.branches[i].addresses.length > 0) {
+							address = $scope.branches[i].addresses[0];
+							address.addressString = $scope.branches[i].company.entity.name + " - " + (address ? (address.city.description ? address.city.description + " - " : "") + address.address1 + (address.state.id ? ", " + address.state.id : "") : "");
+							$scope.addresses.push(address)
+						}
+					}
+				});
+		};
 
 		$scope.recalculate = function () {
 			if ($scope.DeliveryOrder.siteAddressFrom) {
@@ -123,7 +143,7 @@ angular.module('MobileCRMApp')
 					}
 
 					SetAddress();
-
+					console.log($scope.DeliveryOrder.siteAddressFrom, $scope.DeliveryOrder.siteAddress)
 					if ($scope.DeliveryOrder.siteAddressFrom && $scope.DeliveryOrder.siteAddress) {
 
 						$scope.DeliveryOrder.siteAddress.distanceFrom = $scope.DeliveryOrder.siteAddressFrom.address1 && $scope.DeliveryOrder.siteAddress.address1 ? parseFloat((result * 0.00062137).toFixed(2)) : 0;
@@ -636,6 +656,8 @@ angular.module('MobileCRMApp')
 			$scope.DeliveryOrder.latitude = place.geometry ? place.geometry.location.lat() : 0;
 			$scope.DeliveryOrder.longitude = place.geometry ? place.geometry.location.lng() : 0;
 
+			console.log(88777)
+
 			if (place.geometry) {
 				getDistance($scope.DeliveryOrder, originPoint);
 			}
@@ -678,8 +700,8 @@ angular.module('MobileCRMApp')
 		};
 
 		function initAutocomplete() {
-			autocomplete = new google.maps.places.Autocomplete(
-				(document.getElementById('addressFromsId')), { types: ['geocode'] });
+			autocomplete = new google.maps.places.Autocomplete((document.getElementById('addressFromsId')), { types: ['geocode'] });
+
 			autocomplete.addListener('place_changed', fillInAddress);
 		}
 
@@ -728,6 +750,7 @@ angular.module('MobileCRMApp')
 				}
 
 				$scope.DeliveryOrder.siteAddressFrom = siteAddressFrom;
+				console.log($scope.DeliveryOrder.siteAddressFrom)
 			}
 		}
 
@@ -739,12 +762,23 @@ angular.module('MobileCRMApp')
 					add = DeliveryOrder.siteAddressFrom.address1 || ""
 				}
 				if (DeliveryOrder.siteAddressFrom.city) {
-					add = add + ', ' + DeliveryOrder.siteAddressFrom.city.description;
+					if (add == '') {
+						add = DeliveryOrder.siteAddressFrom.city.description;
+					} else {
+						add = add + ', ' + DeliveryOrder.siteAddressFrom.city.description;
+					}
 				}
 				if (DeliveryOrder.siteAddressFrom.state) {
-					add = add + ', ' + DeliveryOrder.siteAddressFrom.state.id + ', ' + DeliveryOrder.siteAddressFrom.state.description
+					if (add == '') {
+						add = DeliveryOrder.siteAddressFrom.state.id + ', ' + DeliveryOrder.siteAddressFrom.state.description
+					} else {
+						add = add + ', ' + DeliveryOrder.siteAddressFrom.state.id + ', ' + DeliveryOrder.siteAddressFrom.state.description
+					}
 				}
+
+				add = add.replace(" , ", "")
 			}
+
 			DeliveryOrder.addresstr = add;
 		}
 
@@ -753,37 +787,49 @@ angular.module('MobileCRMApp')
 			dMiles = false; hour = false
 			if ($scope.company == undefined) {
 				console.log(1)
-				SetDefaulItems(5, 805)
+				SetDefaulItems(805)
 				return
 			}
 
 			if ($scope.company.perHours != undefined) { //SI ESTA DEFINIDO EN COMPANY
-				if ($scope.company.perHours == true) { //SI ES POR HORA 					
-					SetDefaulItems(5, 806)
+				if ($scope.company.perHours == true) { //SI ES POR HORA 										
+					SetDefaulItems(806)
+
 					if ($scope.DeliveryOrder.typeTruck._id == 1) {
-						$scope.DeliveryOrder.items[1].price = $scope.company.costPerHours
+						$scope.DeliveryOrder.items[0].price = $scope.company.costPerHours
 					} else {
-						$scope.DeliveryOrder.items[1].price = $scope.company.smallTruck
+						if ($scope.company.smallTruck == undefined) {
+							new Company().filter({ _id: $scope.DeliveryOrder.client.company._id })
+								.then(function (res) {
+									_.map(res.data, function (obj) {
+										$scope.company = obj
+										$scope.DeliveryOrder.items[0].price = $scope.company.smallTruck
+									})
+								})
+						} else {							
+							$scope.DeliveryOrder.items[0].price = $scope.company.smallTruck
+						}	
 					}
 					return;
 				} else if ($scope.company.initialCost) { // SI NO ES POR HORA
 					console.log(3)
-					SetDefaulItems(5, 805)
-					$scope.DeliveryOrder.items[1].price = $scope.company.initialCost;
+					SetDefaulItems(805)
+					$scope.DeliveryOrder.items[0].price = $scope.company.initialCost;
 					return;
 				} else {
 					console.log(4)
-					SetDefaulItems(5, 805)
+					SetDefaulItems(805)
 					return;
 				}
 			} else {
 				console.log(5)
-				SetDefaulItems(5, 805)
+				SetDefaulItems(805)
 				return
 			}
 
 		}
 
+		$scope.getBranches();
 		$scope.recalculate();
 
 		$scope.meclick = function (isopen) {
@@ -792,7 +838,6 @@ angular.module('MobileCRMApp')
 			}
 		}
 		$scope.melost = function () {
-			console.log($scope.fistLoad)
 			if ($scope.fistLoad == 0) {
 				angular.element(document.getElementById('lostIdFocus'))[0].focus();
 				$scope.fistLoad = 1;
@@ -801,10 +846,9 @@ angular.module('MobileCRMApp')
 
 		function LoadData() {
 			if (!$route.current.params.id) {
-				console.log('m')
 				for (var index = 0; index < $scope.item.length; index++) {
 					var element = $scope.item[index]
-					if (element._id == 5 || element._id == 805 || element._id == 806) {
+					if (element._id == 805 || element._id == 806) {
 						$scope.DeliveryOrder.items.push(element)
 					}
 				}
@@ -825,7 +869,8 @@ angular.module('MobileCRMApp')
 		function SetDefaulItems(idAdd, id) {
 			$scope.itemsData = $scope.DeliveryOrder.items;
 			$scope.DeliveryOrder.items = []
-
+			
+			
 			for (var index = 0; index < $scope.item.data.length; index++) {
 				var element = $scope.item.data[index]
 				if (element._id == idAdd || element._id == id) {
@@ -856,7 +901,7 @@ angular.module('MobileCRMApp')
 						$scope.DeliveryOrder.client.company.initialMile = obj.initialMile
 						$scope.DeliveryOrder.client.company.costPerMile = obj.costPerMile
 						$scope.DeliveryOrder.client.company.costPerHours = obj.costPerHours
-					
+
 						$scope.DeliveryOrder.save()
 							.then(function (data) {
 								toaster.success('The Delivery Order was saved successfully');
@@ -868,15 +913,24 @@ angular.module('MobileCRMApp')
 								toaster.error('The Delivery Order couldn\'t be saved, please check if some required field is empty or if its duplicated');
 								$scope.waiting = false;
 							});
-						
+
 					})
 				})
 
 		}
 
-		//if (!$scope.DeliveryOrder.client._id) {
-		//$scope.LoadItemDefault()
-		//}
+		$scope.FromCompany = function (e) {
+			if (e == 1) {
+				$scope.DeliveryOrder.fromwriteAddress = true
+				$scope.DeliveryOrder.fromCompanyAddress = false
+			} else {
+				$scope.DeliveryOrder.fromwriteAddress = false
+				$scope.DeliveryOrder.fromCompanyAddress = true
+			}
+		};
+
+		if ($scope.DeliveryOrder.client._id) {
+			$scope.LoadItemDefault()
+		}
 		//console.log($scope.DeliveryOrder.client.company)
 	});
-
