@@ -68,18 +68,18 @@ var sendMail = function (to, subject, body, isHtmlBody, attached, cc, cco, reply
 	else {
 		mailOptions.attachments = [];
 	}
- 	
-	smtpTransport.sendMail(mailOptions, function (error, response) {
-		if (error) {
-			console.log(error);
-			deferred.reject(error);
-		} else {
-			console.log('Message sent');
-			deferred.resolve(response);
-		}
-		// if you don't want to use this transport object anymore, uncomment following line
-		//smtpTransport.close(); // shut down the connection pool, no more messages
-	});
+ 	console.log("subject: ", subject)
+	// smtpTransport.sendMail(mailOptions, function (error, response) {
+	// 	if (error) {
+	// 		console.log(error);
+	// 		deferred.reject(error);
+	// 	} else {
+	// 		console.log('Message sent');
+	// 		deferred.resolve(response);
+	// 	}
+	// 	// if you don't want to use this transport object anymore, uncomment following line
+	// 	//smtpTransport.close(); // shut down the connection pool, no more messages
+	// });
 	return deferred.promise;
 };
 
@@ -141,10 +141,10 @@ var sendServiceOrder = function (serviceOrder, mails, dirname) {
 			body = body.replace('<customer>', serviceOrder.customer || 'None');
 			body = body.replace('<customerPhone>', serviceOrder.phone ? (serviceOrder.phone.number || '') : 'None');
 			body = body.replace('<sor>', serviceOrder.sor);
-			body = body.replace('<unitno>', serviceOrder.unitno);
-			body = body.replace('<unitSize>', serviceOrder.unitSize);
+			body = body.replace('<unitno>', serviceOrder.unitno || '');
+			body = body.replace('<unitSize>', serviceOrder.unitSize || '');
 			body = body.replace('<pono>', serviceOrder.pono || '');
-			body = body.replace('<isono>', serviceOrder.isono);
+			body = body.replace('<isono>', serviceOrder.isono || '');
 			body = body.replace('<clientName>', serviceOrder.client.entity.fullName);
 			body = body.replace('<clientPhone>', serviceOrder.client && serviceOrder.client.branch && serviceOrder.client.branch.phones && serviceOrder.client.branch.phones.length > 0 ? serviceOrder.client.branch.phones[0].number : 'None');
 			body = body.replace('<clientMail>', serviceOrder.client.account.email);
@@ -207,10 +207,11 @@ var sendServiceOrderDelete = function (serviceOrder, mails, dirname) {
 			body = body.replace('<customer>', serviceOrder.customer || 'None');
 			body = body.replace('<customerPhone>', serviceOrder.phone ? (serviceOrder.phone.number || '') : 'None');
 			body = body.replace('<sor>', serviceOrder.sor);
-			body = body.replace('<unitno>', serviceOrder.unitno);
+			body = body.replace('<unitno>', serviceOrder.unitno || '');
 			body = body.replace('<unitSize>', serviceOrder.unitSize || '');
 			body = body.replace('<pono>', serviceOrder.pono || '');
-			body = body.replace('<isono>', serviceOrder.isono);
+			body = body.replace('<isono>', serviceOrder.isono || '');
+			body = body.replace('<contract>', serviceOrder.contract || '');
 			body = body.replace('<clientName>', serviceOrder.client.entity.fullName);
 			body = body.replace('<clientPhone>', serviceOrder.client && serviceOrder.client.branch && serviceOrder.client.branch.phones && serviceOrder.client.branch.phones.length > 0 ? serviceOrder.client.branch.phones[0].number : 'None');
 			body = body.replace('<clientMail>', serviceOrder.client.account.email);
@@ -272,10 +273,11 @@ var sendServiceOrderUpdate = function (serviceOrder, mails, user) {
 			body = body.replace('<customer>', serviceOrder.customer || 'None');
 			body = body.replace('<customerPhone>', serviceOrder.phone ? (serviceOrder.phone.number || '') : 'None');
 			body = body.replace('<sor>', serviceOrder.sor);
-			body = body.replace('<unitno>', serviceOrder.unitno);
-			body = body.replace('<unitSize>', serviceOrder.unitSize);
+			body = body.replace('<unitno>', serviceOrder.unitno || '');
+			body = body.replace('<unitSize>', serviceOrder.unitSize || '');
 			body = body.replace('<pono>', serviceOrder.pono ? ('With PO Number: ' + serviceOrder.pono) : '');
-			body = body.replace('<isono>', serviceOrder.isono);
+			body = body.replace('<isono>', serviceOrder.isono || '');
+			body = body.replace('<contract>', serviceOrder.contract || '');
 			body = body.replace('<clientName>', serviceOrder.client.entity.fullName);
 			body = body.replace('<clientPhone>', serviceOrder.client && serviceOrder.client.branch && serviceOrder.client.branch.phones && serviceOrder.client.branch.phones.length > 0 ? serviceOrder.client.branch.phones[0].number : 'None');
 			body = body.replace('<clientMail>', serviceOrder.client.account.email);
@@ -566,9 +568,9 @@ var sendWorkOrderUpdate = function (workOrder, mails, user, company) {
 			body = body.replace('<clientCompany>', company.entity.name || 'None');
 			body = body.replace('<clientBranch>', workOrder.client.branch ? workOrder.client.branch.name : 'None');
 			body = body.replace('<wor>', workOrder.wor);
-			body = body.replace('<unitno>', workOrder.unitno);
+			body = body.replace('<unitno>', workOrder.unitno || '');
 			body = body.replace('<pono>', workOrder.pono ? 'With PO Number: ' + workOrder.pono : 'Without PO Number. Please provide PO Number for this Work Order.');
-			body = body.replace('<isono>', workOrder.isono);
+			body = body.replace('<isono>', workOrder.isono || '');
 			body = body.replace('<clientName>', workOrder.client.entity.fullName);
 			body = body.replace('<clientPhone>', workOrder.client && workOrder.client.branch && workOrder.client.branch.phones && workOrder.client.branch.phones.length > 0 ? workOrder.client.branch.phones[0].number : 'None');
 			body = body.replace('<clientMail>', workOrder.client.account.email);
@@ -596,9 +598,9 @@ var sendWorkOrderUpdate = function (workOrder, mails, user, company) {
 			changesByUser += fieldsChanged == '' ? 'None' : fieldsChanged;
 			body = body.replace('<client>', changesByUser);
 
-			var companyS = 'Company: ' + company.entity.name;
-			var branch = workOrder && workOrder.client && workOrder.client.branch ? 'Branch: ' + workOrder.client.branch.name : 'Client: ' + workOrder.client.entity.fullName;
-			var subject = companyS + ' | ' + branch + ' | Work Order: ' + workOrder.wor;
+			var companyS = '' + company.entity.name;
+			var branch = workOrder && workOrder.client && workOrder.client.branch ? '' + workOrder.client.branch.name : '' + workOrder.client.entity.fullName;
+			var subject = 'Work Order: ' + workOrder.wor + ' | ' + companyS + ' | ' + branch;
 			console.log('sending mail', subject);
 			mails = _.uniq(mails);
 			sendMail(mails.join(', '), subject, body, true, null, null, null, 'mf@mobileonecontainers.com')
@@ -629,7 +631,7 @@ var sendDeliveryOrder = function (deliveryOrder, mails, dirname) {
 			body = body.replace('<createdBy>', deliveryOrder.createdBy.entity ? deliveryOrder.createdBy.entity.fullName : '');
 			body = body.replace('<clientCompany>', deliveryOrder.client.company ? deliveryOrder.client.company.entity.name : 'None');
 			body = body.replace('<dor>', deliveryOrder.dor);
-			body = body.replace('<unitSize>', deliveryOrder.unitSize);
+			body = body.replace('<unitSize>', deliveryOrder.unitSize || '');
 			body = body.replace('<clientBranch>', deliveryOrder.client.branch ? deliveryOrder.client.branch.name : 'None');
 			body = body.replace('<customer>', deliveryOrder.customer || 'None');
 			body = body.replace('<customerPhone>', deliveryOrder.phone ? (deliveryOrder.phone.number || '') : 'None');
@@ -638,8 +640,8 @@ var sendDeliveryOrder = function (deliveryOrder, mails, dirname) {
 			body = body.replace('<pickupdate>', moment(deliveryOrder.pickupDate).format('MM/DD/YYYY'));
 			body = body.replace('<pickuptime>', moment(deliveryOrder.pickupTime).format('HH:mm'));
 			body = body.replace('<clientName>', deliveryOrder.client.entity.fullName);
-			body = body.replace('<pickAddress>', deliveryOrder.addresstr);
-			body = body.replace('<deliveryAddress>', deliveryOrder.siteAddress.address1 + ', ' + deliveryOrder.siteAddress.city.description + ', ' + deliveryOrder.siteAddress.state.description + ' ' + deliveryOrder.siteAddress.zipcode);
+			body = body.replace('<pickAddress>', deliveryOrder.addresstr || '');
+			body = body.replace('<deliveryAddress>', deliveryOrder.siteAddress ? deliveryOrder.siteAddress.address1 + ', ' + deliveryOrder.siteAddress.city.description + ', ' + deliveryOrder.siteAddress.state.description + ' ' + deliveryOrder.siteAddress.zipcode : '');
 			body = body.replace('<Clientcomment>', deliveryOrder.clientcomment || 'None');
 			body = body.replace('<comment>', deliveryOrder.comments || 'None');
 			var contacts = '';
@@ -648,9 +650,10 @@ var sendDeliveryOrder = function (deliveryOrder, mails, dirname) {
 					contacts += '<b>Contact #' + (i + 1) + ':&nbsp;</b>' + (deliveryOrder.contacts[i].name || '') + '.&nbsp;<b>Phone(' + (deliveryOrder.contacts[i].phoneType.description || '') + '):</b>&nbsp;' + (deliveryOrder.contacts[i].number || '') + '<br/>';
 			}
 			body = body.replace('<contacts>', contacts || '');
-			var company = 'Company: ' + (deliveryOrder && deliveryOrder.client && deliveryOrder.client.company && deliveryOrder.client.company.entity ? deliveryOrder.client.company.entity.name : 'Not Defined');
-			var branch = deliveryOrder && deliveryOrder.client && deliveryOrder.client.branch ? 'Branch: ' + deliveryOrder.client.branch.name : 'Client: ' + deliveryOrder.client.entity.fullName;
-			var subject = company + ' | ' + branch + ' | Delivery Order: ' + deliveryOrder.sor;
+			var company = '' + (deliveryOrder && deliveryOrder.client && deliveryOrder.client.company && deliveryOrder.client.company.entity ? deliveryOrder.client.company.entity.name : 'Not Defined');
+			var branch = deliveryOrder && deliveryOrder.client && deliveryOrder.client.branch ? '' + deliveryOrder.client.branch.name : '' + deliveryOrder.client.entity.fullName;
+			var subject =  'Delivery Order: ' + deliveryOrder.dor + ' | ' + company + ' | ' + branch ;
+
 
 			var deliveryOrderAttachments = [];
 			if (deliveryOrder.docs) {
@@ -697,13 +700,13 @@ var sendDeliveryOrderDelete = function (deliveryOrder, mails, dirname) {
 			body = body.replace('<clientBranch>', deliveryOrder.client.branch ? deliveryOrder.client.branch.name : 'None');
 			body = body.replace('<customer>', deliveryOrder.customer || 'None');
 			body = body.replace('<customerPhone>', deliveryOrder.phone ? (deliveryOrder.phone.number || '') : 'None');
-			body = body.replace('<entrance>', deliveryOrder.typeTruck.description);
+			body = body.replace('<entrance>', deliveryOrder.typeTruck ? deliveryOrder.typeTruck.description : '');
 			body = body.replace('<pono>', deliveryOrder.pono || '');
 			body = body.replace('<pickupdate>', moment(deliveryOrder.pickupDate).format('MM/DD/YYYY'));
 			body = body.replace('<pickuptime>', moment(deliveryOrder.pickupTime).format('HH:mm'));
 			body = body.replace('<clientName>', deliveryOrder.client.entity.fullName);
-			body = body.replace('<pickAddress>', deliveryOrder.addresstr);
-			body = body.replace('<deliveryAddress>', deliveryOrder.siteAddress.address1 + ', ' + deliveryOrder.siteAddress.city.description + ', ' + deliveryOrder.siteAddress.state.description + ' ' + deliveryOrder.siteAddress.zipcode);
+			body = body.replace('<pickAddress>', deliveryOrder.addresstr || '');
+			body = body.replace('<deliveryAddress>', deliveryOrder.siteAddress ? deliveryOrder.siteAddress.address1 + ', ' + deliveryOrder.siteAddress.city.description + ', ' + deliveryOrder.siteAddress.state.description + ' ' + deliveryOrder.siteAddress.zipcode : '');
 			body = body.replace('<Clientcomment>', deliveryOrder.clientcomment || 'None');
 			body = body.replace('<comment>', deliveryOrder.comments || 'None');
 			var contacts = '';
@@ -714,7 +717,7 @@ var sendDeliveryOrderDelete = function (deliveryOrder, mails, dirname) {
 			body = body.replace('<contacts>', contacts || '');
 			var company = 'Company: ' + (deliveryOrder && deliveryOrder.client && deliveryOrder.client.company && deliveryOrder.client.company.entity ? deliveryOrder.client.company.entity.name : 'Not Defined');
 			var branch = deliveryOrder && deliveryOrder.client && deliveryOrder.client.branch ? 'Branch: ' + deliveryOrder.client.branch.name : 'Client: ' + deliveryOrder.client.entity.fullName;
-			var subject = company + ' | ' + branch + ' | Delivery Order: ' + deliveryOrder.sor;
+			var subject =  'DELETED - Delivery Order: ' + deliveryOrder.sor + ' | ' + company + ' | ' + branch ;
 
 			var deliveryOrderAttachments = [];
 			if (deliveryOrder.docs) {
