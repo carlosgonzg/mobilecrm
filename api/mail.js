@@ -68,18 +68,16 @@ var sendMail = function (to, subject, body, isHtmlBody, attached, cc, cco, reply
 	else {
 		mailOptions.attachments = [];
 	}
- 	console.log("subject: ", subject)
-	// smtpTransport.sendMail(mailOptions, function (error, response) {
-	// 	if (error) {
-	// 		console.log(error);
-	// 		deferred.reject(error);
-	// 	} else {
-	// 		console.log('Message sent');
-	// 		deferred.resolve(response);
-	// 	}
-	// 	// if you don't want to use this transport object anymore, uncomment following line
-	// 	//smtpTransport.close(); // shut down the connection pool, no more messages
-	// });
+	console.log("subject: ", subject)
+	smtpTransport.sendMail(mailOptions, function (error, response) {
+		if (error) {
+			console.log(error);
+			deferred.reject(error);
+		} else {
+			console.log('Message sent');
+			deferred.resolve(response);
+		}
+	});
 	return deferred.promise;
 };
 
@@ -652,7 +650,7 @@ var sendDeliveryOrder = function (deliveryOrder, mails, dirname) {
 			body = body.replace('<contacts>', contacts || '');
 			var company = '' + (deliveryOrder && deliveryOrder.client && deliveryOrder.client.company && deliveryOrder.client.company.entity ? deliveryOrder.client.company.entity.name : 'Not Defined');
 			var branch = deliveryOrder && deliveryOrder.client && deliveryOrder.client.branch ? '' + deliveryOrder.client.branch.name : '' + deliveryOrder.client.entity.fullName;
-			var subject =  'Delivery Order: ' + deliveryOrder.dor + ' | ' + company + ' | ' + branch ;
+			var subject = 'Delivery Order: ' + deliveryOrder.dor + ' | ' + company + ' | ' + branch;
 
 
 			var deliveryOrderAttachments = [];
@@ -717,7 +715,7 @@ var sendDeliveryOrderDelete = function (deliveryOrder, mails, dirname) {
 			body = body.replace('<contacts>', contacts || '');
 			var company = 'Company: ' + (deliveryOrder && deliveryOrder.client && deliveryOrder.client.company && deliveryOrder.client.company.entity ? deliveryOrder.client.company.entity.name : 'Not Defined');
 			var branch = deliveryOrder && deliveryOrder.client && deliveryOrder.client.branch ? 'Branch: ' + deliveryOrder.client.branch.name : 'Client: ' + deliveryOrder.client.entity.fullName;
-			var subject =  'DELETED - Delivery Order: ' + deliveryOrder.sor + ' | ' + company + ' | ' + branch ;
+			var subject = 'DELETED - Delivery Order: ' + deliveryOrder.sor + ' | ' + company + ' | ' + branch;
 
 			var deliveryOrderAttachments = [];
 			if (deliveryOrder.docs) {
