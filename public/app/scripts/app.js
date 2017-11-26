@@ -20,7 +20,6 @@ var app = angular
 		'hmTouchEvents'
 	])
 	.config(function ($routeProvider) {
-		console.log($routeProvider)
 		$routeProvider
 			.when('/login', {
 				templateUrl: 'views/login.html',
@@ -54,6 +53,12 @@ var app = angular
 				resolve: {
 					roles: function (Role) {
 						return new Role().find({});
+					},
+					companies: function (Company) {
+						return new Company().find({});
+					},
+					users: function (User) {
+						return new User().find({});
 					},
 					options: function (Option) {
 						return new Option().find({});

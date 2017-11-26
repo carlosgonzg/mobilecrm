@@ -94,6 +94,9 @@
 						<button type="button" class="btn btn-sm btn-danger" ng-click="removeOption($index,rOption)">
 							<i class="fa fa-times"></i>
 						</button>
+						<button type="button" class="btn btn-sm btn-default" ng-click="openExceptions(rOption)" >
+							Exceptions <span class="label label-danger" >	{{rOption.exceptions || 0}}</span>
+						</button>
 					</td>
 				</tr>
 			</tbody>

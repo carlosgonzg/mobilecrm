@@ -21,6 +21,7 @@ angular.module('MobileCRMApp')
 		})
 		.then(function(data){
 			$rootScope.roleOptions = data;
+
 			$window.sessionStorage.roleOptions = JSON.stringify(data);
 		})
 		.catch(function (error) {

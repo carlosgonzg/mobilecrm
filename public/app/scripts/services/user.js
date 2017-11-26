@@ -45,7 +45,17 @@ angular.module('MobileCRMApp')
 	User.prototype.getRoleOptions = function(){
 		var d = $q.defer();
 		var roleOptions = new RoleOptions();
-		roleOptions.filter({ roleId: this.role._id })
+		console.log (this.role, $rootScope.userData._id, $rootScope.userData.company._id)
+		var query = {
+			roleId: this.role._id,
+			'userExceptions.user._id' : {$ne: $rootScope.userData._id} 
+		}
+		if (this.role.company) {
+			query['companyExceptions.company._id'] = {$ne: $rootScope.userData.company._id}
+		}
+
+
+		roleOptions.filter(query)
 		.then(function(result){
 			result.data.sort(function(a, b){
 				return a.sort - b.sort;

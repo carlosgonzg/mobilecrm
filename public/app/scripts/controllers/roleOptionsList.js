@@ -8,10 +8,9 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-.controller('RoleOptionListCtrl', function ($scope, $q, roles, options, RoleOptions, toaster, dialogs, Role) {
+.controller('RoleOptionListCtrl', function ($scope, $q, roles, options, RoleOptions, toaster, dialogs, Role, companies, users) {
 	$scope.roles = roles.data;
 	$scope.options = options.data;
-	console.log($scope.options)
 	var roleOptions = new RoleOptions();
 	$scope.roleOptions = {};
 	
@@ -63,7 +62,6 @@ angular.module('MobileCRMApp')
 	$scope.save = function(){
 		var promises = [];
 		for(var i = 0; i < $scope.roleOptions[$scope.selectedId].length; i++){
-			console.log($scope.roleOptions[$scope.selectedId][i]);
 			
 			promises.push($scope.roleOptions[$scope.selectedId][i].save());
 		}
@@ -94,6 +92,21 @@ angular.module('MobileCRMApp')
 			dialog.result
 			.then(function (res) {
 				rOption.options = res.rOption.options;
+			});
+	};
+	$scope.openExceptions = function (rOption) {
+
+			var dialog = dialogs.create('views/roleException.html', 'RoleExceptionCtrl', {
+				rOption: rOption,
+				roles: $scope.roles,
+				companies: companies.data,
+				users: users.data
+			});
+			dialog.result
+			.then(function (res) {
+				rOption.companyExceptions = res.companyExceptions;
+				rOption.userExceptions = res.userExceptions;
+				rOption.exceptions = (rOption.companyExceptions.length || 0) + (rOption.userExceptions.length || 0)
 			});
 	};
 	$scope.selectTab(angular.copy($scope.roles[0]));

@@ -1,0 +1,76 @@
+<div class="modal-header modal-header-color dialog-header-confirm">
+  <button type="button" class="close" ng-click="close()"><i class="fa fa-times"></i></button>
+  <h4 class="modal-title">
+		Exceptions by:
+  </h4>
+</div>
+<div class="modal-body">
+	<div class="row">
+	  <div class="col-xs-12">
+			<ul class="nav nav-tabs">
+				<li role="presentation" ng-class="{ active: selectedTab == 1 }" ng-click="selectTab(1)">
+					<a>Company</a>
+				</li>
+				<li role="presentation" ng-class="{ active: selectedTab == 2 }" ng-click="selectTab(2)">
+					<a>User</a>
+				</li>
+			</ul>
+	  </div>
+	</div>
+	<div class="row">
+
+		<div class="col-xs-12">
+			<table class="table" ng-if="selectedTab == 1">
+				<tr>
+					<th style="width: 80%">
+						Company
+					</th>
+					<th>
+						<button class="btn btn-sm btn-primary" ng-click="add(companyExceptions)">
+							<i class="fa fa-plus"></i>
+						</button>
+					</th>
+				</tr>
+
+				<tr ng-repeat="exception in companyExceptions track by $index">
+					<td>
+						<select class="form-control" ng-model="exception.company" 
+							 ng-options="company as company.entity.name for company in companyList track by company._id" ></select>
+					</td>
+					<td>
+						<button class="btn btn-sm btn-danger" ng-click="remove(companyExceptions, $index)">
+							<i class="fa fa-times"></i>
+						</button>
+					</td>
+				</tr>
+			</table>
+			<table class="table" ng-if="selectedTab == 2">
+				<tr>
+					<th style="width: 80%">
+						User
+					</th>
+					<th>
+						<button class="btn btn-sm btn-primary" ng-click="add(userExceptions)">
+							<i class="fa fa-plus"></i>
+						</button>
+					</th>
+				</tr>
+				<tr ng-repeat="exception in userExceptions track by $index">
+					<td>
+						<select class="form-control" ng-model="exception.user" 
+							 ng-options="user as user.entity.fullName for user in userList track by user._id" ></select>
+					</td>
+					<td>
+						<button class="btn btn-sm btn-danger" ng-click="remove(userExceptions, $index)">
+							<i class="fa fa-times"></i>
+						</button>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</div>
+<div class="modal-footer">
+	<button class="btn btn-primary" type="button" ng-click="assign(companyExceptions, userExceptions)">Assign</button>
+	<button class="btn btn-default" type="button" ng-click="close()">Close</button>
+</div>
