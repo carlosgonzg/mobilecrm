@@ -45,7 +45,6 @@ angular.module('MobileCRMApp')
 	User.prototype.getRoleOptions = function(){
 		var d = $q.defer();
 		var roleOptions = new RoleOptions();
-		console.log (this.role, $rootScope.userData._id, $rootScope.userData.company._id)
 		var query = {
 			roleId: this.role._id,
 			'userExceptions.user._id' : {$ne: $rootScope.userData._id} 
