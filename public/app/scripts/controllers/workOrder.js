@@ -18,7 +18,7 @@ angular.module('MobileCRMApp')
 		$scope.SendToTechShow = false;
 		$scope.crewHeader = []
 		$scope.crewHeaderAdded = []
-$scope.CrewHeaderSel = ""
+		$scope.CrewHeaderSel = ""
 
 		$scope.items = [];
 		$scope.params = {};
@@ -107,19 +107,6 @@ $scope.CrewHeaderSel = ""
 						$scope.workOrder.siteAddress = angular.copy(client.company.address);
 					})
 			}
-			if (workOrder.client == undefined) {
-				$scope.workOrder.items = []
-			} else {
-				if (workOrder.client._id) {
-					for (var row = 0; row < $scope.workOrder.items.length; row++) {
-						var code = $scope.workOrder.items[row].code;
-						if (ItemDefault.data[0].code == code) {
-							return
-						}
-					}
-					$scope.workOrder.items.unshift(ItemDefault.data[0]);
-				}
-			}	
 		};
 
 		$scope.addContact = function () {
@@ -261,7 +248,7 @@ $scope.CrewHeaderSel = ""
 				}
 				$scope.workOrder.sendTotech = true;
 			} else {
-				$scope.workOrder.sendTotech = false;				
+				$scope.workOrder.sendTotech = false;
 			}
 
 			$scope.workOrder.save()
@@ -337,7 +324,7 @@ $scope.CrewHeaderSel = ""
 							var item = array[n];
 							if (selectedItem == item.itemid) {
 
-								if ($scope.crewHeaderAdded.length > 0 && $scope.CrewHeaderSel.length > 0 ) {
+								if ($scope.crewHeaderAdded.length > 0 && $scope.CrewHeaderSel.length > 0) {
 									if ($scope.crewHeaderAdded[0].name == element.entity.fullName) {
 										$scope.newItem = {
 											name: element.entity.fullName,
@@ -390,13 +377,13 @@ $scope.CrewHeaderSel = ""
 
 		$scope.setAmountToZero = function (status) {
 			if (status._id == 5 || status._id == 7) {
-				for (var i=0; i<$scope.workOrder.items.length; i++) {
+				for (var i = 0; i < $scope.workOrder.items.length; i++) {
 					$scope.workOrder.items[i].originalPrice = $scope.workOrder.items[i].price;
 					$scope.workOrder.items[i].price = 0;
 				}
 			} else {
-				for (var i=0; i<$scope.workOrder.items.length; i++) {
-					$scope.workOrder.items[i].price = $scope.workOrder.items[i].originalPrice ? $scope.workOrder.items[i].originalPrice : $scope.workOrder.items[i].price; 
+				for (var i = 0; i < $scope.workOrder.items.length; i++) {
+					$scope.workOrder.items[i].price = $scope.workOrder.items[i].originalPrice ? $scope.workOrder.items[i].originalPrice : $scope.workOrder.items[i].price;
 					delete $scope.workOrder.items[i].originalPrice;
 				}
 			}
@@ -408,7 +395,7 @@ $scope.CrewHeaderSel = ""
 			if (chk == true) {
 				$scope.CrewHeaderSel = $scope.crewHeaderAdded[0].name
 			} else {
-				$scope.CrewHeaderSel = []				
+				$scope.CrewHeaderSel = []
 			}
 		}
 	});
