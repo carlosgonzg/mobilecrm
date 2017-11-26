@@ -50,7 +50,7 @@ angular.module('MobileCRMApp')
 			roleId: this.role._id,
 			'userExceptions.user._id' : {$ne: $rootScope.userData._id} 
 		}
-		if (this.role.company) {
+		if ($rootScope.userData.company) {
 			query['companyExceptions.company._id'] = {$ne: $rootScope.userData.company._id}
 		}
 
