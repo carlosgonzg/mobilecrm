@@ -182,7 +182,7 @@ angular.module('MobileCRMApp')
 						if(result[i].invoices[j].statusPaid._id == 4){
 							$scope.branches[bId].paid += result[i].invoices[j].totalWithTaxes;
 						}
-						else if(result[i].invoices[j].statusPaid._id == 3){
+						else if(result[i].invoices[j].statusPaid._id == 3 || result[i].invoices[j].statusPaid._id == 8){
 							$scope.branches[bId].pending += result[i].invoices[j].totalWithTaxes;
 						}
 						$scope.branches[bId].total += result[i].invoices[j].totalWithTaxes;
@@ -207,7 +207,7 @@ angular.module('MobileCRMApp')
 						if(result[i].invoices[j].statusPaid._id == 4){
 							$scope.companies[bId].paid += result[i].invoices[j].totalWithTaxes;
 						}
-						else if(result[i].invoices[j].statusPaid._id == 3){
+						else if(result[i].invoices[j].statusPaid._id == 3 || result[i].invoices[j].statusPaid._id == 8){
 							$scope.companies[bId].pending += result[i].invoices[j].totalWithTaxes;
 						}
 						$scope.companies[bId].total += result[i].invoices[j].totalWithTaxes;
