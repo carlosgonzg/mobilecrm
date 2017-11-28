@@ -27,6 +27,7 @@ angular.module('MobileCRMApp')
 		{_id: 'sor', description: 'Service Order'},
 		{_id: 'wor', description: 'Work Order'},
 		{_id: 'dor', description: 'Delivery Order'},
+		{_id: 'smo', description: 'Service Miles Only'},
 		{_id: 'All', description: 'All'}
 	];
 
