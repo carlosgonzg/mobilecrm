@@ -541,10 +541,10 @@ Invoice.prototype.getMonthlyStatement = function (params, user) {
 			},
 			statusPaid: {
 				_id: {
-					$cond: [{ $eq: ['$status._id', 4] }, 4, { $cond: [{ $eq: ['$status._id', 3] }, 3, 1] }]
+					$cond: [{ $eq: ['$status._id', 4] }, 4, { $cond: [{ $eq: ['$status._id', 3] }, 3, {$cond: [{eq: ['$status._id', 8]}, 8, 1]}] }]
 				},
 				description: {
-					$cond: [{ $eq: ['$status._id', 4] }, 'Paid', { $cond: [{ $eq: ['$status._id', 3] }, 'Pending to Pay', 'Pending'] }]
+					$cond: [{ $eq: ['$status._id', 4] }, 'Paid', { $cond: [{ $eq: ['$status._id', 3] }, 'Pending to Pay', {$cond: [{$eq:['$status._id', 8]}, 'Pending to Pay', 'Pending']}] }]
 				}
 			},
 			year: {
@@ -734,18 +734,21 @@ Invoice.prototype.createMonthlyStatement = function (params, format, user) {
 				whoIs = {
 					_id: obj._id,
 					name: obj.entity.fullName
+
 				};
 			}
 			else if (params.companyId) {
 				whoIs = {
 					_id: obj._id,
-					name: obj.entity.name
+					name: obj.entity.name,
+					address: obj.address
 				};
 			}
 			else if (params.branchId) {
 				whoIs = {
 					_id: obj._id,
-					name: obj.name
+					name: obj.name,
+					address: obj.addresses[0]
 				};
 			}
 			else {
@@ -755,6 +758,63 @@ Invoice.prototype.createMonthlyStatement = function (params, format, user) {
 				};
 			}
 			return _this.getMonthlyStatement(params, user);
+		})
+		.then(function(data) {
+			var defer = q.defer();
+			var companies = {};
+			var branchesList = {};
+			// console.log(params)
+			if(params.companyId){
+				for(var i = 0; i < data.length; i++){
+					for(var j = 0; j < data[i].invoices.length; j++){
+						var bId = data[i].invoices[j].branch ? data[i].invoices[j].branch._id || 'n/a' : 'n/a';
+						var bName = data[i].invoices[j].branch ? data[i].invoices[j].branch.name || 'n/a' : 'n/a';
+						if(!branchesList[bId]){
+							branchesList[bId] = {
+								name: bName,
+								paid: 0,
+								pending: 0,
+								total: 0,
+							};
+						}
+						if(data[i].invoices[j].statusPaid._id == 4){
+							branchesList[bId].paid += data[i].invoices[j].totalWithTaxes;
+						}
+						else if(data[i].invoices[j].statusPaid._id == 3){
+				
+							branchesList[bId].pending += data[i].invoices[j].totalWithTaxes;
+						}
+						branchesList[bId].total += data[i].invoices[j].totalWithTaxes;
+
+					}
+				}
+				defer.resolve(branchesList);
+			} else {
+				for(var i = 0; i < data.length; i++){
+					for(var j = 0; j < data[i].invoices.length; j++){
+						var bId = data[i].invoices[j].company ? data[i].invoices[j].company._id || 'n/a' : 'n/a';
+						var bName = data[i].invoices[j].company ? data[i].invoices[j].company.name || 'n/a' : 'n/a';
+						if(!companies[bId]){
+							companies[bId] = {
+								name: bName,
+								paid: 0,
+								pending: 0,
+								total: 0,
+							};
+						}
+						if(data[i].invoices[j].statusPaid._id == 4){
+							companies[bId].paid += data[i].invoices[j].totalWithTaxes;
+						}
+						else if(data[i].invoices[j].statusPaid._id == 3){
+							companies[bId].pending += data[i].invoices[j].totalWithTaxes;
+						}
+						companies[bId].total += data[i].invoices[j].totalWithTaxes;
+
+					}
+				}
+				defer.resolve(companies);
+			}
+			return {data:data, companies:companies, branches: branchesList}
 		})
 		.then(function (data) {
 			return format == 'pdf' ? pdf.createMonthlyStatement(data, whoIs, user) : excel.createMonthlyStatement(data, whoIs, user);
