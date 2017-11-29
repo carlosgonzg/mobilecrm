@@ -21,7 +21,6 @@ angular.module('MobileCRMApp')
 				showDeleteAction: '='
 			},
 			controller: function ($scope, $rootScope, $timeout, dialogs, toaster, Loading, $window, Company, $location) {
-				console.log("Loading")
 				$scope.list = [];
 				$scope.companies = [];
 				$scope.currentElement = {};
@@ -42,6 +41,7 @@ angular.module('MobileCRMApp')
 					{_id: 'sor', description: 'Service Order'},
 					{_id: 'wor', description: 'Work Order'},
 					{_id: 'dor', description: 'Delivery Order'},
+					{_id: 'smo', description: 'Service Miles Only'},
 					{_id: 'All', description: 'All Types'}
 				];
 
@@ -416,6 +416,8 @@ angular.module('MobileCRMApp')
 						$scope.params.filter["wor"] = {$exists:true};
 					else if ($scope.params.invoiceType._id === 'dor') 
 						$scope.params.filter["dor"] = {$exists:true};
+					else if ($scope.params.invoiceType._id === 'smo') 
+						$scope.params.filter["status._id"] = 8;
 
 					$scope.search();
 				}
