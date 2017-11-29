@@ -614,6 +614,9 @@ Invoice.prototype.getMonthlyStatement = function (params, user) {
 		if (params.invoiceType == 'dor') {
 			query.$match['dor'] = {'$exists': true}
 		}
+		if (params.invoiceType == 'smo') {
+			query.$match['status._id'] = 8
+		}
 	}
 
 	var group = {
@@ -844,7 +847,7 @@ Invoice.prototype.changeStatus = function (id) {
 	_this.crud.find({ _id: Number(id) })
 		.then(function (result) {
 			var obj = result.data[0];
-			if (obj.status._id == 3) {
+			if (obj.status._id == 3 || obj.status._id == 8) {
 				obj.status = {
 					_id: 4,
 					description: 'Paid'
