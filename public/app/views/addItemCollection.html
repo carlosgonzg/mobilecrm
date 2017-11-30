@@ -26,7 +26,7 @@
 			<table class="table table-striped table-hover" width="100%" style="margin: 0 auto">
 				<thead>
 					<tr>
-						<th width="25%">
+						<th width="15%">
 							Code
 						</th>
 						<th width="30%">
@@ -37,6 +37,9 @@
 						</th>
 						<th width="20%">
 							Import
+						</th>
+						<th width="20%">
+							Crew Leader
 						</th>
 					</tr>
 				</thead>
@@ -57,6 +60,13 @@
 							      <input type="checkbox" ng-model="item.import">
 								</label>
 						  	</div>
+						</td>
+						<td>
+							<div ng-if="item.typeItem=='Labor'">
+						 	<select class="form-control" style="width: 280px" ng-model="item.CrewLeaderSelected" ng-change="changedCrewLeaderValue(item, item.CrewLeaderSelected)" ng-disabled="item.crewLeaderCol == undefined || item.crewLeaderCol.length == 0" ng-options="item as item.name for item in item.crewLeaderCol track by item.name" ng-show="userData.role._id == 1 || userData.role._id == 5">
+						    <option style="display:none" value="">Select a Crew Leader</option>
+							</select>
+							</div>
 						</td>
 					</tr>
 				</tbody>

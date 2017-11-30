@@ -119,11 +119,9 @@ angular.module('MobileCRMApp')
 
 		$scope.addItem = function (item) {
 			$scope.workOrder.items.unshift(item);
-			if ($scope.CrewLeaderSelected.length > 0) {
-				item.crewLeaderCol = $scope.CrewLeaderSelected[0]
-			}
+			item.crewLeaderCol = $scope.addedItem
+			item.CrewLeaderSelected = $scope.CrewLeaderSelected;
 			$scope.params.item = {};
-			$scope.CrewLeaderSelected = {};
 		};
 
 		$scope.removeItem = function (index) {
@@ -251,6 +249,8 @@ angular.module('MobileCRMApp')
 				$scope.workOrder.sendTotech = false;
 			}
 
+			console.log($scope.workOrder.items);
+
 			$scope.workOrder.save()
 				.then(function (data) {
 					toaster.success('The Work Order was saved successfully');
@@ -306,8 +306,8 @@ angular.module('MobileCRMApp')
 					techId: item.techId
 				}
 				$scope.addedItem.push($scope.newItem);
-				$scope.crewHeader.push($scope.newItem);
-			}
+				$scope.crewHeader.push($scope.newItem);				
+			}		
 		}
 
 		$scope.getCrewleaders = function (selectedItem) {
@@ -354,7 +354,17 @@ angular.module('MobileCRMApp')
 
 		$scope.changedValue = function (item) {
 			$scope.CrewLeaderSelected = []
-			$scope.CrewLeaderSelected.push(item);
+			$scope.CrewLeaderSelected = item
+		}
+		$scope.changedCrewLeaderValue = function (item, CrewL) {
+			item.CrewLeaderSelected = CrewL;
+
+			for (let index = 0; index < $scope.workOrder.items.length; index++) {
+				if ($scope.workOrder.items[index]._id == item._id) {
+					$scope.workOrder.items[index] = item;
+					break;
+				}
+			}
 		}
 
 		$scope.addCrewHeader = function (item) {

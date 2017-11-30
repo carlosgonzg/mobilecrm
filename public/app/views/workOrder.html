@@ -353,9 +353,9 @@
 							<td>
 								{{item.getTotalPrice() | currency }}
 							</td>
-							<td>
-								<input type="text" name="part{{$index}}" class="form-control" ng-model="item.crewLeaderCol.name" ng-disabled="true" ng-class="isChanged('item')"
-								 ng-change="changed('item')">
+							<td>								
+							<select class="form-control" style="width: 280px" ng-model="item.CrewLeaderSelected" ng-change="changedCrewLeaderValue(item, item.CrewLeaderSelected)" ng-options="item as item.name for item in item.crewLeaderCol track by item.name" ng-disabled="item.crewLeaderCol == undefined || item.crewLeaderCol.length == 0" ng-show="userData.role._id == 1 || userData.role._id == 5">
+							</select>
 							</td>
 							<td>
 								<input type="text" name="part{{$index}}" class="form-control" ng-model="item.part" ng-disabled="isDisabled()">

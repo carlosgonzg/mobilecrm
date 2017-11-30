@@ -242,10 +242,13 @@ angular.module('MobileCRMApp')
 			$scope.invoice = new Invoice(doc);
 			$scope.invoice.date = new Date();
 			$scope.expensesNewItem = {}
-			console.log($scope.invoice);
 
 			for (var row = 0; row < $scope.invoice.items.length; row++) {
-				var element = $scope.invoice.items[row].crewLeaderCol
+				if ($scope.invoice.wor){
+					var element = $scope.invoice.items[row].CrewLeaderSelected
+				}else{
+					var element = $scope.invoice.items[row].crewLeaderCol
+				}
 				if (element != undefined) {
 					$scope.expensesNewItem = {
 						description: $scope.invoice.items[row].description,
@@ -325,7 +328,7 @@ angular.module('MobileCRMApp')
 			$scope.invoice.save()
 				.then(function (data) {
 					if (data.nModified == 1) {
-						$scope.updateDoc()
+						$scope.updateDoc(sendTotech)
 					}	
 					toaster.success('The Invoice was saved successfully');
 					$location.path('invoiceList')
@@ -343,7 +346,7 @@ angular.module('MobileCRMApp')
 			$scope.invoice.save()
 				.then(function (data) {
 					if (data.nModified == 1) {
-						$scope.updateDoc()
+						$scope.updateDoc(false)
 					}	
 					new User().filter({ 'branch._id': $scope.invoice.client.branch._id })
 						.then(function (result) {
@@ -376,7 +379,7 @@ angular.module('MobileCRMApp')
 			$scope.invoice.save()
 				.then(function (data) {
 					if (data.nModified == 1) {
-						$scope.updateDoc()
+						$scope.updateDoc(false)
 					}	
 					new Company().filter({ _id: $scope.invoice.client.company._id })
 						.then(function (result) {
@@ -407,7 +410,7 @@ angular.module('MobileCRMApp')
 			$scope.invoice.save()
 				.then(function (data) {
 					if (data.nModified == 1) {
-						$scope.updateDoc()
+						$scope.updateDoc(false)
 					}
 					toaster.success('The Invoice was saved successfully');
 					$scope.invoice.send();
@@ -473,7 +476,7 @@ angular.module('MobileCRMApp')
 			$scope.clientChanged(invoice.client);
 		}
 
-		$scope.updateDoc = function () {
+		$scope.updateDoc = function (sendTotech) {
 			if ($scope.invoice.typeTruck == undefined && $scope.invoice.sor != "") {
 				new ServiceOrder().filter({ "sor": $scope.invoice.sor })
 					.then(function (result) {

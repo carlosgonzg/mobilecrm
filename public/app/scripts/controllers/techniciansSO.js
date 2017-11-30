@@ -37,11 +37,8 @@ angular.module('MobileCRMApp')
 		if ($scope.serviceOrder.crewHeader != undefined) {
 			$scope.crewHeaderAdded = $scope.serviceOrder.crewHeader
 		}
-		
-		var hola = {x: 4444}
 
-		$scope.serviceOrder.siteAddress = hola;
-		console.log($scope.serviceOrder)
+		$scope.serviceOrder.siteAddress = [];
 
 		$scope.readOnly = $rootScope.userData.role._id != 1;
 		$scope.showMap = $rootScope.userData.role._id == 1;
@@ -83,7 +80,6 @@ angular.module('MobileCRMApp')
 		];
 		$scope.addresses = [];
 		var address = {};
-
 
 		$scope.serviceOrder.siteAddressFrom = $scope.serviceOrder.client && $scope.serviceOrder.client.branch ? $scope.serviceOrder.client.branch.addresses[0] : {};
 
@@ -275,8 +271,7 @@ angular.module('MobileCRMApp')
 				$scope.serviceOrder.items = [];
 			} else {
 				if ($scope.serviceOrder.client._id) {
-					var Serv, Admfeed
-					Serv = false; Admfeed = false
+					var Serv = false
 
 					for (var row = 0; row < $scope.serviceOrder.items.length; row++) {
 						var code = $scope.serviceOrder.items[row].code;
@@ -286,16 +281,6 @@ angular.module('MobileCRMApp')
 					}
 					if (Serv == false) {
 						$scope.serviceOrder.items.unshift(ItemDefault.data[0]);
-					}
-
-					for (var row = 0; row < $scope.serviceOrder.items.length; row++) {
-						var code = $scope.serviceOrder.items[row].code;
-						if (ItemDefault.data[1].code == code) {
-							Admfeed = true;
-						}
-					}
-					if (Admfeed == false) {
-						$scope.serviceOrder.items.unshift(ItemDefault.data[1]);
 					}
 				}
 			}

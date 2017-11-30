@@ -212,7 +212,7 @@
 								<br />
 								<div class="input-group" style="width: 100%">
 									<input type="checkbox" name="chkaddress" id="chkaddress" style="cursor: pointer" ng-checked="DeliveryOrder.fromwriteAddress"
-									 ng-click="FromCompany(1)"> From write address
+									 ng-click="FromCompany(1)"> From costumer address
 
 									<input type="text" class="form-control" ng-model="DeliveryOrder.addresstr" id="addressFromsId" ng-focus="geoLocate();recalculate();melost()"
 									 origin-point="address.addressString" ng-change="recalculate()" ng-disabled="DeliveryOrder.fromCompanyAddress == true"
@@ -221,7 +221,7 @@
 								<br/>
 								<div class="input-group">
 									<input type="checkbox" name="chkaddress" id="chkaddress" style="cursor: pointer" ng-checked="DeliveryOrder.fromCompanyAddress"
-									 ng-click="FromCompany(2)"> From company address
+									 ng-click="FromCompany(2)"> From branch address
 
 									<select ng-model="DeliveryOrder.siteAddressFrom" class="form-control" ng-class="isChanged('siteAddressFrom')" ng-change="changed('siteAddressFrom');recalculate()"
 									 ng-disabled="DeliveryOrder.fromCompanyAddress == false" ng-options="address as address.addressString for address in addresses track by address.address1">
