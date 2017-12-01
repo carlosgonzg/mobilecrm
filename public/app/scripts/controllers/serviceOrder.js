@@ -18,6 +18,7 @@ angular.module('MobileCRMApp')
 		$scope.crewHeader = []
 		$scope.crewHeaderAdded = []
 		$scope.CrewHeaderSel = ""
+		$scope.statusTech = {}
 
 		$scope.items = [];
 		$scope.params = {};
@@ -459,7 +460,7 @@ angular.module('MobileCRMApp')
 			if (originalSiteAddress.address1 != $scope.serviceOrder.siteAddress.address1) {
 				$scope.changed('siteAddress');
 			}
-
+				
 			$scope.serviceOrder.save()
 				.then(function (data) {
 					toaster.success('The Service Order was saved successfully');
