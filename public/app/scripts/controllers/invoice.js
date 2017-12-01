@@ -243,9 +243,9 @@ angular.module('MobileCRMApp')
 			$scope.invoice = new Invoice(doc);
 			$scope.invoice.date = new Date();
 			$scope.expensesNewItem = {}
-
+			
 			for (var row = 0; row < $scope.invoice.items.length; row++) {
-				if ($scope.invoice.wor){
+				if ($scope.invoice.wor || $scope.invoice.sor) {				
 					var element = $scope.invoice.items[row].CrewLeaderSelected
 				}else{
 					var element = $scope.invoice.items[row].crewLeaderCol

@@ -134,11 +134,9 @@ angular.module('MobileCRMApp')
 
 		$scope.addItem = function (item) {
 			$scope.workOrder.items.unshift(item);
-			if ($scope.CrewLeaderSelected.length > 0) {
-				item.crewLeaderCol = $scope.CrewLeaderSelected[0]
-			}
+			item.crewLeaderCol = $scope.addedItem
+			item.CrewLeaderSelected = $scope.CrewLeaderSelected;
 			$scope.params.item = {};
-			$scope.CrewLeaderSelected = {};
 		};
 
 		$scope.removeItem = function (index) {
@@ -312,7 +310,17 @@ angular.module('MobileCRMApp')
 
 		$scope.changedValue = function (item) {
 			$scope.CrewLeaderSelected = []
-			$scope.CrewLeaderSelected.push(item);
+			$scope.CrewLeaderSelected = item
+		}
+		$scope.changedCrewLeaderValue = function (item, CrewL) {
+			item.CrewLeaderSelected = CrewL;
+
+			for (let index = 0; index < $scope.workOrder.items.length; index++) {
+				if ($scope.workOrder.items[index]._id == item._id) {
+					$scope.workOrder.items[index] = item;
+					break;
+				}
+			}
 		}
 		$scope.addCrewHeader = function (item) {
 			for (var index = 0; index < $scope.crewHeaderAdded.length; index++) {
@@ -325,11 +333,11 @@ angular.module('MobileCRMApp')
 			}
 
 			$scope.crewHeaderAdded.push(item);
-			$scope.serviceOrder.crewHeader = $scope.crewHeaderAdded
+			$scope.workOrder.crewHeader = $scope.crewHeaderAdded
 		}
 		$scope.crewHeaderRemove = function (index) {
 			$scope.crewHeaderAdded.splice(index, 1);
-			$scope.serviceOrder.crewHeader = $scope.crewHeaderAdded
+			$scope.workOrder.crewHeader = $scope.crewHeaderAdded
 		};
 		$scope.Total = function () {
 			var totalitem = 0;

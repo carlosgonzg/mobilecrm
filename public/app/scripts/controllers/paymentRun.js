@@ -10,15 +10,14 @@
 
 angular.module('MobileCRMApp')
 	.controller('paymentRunCtrl', function ($scope, $location, toaster, ServiceOrder) {
-		console.log(ServiceOrder)
 
 		$scope.ServiceOrder = ServiceOrder
 
 		$scope.getTotal = function () {
 			var total = 0;
 			for (var row = 0; row < $scope.ServiceOrder.items.length; row++) {
-				if ($scope.ServiceOrder.items[row].crewLeaderCol != undefined) {
-					total += $scope.ServiceOrder.items[row].crewLeaderCol.price;
+				if ($scope.ServiceOrder.items[row].CrewLeaderSelected != undefined) {
+					total += $scope.ServiceOrder.items[row].CrewLeaderSelected.price;
 				}
 			}
 			return total

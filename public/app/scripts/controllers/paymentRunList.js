@@ -8,7 +8,7 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-	.controller('paymentListCtrl', function ($scope, $rootScope, $location, paymentRunWO, paymentRun) { 
+	.controller('paymentListCtrl', function ($scope, $rootScope, $location, paymentRunWO, paymentRun) {
 
 		$scope.filterPayment = []
 		$scope.showMessage = false;
@@ -47,8 +47,11 @@ angular.module('MobileCRMApp')
 			'date',
 			'customer',
 			'client.company.entity.name',
-			'siteAddressFrom.city.description'
+			'siteAddressFrom.city.description',
+			'createdDate'
 		];
+
+		$scope.filterDate = 'createdDate';
 
 		//schema para work order   ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -74,12 +77,12 @@ angular.module('MobileCRMApp')
 			name: 'client.company.address.city.description',
 			type: 'text'
 		}
-		];	
+		];
 
 		$scope.searchWO = [
-			'wor',			
+			'wor',
 			'client.entity.fullName',
-			'client.company.entity.name',	
+			'client.company.entity.name',
 			'date',
 			'client.company.address.city.description'
 		];
@@ -107,4 +110,5 @@ angular.module('MobileCRMApp')
 		}
 		$scope.selectTab($scope.roles[0]);
 		$scope.filter();
+
 	});

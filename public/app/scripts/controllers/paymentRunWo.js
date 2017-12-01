@@ -17,8 +17,8 @@ angular.module('MobileCRMApp')
 		$scope.getTotal = function () {
 			var total = 0;
 			for (var row = 0; row < $scope.WorkOrder.items.length; row++) {
-				if ($scope.WorkOrder.items[row].crewLeaderCol != undefined) {
-					total += $scope.WorkOrder.items[row].crewLeaderCol.price;
+				if ($scope.WorkOrder.items[row].CrewLeaderSelected != undefined) {
+					total += $scope.WorkOrder.items[row].CrewLeaderSelected.price;
 				}
 			}
 			return total
