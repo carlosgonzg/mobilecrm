@@ -15,6 +15,7 @@ angular.module('MobileCRMApp')
 		$scope.readOnly = $rootScope.userData.role._id != 1;
 		$scope.expenses = []
 		$scope.driver = Driver.data || {};
+		$scope.statusTech = {};
 
 		if ($rootScope.userData.role._id != 1) {
 			$scope.invoice.client = new User($rootScope.userData);
@@ -370,12 +371,11 @@ angular.module('MobileCRMApp')
 			$scope.waiting = true;
 			delete $scope.invoice.client.account.password;
 
-			var statusTech = []
-			statusTech = {
+			$scope.statusTech = {
 				_id: 1,
 				description: "Payment Run"
 			}
-
+			$scope.invoice.statusTech = $scope.statusTech;
 			$scope.invoice.save()
 				.then(function (data) {
 					if (data.nModified == 1) {
@@ -484,6 +484,7 @@ angular.module('MobileCRMApp')
 							$scope.ServiceOrder = obj
 							$scope.ServiceOrder.status = $scope.invoice.status
 							$scope.ServiceOrder.sendTotech = sendTotech
+							$scope.ServiceOrder.statusTech = $scope.statusTech;
 							$scope.ServiceOrder.sendMail = false;
 							console.log($scope.invoice.sor)
 						});
@@ -497,6 +498,7 @@ angular.module('MobileCRMApp')
 							$scope.WorkOrder = obj
 							$scope.WorkOrder.status = $scope.invoice.status
 							$scope.WorkOrder.sendTotech = sendTotech
+							$scope.WorkOrder.statusTech = $scope.statusTech;
 							$scope.WorkOrder.sendMail = false;
 							console.log($scope.invoice.wor)
 						});
