@@ -34,6 +34,14 @@ angular.module('MobileCRMApp')
 		description: '--------'
 	}];
 
+	$scope.invoiceTypeList = [
+		{ _id: 'sor', description: 'Service Order' },
+		{ _id: 'wor', description: 'Work Order' },
+		{ _id: 'dor', description: 'Delivery Order' },
+		{ _id: 'smo', description: 'Service Miles Only' },
+		{ _id: 'All', description: 'All' }
+	];
+
 	$scope.statusList = statusList;
 	$scope.statusList.unshift({
 		_id: -1,
@@ -376,6 +384,29 @@ angular.module('MobileCRMApp')
 				'status._id': params.status._id
 			});
 			queryDescription.status = params.status.description;
+		}
+		//ahora el invoice type
+		if (params.invoiceType) {
+			if (params.invoiceType == 'sor') {
+				query.$and.push({
+					'sor': { '$exists': true }
+				});
+			}
+			if (params.invoiceType == 'wor') {
+				query.$and.push({
+					'wor': { '$exists': true }
+				});
+			}
+			if (params.invoiceType == 'dor') {
+				query.$and.push({
+					'dor': { '$exists': true }
+				});
+			}
+			if (params.invoiceType == 'smo') {
+				query.$and.push({
+					'status._id': 8
+				});
+			}
 		}
 		//ahora customer y parts from the yard
 		if(params.pendingPO){
