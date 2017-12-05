@@ -36,6 +36,10 @@ angular.module('MobileCRMApp')
 			name: 'status.description',
 			type: 'text'
 		}, {
+			title: 'Po#',
+			name: 'pono',
+			type: 'text'
+		}, {
 			title: 'Total Amount',
 			name: 'total',
 			type: 'currency'
@@ -50,6 +54,7 @@ angular.module('MobileCRMApp')
 			'dor',
 			'client.entity.fullName',
 			'status.description',
+			'pono',
 			'total'
 		];
 
@@ -79,6 +84,10 @@ angular.module('MobileCRMApp')
 			name: 'status.description',
 			type: 'text'
 		}, {
+			title: 'Po#',
+			name: 'pono',
+			type: 'text'
+		}, {
 			title: 'Total Amount',
 			name: 'total',
 			type: 'currency'
@@ -93,4 +102,3 @@ angular.module('MobileCRMApp')
 	});
 
 
-	
