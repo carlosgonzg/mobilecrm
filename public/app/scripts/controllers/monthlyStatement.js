@@ -68,8 +68,14 @@ angular.module('MobileCRMApp')
 	};
 
 	$scope.getPaid = function(year, month){
-		return _.reduce($scope.invoices, function(memo, value){
-			return memo + (year == value.year && month == value.month && value.status._id == 4 ? value.totalWithTaxes : 0);
+		return _.reduce($scope.invoices, function (memo, value) {
+			var result = 0;
+			if (!value.dor) {
+				result = memo + (year == value.year && month == value.month && value.status._id == 4 ? value.totalWithTaxes : 0)
+			} else {
+				result = memo + (year == value.year && month == value.month && value.status._id == 7 ? value.totalWithTaxes : 0)
+			}
+			return result;//memo + (year == value.year && month == value.month && value.status._id == 4 ? value.totalWithTaxes : 0);
 		}, 0);
 	};
 	$scope.getPending = function(year, month){
@@ -78,8 +84,15 @@ angular.module('MobileCRMApp')
 		}, 0);
 	};
 	$scope.getPendingPay = function(year, month){
-		return _.reduce($scope.invoices, function(memo, value){
-			return memo + (year == value.year && month == value.month && value.status._id != 4 ? value.totalWithTaxes : 0);
+		return _.reduce($scope.invoices, function (memo, value) {
+			var result = 0;
+			console.log(value)
+			if (!value.dor) {
+				result = memo + (year == value.year && month == value.month && value.status._id != 4 ? value.totalWithTaxes : 0);
+			} else {
+				result = memo + (year == value.year && month == value.month && value.status._id != 7 ? value.totalWithTaxes : 0);
+			}
+			return result;//memo + (year == value.year && month == value.month && value.status._id != 4 ? value.totalWithTaxes : 0);
 		}, 0);
 	};
 	$scope.getTotal = function(year, month){
@@ -89,8 +102,14 @@ angular.module('MobileCRMApp')
 	};
 
 	$scope.getTotalPaid = function(){
-		return _.reduce($scope.invoices, function(memo, value){
-			return memo + (value.status._id == 4 ? value.totalWithTaxes : 0);
+		return _.reduce($scope.invoices, function (memo, value) {
+			var result = 0;
+			if (!value.dor) {
+				result = memo + (value.status._id == 4 ? value.totalWithTaxes : 0);
+			} else {
+				result = memo + (value.status._id == 7 ? value.totalWithTaxes : 0);
+			}
+			return result;//memo + (value.status._id == 4 ? value.totalWithTaxes : 0);
 		}, 0);
 	};
 	$scope.getTotalPending = function(){
@@ -99,8 +118,14 @@ angular.module('MobileCRMApp')
 		}, 0);
 	};
 	$scope.getTotalPendingPay = function(){
-		return _.reduce($scope.invoices, function(memo, value){
-			return memo + (value.status._id != 4 ? value.totalWithTaxes : 0);
+		return _.reduce($scope.invoices, function (memo, value) {
+			var result = 0;
+			if (!value.dor) {
+				result = memo + (value.status._id != 4 ? value.totalWithTaxes : 0);
+			} else {
+				result = memo + (value.status._id != 7 ? value.totalWithTaxes : 0);
+			}
+			return result;//memo + (value.status._id != 4 ? value.totalWithTaxes : 0);
 		}, 0);
 	};
 	$scope.getTotalYear = function(){
@@ -180,11 +205,20 @@ angular.module('MobileCRMApp')
 								total: 0,
 							};
 						}
-						if(result[i].invoices[j].statusPaid._id == 4){
-							$scope.branches[bId].paid += result[i].invoices[j].totalWithTaxes;
-						}
-						else if(result[i].invoices[j].statusPaid._id == 3 || result[i].invoices[j].statusPaid._id == 8){
-							$scope.branches[bId].pending += result[i].invoices[j].totalWithTaxes;
+						if (!result[i].invoices[j].dor) {
+							if (result[i].invoices[j].statusPaid._id == 4) {
+								$scope.branches[bId].paid += result[i].invoices[j].totalWithTaxes;
+							}
+							else if (result[i].invoices[j].statusPaid._id == 3 || result[i].invoices[j].statusPaid._id == 8) {
+								$scope.branches[bId].pending += result[i].invoices[j].totalWithTaxes;
+							}
+						} else {
+							if (result[i].invoices[j].statusPaid._id == 7) {
+								$scope.branches[bId].paid += result[i].invoices[j].totalWithTaxes;
+							}
+							else if (result[i].invoices[j].statusPaid._id == 4 || result[i].invoices[j].statusPaid._id == 8) {
+								$scope.branches[bId].pending += result[i].invoices[j].totalWithTaxes;
+							}
 						}
 						$scope.branches[bId].total += result[i].invoices[j].totalWithTaxes;
 
@@ -205,11 +239,20 @@ angular.module('MobileCRMApp')
 								total: 0,
 							};
 						}
-						if(result[i].invoices[j].statusPaid._id == 4){
-							$scope.companies[bId].paid += result[i].invoices[j].totalWithTaxes;
-						}
-						else if(result[i].invoices[j].statusPaid._id == 3 || result[i].invoices[j].statusPaid._id == 8){
-							$scope.companies[bId].pending += result[i].invoices[j].totalWithTaxes;
+						if (!result[i].invoices[j].dor) {
+							if (result[i].invoices[j].statusPaid._id == 4) {
+								$scope.companies[bId].paid += result[i].invoices[j].totalWithTaxes;
+							}
+							else if (result[i].invoices[j].statusPaid._id == 3 || result[i].invoices[j].statusPaid._id == 8) {
+								$scope.companies[bId].pending += result[i].invoices[j].totalWithTaxes;
+							}
+						} else {
+							if (result[i].invoices[j].statusPaid._id == 7) {
+								$scope.companies[bId].paid += result[i].invoices[j].totalWithTaxes;
+							}
+							else if (result[i].invoices[j].statusPaid._id == 4 || result[i].invoices[j].statusPaid._id == 8) {
+								$scope.companies[bId].pending += result[i].invoices[j].totalWithTaxes;
+							}
 						}
 						$scope.companies[bId].total += result[i].invoices[j].totalWithTaxes;
 
