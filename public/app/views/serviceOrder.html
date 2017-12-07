@@ -103,18 +103,19 @@
 					</div>
 				</div>
 
-				<div class="col-sm-12 pull-left" ng-if="userData.role._id == 1 || userData.role._id == 5"> 
+				<div class="col-sm-12 pull-left" ng-if="userData.role._id == 1 || userData.role._id == 5">
 					<div class="panel panel-default">
 						<div class="panel-body">
 							<div class="row">
 								<div style="float:left; padding-left: 5px; width: 270px;">
-									<label for="ETADate">Scheduled Date</label>
+									<label for="Scheduled Date">Scheduled Date</label>
 									<sc-datepicker ng-model="serviceOrder.ETADate" ng-class="isChanged('ETADate')" ng-change="changed('ETADate')"></sc-datepicker>
-								</div>								
+								</div>
 								<div style="float:left; padding-left:5px; width: 270px;">
 									<br />
-									<label for="ETAHours">ETA (Estimated Time of Arrival)</label>
-									<input type="time" class="form-control" ng-model="serviceOrder.ETATime" />
+									<label for="ETA">ETA (Estimated Time of Arrival)</label>
+									<input type="time" ng-model="serviceOrder.ETATime" id="ETATime" class="form-control" ng-class="isChanged('ETATime')" ng-change="changed('ETATime')"
+									/>
 								</div>
 								<br>
 							</div>

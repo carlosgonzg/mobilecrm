@@ -57,7 +57,7 @@ var sendMail = function (to, subject, body, isHtmlBody, attached, cc, cco, reply
 	mailOptions.cco = cco ? cco : '';
 	mailOptions.subject = subject;
 	mailOptions.replyTo = replyTo || '';
-	if (isHtmlBody) { 
+	if (isHtmlBody) {
 		mailOptions.html = body;
 	} else {
 		mailOptions.text = body;
@@ -630,6 +630,7 @@ var sendDeliveryOrder = function (deliveryOrder, mails, dirname) {
 			body = body.replace('<clientCompany>', deliveryOrder.client.company ? deliveryOrder.client.company.entity.name : 'None');
 			body = body.replace('<dor>', deliveryOrder.dor);
 			body = body.replace('<unitSize>', deliveryOrder.unitSize || '');
+			body = body.replace('<serialno>', deliveryOrder.unitno || '');
 			body = body.replace('<clientBranch>', deliveryOrder.client.branch ? deliveryOrder.client.branch.name : 'None');
 			body = body.replace('<customer>', deliveryOrder.customer || 'None');
 			body = body.replace('<customerPhone>', deliveryOrder.phone ? (deliveryOrder.phone.number || '') : 'None');
@@ -684,6 +685,77 @@ var sendDeliveryOrder = function (deliveryOrder, mails, dirname) {
 	return deferred.promise;
 };
 
+
+var sendDeliveryOrderUpdate = function (deliveryOrder, mails, user) {
+	var deferred = q.defer();
+	bringTemplateData('/email/templateDeliveryOrderUpdate.html')
+		.then(function (body) {
+			var url = config.SERVER_URL;
+
+			body = body.replace('<emailUrl>', url);
+			body = body.replace('<createdDate>', moment(deliveryOrder.date).format('MM/DD/YYYY'));
+			body = body.replace('<clientCompany>', deliveryOrder.client.company ? deliveryOrder.client.company.entity.name : 'None');
+			body = body.replace('<clientBranch>', deliveryOrder.client.branch ? deliveryOrder.client.branch.name : 'None');
+			body = body.replace('<customer>', deliveryOrder.customer || 'None');
+			body = body.replace('<customerPhone>', deliveryOrder.phone ? (deliveryOrder.phone.number || '') : 'None');
+			body = body.replace('<dor>', deliveryOrder.dor);
+			body = body.replace('<unitSize>', deliveryOrder.unitSize || '');
+			body = body.replace('<serialno>', deliveryOrder.unitno || '');
+			body = body.replace('<pono>', deliveryOrder.pono ? ('With PO Number: ' + deliveryOrder.pono) : '');
+			body = body.replace('<isono>', deliveryOrder.isono || '');
+			body = body.replace('<contract>', deliveryOrder.contract || '');
+			body = body.replace('<clientName>', deliveryOrder.client.entity.fullName);
+			body = body.replace('<clientPhone>', deliveryOrder.client && deliveryOrder.client.branch && deliveryOrder.client.branch.phones && deliveryOrder.client.branch.phones.length > 0 ? deliveryOrder.client.branch.phones[0].number : 'None');
+			body = body.replace('<clientMail>', deliveryOrder.client.account.email);
+			body = body.replace('<clientAddress>', deliveryOrder.siteAddress.address1 + ', ' + deliveryOrder.siteAddress.city.description + ', ' + deliveryOrder.siteAddress.state.description + ' ' + deliveryOrder.siteAddress.zipcode);
+			body = body.replace('<issue>', deliveryOrder.issue || 'None');
+			body = body.replace('<comment>', deliveryOrder.comment || 'None');
+
+			var changesByUser = '';
+			changesByUser += (user.entity.fullName || user.entity.name) + '<br/> Changes: ';
+			var fieldsChanged = '';
+			if (deliveryOrder.fieldsChanged) {
+				for (var i = 0; i < deliveryOrder.fieldsChanged.length; i++) {
+					if (deliveryOrder.fieldsChanged[i].by != user._id)
+						continue;
+					fieldsChanged += deliveryOrder.fieldsChanged[i].field;
+					if (i != deliveryOrder.fieldsChanged.length - 1) {
+						fieldsChanged += ', ';
+					}
+				}
+			}
+			changesByUser += fieldsChanged == '' ? 'None' : fieldsChanged;
+			body = body.replace('<client>', changesByUser);
+			var contacts = '';
+			for (var i = 0; i < deliveryOrder.contacts.length; i++) {
+				if (deliveryOrder.contacts[i].name)
+					contacts += '<b>Contact #' + (i + 1) + ':&nbsp;</b>' + deliveryOrder.contacts[i].name + '.&nbsp;<b>Phone(' + deliveryOrder.contacts[i].phoneType.description + '):</b>&nbsp;' + deliveryOrder.contacts[i].number + '<br/>';
+			}
+			body = body.replace('<contacts>', contacts || '');
+
+			var company = '' + (deliveryOrder && deliveryOrder.client && deliveryOrder.client.company && deliveryOrder.client.company.entity ? deliveryOrder.client.company.entity.name : 'Not Defined');
+			var branch = deliveryOrder && deliveryOrder.client && deliveryOrder.client.branch ? '' + deliveryOrder.client.branch.name : '' + deliveryOrder.client.entity.fullName;
+			var subject = 'Service Order: ' + deliveryOrder.sor + ' | ' + company + ' | ' + branch;
+
+			console.log('sending mail', subject);
+			mails = _.uniq(mails);
+			sendMail(mails.join(', '), subject, body, true, null, null, null, 'mf@mobileonecontainers.com')
+				.then(function (response) {
+					console.log('DONE Sending Mail: ', response)
+					deferred.resolve(response);
+				},
+				function (err) {
+					console.log('error', err)
+					deferred.reject(err);
+				});
+		},
+		function (err) {
+			console.log('error', err)
+			deferred.reject(err);
+		});
+	return deferred.promise;
+};
+
 var sendDeliveryOrderDelete = function (deliveryOrder, mails, dirname) {
 	var deferred = q.defer();
 	bringTemplateData('/deliveryorder.html')
@@ -695,6 +767,8 @@ var sendDeliveryOrderDelete = function (deliveryOrder, mails, dirname) {
 			body = body.replace('<createdBy>', deliveryOrder.createdBy.entity ? deliveryOrder.createdBy.entity.fullName : '');
 			body = body.replace('<clientCompany>', deliveryOrder.client.company ? deliveryOrder.client.company.entity.name : 'None');
 			body = body.replace('<dor>', deliveryOrder.dor);
+			body = body.replace('<unitSize>', deliveryOrder.unitSize || '');
+			body = body.replace('<serialno>', deliveryOrder.unitno || '');
 			body = body.replace('<clientBranch>', deliveryOrder.client.branch ? deliveryOrder.client.branch.name : 'None');
 			body = body.replace('<customer>', deliveryOrder.customer || 'None');
 			body = body.replace('<customerPhone>', deliveryOrder.phone ? (deliveryOrder.phone.number || '') : 'None');
@@ -762,3 +836,4 @@ exports.sendMail = sendMail;
 exports.sendActivationEmail = sendActivationEmail;
 exports.sendForgotPasswordMail = sendForgotPasswordMail;
 exports.sendDeliveryOrder = sendDeliveryOrder;
+exports.sendDeliveryOrderUpdate = sendDeliveryOrderUpdate;

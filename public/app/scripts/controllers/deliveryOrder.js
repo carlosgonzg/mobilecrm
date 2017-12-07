@@ -11,7 +11,7 @@ angular.module('MobileCRMApp')
 	.controller('DeliveryOrderCtrl', function ($scope, $rootScope, $location, toaster, User, statusList, EntranceList, Item, dialogs, $q, Branch, DeliveryOrder, $timeout, ItemDefault, $route, Company, Driver) {
 		$scope.DeliveryOrder = DeliveryOrder;
 		$scope.item = ItemDefault
-		
+
 		LoadData()
 		ConcatenateAddress();
 
@@ -780,9 +780,13 @@ angular.module('MobileCRMApp')
 			DeliveryOrder.addresstr = add;
 		}
 
-		$scope.LoadItemDefault = function () { 
+		$scope.LoadItemDefault = function () {
 			var dMiles, hour
 			dMiles = false; hour = false
+			if ($scope.DeliveryOrder._id && $scope.fistLoad == 0) {
+				return
+			}
+
 			if ($scope.company == undefined) {
 				console.log(1)
 				SetDefaulItems(805)
@@ -1074,4 +1078,3 @@ angular.module('MobileCRMApp')
 			}
 		};
 	});
-

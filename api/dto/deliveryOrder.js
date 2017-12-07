@@ -95,7 +95,7 @@ function DeliveryOrder(db, userLogged, dirname) {
 
 DeliveryOrder.prototype.savePhotos = function (deliveryOrder) {
 	var d = q.defer();
-	var dirname = this.dirname + '/public/app/images/uploads/deliveryOrder'; 
+	var dirname = this.dirname + '/public/app/images/uploads/deliveryOrder';
 	var deliveryOrderDir = dirname + '/' + deliveryOrder._id;
 	if (deliveryOrder.photos && deliveryOrder.photos.length > 0) {
 		var urlPhotos = [];
@@ -200,7 +200,7 @@ DeliveryOrder.prototype.insert = function (deliveryOrder, user, mail) {
 		}
 		if (deliveryOrder.items[index]._id == 806 || deliveryOrder.items[index]._id == 805) {
 			if (comp.perHours != undefined) {
-				if (comp.perHours == false && comp.initialCost != undefined) {	
+				if (comp.perHours == false && comp.initialCost != undefined) {
 					InitPrice = comp.initialCost;
 					initialMile = comp.initialMile;
 					costPerMile = comp.costPerMile;
@@ -209,7 +209,7 @@ DeliveryOrder.prototype.insert = function (deliveryOrder, user, mail) {
 						costPerHours = comp.costPerHours;
 					} else {
 						costPerHours = comp.smallTruck;
-					}	
+					}
 				}
 			}
 		}
@@ -305,7 +305,7 @@ DeliveryOrder.prototype.update = function (query, deliveryOrder, user, mail) {
 		}
 		if (deliveryOrder.items[index]._id == 806 || deliveryOrder.items[index]._id == 805) {
 			if (comp.perHours != undefined) {
-				if (comp.perHours == false && comp.initialCost != undefined) {	
+				if (comp.perHours == false && comp.initialCost != undefined) {
 					InitPrice = comp.initialCost;
 					initialMile = comp.initialMile;
 					costPerMile = comp.costPerMile;
@@ -314,7 +314,7 @@ DeliveryOrder.prototype.update = function (query, deliveryOrder, user, mail) {
 						costPerHours = comp.costPerHours;
 					} else {
 						costPerHours = comp.smallTruck;
-					}	
+					}
 				}
 			}
 		}
@@ -459,7 +459,7 @@ DeliveryOrder.prototype.sendDeliveryOrderUpdate = function (id, user, mail, send
 					emails.push(users.data[i].account.email);
 				}
 				emails = _.uniq(emails);
-				return mail.sendDeliveryOrder(deliveryOrder, emails, user);
+				return mail.sendDeliveryOrderUpdate(deliveryOrder, emails, user);
 			}
 		})
 		.then(function () {
