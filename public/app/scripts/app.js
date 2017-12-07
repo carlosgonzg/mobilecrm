@@ -495,7 +495,7 @@ var app = angular
 				controller: 'DeliveryOrderCtrl',
 				resolve: {
 					statusList: function (List) {
-						return List.get('statusDelivery');
+						return List.get('statusDelivery'); 
 					},
 					EntranceList: function (List) {
 						return List.get('Entrance');

@@ -95,7 +95,7 @@ function DeliveryOrder(db, userLogged, dirname) {
 
 DeliveryOrder.prototype.savePhotos = function (deliveryOrder) {
 	var d = q.defer();
-	var dirname = this.dirname + '/public/app/images/uploads/deliveryOrder';
+	var dirname = this.dirname + '/public/app/images/uploads/deliveryOrder'; 
 	var deliveryOrderDir = dirname + '/' + deliveryOrder._id;
 	if (deliveryOrder.photos && deliveryOrder.photos.length > 0) {
 		var urlPhotos = [];

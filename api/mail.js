@@ -57,7 +57,7 @@ var sendMail = function (to, subject, body, isHtmlBody, attached, cc, cco, reply
 	mailOptions.cco = cco ? cco : '';
 	mailOptions.subject = subject;
 	mailOptions.replyTo = replyTo || '';
-	if (isHtmlBody) {
+	if (isHtmlBody) { 
 		mailOptions.html = body;
 	} else {
 		mailOptions.text = body;

@@ -780,7 +780,7 @@ angular.module('MobileCRMApp')
 			DeliveryOrder.addresstr = add;
 		}
 
-		$scope.LoadItemDefault = function () {
+		$scope.LoadItemDefault = function () { 
 			var dMiles, hour
 			dMiles = false; hour = false
 			if ($scope.company == undefined) {

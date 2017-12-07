@@ -349,7 +349,7 @@ angular.module('MobileCRMApp')
 						break;
 					}
 				}
-				return isHere ? 'changed' : '';
+				return isHere ? 'changed' : ''; 
 			}
 			return '';
 		};
