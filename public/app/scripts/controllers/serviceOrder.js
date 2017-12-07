@@ -315,10 +315,6 @@ angular.module('MobileCRMApp')
 		};
 
 		$scope.changed = function (field) {
-			var value = "";
-			if (field == "ETATime") {
-				value = $scope.serviceOrder.ETATime;
-			}
 
 			if ($scope.serviceOrder._id /*&& $rootScope.userData.role._id != 1*/) {
 				var isHere = false;
@@ -330,11 +326,7 @@ angular.module('MobileCRMApp')
 					}
 				}
 				if (!isHere) {
-					$scope.serviceOrder.fieldsChanged.push({
-						field: field + (field === "Status" ? " - " + $scope.serviceOrder.status.description : ""),
-						by: $rootScope.userData._id,
-						value: value
-					});
+					$scope.serviceOrder.fieldsChanged.push({ field: field + (field === "Status" ? " - " + $scope.serviceOrder.status.description : ""), by: $rootScope.userData._id });
 					console.log($scope.serviceOrder.fieldsChanged)
 				}
 			}

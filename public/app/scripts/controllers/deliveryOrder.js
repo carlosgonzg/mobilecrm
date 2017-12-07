@@ -783,10 +783,6 @@ angular.module('MobileCRMApp')
 		$scope.LoadItemDefault = function () {
 			var dMiles, hour
 			dMiles = false; hour = false
-			if ($scope.DeliveryOrder._id && $scope.fistLoad == 0) {
-				return
-			}
-			
 			if ($scope.company == undefined) {
 				console.log(1)
 				SetDefaulItems(805)

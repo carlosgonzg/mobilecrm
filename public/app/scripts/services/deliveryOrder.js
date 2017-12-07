@@ -294,7 +294,6 @@ angular.module('MobileCRMApp')
 				.success(function (data, status, headers, config) {
 					var response = {},
 						data = data.data;
-
 					//Create a new object of the current class (or an array of them) and return it (or them)
 					if (Array.isArray(data)) {
 						response.data = data.map(function (obj) {
