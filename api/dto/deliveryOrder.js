@@ -343,8 +343,8 @@ DeliveryOrder.prototype.update = function (query, deliveryOrder, user, mail) {
 			delete deliveryOrder.sendMail;
 
 			var setObj = {};
-			if ([5, 7].indexOf(deliveryOrder.status._id) != -1) {
-				//setObj = { invoiceNumber: "No Invoice" };
+			if ([5].indexOf(deliveryOrder.status._id) != -1) {
+				setObj = { invoiceNumber: "No Invoice" };
 			}
 			else {
 				setObj = { invoiceNumber: deliveryOrder.invoiceNumber };
@@ -369,8 +369,8 @@ DeliveryOrder.prototype.update = function (query, deliveryOrder, user, mail) {
 			delete deliveryOrder.sendMail;
 
 			var setObj = {};
-			if ([5, 7].indexOf(deliveryOrder.status._id) != -1) {
-				//setObj = { invoiceNumber: "No Invoice" };
+			if ([5].indexOf(deliveryOrder.status._id) != -1) {
+				setObj = { invoiceNumber: "No Invoice" };
 			}
 			else {
 				setObj = { invoiceNumber: deliveryOrder.invoiceNumber };
