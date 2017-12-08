@@ -119,6 +119,23 @@
 						</div>
 					</div>
 				</div>
+				<div ng-if="invoice.dor">
+					<div class="col-sm-6">
+						<div class="col-xs-12 pull-right">
+							<div class="form-group">
+								<label for="date">Service order #</label>
+								<input type="text" class="form-control" ng-model="invoice.dor" ng-class="isChanged('dor')" ng-change="changed('dor')" ng-disabled="isDisabled() || invoice.dor">
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="col-xs-12 pull-right">
+							<div class="form-group">
+
+							</div>
+						</div>
+					</div>
+				</div>
 				<div ng-if="!invoice.dor">
 					<div class="col-sm-6">
 						<div class="col-xs-12 pull-right">
@@ -162,7 +179,7 @@
 						</div>
 					</div>
 				</div>
-								<div class="col-sm-6">
+				<div class="col-sm-6">
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
 							<div ng-if="!invoice.dor">
@@ -219,9 +236,9 @@
 					<div class="col-xs-12 pull-right">
 						<div class="form-group" ng-if="invoice.dor">
 							<label for="pono">Driver</label>
-						<select class="form-control" ng-model="invoice.driver" id="role" ng-options="driver as driver.entity.fullName for driver in driver track by driver._id">
-							<option style="display:none" value="">Select a Driver</option>
-						</select>
+							<select class="form-control" ng-model="invoice.driver" id="role" ng-options="driver as driver.entity.fullName for driver in driver track by driver._id">
+								<option style="display:none" value="">Select a Driver</option>
+							</select>
 						</div>
 					</div>
 				</div>
