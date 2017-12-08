@@ -3,6 +3,7 @@
 angular.module('MobileCRMApp')
 .controller('EmailsCtrl', function ($scope, $uibModalInstance, data, toaster) {
 	$scope.emails = [];
+
 	if(data.email)
 		$scope.emails.push(data.email)
 	$scope.add = function(){
@@ -14,7 +15,8 @@ angular.module('MobileCRMApp')
 	$scope.close = function(){
 		$uibModalInstance.dismiss();
 	};
-	$scope.send = function(){
+	$scope.send = function () {
+		data = $scope.emails;
 		if($scope.emails.length <= 0){
 			toaster.error('', 'You need at least one email');
 			return;

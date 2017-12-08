@@ -23,7 +23,7 @@
 			</button>
 			<button type="submit" form="userForm" class="btn btn-default update" ng-click="saveSend()" ng-disabled="waiting">
 				<i class="fa fa-save"></i>&nbsp;
-				<span>Save & Send</span>
+				<span>Save & Send To:</span>
 			</button>
 			<button type="button" class="btn btn-default" ng-click="showExpenses()" ng-if="invoice._id && userData.role._id == 1" data-toggle="tooltip"
 			 title="Expenses">
@@ -365,8 +365,10 @@
 			<div class="col-sm-4 pull-left">
 				<div class="form-group">
 					<label for="comment">Project Description</label>
-					<textarea id="comment" ng-model="invoice.comment" class="form-control">
-						</textarea>
+					<textarea id="comment" ng-show="!invoice.dor" ng-model="invoice.comment" class="form-control">
+					</textarea>
+					<textarea id="comment" ng-show="invoice.dor" ng-model="invoice.comments" class="form-control">
+					</textarea>
 				</div>
 			</div>
 		</div>

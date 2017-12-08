@@ -20,7 +20,7 @@
 				</tr>
 				<tr ng-repeat="email in emails track by $index">
 					<td>
-						<input type="text" ng-model="emails[$index]" class="form-control" />
+						<input type="email" ng-model="emails[$index]" class="form-control" name="username" placeholder="email@example.com" ng-maxlength="100" ng-model-options="{ updateOn: blur }" ng-pattern="/^[a-z]+[a-z0-9._]+@[a-z]+\.[a-z.]{2,5}$/" required />
 					</td>
 					<td>
 						<button class="btn btn-sm btn-danger" ng-click="remove($index)">

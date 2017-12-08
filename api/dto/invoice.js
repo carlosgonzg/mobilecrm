@@ -330,10 +330,12 @@ Invoice.prototype.sendInvoice = function (id, username, mail, emails, sendToAllA
 			return _this.user.getAdminUsers(sendToAllAdmin ? true : (invoice.pono ? true : false));
 		})
 		.then(function (users) {
-			emails = emails.concat([invoice.client.account.email]);
-			for (var i = 0; i < users.data.length; i++) {
-				cc.push(users.data[i].account.email);
-			}
+			if (invoice.saveSendTo == false) {
+				emails = emails.concat([invoice.client.account.email]);
+				for (var i = 0; i < users.data.length; i++) {
+					cc.push(users.data[i].account.email);
+				}
+			}	
 			emails = _.uniq(emails);
 			cc = _.uniq(cc);
 			fileNamePdf = invoice.invoiceNumber + '.pdf';

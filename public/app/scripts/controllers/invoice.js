@@ -325,7 +325,7 @@ angular.module('MobileCRMApp')
 		$scope.save = function (sendTotech) {
 			$scope.waiting = true;
 			delete $scope.invoice.client.account.password;
-
+			$scope.invoice.saveSendTo = false;
 			$scope.invoice.save()
 				.then(function (data) {
 					if (data.nModified == 1) {
@@ -344,6 +344,8 @@ angular.module('MobileCRMApp')
 		$scope.saveBranch = function () {
 			$scope.waiting = true;
 			delete $scope.invoice.client.account.password;
+			$scope.invoice.saveSendTo = false;
+			
 			$scope.invoice.save()
 				.then(function (data) {
 					if (data.nModified == 1) {
@@ -376,6 +378,7 @@ angular.module('MobileCRMApp')
 				description: "Payment Run"
 			}
 			$scope.invoice.statusTech = $scope.statusTech;
+			$scope.invoice.saveSendTo = false;
 			$scope.invoice.save()
 				.then(function (data) {
 					if (data.nModified == 1) {
@@ -407,6 +410,8 @@ angular.module('MobileCRMApp')
 		$scope.saveSend = function () {
 			$scope.waiting = true;
 			delete $scope.invoice.client.account.password;
+			$scope.invoice.saveSendTo = true;
+
 			$scope.invoice.save()
 				.then(function (data) {
 					if (data.nModified == 1) {
