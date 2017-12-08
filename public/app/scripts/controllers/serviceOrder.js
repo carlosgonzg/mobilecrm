@@ -453,7 +453,6 @@ angular.module('MobileCRMApp')
 			if (originalPhotos != $scope.serviceOrder.photos) {
 				$scope.changed('photos');
 			}
-
 			if (originalSiteAddress.address1 != $scope.serviceOrder.siteAddress.address1) {
 				$scope.changed('siteAddress');
 			}
