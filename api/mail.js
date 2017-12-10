@@ -68,16 +68,15 @@ var sendMail = function (to, subject, body, isHtmlBody, attached, cc, cco, reply
 	else {
 		mailOptions.attachments = [];
 	}
-	console.log("subject: ", subject)
-	smtpTransport.sendMail(mailOptions, function (error, response) {
-		if (error) {
-			console.log(error);
-			deferred.reject(error);
-		} else {
-			console.log('Message sent');
-			deferred.resolve(response);
-		}
-	});
+	// smtpTransport.sendMail(mailOptions, function (error, response) {
+	// 	if (error) {
+	// 		console.log(error);
+	// 		deferred.reject(error);
+	// 	} else {
+	// 		console.log('Message sent');
+	// 		deferred.resolve(response);
+	// 	}
+	// });
 	return deferred.promise;
 };
 
