@@ -539,7 +539,7 @@ Invoice.prototype.getMonthlyStatement = function (params, user) {
 			total: 1,
 			status: {
 				_id: '$status._id',
-				description: '$status.description'+
+				description: '$status.description'
 			},
 			// statusPaid: {
 			// 	_id: {
