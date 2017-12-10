@@ -330,10 +330,12 @@ Invoice.prototype.sendInvoice = function (id, username, mail, emails, sendToAllA
 			return _this.user.getAdminUsers(sendToAllAdmin ? true : (invoice.pono ? true : false));
 		})
 		.then(function (users) {
-			emails = emails.concat([invoice.client.account.email]);
-			for (var i = 0; i < users.data.length; i++) {
-				cc.push(users.data[i].account.email);
-			}
+			if (invoice.saveSendTo == false) {
+				emails = emails.concat([invoice.client.account.email]);
+				for (var i = 0; i < users.data.length; i++) {
+					cc.push(users.data[i].account.email);
+				}
+			}	
 			emails = _.uniq(emails);
 			cc = _.uniq(cc);
 			fileNamePdf = invoice.invoiceNumber + '.pdf';
@@ -537,14 +539,22 @@ Invoice.prototype.getMonthlyStatement = function (params, user) {
 			total: 1,
 			status: {
 				_id: '$status._id',
-				description: '$status.description'
+				description: '$status.description'+
 			},
+			// statusPaid: {
+			// 	_id: {
+			// 		$cond: [{ $eq: ['$status._id', 4] }, 4, { $cond: [{ $eq: ['$status._id', 3] }, 3, {$cond: [{eq: ['$status._id', 8]}, 3, 1]}] }]
+			// 	},
+			// 	description: {
+			// 		$cond: [{ $eq: ['$status._id', 4] }, 'Paid', { $cond: [{ $eq: ['$status._id', 3] }, 'Pending to Pay', {$cond: [{$eq:['$status._id', 8]}, 'Pending to Pay', 'Pending']}] }]
+			// 	}
+			// },
 			statusPaid: {
 				_id: {
-					$cond: [{$not: ["$dor"]}, {$cond: [{ $eq: ['$status._id', 4] }, 4, { $cond: [{ $eq: ['$status._id', 3] }, 3, {$cond: [{eq: ['$status._id', 8]}, 3, 1]}] }]},{$cond: [{ $eq: ['$status._id', 7] }, 7, { $cond: [{ $eq: ['$status._id', 4] }, 4, {$cond: [{eq: ['$status._id', 8]}, 4, 1]}] }]}]
+					$cond: [{ $not: ["$dor"] }, { $cond: [{ $eq: ['$status._id', 4] }, 4, { $cond: [{ $eq: ['$status._id', 3] }, 3, { $cond: [{ eq: ['$status._id', 8] }, 3, 1] }] }] }, { $cond: [{ $eq: ['$status._id', 7] }, 4, { $cond: [{ $eq: ['$status._id', 4] }, 3, { $cond: [{ eq: ['$status._id', 8] }, 3, 1] }] }] }]
 				},
 				description: {
-					$cond: [{$not: ["$dor"]}, {$cond: [{ $eq: ['$status._id', 4] }, 'Paid', { $cond: [{ $eq: ['$status._id', 3] }, 'Pending to Pay', {$cond: [{$eq:['$status._id', 8]}, 'Pending to Pay', 'Pending']}] }]},{$cond: [{ $eq: ['$status._id', 7] }, 'Paid', { $cond: [{ $eq: ['$status._id', 4] }, 'Pending to Pay', {$cond: [{$eq:['$status._id', 8]}, 'Pending to Pay', 'Pending']}] }]}]
+					$cond: [{ $not: ["$dor"] }, { $cond: [{ $eq: ['$status._id', 4] }, 'Paid', { $cond: [{ $eq: ['$status._id', 3] }, 'Pending to Pay', { $cond: [{ $eq: ['$status._id', 8] }, 'Pending to Pay', 'Pending'] }] }] }, { $cond: [{ $eq: ['$status._id', 7] }, 'Paid', { $cond: [{ $eq: ['$status._id', 4] }, 'Pending to Pay', { $cond: [{ $eq: ['$status._id', 8] }, 'Pending to Pay', 'Pending'] }] }] }]
 				}
 			},
 			year: {

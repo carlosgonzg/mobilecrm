@@ -293,6 +293,9 @@ angular.module('MobileCRMApp')
 					'status._id': 1
 				}
 				$scope.filterCompleted = {
+					"statusTech._id": {
+						"$not": { "$in": [1, 2] }
+					},
 					'status._id': 3
 				}
 				$scope.filterPayment = {

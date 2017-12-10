@@ -8,10 +8,10 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-	.controller('DeliveryOrderCtrl', function ($scope, $rootScope, $location, toaster, User, statusList, EntranceList, Item, dialogs, $q, Branch, DeliveryOrder, $timeout, ItemDefault, $route, Company, Driver) {
+	.controller('DeliveryOrderCtrl', function ($scope, $rootScope, $location, toaster, User, statusList, EntranceList, Item, dialogs, $q, Branch, DeliveryOrder, $timeout, ItemDefault, $route, Company, Driver, Invoice) {
 		$scope.DeliveryOrder = DeliveryOrder;
 		$scope.item = ItemDefault
-		
+
 		LoadData()
 		ConcatenateAddress();
 
@@ -503,17 +503,19 @@ angular.module('MobileCRMApp')
 					$scope.DeliveryOrder.items[row].quantity = DeliveryOrder.siteAddress.distanceFrom
 				}
 			}
-
-			if (!$route.current.params.id) { $scope.DeliveryOrder.date = new Date() }
-
+			
 			if ($scope.DeliveryOrder.status.description == "Pending") {
 				$scope.DeliveryOrder.status.description = "Waiting for Availability"
 			}
+
+			if (!$route.current.params.id) { $scope.DeliveryOrder.date = new Date() }
+
 			if ($scope.DeliveryOrder.client.company.perHours == undefined) {
 				$scope.addConfigComp()
 			} else {
-				$scope.DeliveryOrder.save()
-					.then(function (data) {
+ 				$scope.DeliveryOrder.save()
+						.then(function (data) {
+						$scope.updateDoc();
 						toaster.success('The Delivery Order was saved successfully');
 						$location.path('DeliveryOrderList')
 						$scope.waiting = false;
@@ -522,7 +524,7 @@ angular.module('MobileCRMApp')
 						console.log(error);
 						toaster.error('The Delivery Order couldn\'t be saved, please check if some required field is empty or if its duplicated');
 						$scope.waiting = false;
-					});
+					}); 
 			}
 		};
 
@@ -783,6 +785,10 @@ angular.module('MobileCRMApp')
 		$scope.LoadItemDefault = function () {
 			var dMiles, hour
 			dMiles = false; hour = false
+			if ($scope.DeliveryOrder._id && $scope.fistLoad == 0) {
+				return
+			}
+
 			if ($scope.company == undefined) {
 				console.log(1)
 				SetDefaulItems(805)
@@ -903,6 +909,7 @@ angular.module('MobileCRMApp')
 
 						$scope.DeliveryOrder.save()
 							.then(function (data) {
+								$scope.updateDoc();
 								toaster.success('The Delivery Order was saved successfully');
 								$location.path('DeliveryOrderList')
 								$scope.waiting = false;
@@ -1073,5 +1080,18 @@ angular.module('MobileCRMApp')
 				$scope.DeliveryOrder.fromCompanyAddress = false;
 			}
 		};
-	});
 
+		$scope.updateDoc = function () {
+			if ($scope.DeliveryOrder.dor) {
+				new Invoice().filter({ "dor": $scope.DeliveryOrder.dor })
+					.then(function (result) {
+						_.map(result.data, function (obj) {
+							$scope.invoice = obj
+							$scope.invoice.status = $scope.DeliveryOrder.status
+						});
+						$scope.invoice.save()
+					})
+			}
+		}
+		
+	});

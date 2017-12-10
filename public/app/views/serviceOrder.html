@@ -69,9 +69,10 @@
 					<div class="panel panel-default">
 						<div class="panel-body">
 							<div class="row">
-								<div style="float:left; padding-left: 10px">									
+								<div style="float:left; padding-left: 10px">
 									<label>
-										<input type="checkbox" name="chkCrew" ng-if="crewHeaderAdded.length > 0" id="chkCrew" ng-click="addItemHeader()"><label ng-if="crewHeaderAdded.length > 0">Include for items</label>
+										<input type="checkbox" name="chkCrew" ng-if="crewHeaderAdded.length > 0" id="chkCrew" ng-click="addItemHeader()">
+										<label ng-if="crewHeaderAdded.length > 0">Include for items</label>
 									</label>
 									<br/>
 								</div>
@@ -97,6 +98,26 @@
 										</div>
 									</div>
 								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-sm-12 pull-left" ng-if="userData.role._id == 1 || userData.role._id == 5">
+					<div class="panel panel-default">
+						<div class="panel-body">
+							<div class="row">
+								<div style="float:left; padding-left: 5px; width: 270px;">
+									<label for="Scheduled Date">Scheduled Date</label>
+									<sc-datepicker ng-model="serviceOrder.ETADate" ng-class="isChanged('ETADate')" ng-change="changed('ETADate')"></sc-datepicker>
+								</div>
+								<div style="float:left; padding-left:5px; width: 270px;">
+									<br />
+									<label for="ETA">ETA (Estimated Time of Arrival)</label>
+									<input type="time" ng-model="serviceOrder.ETATime" id="ETATime" class="form-control" ng-class="isChanged('ETATime')" ng-change="changed('ETATime')"
+									/>
+								</div>
+								<br>
 							</div>
 						</div>
 					</div>
@@ -158,6 +179,7 @@
 						</div>
 					</div>
 				</div>
+
 				<div class="col-sm-6">
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
@@ -167,6 +189,7 @@
 						</div>
 					</div>
 				</div>
+
 				<div class="col-xs-12">
 					<div class="col-xs-12 pull-right">
 						<uib-accordion ng-disabled="userData.role._id == 5">
@@ -376,19 +399,20 @@
 						</td>
 						<td>
 
-						<div ng-if="CrewHeaderSel.length > 0 "> <!-- para la cabera -->
-							<select class="form-control" style="width: 280px" ng-model="item" ng-change="changedValue(item)" ng-options="item as item.name for item in addedItem track by $index"
-							 ng-show="params.item.typeItem=='Labor' && !commentDiabled" ng-disabled="!params.item._id">
-								<option style="display:none" value="">Select a Crew Leader</option>
-							</select>					
-						 </div>
+							<div ng-if="CrewHeaderSel.length > 0 ">
+								<!-- para la cabera -->
+								<select class="form-control" style="width: 280px" ng-model="item" ng-change="changedValue(item)" ng-options="item as item.name for item in addedItem track by $index"
+								 ng-show="params.item.typeItem=='Labor' && !commentDiabled" ng-disabled="!params.item._id">
+									<option style="display:none" value="">Select a Crew Leader</option>
+								</select>
+							</div>
 
-						 <div ng-if="CrewHeaderSel.length == 0 ">
-							<select class="form-control" style="width: 280px" ng-model="item" ng-change="changedValue(item)" ng-options="item as item.name for item in addedItem"
-							 ng-show="params.item.typeItem=='Labor' && !commentDiabled" ng-disabled="!params.item._id">
-								<option style="display:none" value="">Select a Crew Leader</option>
-							</select>
-	 					</div>
+							<div ng-if="CrewHeaderSel.length == 0 ">
+								<select class="form-control" style="width: 280px" ng-model="item" ng-change="changedValue(item)" ng-options="item as item.name for item in addedItem"
+								 ng-show="params.item.typeItem=='Labor' && !commentDiabled" ng-disabled="!params.item._id">
+									<option style="display:none" value="">Select a Crew Leader</option>
+								</select>
+							</div>
 						</td>
 						<td>
 							<span>
@@ -424,8 +448,10 @@
 							{{item.getTotalPrice() | currency }}
 						</td>
 						<td>
-							<input type="text" name="part{{$index}}" class="form-control" ng-model="item.crewLeaderCol.name" ng-disabled="true" ng-class="isChanged('item')"
-							 ng-change="changed('item')">
+							<select class="form-control" style="width: 280px" ng-model="item.CrewLeaderSelected" ng-change="changedCrewLeaderValue(item, item.CrewLeaderSelected)"
+							 ng-options="item as item.name for item in item.crewLeaderCol track by item.name" ng-disabled="item.crewLeaderCol == undefined || item.crewLeaderCol.length == 0"
+							 ng-show="userData.role._id == 1 || userData.role._id == 5">
+							</select>
 						</td>
 						<td>
 							<input type="text" name="part{{$index}}" class="form-control" ng-model="item.part" ng-disabled="isDisabled()" ng-class="isChanged('item')"

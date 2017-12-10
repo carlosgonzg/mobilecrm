@@ -37,11 +37,8 @@ angular.module('MobileCRMApp')
 		if ($scope.serviceOrder.crewHeader != undefined) {
 			$scope.crewHeaderAdded = $scope.serviceOrder.crewHeader
 		}
-		
-		var hola = {x: 4444}
 
-		$scope.serviceOrder.siteAddress = hola;
-		console.log($scope.serviceOrder)
+		$scope.serviceOrder.siteAddress = [];
 
 		$scope.readOnly = $rootScope.userData.role._id != 1;
 		$scope.showMap = $rootScope.userData.role._id == 1;
@@ -83,7 +80,6 @@ angular.module('MobileCRMApp')
 		];
 		$scope.addresses = [];
 		var address = {};
-
 
 		$scope.serviceOrder.siteAddressFrom = $scope.serviceOrder.client && $scope.serviceOrder.client.branch ? $scope.serviceOrder.client.branch.addresses[0] : {};
 
@@ -275,8 +271,7 @@ angular.module('MobileCRMApp')
 				$scope.serviceOrder.items = [];
 			} else {
 				if ($scope.serviceOrder.client._id) {
-					var Serv, Admfeed
-					Serv = false; Admfeed = false
+					var Serv = false
 
 					for (var row = 0; row < $scope.serviceOrder.items.length; row++) {
 						var code = $scope.serviceOrder.items[row].code;
@@ -286,16 +281,6 @@ angular.module('MobileCRMApp')
 					}
 					if (Serv == false) {
 						$scope.serviceOrder.items.unshift(ItemDefault.data[0]);
-					}
-
-					for (var row = 0; row < $scope.serviceOrder.items.length; row++) {
-						var code = $scope.serviceOrder.items[row].code;
-						if (ItemDefault.data[1].code == code) {
-							Admfeed = true;
-						}
-					}
-					if (Admfeed == false) {
-						$scope.serviceOrder.items.unshift(ItemDefault.data[1]);
 					}
 				}
 			}
@@ -313,12 +298,9 @@ angular.module('MobileCRMApp')
 
 		$scope.addItem = function (item) {
 			$scope.serviceOrder.items.unshift(item);
-			if ($scope.CrewLeaderSelected.length > 0) {
-				item.crewLeaderCol = $scope.CrewLeaderSelected[0]
-			}
-
+			item.crewLeaderCol = $scope.addedItem
+			item.CrewLeaderSelected = $scope.CrewLeaderSelected;
 			$scope.params.item = {};
-			$scope.changed('items');
 		};
 
 		$scope.removeItem = function (index) {
@@ -532,7 +514,17 @@ angular.module('MobileCRMApp')
 
 		$scope.changedValue = function (item) {
 			$scope.CrewLeaderSelected = []
-			$scope.CrewLeaderSelected.push(item);
+			$scope.CrewLeaderSelected = item
+		}
+		$scope.changedCrewLeaderValue = function (item, CrewL) {
+			item.CrewLeaderSelected = CrewL;
+
+			for (let index = 0; index < $scope.serviceOrder.items.length; index++) {
+				if ($scope.serviceOrder.items[index]._id == item._id) {
+					$scope.serviceOrder.items[index] = item;
+					break;
+				}
+			}
 		}
 
 		$scope.addCrewHeader = function (item) {

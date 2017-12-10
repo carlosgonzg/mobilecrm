@@ -200,7 +200,7 @@ DeliveryOrder.prototype.insert = function (deliveryOrder, user, mail) {
 		}
 		if (deliveryOrder.items[index]._id == 806 || deliveryOrder.items[index]._id == 805) {
 			if (comp.perHours != undefined) {
-				if (comp.perHours == false && comp.initialCost != undefined) {	
+				if (comp.perHours == false && comp.initialCost != undefined) {
 					InitPrice = comp.initialCost;
 					initialMile = comp.initialMile;
 					costPerMile = comp.costPerMile;
@@ -209,7 +209,7 @@ DeliveryOrder.prototype.insert = function (deliveryOrder, user, mail) {
 						costPerHours = comp.costPerHours;
 					} else {
 						costPerHours = comp.smallTruck;
-					}	
+					}
 				}
 			}
 		}
@@ -305,7 +305,7 @@ DeliveryOrder.prototype.update = function (query, deliveryOrder, user, mail) {
 		}
 		if (deliveryOrder.items[index]._id == 806 || deliveryOrder.items[index]._id == 805) {
 			if (comp.perHours != undefined) {
-				if (comp.perHours == false && comp.initialCost != undefined) {	
+				if (comp.perHours == false && comp.initialCost != undefined) {
 					InitPrice = comp.initialCost;
 					initialMile = comp.initialMile;
 					costPerMile = comp.costPerMile;
@@ -314,7 +314,7 @@ DeliveryOrder.prototype.update = function (query, deliveryOrder, user, mail) {
 						costPerHours = comp.costPerHours;
 					} else {
 						costPerHours = comp.smallTruck;
-					}	
+					}
 				}
 			}
 		}
@@ -343,7 +343,7 @@ DeliveryOrder.prototype.update = function (query, deliveryOrder, user, mail) {
 			delete deliveryOrder.sendMail;
 
 			var setObj = {};
-			if ([5, 7].indexOf(deliveryOrder.status._id) != -1) {
+			if ([5].indexOf(deliveryOrder.status._id) != -1) {
 				setObj = { invoiceNumber: "No Invoice" };
 			}
 			else {
@@ -369,7 +369,7 @@ DeliveryOrder.prototype.update = function (query, deliveryOrder, user, mail) {
 			delete deliveryOrder.sendMail;
 
 			var setObj = {};
-			if ([5, 7].indexOf(deliveryOrder.status._id) != -1) {
+			if ([5].indexOf(deliveryOrder.status._id) != -1) {
 				setObj = { invoiceNumber: "No Invoice" };
 			}
 			else {
@@ -459,7 +459,7 @@ DeliveryOrder.prototype.sendDeliveryOrderUpdate = function (id, user, mail, send
 					emails.push(users.data[i].account.email);
 				}
 				emails = _.uniq(emails);
-				return mail.sendDeliveryOrder(deliveryOrder, emails, user);
+				return mail.sendDeliveryOrderUpdate(deliveryOrder, emails, user);
 			}
 		})
 		.then(function () {

@@ -495,7 +495,7 @@ var app = angular
 				controller: 'DeliveryOrderCtrl',
 				resolve: {
 					statusList: function (List) {
-						return List.get('statusDelivery');
+						return List.get('statusDelivery'); 
 					},
 					EntranceList: function (List) {
 						return List.get('Entrance');
@@ -508,7 +508,7 @@ var app = angular
 						}
 					},
 					ItemDefault: function (Item) {
-						return new Item().filter({ _id: { $in: [805, 806, 761] } })
+						return new Item().filter({ _id: { $in: [805, 806] } })
 					},
 					Driver: function (User) {
 						return new User().filter({ 'role._id': 6 })

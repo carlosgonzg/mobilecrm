@@ -15,6 +15,7 @@ angular.module('MobileCRMApp')
 		$scope.readOnly = $rootScope.userData.role._id != 1;
 		$scope.expenses = []
 		$scope.driver = Driver.data || {};
+		$scope.statusTech = {};
 
 		if ($rootScope.userData.role._id != 1) {
 			$scope.invoice.client = new User($rootScope.userData);
@@ -242,10 +243,13 @@ angular.module('MobileCRMApp')
 			$scope.invoice = new Invoice(doc);
 			$scope.invoice.date = new Date();
 			$scope.expensesNewItem = {}
-			console.log($scope.invoice);
-
+			
 			for (var row = 0; row < $scope.invoice.items.length; row++) {
-				var element = $scope.invoice.items[row].crewLeaderCol
+				if ($scope.invoice.wor || $scope.invoice.sor) {				
+					var element = $scope.invoice.items[row].CrewLeaderSelected
+				}else{
+					var element = $scope.invoice.items[row].crewLeaderCol
+				}
 				if (element != undefined) {
 					$scope.expensesNewItem = {
 						description: $scope.invoice.items[row].description,
@@ -321,11 +325,11 @@ angular.module('MobileCRMApp')
 		$scope.save = function (sendTotech) {
 			$scope.waiting = true;
 			delete $scope.invoice.client.account.password;
-
+			$scope.invoice.saveSendTo = false;
 			$scope.invoice.save()
 				.then(function (data) {
 					if (data.nModified == 1) {
-						$scope.updateDoc()
+						$scope.updateDoc(sendTotech)
 					}	
 					toaster.success('The Invoice was saved successfully');
 					$location.path('invoiceList')
@@ -340,10 +344,12 @@ angular.module('MobileCRMApp')
 		$scope.saveBranch = function () {
 			$scope.waiting = true;
 			delete $scope.invoice.client.account.password;
+			$scope.invoice.saveSendTo = false;
+			
 			$scope.invoice.save()
 				.then(function (data) {
 					if (data.nModified == 1) {
-						$scope.updateDoc()
+						$scope.updateDoc(false)
 					}	
 					new User().filter({ 'branch._id': $scope.invoice.client.branch._id })
 						.then(function (result) {
@@ -367,16 +373,16 @@ angular.module('MobileCRMApp')
 			$scope.waiting = true;
 			delete $scope.invoice.client.account.password;
 
-			var statusTech = []
-			statusTech = {
+			$scope.statusTech = {
 				_id: 1,
 				description: "Payment Run"
 			}
-
+			$scope.invoice.statusTech = $scope.statusTech;
+			$scope.invoice.saveSendTo = false;
 			$scope.invoice.save()
 				.then(function (data) {
 					if (data.nModified == 1) {
-						$scope.updateDoc()
+						$scope.updateDoc(false)
 					}	
 					new Company().filter({ _id: $scope.invoice.client.company._id })
 						.then(function (result) {
@@ -404,10 +410,12 @@ angular.module('MobileCRMApp')
 		$scope.saveSend = function () {
 			$scope.waiting = true;
 			delete $scope.invoice.client.account.password;
+			$scope.invoice.saveSendTo = true;
+
 			$scope.invoice.save()
 				.then(function (data) {
 					if (data.nModified == 1) {
-						$scope.updateDoc()
+						$scope.updateDoc(false)
 					}
 					toaster.success('The Invoice was saved successfully');
 					$scope.invoice.send();
@@ -473,7 +481,7 @@ angular.module('MobileCRMApp')
 			$scope.clientChanged(invoice.client);
 		}
 
-		$scope.updateDoc = function () {
+		$scope.updateDoc = function (sendTotech) {
 			if ($scope.invoice.typeTruck == undefined && $scope.invoice.sor != "") {
 				new ServiceOrder().filter({ "sor": $scope.invoice.sor })
 					.then(function (result) {
@@ -481,6 +489,7 @@ angular.module('MobileCRMApp')
 							$scope.ServiceOrder = obj
 							$scope.ServiceOrder.status = $scope.invoice.status
 							$scope.ServiceOrder.sendTotech = sendTotech
+							$scope.ServiceOrder.statusTech = $scope.statusTech;
 							$scope.ServiceOrder.sendMail = false;
 							console.log($scope.invoice.sor)
 						});
@@ -494,6 +503,7 @@ angular.module('MobileCRMApp')
 							$scope.WorkOrder = obj
 							$scope.WorkOrder.status = $scope.invoice.status
 							$scope.WorkOrder.sendTotech = sendTotech
+							$scope.WorkOrder.statusTech = $scope.statusTech;
 							$scope.WorkOrder.sendMail = false;
 							console.log($scope.invoice.wor)
 						});

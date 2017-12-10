@@ -284,7 +284,7 @@
 									 step="0.01" ng-class="isChanged('item')" ng-change="changed('item')">
 								</div>
 								<div ng-if="workOrder.status._id==3">
-									<input type="number" name="price{{$index}}" class="form-control" ng-model="item.crewLeaderCol.price" ng-disabled="true" validator="required"
+									<input type="number" name="price{{$index}}" class="form-control" ng-model="item.CrewLeaderSelected.price" ng-disabled="true" validator="required"
 									 step="0.01" ng-class="isChanged('item')" ng-change="changed('item')">
 								</div>
 			</div>
@@ -293,7 +293,7 @@
 
 			</td>
 			<td>
-				<input type="text" name="part{{$index}}" class="form-control" ng-model="item.crewLeaderCol.name" ng-disabled="true" ng-class="isChanged('item')"
+				<input type="text" name="part{{$index}}" class="form-control" ng-model="item.CrewLeaderSelected.name" ng-disabled="true" ng-class="isChanged('item')"
 				 ng-change="changed('item')">
 			</td>
 			<td>
@@ -424,23 +424,23 @@
 				<table class="table" width="100%">
 					<tbody>
 						<tr ng-repeat="item in workOrder.items track by $index" style="border-top: 1px white solid">
-							<th width="10%" style="font-weight: normal" ng-if="item.crewLeaderCol.techId == getTechId()">
+							<th width="10%" style="font-weight: normal" ng-if="item.CrewLeaderSelected.techId == getTechId()">
 								{{item.code}}
 							</th>
-							<th width="40%" style="font-weight: normal" ng-if="item.crewLeaderCol.techId == getTechId()">
+							<th width="40%" style="font-weight: normal" ng-if="item.CrewLeaderSelected.techId == getTechId()">
 								{{item.description}}
 							</th>
-							<th width="10%" style="font-weight: normal" ng-if="item.crewLeaderCol.techId == getTechId()">
+							<th width="10%" style="font-weight: normal" ng-if="item.CrewLeaderSelected.techId == getTechId()">
 							
 							</th>
-							<th width="15%" style="font-weight: normal; text-align: left; padding-left: 25px" ng-if="item.crewLeaderCol.techId == getTechId()">
-								{{item.crewLeaderCol.price | currency}}
+							<th width="15%" style="font-weight: normal; text-align: left; padding-left: 25px" ng-if="item.CrewLeaderSelected.techId == getTechId()">
+								{{item.CrewLeaderSelected.price | currency}}
 							</th>
-							<th width="10%" style="font-weight: normal;" ng-if="item.crewLeaderCol.techId == getTechId()">
+							<th width="10%" style="font-weight: normal;" ng-if="item.CrewLeaderSelected.techId == getTechId()">
 								{{item.quantity}}
 							</th>
-							<th width="15%" style="text-align: right; font-weight: normal" ng-if="item.crewLeaderCol.techId == getTechId()">
-								{{item.quantity * item.crewLeaderCol.price | currency}}
+							<th width="15%" style="text-align: right; font-weight: normal" ng-if="item.CrewLeaderSelected.techId == getTechId()">
+								{{item.quantity * item.CrewLeaderSelected.price | currency}}
 							</th>
 						</tr>
 					</tbody>
