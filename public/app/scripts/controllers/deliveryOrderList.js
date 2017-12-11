@@ -16,8 +16,16 @@ angular.module('MobileCRMApp')
 			name: 'client.company.entity.name',
 			type: 'text'
 		}, {
-			title: 'Date',
-			name: 'date',
+			title: 'Branch',
+			name: 'client.branch.name',
+			type: 'text'
+		}, {
+			title: 'Customer',
+			name: 'client.entity.fullName',
+			type: 'text'
+		}, {
+			title: 'Delivered Date',
+			name: 'originalShipDate',
 			type: 'date'
 		}, {
 			title: 'Invoice #',
@@ -28,34 +36,36 @@ angular.module('MobileCRMApp')
 			name: 'dor',
 			type: 'text'
 		}, {
-			title: 'Customer',
-			name: 'client.entity.fullName',
+			title: 'Serial #',
+			name: 'unitno',
 			type: 'text'
 		}, {
-			title: 'Status',
-			name: 'status.description',
-			type: 'text'
-		}, {
-			title: 'Po#',
+			title: 'PO #',
 			name: 'pono',
 			type: 'text'
 		}, {
 			title: 'Total Amount',
 			name: 'total',
 			type: 'currency'
+		}, {
+			title: 'Status',
+			name: 'status.description',
+			type: 'text'
 		}
-		];
+	];
 
 		$scope.search = [
 			'_id',
 			'client.company.entity.name',
-			'date',
+			'client.branch.name',
+			'client.entity.fullName',
+			'originalShipDate',
 			'invoiceNumber',
 			'dor',
-			'client.entity.fullName',
-			'status.description',
+			'unitno',
 			'pono',
-			'total'
+			'total',
+			'status.description'
 		];
 
 		$scope.filterDate = 'date';
@@ -64,8 +74,16 @@ angular.module('MobileCRMApp')
 			name: 'client.company.entity.name',
 			type: 'text'
 		}, {
-			title: 'Date',
-			name: 'date',
+			title: 'Branch',
+			name: 'client.branch.name',
+			type: 'text'
+		}, {
+			title: 'Customer',
+			name: 'client.entity.fullName',
+			type: 'text'
+		}, {
+			title: 'Delivery Date',
+			name: 'originalShipDate',
 			type: 'date'
 		}, {
 			title: 'Invoice #',
@@ -76,21 +94,21 @@ angular.module('MobileCRMApp')
 			name: 'dor',
 			type: 'text'
 		}, {
-			title: 'Customer',
-			name: 'client.entity.fullName',
+			title: 'Serial #',
+			name: 'unitno',
 			type: 'text'
 		}, {
-			title: 'Status',
-			name: 'status.description',
-			type: 'text'
-		}, {
-			title: 'Po#',
+			title: 'PO #',
 			name: 'pono',
 			type: 'text'
 		}, {
 			title: 'Total Amount',
 			name: 'total',
 			type: 'currency'
+		}, {
+			title: 'Status',
+			name: 'status.description',
+			type: 'text'
 		}
 		];
 
