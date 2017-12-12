@@ -290,8 +290,10 @@ angular.module('MobileCRMApp')
 		DeliveryOrder.prototype.filter = function (query, sort) {
 			var deferred = $q.defer();
 			var _this = this.constructor;
+			console.log(this.baseApiPath)
 			$http.post(this.baseApiPath + '/filter', { query: query, sort: sort })
 				.success(function (data, status, headers, config) {
+					console.log(data)	
 					var response = {},
 						data = data.data;
 					//Create a new object of the current class (or an array of them) and return it (or them)

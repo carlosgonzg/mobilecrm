@@ -9,7 +9,9 @@
  */
 angular.module('MobileCRMApp')
 .controller('InvoiceListCtrl', function ($scope, $rootScope, $location, Invoice) {
-	$scope.invoice = Invoice;
+
+	$scope.invoice =  Invoice;
+	
 
 	$scope.fields = [{
 			title : 'Company',
@@ -50,7 +52,8 @@ angular.module('MobileCRMApp')
 		}, {
 			title : 'Amount',
 			name : 'total',
-			type : 'currency'
+			type : 'function',
+			function: function (elem){ return elem.total + (elem.client.company.taxes || 0) * elem.total}
 		}, {
 			title : 'Expenses',
 			name : 'expensesComplete',
