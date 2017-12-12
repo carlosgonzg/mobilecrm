@@ -20,71 +20,9 @@ angular.module('MobileCRMApp')
 			name: 'client.branch.name',
 			type: 'text'
 		}, {
-			title: 'Date',
-			name: 'date',
-			type: 'date'
-		}, {
-			title: 'Completed Date',
-			name: 'originalShipDate',
-			type: 'date'
-		},
-		 {
-			title: 'Unit #',
-			name: 'unitno',
-			type: 'text'
-		}
-		,{
-			title: 'Invoice #',
-			name: 'invoiceNumber',
-			type: 'text'
-		},
-		{
-			title: 'Total Amount',
-			name: 'total',
-			type: 'currency'
-		}
-		,{
-			title: 'Work Order #',
-			name: 'wor',
-			type: 'text'
-		},
-		 {
 			title: 'Customer',
 			name: 'client.entity.fullName',
 			type: 'text'
-		}, {
-			title: 'Status',
-			name: 'status.description',
-			type: 'text'
-		}
-		];
-
-		$scope.search = [
-			'wor',
-			'client.company.entity.name',
-			'client.branch.name',
-			'invoiceNumber',
-			'unitno',
-			'status.description',
-			'total',
-			'client.entity.fullName',
-			'originalShipDate',
-			'date'
-		];
-		$scope.filterDate = 'date';
-
-		$scope.excelFields = [{
-			title: 'Company',
-			name: 'client.company.entity.name',
-			type: 'text'
-		}, {
-			title: 'Branch',
-			name: 'client.branch.name',
-			type: 'text'
-		}, {
-			title: 'Date',
-			name: 'date',
-			type: 'date'
 		}, {
 			title: 'Completed Date',
 			name: 'originalShipDate',
@@ -102,17 +40,75 @@ angular.module('MobileCRMApp')
 			name: 'unitno',
 			type: 'text'
 		}, {
-			title: 'Customer',
-			name: 'client.entity.fullName',
-			type: 'text'
-		}, {
-			title: 'Status',
-			name: 'status.description',
+			title: 'PO #',
+			name: 'pono',
 			type: 'text'
 		}, {
 			title: 'Total Amount',
 			name: 'total',
 			type: 'currency'
+		}, {
+			title: 'Status',
+			name: 'status.description',
+			type: 'text'
+		}
+		];
+
+		$scope.search = [
+			'_id',
+			'client.company.entity.name',
+			'client.branch.name',
+			'client.entity.fullName',
+			'originalShipDate',
+			'invoiceNumber',
+			'wor',
+			'unitno',
+			'pono',
+			'total',
+			'status.description',
+		];
+
+		$scope.filterDate = 'date';
+		$scope.excelFields = [{
+			title: 'Company',
+			name: 'client.company.entity.name',
+			type: 'text'
+		}, {
+			title: 'Branch',
+			name: 'client.branch.name',
+			type: 'text'
+		}, {
+			title: 'Customer',
+			name: 'client.entity.fullName',
+			type: 'text'
+		}, {
+			title: 'Work Date',
+			name: 'originalShipDate',
+			type: 'date'
+		}, {
+			title: 'Invoice #',
+			name: 'invoiceNumber',
+			type: 'text'
+		}, {
+			title: 'Work Order #',
+			name: 'sor',
+			type: 'text'
+		}, {
+			title: 'Serial #',
+			name: 'unitno',
+			type: 'text'
+		}, {
+			title: 'PO #',
+			name: 'pono',
+			type: 'text'
+		}, {
+			title: 'Total Amount',
+			name: 'total',
+			type: 'currency'
+		}, {
+			title: 'Status',
+			name: 'status.description',
+			type: 'text'
 		}
 		];
 

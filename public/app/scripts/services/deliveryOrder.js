@@ -255,7 +255,7 @@ angular.module('MobileCRMApp')
 
 					a.href = url;
 
-					a.download = 'Service Order Report ' + formatDate(new Date()) + '.xlsx';
+					a.download = 'Delivery Order Report ' + formatDate(new Date()) + '.xlsx';
 					a.click();
 					window.URL.revokeObjectURL(url);
 					d.resolve(url);

@@ -623,6 +623,10 @@ var sendDeliveryOrder = function (deliveryOrder, mails, dirname) {
 		.then(function (body) {
 			var url = config.SERVER_URL;
 			console.log(url)
+
+			var adressArray = deliveryOrder.siteAddressFrom.address1 + ", " + deliveryOrder.siteAddressFrom.city.id + ", " + deliveryOrder.siteAddressFrom.city.stateId
+			var pickAdress = deliveryOrder.addresstr || adressArray;
+
 			body = body.replace('<emailUrl>', url);
 			body = body.replace('<createdDate>', moment(deliveryOrder.date).format('MM/DD/YYYY'));
 			body = body.replace('<createdBy>', deliveryOrder.createdBy.entity ? deliveryOrder.createdBy.entity.fullName : '');
@@ -638,7 +642,7 @@ var sendDeliveryOrder = function (deliveryOrder, mails, dirname) {
 			body = body.replace('<pickupdate>', moment(deliveryOrder.pickupDate).format('MM/DD/YYYY'));
 			body = body.replace('<pickuptime>', moment(deliveryOrder.pickupTime).format('HH:mm'));
 			body = body.replace('<clientName>', deliveryOrder.client.entity.fullName);
-			body = body.replace('<pickAddress>', deliveryOrder.addresstr || '');
+			body = body.replace('<pickAddress>', pickAdress || '');
 			body = body.replace('<deliveryAddress>', deliveryOrder.siteAddress ? deliveryOrder.siteAddress.address1 + ', ' + deliveryOrder.siteAddress.city.description + ', ' + deliveryOrder.siteAddress.state.description + ' ' + deliveryOrder.siteAddress.zipcode : '');
 			body = body.replace('<Clientcomment>', deliveryOrder.clientcomment || 'None');
 			body = body.replace('<comment>', deliveryOrder.comments || 'None');

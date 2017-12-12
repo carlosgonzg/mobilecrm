@@ -12,108 +12,105 @@ angular.module('MobileCRMApp')
 	$scope.serviceOrder = ServiceOrder;
 
 	$scope.fields = [{
-			title : 'Company',
-			name : 'client.company.entity.name',
-			type : 'text'
-		},{
-			title : 'Branch',
-			name : 'client.branch.name',
-			type : 'text'
-		},{
-			title : 'Date',
-			name : 'date',
-			type : 'date'
-		},{
-			title : 'Completed Date',
-			name : 'originalShipDate',
-			type : 'date'
+			title: 'Company',
+			name: 'client.company.entity.name',
+			type: 'text'
 		}, {
-			title : 'Invoice #',
-			name : 'invoiceNumber',
-			type : 'text'
+			title: 'Branch',
+			name: 'client.branch.name',
+			type: 'text'
 		}, {
-			title : 'Service Order #',
-			name : 'sor',
-			type : 'text'
+			title: 'Customer',
+			name: 'client.entity.fullName',
+			type: 'text'
 		}, {
-			title : 'Serial #',
-			name : 'unitno',
-			type : 'text'
+			title: 'Completed Date',
+			name: 'originalShipDate',
+			type: 'date'
 		}, {
-			title : 'Customer',
-			name : 'client.entity.fullName',
-			type : 'text'
+			title: 'Invoice #',
+			name: 'invoiceNumber',
+			type: 'text'
 		}, {
-			title : 'Status',
-			name : 'status.description',
-			type : 'text'
+			title: 'Service Order #',
+			name: 'sor',
+			type: 'text'
 		}, {
-			title : 'Total Amount',
-			name : 'total',
-			type : 'currency'
+			title: 'Serial #',
+			name: 'unitno',
+			type: 'text'
+		}, {
+			title: 'PO #',
+			name: 'pono',
+			type: 'text'
+		}, {
+			title: 'Total Amount',
+			name: 'total',
+			type: 'currency'
+		}, {
+			title: 'Status',
+			name: 'status.description',
+			type: 'text'
 		}
-	];
+		];
 
 	$scope.search = [
 		'_id',
-		'date',
-		'originalShipDate',
-		'invoiceNumber',
 		'client.company.entity.name',
 		'client.branch.name',
+		'client.entity.fullName',
+		'originalShipDate',
+		'invoiceNumber',
 		'sor',
 		'unitno',
-		'client.branch',
-		'client.company',
-		'client.entity',
-		'client.entity.fullName',
+		'pono',
+		'total',
 		'status.description',
-		'total'
 	];
-	$scope.filterDate = 'date';
 
+  $scope.filterDate = 'date';
   $scope.excelFields = [{
-			title : 'Company',
-			name : 'client.company.entity.name',
-			type : 'text'
-		},{
-			title : 'Branch',
-			name : 'client.branch.name',
-			type : 'text'
-		},{
-			title : 'Date',
-			name : 'date',
-			type : 'date'
-		},{
-			title : 'Completed Date',
-			name : 'originalShipDate',
-			type : 'date'
+			title: 'Company',
+			name: 'client.company.entity.name',
+			type: 'text'
 		}, {
-			title : 'Invoice #',
-			name : 'invoiceNumber',
-			type : 'text'
+			title: 'Branch',
+			name: 'client.branch.name',
+			type: 'text'
 		}, {
-			title : 'Service Order #',
-			name : 'sor',
-			type : 'text'
+			title: 'Customer',
+			name: 'client.entity.fullName',
+			type: 'text'
 		}, {
-			title : 'Unit #',
-			name : 'unitno',
-			type : 'text'
+			title: 'Service Date',
+			name: 'originalShipDate',
+			type: 'date'
 		}, {
-			title : 'Customer',
-			name : 'client.entity.fullName',
-			type : 'text'
+			title: 'Invoice #',
+			name: 'invoiceNumber',
+			type: 'text'
 		}, {
-			title : 'Status',
-			name : 'status.description',
-			type : 'text'
+			title: 'Service Order #',
+			name: 'sor',
+			type: 'text'
 		}, {
-			title : 'Total Amount',
-			name : 'total',
-			type : 'currency'
+			title: 'Serial #',
+			name: 'unitno',
+			type: 'text'
+		}, {
+			title: 'PO #',
+			name: 'pono',
+			type: 'text'
+		}, {
+			title: 'Total Amount',
+			name: 'total',
+			type: 'currency'
+		}, {
+			title: 'Status',
+			name: 'status.description',
+			type: 'text'
 		}
-  ];
+		];
 
 	$scope.filter = $rootScope.userData.role._id == 1 || $rootScope.userData.role._id == 5 ? { } : $rootScope.userData.branch && $rootScope.userData.branch._id ?  { 'client.branch._id': $rootScope.userData.branch._id } : { 'client._id': $rootScope.userData._id };
 
