@@ -63,6 +63,7 @@ angular.module('MobileCRMApp')
 				var actualPath = $location.path();
 				if ($window.sessionStorage.params && actualPath === $window.sessionStorage.path) {
 					$scope.params = JSON.parse($window.sessionStorage.params);
+					var functionFields = _.where($scope.fields,{type:'function'})
 					delete $window.sessionStorage.params;
 				}
 				else {
@@ -81,6 +82,8 @@ angular.module('MobileCRMApp')
 						fieldFilter: {},
 						company: {}
 					};
+
+					var functionFields = _.where($scope.fields,{type:'function'})
 
 					if ($scope.sortList == "-1") {
 						$scope.params.sort = {
@@ -127,6 +130,8 @@ angular.module('MobileCRMApp')
 								};
 							});
 						}
+					} else if (field.type === 'function') {
+						field.type = 'currency'
 					}
 				});
 
@@ -227,6 +232,14 @@ angular.module('MobileCRMApp')
 						//	toaster.pop('error', 'Information', 'Couldn\'t load the items');
 						}
 						$scope.list = angular.copy(result.data);
+						//- Aqui se preparan las opciones para los Fields que son select
+						functionFields.forEach(function(field) {
+							$scope.list.forEach(function(obj) {
+								obj.temp = obj.temp || {};
+								obj.temp[field.name] = field.function(obj);
+								obj[field.name] = obj.temp[field.name];
+							});
+						});
 
 						listBk = angular.copy(result.data);
 						$scope.loaded = true;
