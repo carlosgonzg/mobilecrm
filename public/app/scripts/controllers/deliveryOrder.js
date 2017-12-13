@@ -25,11 +25,11 @@ angular.module('MobileCRMApp')
 		$scope.showMap = $rootScope.userData.role._id == 1;
 		$scope.commentDiabled = true;
 
-		if ($rootScope.userData.role._id == 1 || $rootScope.userData.role._id == 6) {
+		if ($rootScope.userData.role._id == 1 || $rootScope.userData.role._id == 5) {
 			$scope.commentDiabled = false;
 		}
 
-		if ($rootScope.userData.role._id != 1 && $rootScope.userData.role._id != 6) {
+		if ($rootScope.userData.role._id != 1 && $rootScope.userData.role._id != 5) {
 			$scope.DeliveryOrder.client = new User($rootScope.userData);
 		}
 
@@ -246,7 +246,7 @@ angular.module('MobileCRMApp')
 		}
 
 		$scope.wsClassItem = Item;
-		$scope.wsFilterItem = $rootScope.userData.role._id != 1 && $rootScope.userData.role._id != 6 ? { 'companies._id': $rootScope.userData.company._id } : {};
+		$scope.wsFilterItem = $rootScope.userData.role._id != 1 && $rootScope.userData.role._id != 5 ? { 'companies._id': $rootScope.userData.company._id } : {};
 		$scope.wsFieldsItem = [{
 			label: 'Code',
 			field: 'code',
@@ -287,7 +287,7 @@ angular.module('MobileCRMApp')
 			}
 
 			if (client && client.company) {
-				$scope.wsFilterItem = $rootScope.userData.role._id != 1 && $rootScope.userData.role._id != 6 ? { 'companies._id': $rootScope.userData.company._id } : { 'companies._id': client.company._id };
+				$scope.wsFilterItem = $rootScope.userData.role._id != 1 && $rootScope.userData.role._id != 5 ? { 'companies._id': $rootScope.userData.company._id } : { 'companies._id': client.company._id };
 
 				$scope.DeliveryOrder.siteAddressFrom = $scope.DeliveryOrder.client.branch ? $scope.DeliveryOrder.client.branch.addresses[0] : {};
 			} else {

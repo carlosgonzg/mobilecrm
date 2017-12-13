@@ -111,8 +111,8 @@ angular.module('MobileCRMApp')
 			type: 'text'
 		}
 		];
-
-		$scope.filter = $rootScope.userData.role._id == 1 || $rootScope.userData.role._id == 6 ? {} : $rootScope.userData.branch && $rootScope.userData.branch._id ? { 'client.branch._id': $rootScope.userData.branch._id } : { 'client._id': $rootScope.userData._id };
+		console.log($rootScope.userData.role._id)
+		$scope.filter = $rootScope.userData.role._id == 1 || $rootScope.userData.role._id == 5 || $rootScope.userData.role._id == 6 ? {} : $rootScope.userData.branch && $rootScope.userData.branch._id ? { 'client.branch._id': $rootScope.userData.branch._id } : { 'client._id': $rootScope.userData._id };
 
 		$scope.createNew = function () {
 			$location.path('DeliveryOrder');
