@@ -142,8 +142,10 @@ angular.module('MobileCRMApp')
 						$scope.DeliveryOrder.siteAddress.distanceFrom = $scope.DeliveryOrder.siteAddressFrom.address1 && $scope.DeliveryOrder.siteAddress.address1 ? parseFloat((result * 0.00062137).toFixed(2)) : 0;
 
 						$scope.DeliveryOrder.siteAddress.distanceFrom += $scope.DeliveryOrder.RouteMile || 0
-						$scope.DeliveryOrder.xx = 100
-
+						
+						var TotalMiles = Math.round($scope.DeliveryOrder.siteAddress.distanceFrom * 100) / 100
+						$scope.DeliveryOrder.siteAddress.distanceFrom = TotalMiles
+						
 						initMap(p1coord, p2coord);
 						$scope.$apply();
 
