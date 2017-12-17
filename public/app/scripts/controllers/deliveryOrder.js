@@ -25,11 +25,11 @@ angular.module('MobileCRMApp')
 		$scope.showMap = $rootScope.userData.role._id == 1;
 		$scope.commentDiabled = true;
 
-		if ($rootScope.userData.role._id == 1 || $rootScope.userData.role._id == 6) {
+		if ($rootScope.userData.role._id == 1 || $rootScope.userData.role._id == 5) {
 			$scope.commentDiabled = false;
 		}
 
-		if ($rootScope.userData.role._id != 1 && $rootScope.userData.role._id != 6) {
+		if ($rootScope.userData.role._id != 1 && $rootScope.userData.role._id != 5) {
 			$scope.DeliveryOrder.client = new User($rootScope.userData);
 		}
 
@@ -142,8 +142,10 @@ angular.module('MobileCRMApp')
 						$scope.DeliveryOrder.siteAddress.distanceFrom = $scope.DeliveryOrder.siteAddressFrom.address1 && $scope.DeliveryOrder.siteAddress.address1 ? parseFloat((result * 0.00062137).toFixed(2)) : 0;
 
 						$scope.DeliveryOrder.siteAddress.distanceFrom += $scope.DeliveryOrder.RouteMile || 0
-						$scope.DeliveryOrder.xx = 100
-
+						
+						var TotalMiles = Math.round($scope.DeliveryOrder.siteAddress.distanceFrom * 100) / 100
+						$scope.DeliveryOrder.siteAddress.distanceFrom = TotalMiles
+						
 						initMap(p1coord, p2coord);
 						$scope.$apply();
 
@@ -246,7 +248,7 @@ angular.module('MobileCRMApp')
 		}
 
 		$scope.wsClassItem = Item;
-		$scope.wsFilterItem = $rootScope.userData.role._id != 1 && $rootScope.userData.role._id != 6 ? { 'companies._id': $rootScope.userData.company._id } : {};
+		$scope.wsFilterItem = $rootScope.userData.role._id != 1 && $rootScope.userData.role._id != 5 ? { 'companies._id': $rootScope.userData.company._id } : {};
 		$scope.wsFieldsItem = [{
 			label: 'Code',
 			field: 'code',
@@ -287,7 +289,7 @@ angular.module('MobileCRMApp')
 			}
 
 			if (client && client.company) {
-				$scope.wsFilterItem = $rootScope.userData.role._id != 1 && $rootScope.userData.role._id != 6 ? { 'companies._id': $rootScope.userData.company._id } : { 'companies._id': client.company._id };
+				$scope.wsFilterItem = $rootScope.userData.role._id != 1 && $rootScope.userData.role._id != 5 ? { 'companies._id': $rootScope.userData.company._id } : { 'companies._id': client.company._id };
 
 				$scope.DeliveryOrder.siteAddressFrom = $scope.DeliveryOrder.client.branch ? $scope.DeliveryOrder.client.branch.addresses[0] : {};
 			} else {
