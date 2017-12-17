@@ -214,6 +214,41 @@ var a;
 		return d.promise;
 	};
 
+	ServiceOrder.prototype.getTaxes = function(){
+		var total = 0;
+		var taxes = 0;
+		if (this.dor) {
+			if (this.client && this.client.company) {
+				taxes = this.client.company.taxes || 0;
+			}
+			if (this.client && this.client.branch) {
+				taxes = this.client.branch.taxes || taxes;
+			}
+			return this.total * taxes;
+		} else {
+			for (var i = 0; i < this.items.length; i++) {
+				total += this.items[i].getTotalPrice();
+			}
+			
+			if (this.client && this.client.company) {
+				taxes = this.client.company.taxes || 0;
+			}
+			if (this.client && this.client.branch) {
+				taxes = this.client.branch.taxes || taxes;
+			}
+			return total * taxes;
+		}	
+	};
+
+	ServiceOrder.prototype.getTotal = function(){
+		var total = 0;
+		for(var i = 0; i < this.items.length; i++){
+			total += this.items[i].getTotalPrice();
+		}
+		this.total = total;
+		return total;
+	};
+
 
 	function formatDate(date) {
 

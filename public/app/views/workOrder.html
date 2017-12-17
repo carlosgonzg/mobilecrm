@@ -371,12 +371,38 @@
 					<tr>
 						<th colspan="5">
 							<span class="pull-right">
-								Total
+								SubTotal
 							</span>
 						</th>
 						<th colspan="4">
 							<span class="pull-left">
 								{{workOrder.getTotal() | currency}}
+							</span>
+						</th>
+					</tr>
+					<tr>
+						<th colspan="5">
+							<span class="pull-right">
+								({{Math.round((workOrder.client.branch.taxes || workOrder.client.company.taxes || 0) * 100)}}%)
+							</span>
+						</th>
+						<th colspan="4">
+							<span class="pull-left">
+								{{workOrder.getTaxes() | currency}}
+							</span>
+						</th>
+					</tr>
+					<tr>
+						<th colspan="5">
+							<span class="pull-right">
+								Total
+							</span>
+						</th>
+						<th colspan="4">
+							<span class="pull-left">
+								<div>
+									{{workOrder.getTotal() + workOrder.getTaxes() | currency}}
+								</div>
 							</span>
 						</th>
 					</tr>

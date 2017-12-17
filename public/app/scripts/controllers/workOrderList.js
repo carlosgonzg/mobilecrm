@@ -46,7 +46,8 @@ angular.module('MobileCRMApp')
 		}, {
 			title: 'Total Amount',
 			name: 'total',
-			type: 'currency'
+			type : 'function',
+			function: function (elem){ return elem.total + (elem.client.company.taxes || 0) * elem.total}
 		}, {
 			title: 'Status',
 			name: 'status.description',
@@ -59,6 +60,8 @@ angular.module('MobileCRMApp')
 			'client.company.entity.name',
 			'client.branch.name',
 			'client.entity.fullName',
+			'client.branch',
+			'client.company',
 			'originalShipDate',
 			'invoiceNumber',
 			'wor',
@@ -104,7 +107,8 @@ angular.module('MobileCRMApp')
 		}, {
 			title: 'Total Amount',
 			name: 'total',
-			type: 'currency'
+			type : 'function',
+			function: function (elem){ return elem.total + (elem.client.company.taxes || 0) * elem.total}
 		}, {
 			title: 'Status',
 			name: 'status.description',

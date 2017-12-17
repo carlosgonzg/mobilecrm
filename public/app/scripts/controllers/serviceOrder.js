@@ -8,9 +8,10 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-	.controller('ServiceOrderCtrl', function ($scope, $rootScope, $location, toaster, User, statusList, serviceOrder, Item, dialogs, $q, Branch, CrewCollection, ItemDefault) {
+	.controller('ServiceOrderCtrl', function ($scope, $rootScope, $location, $window, toaster, User, statusList, serviceOrder, Item, dialogs, $q, Branch, CrewCollection, ItemDefault) {
 		$scope.serviceOrder = serviceOrder;
 		$scope.CrewCollection = CrewCollection.data
+		$scope.Math = $window.Math;
 		
 		$scope.addedItem = []
 		$scope.Crewadded = []

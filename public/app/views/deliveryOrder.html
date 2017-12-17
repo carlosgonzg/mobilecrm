@@ -455,14 +455,40 @@
 				</tbody>
 				<tfoot>
 					<tr>
+						<th colspan="5">
+							<span class="pull-right">
+								SubTotal
+							</span>
+						</th>
 						<th colspan="4">
+							<span class="pull-left">
+								{{DeliveryOrder.getTotal(DeliveryOrder.siteAddress.distanceFrom, company) | currency}}
+							</span>
+						</th>
+					</tr>
+					<tr>
+						<th colspan="5">
+							<span class="pull-right">
+								({{Math.round((DeliveryOrder.client.branch.taxes || DeliveryOrder.client.company.taxes || 0) * 100)}}%)
+							</span>
+						</th>
+						<th colspan="4">
+							<span class="pull-left">
+								{{DeliveryOrder.getTaxes() | currency}}
+							</span>
+						</th>
+					</tr>
+					<tr>
+						<th colspan="5">
 							<span class="pull-right">
 								Total
 							</span>
 						</th>
 						<th colspan="4">
 							<span class="pull-left">
-								{{DeliveryOrder.getTotal(DeliveryOrder.siteAddress.distanceFrom, company) | currency}}
+								<div>
+									{{DeliveryOrder.getTotal(DeliveryOrder.siteAddress.distanceFrom, company) + DeliveryOrder.getTaxes() | currency}}
+								</div>
 							</span>
 						</th>
 					</tr>

@@ -8,9 +8,10 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-	.controller('DeliveryOrderCtrl', function ($scope, $rootScope, $location, toaster, User, statusList, EntranceList, Item, dialogs, $q, Branch, DeliveryOrder, $timeout, ItemDefault, $route, Company, Driver, Invoice) {
+	.controller('DeliveryOrderCtrl', function ($scope, $rootScope, $location, $window, toaster, User, statusList, EntranceList, Item, dialogs, $q, Branch, DeliveryOrder, $timeout, ItemDefault, $route, Company, Driver, Invoice) {
 		$scope.DeliveryOrder = DeliveryOrder;
-		$scope.item = ItemDefault
+		$scope.item = ItemDefault;
+		$scope.Math = $window.Math;
 
 		LoadData()
 		ConcatenateAddress();

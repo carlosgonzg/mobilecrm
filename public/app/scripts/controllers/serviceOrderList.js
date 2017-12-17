@@ -46,7 +46,8 @@ angular.module('MobileCRMApp')
 		}, {
 			title: 'Total Amount',
 			name: 'total',
-			type: 'currency'
+			type : 'function',
+			function: function (elem){ return elem.total + (elem.client.company.taxes || 0) * elem.total}
 		}, {
 			title: 'Status',
 			name: 'status.description',
@@ -66,6 +67,8 @@ angular.module('MobileCRMApp')
 		'pono',
 		'total',
 		'status.description',
+		'client.branch',
+		'client.company',
 	];
 
   $scope.filterDate = 'date';
@@ -104,7 +107,7 @@ angular.module('MobileCRMApp')
 		}, {
 			title: 'Total Amount',
 			name: 'total',
-			type: 'currency'
+			type : 'currency'
 		}, {
 			title: 'Status',
 			name: 'status.description',
