@@ -221,9 +221,6 @@
 					<th style="width:20%">
 						Description
 					</th>
-					<th style="width:20%">
-						Part
-					</th>
 					<th style="width:10%">
 						Quantity
 					</th>
@@ -238,13 +235,12 @@
 			<tbody ng-repeat="deliveryOrder in deliveryOrders track by $index">
 				<tr>
 					<th colspan="6">
-						{{deliveryOrder.sor}}
+						{{deliveryOrder.dor}}
 					</th>
 				</tr>
 				<tr ng-repeat="item in deliveryOrder.items track by $index">
 					<td>{{item.code}}</td>
 					<td>{{item.description}}</td>
-					<td>{{item.part}}</td>
 					<td>{{item.quantity}}</td>
 					<td>{{item.price | currency}}</td>
 					<td>{{item.price * item.quantity | currency}}</td>
