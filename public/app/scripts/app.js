@@ -256,6 +256,27 @@ var app = angular
 					}
 				}
 			})
+			.when('/reportDO', {
+				templateUrl: 'views/reportDO.html',
+				controller: 'ReportDOCtrl',
+				resolve: {
+					clients: function (User) {
+						return new User().filter({ 'role._id': { $ne: 1 } });
+					},
+					countries: function (Country) {
+						return new Country().find();
+					},
+					statusList: function (List) {
+						return List.get('statusDelivery');
+					},
+					items: function (Item) {
+						return new Item().filter({});
+					},
+					companyList: function (Company) {
+						return new Company().filter({});
+					}
+				}
+			})
 			.when('/reportInvoice', {
 				templateUrl: 'views/reportInvoice.html',
 				controller: 'ReportInvoiceCtrl',
