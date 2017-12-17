@@ -170,7 +170,7 @@ angular.module('MobileCRMApp')
 	$scope.getTotal = function(){
 		var total = 0;
 		for(var i = 0; i< $scope.deliveryOrders.length; i++){
-			total += $scope.deliveryOrders[i].getTotal();
+			total += $scope.deliveryOrders[i].getTotal($scope.deliveryOrder.siteAddress.distanceFrom, $scope.deliveryOrder.client.company);
 		}
 		return total;
 	};

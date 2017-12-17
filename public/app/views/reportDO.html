@@ -195,7 +195,7 @@
 						<button class="btn btn-sm" ng-click="showComment(deliveryOrder)"><i class="fa fa-eye"></i></button>
 					</td>
 					<td>
-						{{deliveryOrder.getTotal()|currency}}
+						{{deliveryOrder.getTotal(deliveryOrder.siteAddress.distanceFrom, deliveryOrder.client.company)|currency}}
 					</td>
 				</tr>
 				<tr>
