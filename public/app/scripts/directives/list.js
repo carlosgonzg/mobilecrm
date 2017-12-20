@@ -20,9 +20,10 @@ angular.module('MobileCRMApp')
 				sortField: '=?',
 				showDeleteAction: '='
 			},
-			controller: function ($scope, $rootScope, $timeout, dialogs, toaster, Loading, $window, Company, $location) {
+			controller: function ($scope, $rootScope, $timeout, dialogs, toaster, Loading, $window, Company, Branch, $location) {
 				$scope.list = [];
 				$scope.companies = [];
+				$scope.branches = [{_id:-1, name: "All Branches"}];
 				$scope.currentElement = {};
 				$scope.objeto = new $scope.clase();
 				$scope.qty = 0;
@@ -80,7 +81,8 @@ angular.module('MobileCRMApp')
 						title: $scope.excelTitle,
 						excelFields: $scope.excelFields || $scope.fields,
 						fieldFilter: {},
-						company: {}
+						company: {},
+						branch: {}
 					};
 
 					var functionFields = _.where($scope.fields,{type:'function'})
@@ -238,6 +240,7 @@ angular.module('MobileCRMApp')
 								obj.temp = obj.temp || {};
 								obj.temp[field.name] = field.function(obj);
 								obj[field.name] = obj.temp[field.name];
+								console.log(field, obj)
 							});
 						});
 
@@ -409,11 +412,30 @@ angular.module('MobileCRMApp')
 						})
 				}
 
+				$scope.getBranches = function (company) {
+					$scope.branches = [];
+					var query = {'company._id': company._id};
+					new Branch().filter(query).then(function(result) {
+								$scope.branches = result.data;
+								$scope.branches.push({_id:-1, name: "All Branches"})
+							})
+				}
+
 				$scope.filterByCompany = function () {
 					if ($scope.params.company._id != -1) {
 						$scope.params.filter["client.company._id"] = $scope.params.company._id;
 					} else {
 						delete $scope.params.filter["client.company._id"]
+					}
+					$scope.search();
+					$scope.getBranches($scope.params.company)
+				}
+
+				$scope.filterByBranch = function () {
+					if ($scope.params.branch._id != -1) {
+						$scope.params.filter["client.branch._id"] = $scope.params.branch._id;
+					} else {
+						delete $scope.params.filter["client.branch._id"]
 					}
 					$scope.search();
 				}
@@ -466,6 +488,7 @@ angular.module('MobileCRMApp')
 
 				$scope.getCompanies();
 				$scope.params.company = {_id:-1,description: "All Companies"};
+				$scope.params.branch = {_id:-1,description: "All Branches"};
 			}
 		};
 	});

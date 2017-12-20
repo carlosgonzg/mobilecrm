@@ -151,7 +151,7 @@ var sendServiceOrder = function (serviceOrder, mails, dirname) {
 			var contacts = '';
 			for (var i = 0; i < serviceOrder.contacts.length; i++) {
 				if (serviceOrder.contacts[i].name)
-					contacts += '<b>Contact #' + (i + 1) + ':&nbsp;</b>' + (serviceOrder.contacts[i].name || '') + '.&nbsp;<b>Phone(' + (serviceOrder.contacts[i].phoneType.description || '') + '):</b>&nbsp;' + (serviceOrder.contacts[i].number || '') + '<br/>';
+					contacts += '<b>Contact #' + (i + 1) + ':&nbsp;</b>' + (serviceOrder.contacts[i].name || '') + '.&nbsp;<br/><b>Phone(' + (serviceOrder.contacts[i].phoneType.description || '') + '):</b>&nbsp;' + (serviceOrder.contacts[i].number || '') + '<br/>';
 			}
 			body = body.replace('<contacts>', contacts || '');
 			var company = '' + (serviceOrder && serviceOrder.client && serviceOrder.client.company && serviceOrder.client.company.entity ? serviceOrder.client.company.entity.name : 'Not Defined');
@@ -218,7 +218,7 @@ var sendServiceOrderDelete = function (serviceOrder, mails, dirname) {
 			var contacts = '';
 			for (var i = 0; i < serviceOrder.contacts.length; i++) {
 				if (serviceOrder.contacts[i].name)
-					contacts += '<b>Contact #' + (i + 1) + ':&nbsp;</b>' + (serviceOrder.contacts[i].name || '') + '.&nbsp;<b>Phone(' + (serviceOrder.contacts[i].phoneType.description || '') + '):</b>&nbsp;' + (serviceOrder.contacts[i].number || '') + '<br/>';
+					contacts += '<b>Contact #' + (i + 1) + ':&nbsp;</b>' + (serviceOrder.contacts[i].name || '') + '.&nbsp;<br/><b>Phone(' + (serviceOrder.contacts[i].phoneType.description || '') + '):</b>&nbsp;' + (serviceOrder.contacts[i].number || '') + '<br/>';
 			}
 			body = body.replace('<contacts>', contacts || '');
 			var company = '' + (serviceOrder && serviceOrder.client && serviceOrder.client.company && serviceOrder.client.company.entity ? serviceOrder.client.company.entity.name : 'Not Defined');
@@ -300,7 +300,7 @@ var sendServiceOrderUpdate = function (serviceOrder, mails, user) {
 			var contacts = '';
 			for (var i = 0; i < serviceOrder.contacts.length; i++) {
 				if (serviceOrder.contacts[i].name)
-					contacts += '<b>Contact #' + (i + 1) + ':&nbsp;</b>' + serviceOrder.contacts[i].name + '.&nbsp;<b>Phone(' + serviceOrder.contacts[i].phoneType.description + '):</b>&nbsp;' + serviceOrder.contacts[i].number + '<br/>';
+					contacts += '<b>Contact #' + (i + 1) + ':&nbsp;</b>' + serviceOrder.contacts[i].name + '.&nbsp;<br/><b>Phone(' + serviceOrder.contacts[i].phoneType.description + '):</b>&nbsp;' + serviceOrder.contacts[i].number + '<br/>';
 			}
 			body = body.replace('<contacts>', contacts || '');
 
@@ -649,7 +649,7 @@ var sendDeliveryOrder = function (deliveryOrder, mails, dirname) {
 			var contacts = '';
 			for (var i = 0; i < deliveryOrder.contacts.length; i++) {
 				if (deliveryOrder.contacts[i].name)
-					contacts += '<b>Contact #' + (i + 1) + ':&nbsp;</b>' + (deliveryOrder.contacts[i].name || '') + '.&nbsp;<b>Phone(' + (deliveryOrder.contacts[i].phoneType.description || '') + '):</b>&nbsp;' + (deliveryOrder.contacts[i].number || '') + '<br/>';
+					contacts += '<b>Contact #' + (i + 1) + ':&nbsp;</b>' + (deliveryOrder.contacts[i].name || '') + '.&nbsp;<br/><b>Phone(' + (deliveryOrder.contacts[i].phoneType.description || '') + '):</b>&nbsp;' + (deliveryOrder.contacts[i].number || '') + '<br/>';
 			}
 			body = body.replace('<contacts>', contacts || '');
 			var company = '' + (deliveryOrder && deliveryOrder.client && deliveryOrder.client.company && deliveryOrder.client.company.entity ? deliveryOrder.client.company.entity.name : 'Not Defined');
@@ -732,7 +732,7 @@ var sendDeliveryOrderUpdate = function (deliveryOrder, mails, user) {
 			var contacts = '';
 			for (var i = 0; i < deliveryOrder.contacts.length; i++) {
 				if (deliveryOrder.contacts[i].name)
-					contacts += '<b>Contact #' + (i + 1) + ':&nbsp;</b>' + deliveryOrder.contacts[i].name + '.&nbsp;<b>Phone(' + deliveryOrder.contacts[i].phoneType.description + '):</b>&nbsp;' + deliveryOrder.contacts[i].number + '<br/>';
+					contacts += '<b>Contact #' + (i + 1) + ':&nbsp;</b>' + deliveryOrder.contacts[i].name + '.&nbsp;<br/><b>Phone(' + deliveryOrder.contacts[i].phoneType.description + '):</b>&nbsp;' + deliveryOrder.contacts[i].number + '<br/>';
 			}
 			body = body.replace('<contacts>', contacts || '');
 
@@ -787,7 +787,7 @@ var sendDeliveryOrderDelete = function (deliveryOrder, mails, dirname) {
 			var contacts = '';
 			for (var i = 0; i < deliveryOrder.contacts.length; i++) {
 				if (deliveryOrder.contacts[i].name)
-					contacts += '<b>Contact #' + (i + 1) + ':&nbsp;</b>' + (deliveryOrder.contacts[i].name || '') + '.&nbsp;<b>Phone(' + (deliveryOrder.contacts[i].phoneType.description || '') + '):</b>&nbsp;' + (deliveryOrder.contacts[i].number || '') + '<br/>';
+					contacts += '<b>Contact #' + (i + 1) + ':&nbsp;</b>' + (deliveryOrder.contacts[i].name || '') + '.&nbsp;<br/><b>Phone(' + (deliveryOrder.contacts[i].phoneType.description || '') + '):</b>&nbsp;' + (deliveryOrder.contacts[i].number || '') + '<br/>';
 			}
 			body = body.replace('<contacts>', contacts || '');
 			var company = 'Company: ' + (deliveryOrder && deliveryOrder.client && deliveryOrder.client.company && deliveryOrder.client.company.entity ? deliveryOrder.client.company.entity.name : 'Not Defined');

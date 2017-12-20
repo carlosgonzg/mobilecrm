@@ -624,5 +624,14 @@ angular.module('MobileCRMApp')
 				$scope.CrewHeaderSel = []				
 			}
 		}
+
+		$scope.showHistory = function () {
+			var dialog = dialogs.create('views/historyModal.html', 'HistoryModalCtrl', {
+				unitno: $scope.serviceOrder.unitno
+			});
+			dialog.result
+				.then(function (res) {
+				});
+		};
 	});
 

@@ -8,7 +8,7 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-	.controller('WorkOrderCtrl', function ($scope, $rootScope, $location, $window, toaster, User, statusList, workOrder, Item, dialogs, $q, Branch, CrewCollection, ItemDefault) {
+	.controller('WorkOrderCtrl', function ($scope, $rootScope, $location, $window, toaster, User, statusList, workOrder, Item, dialogs, $q, Branch, CrewCollection, ItemDefault, Invoice) {
 		$scope.workOrder = workOrder;
 		$scope.CrewCollection = CrewCollection.data;
 		$scope.Math = $window.Math;
@@ -409,4 +409,13 @@ angular.module('MobileCRMApp')
 				$scope.CrewHeaderSel = []
 			}
 		}
+
+		$scope.showHistory = function () {
+			var dialog = dialogs.create('views/historyModal.html', 'HistoryModalCtrl', {
+				unitno: $scope.workOrder.unitno
+			});
+			dialog.result
+				.then(function (res) {
+				});
+		};
 	});

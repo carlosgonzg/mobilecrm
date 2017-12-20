@@ -2,6 +2,7 @@ var Excel = require('./dto/excel');
 var q = require('q');
 var moment = require('moment');
 var _ = require('underscore');
+var crud = require('./dto/crud')
 
 var getPaid = function(invoices, year, month){
 	return _.reduce(invoices, function(memo, value){
@@ -10,7 +11,7 @@ var getPaid = function(invoices, year, month){
 };
 var getPendingPay = function(invoices, year, month){
 	return _.reduce(invoices, function(memo, value){
-		return memo + (year == value.year && month == value.month && value.status._id == 3 ? value.total : 0);
+		return memo + (year == value.year && month == value.month && value.status._id != 4? value.total : 0);
 	}, 0);
 };
 var getPending = function(invoices, year, month){
@@ -24,94 +25,302 @@ var getTotal = function(invoices, year, month){
 	}, 0);
 };
 
-var createMonthlyStatement = function(invoices, whoIs, user){
+var getPaidByBranches = function(invoices, year, month){
+	return _.reduce(invoices, function(memo, value){
+		return memo + (year == value.year && month == value.month && value.status._id == 4 ? value.total : 0);
+	}, 0);
+};
+var getPendingPayByBranches = function(invoices, year, month){
+	return _.reduce(invoices, function(memo, value){
+		return memo + (year == value.year && month == value.month && value.status._id == 3 ? value.total : 0);
+	}, 0);
+};
+var getPendingByBranches = function(invoices, year, month){
+	return _.reduce(invoices, function(memo, value){
+		return memo + (year == value.year && month == value.month && value.status._id == 1 ? value.total : 0);
+	}, 0);
+};
+var getTotalByBranches = function(invoices, year, month){
+	return _.reduce(invoices, function(memo, value){
+		return memo + (year == value.year && month == value.month ? value.total : 0);
+	}, 0);
+};
+
+var createMonthlyStatement = function(data, whoIs, user){
+	var invoices = data.data;
+	var branches = data.branches;
+	var companies = data.companies;
 	var d = q.defer();
   	var excel = new Excel('Monthly Statement', null, 'Monthly Statement');
   	//fonts
 	var headerFont = {
 		name: "Calibri (Body)",
 	 	family: 4,
-	  	size: 36,
+	  	size: 28,
 	  	bold: true
+	};
+	var subHeaderFont = {
+		name: "Calibri (Body)",
+	 	family: 4,
+	  	size: 14,
+	  	bold: true
+	};
+	var titleFont = {
+		name: "Calibri (Body)",
+	 	family: 4,
+	  	size: 26,
+	  	bold: false
 	};
 	var normalFont = {
 		name: "Calibri (Body)",
 	 	family: 4,
-	  	size: 12,
+	  	size: 11,
 	  	bold: false
 	};
 	var boldFont = {
 		name: "Calibri (Body)",
 	 	family: 4,
-	  	size: 12,
+	  	size: 11,
 	  	bold: true
 	};
+	var underlineFont = {
+		name: "Calibri (Body)",
+	 	family: 4,
+	  	size: 11,
+	  	bold: true,
+	  	underline: true
+	};
+	var reportBgColor = {
+		type:"pattern",
+		pattern:"solid",
+	    fgColor:{argb:'FFFFFFFF' }
+	};
+	var labelBgColor = {
+		type: "pattern",
+		pattern: "solid",
+		fgColor:{argb:"CCB680"}
+	}
+
+	var border = {
+	    top: {style:'thin'},
+	    left: {style:'thin'},
+	    bottom: {style:'thin'},
+	    right: {style:'thin'}
+	};
+	var center = { 
+		vertical: 'middle', 
+		horizontal: 'center' 
+	}
 	//setting columns
 	excel.worksheet.columns = [
-		{ key: 'a', width: 27 },
-		{ key: 'b', width: 27 },
-		{ key: 'c', width: 27 },
-		{ key: 'd', width: 27 },
-		{ key: 'e', width: 27 }
+		{ key: 'a', width: 18 },
+		{ key: 'b', width: 18 },
+		{ key: 'c', width: 18 },
+		{ key: 'd', width: 18 },
+		{ key: 'e', width: 18 }
 	];
 	//creating detail sheet		
 	excel.worksheetDetail = excel.workbook.addWorksheet('Detail');
 	excel.worksheetDetail.columns = [
-		{ key: 'a', width: 27 },
-		{ key: 'b', width: 27 },
-		{ key: 'c', width: 27 },
-		{ key: 'd', width: 27 },
-		{ key: 'e', width: 27 },
-		{ key: 'f', width: 27 },
-		{ key: 'g', width: 27 },
-		{ key: 'h', width: 27 },
-		{ key: 'i', width: 27 },
-		{ key: 'j', width: 27 },
-		{ key: 'k', width: 27 }
+		{ key: 'a', width: 18 },
+		{ key: 'b', width: 18 },
+		{ key: 'c', width: 18 },
+		{ key: 'd', width: 18 },
+		{ key: 'e', width: 18 },
+		{ key: 'f', width: 18 },
+		{ key: 'g', width: 18 },
+		{ key: 'h', width: 18 },
+		{ key: 'i', width: 18 },
+		{ key: 'j', width: 18 },
+		{ key: 'k', width: 18 }
 	];
+
+	//creating detail sheet		
+	excel.worksheetByBranches = excel.workbook.addWorksheet('By Branches');
+	excel.worksheetByBranches.columns = [
+		{ key: 'a', width: 18 },
+		{ key: 'b', width: 18 },
+		{ key: 'c', width: 18 },
+		{ key: 'd', width: 18 },
+		{ key: 'e', width: 18 }
+	];
+
 	//header
-	excel.worksheet.addRow(['Monthly Statement -', '', whoIs.name,'',  '', 'MOBILE ONE']);
-	excel.worksheet.mergeCells('A1:B1');
-	excel.worksheet.mergeCells('C1:E1');
-	excel.worksheet.lastRow.font = headerFont;
-	//sub header
-	excel.worksheet.addRow(['Restoration LLC', '', '', '', '', moment().format('MM/DD/YYYY')]);
-	excel.worksheet.mergeCells('A2:B2');
-	excel.worksheet.mergeCells('C2:E2');
+	console.log(whoIs)
+	excel.worksheet.addRow(['Service Provider', '', '','Customer',  '', '']);
+	// excel.worksheet.mergeCells('A1:B1');
+	// excel.worksheet.mergeCells('C1:E1');
 	excel.worksheet.lastRow.font = boldFont;
+	excel.worksheet.lastRow.fill = reportBgColor;
+	excel.worksheet.getCell('A1').fill = labelBgColor;
+	excel.worksheet.getCell('D1').fill = labelBgColor;
+	excel.worksheet.mergeCells('A1:B1');
+	excel.worksheet.mergeCells('D1:F1');
+	excel.worksheet.getCell('A1').border = border;
+	excel.worksheet.getCell('D1').border = border;
+
+
+	excel.worksheet.addRow(['MOBILE ONE', '', '', whoIs.name,  '', '']);
+	excel.worksheet.lastRow.fill = reportBgColor;
+	excel.worksheet.getCell('A2').font = headerFont;
+	excel.worksheet.getCell('D2').font = subHeaderFont;
+	excel.worksheet.mergeCells('A2:B2');
+	excel.worksheet.mergeCells('D2:F2');
+	//sub header
+	excel.worksheet.addRow(['Restoration LLC', '', '', whoIs.address ? whoIs.address.address1 : '', '', '']);
+	excel.worksheet.lastRow.font = normalFont;
+	excel.worksheet.lastRow.fill = reportBgColor;
+	excel.worksheet.getCell('A3').font = subHeaderFont;
+	excel.worksheet.mergeCells('A3:B3');
+	excel.worksheet.mergeCells('D3:F3');
+
+	excel.worksheet.addRow(['1702 Bridgets Ct', '', '', (whoIs.address ? whoIs.address.state.description : '') + ' ' + (whoIs.address ? whoIs.address.zipcode : ''), '', '']);
+	excel.worksheet.lastRow.font = normalFont;
+	excel.worksheet.lastRow.fill = reportBgColor;
+	excel.worksheet.mergeCells('A4:B4');
+	excel.worksheet.mergeCells('D4:F4');
+
+	excel.worksheet.addRow(['Kissimmee FL 34744', '', '', '', '', '']);
+	excel.worksheet.lastRow.font = normalFont;
+	excel.worksheet.lastRow.fill = reportBgColor;
+	excel.worksheet.mergeCells('A5:B5');
+	excel.worksheet.mergeCells('D5:F5');
+
+	excel.worksheet.addRow(['Phone: (407) 334-8802', '', '', '', '', '']);
+	excel.worksheet.lastRow.font = normalFont;
+	excel.worksheet.lastRow.fill = reportBgColor;
+	excel.worksheet.mergeCells('A6:B6');
+	excel.worksheet.mergeCells('D6:F6');
+
 	//space!
 	excel.worksheet.addRow(['', '', '', '', '', '']);
-	excel.worksheet.mergeCells('A3:F3');
+	excel.worksheet.mergeCells('A7:F7');
+	excel.worksheet.lastRow.fill = reportBgColor;
+
+	excel.worksheet.addRow(['MONTHLY STATEMENT', '', '', '', '', '']);
+	excel.worksheet.lastRow.font = titleFont;
+	excel.worksheet.lastRow.fill = reportBgColor;
+	excel.worksheet.mergeCells('A8:F8');
+	excel.worksheet.getCell('A8').alignment = center;
+
+	excel.worksheet.addRow(['Period: ', '', '', '', '', '']);
+	excel.worksheet.getCell('A9').font = boldFont;
+	excel.worksheet.lastRow.fill = reportBgColor;
+	
+	excel.worksheet.addRow(['', '', '', '', '', '']);
+	excel.worksheet.lastRow.fill = reportBgColor;
 	//table header
 	excel.worksheet.addRow(['Year', 'Month', 'Paid', 'Pending to Pay', /*'Pending',*/ 'Total', '']);
-	excel.worksheet.lastRow.font = boldFont;
+	excel.worksheet.lastRow.font = underlineFont;
+	excel.worksheet.lastRow.fill = reportBgColor;
+	excel.worksheet.lastRow.alignment =center;
+
 	//info
 	var today = new Date();
+	var totalPaid = 0;
+	var totalPending = 0;
+	var totalYear = 0;
 	var months = ['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 	for(var i = 1; i <= 12; i++){
-		excel.worksheet.addRow([today.getFullYear(), months[i], getPaid(invoices, today.getFullYear(), i), getPendingPay(invoices, today.getFullYear())/*, getPending(invoices, today.getFullYear(), i)*/, getTotal(invoices, today.getFullYear(), i), '']);
-		excel.worksheet.getCell('C' + (i + 4).toString()).numFmt = '$ #,###,###,##0.00';
-		excel.worksheet.getCell('D' + (i + 4).toString()).numFmt = '$ #,###,###,##0.00';
-		excel.worksheet.getCell('E' + (i + 4).toString()).numFmt = '$ #,###,###,##0.00';
+		monthPaid = 0;
+		monthPending = 0;
+		monthTotal = 0;
+		monthPaid =  getPaid(invoices, today.getFullYear(), i);
+		monthPending = getPendingPay(invoices, today.getFullYear(), i)/*, getPending(invoices, today.getFullYear(), i)*/;
+		monthTotal = getTotal(invoices, today.getFullYear(), i);
+		excel.worksheet.addRow([today.getFullYear(), months[i], monthPaid, monthPending, monthTotal, '']);
+		excel.worksheet.getCell('C' + (i + 11).toString()).numFmt = '$ #,###,###,##0.00';
+		excel.worksheet.getCell('D' + (i + 11).toString()).numFmt = '$ #,###,###,##0.00';
+		excel.worksheet.getCell('E' + (i + 11).toString()).numFmt = '$ #,###,###,##0.00';
+		excel.worksheet.getCell('A' + (i + 11)).font = boldFont;
+		excel.worksheet.getCell('B' + (i + 11)).font = boldFont;
+		excel.worksheet.getCell('A' + (i + 11)).alignment = center;
+		excel.worksheet.getCell('B' + (i + 11)).alignment = center;
+		excel.worksheet.lastRow.fill = reportBgColor;
 		//excel.worksheet.getCell('F' + (i + 4).toString()).numFmt = '$ #,###,###,##0.00';
+		totalPaid += monthPaid;
+		totalPending += monthPending;
+		totalYear += monthTotal;
 	}
-	//detail
-	excel.worksheetDetail.addRow(['Customer', 'Date', 'Invoice Number', 'Unit Number', 'PO Number', 'Amount', 'Status', 'Year', 'Month', 'Branch', 'Company']);
+
+	excel.worksheet.addRow(['Total', '', totalPaid, totalPending, totalYear, '']);
+	excel.worksheet.getCell('C' + (13 + 11).toString()).numFmt = '$ #,###,###,##0.00';
+	excel.worksheet.getCell('D' + (13 + 11).toString()).numFmt = '$ #,###,###,##0.00';
+	excel.worksheet.getCell('E' + (13 + 11).toString()).numFmt = '$ #,###,###,##0.00';
+	excel.worksheet.getCell('E' + (13 + 11).toString()).numFmt = '$ #,###,###,##0.00';
+		excel.worksheet.getCell('A' + (13 + 11)).font = boldFont;
+		excel.worksheet.getCell('B' + (13 + 11)).font = boldFont;
+		excel.worksheet.getCell('A' + (13 + 11)).alignment = center;
+		excel.worksheet.getCell('B' + (13 + 11)).alignment = center;
+		excel.worksheet.lastRow.fill = reportBgColor;
+	//by Branches
+	//table header
+	excel.worksheetByBranches.addRow(['Branch', 'Paid', 'Pending to Pay', 'Total']);
+	excel.worksheetByBranches.lastRow.font = underlineFont;
+	excel.worksheetByBranches.lastRow.fill = reportBgColor;
+	excel.worksheetByBranches.lastRow.alignment =center;
+
+	var today = new Date();
+	var totalPaid = 0;
+	var totalPending = 0;
+	var totalYear = 0;
+	for(var i = 0; i < branches.length; i++){
+		excel.worksheetByBranches.addRow([branches[i].name, branches[i].paid, branches[i].pending, branches[i].total]);
+		excel.worksheetByBranches.getCell('C' + (i + 2).toString()).numFmt = '$ #,###,###,##0.00';
+		excel.worksheetByBranches.getCell('D' + (i + 2).toString()).numFmt = '$ #,###,###,##0.00';
+		excel.worksheetByBranches.getCell('E' + (i + 2).toString()).numFmt = '$ #,###,###,##0.00';
+		excel.worksheetByBranches.getCell('A' + (i + 2)).font = boldFont;
+		excel.worksheetByBranches.getCell('B' + (i + 2)).font = boldFont;
+		excel.worksheetByBranches.getCell('A' + (i + 2)).alignment = center;
+		excel.worksheetByBranches.getCell('B' + (i + 2)).alignment = center;
+		excel.worksheetByBranches.lastRow.fill = reportBgColor;
+		//excel.worksheet.getCell('F' + (i + 4).toString()).numFmt = '$ #,###,###,##0.00';
+		totalPaid += branches[i].paid;
+		totalPending += branches[i].pending;
+		totalYear += branches[i].total;
+	}
+
+	excel.worksheetByBranches.addRow(['Total', '', totalPaid, totalPending, totalYear, '']);
+	excel.worksheetByBranches.getCell('C' + (branches.length + 2).toString()).numFmt = '$ #,###,###,##0.00';
+	excel.worksheetByBranches.getCell('D' + (branches.length + 2).toString()).numFmt = '$ #,###,###,##0.00';
+	excel.worksheetByBranches.getCell('E' + (branches.length + 2).toString()).numFmt = '$ #,###,###,##0.00';
+	excel.worksheetByBranches.getCell('E' + (branches.length + 2).toString()).numFmt = '$ #,###,###,##0.00';
+		excel.worksheetByBranches.getCell('A' + (branches.length + 2)).font = boldFont;
+		excel.worksheetByBranches.getCell('B' + (branches.length + 2)).font = boldFont;
+		excel.worksheetByBranches.getCell('A' + (branches.length + 2)).alignment = center;
+		excel.worksheetByBranches.getCell('B' + (branches.length + 2)).alignment = center;
+		excel.worksheetByBranches.lastRow.fill = reportBgColor;
+
+	// var detailFields = ['Date', 'Customer', 'Invoice Number', 'Unit Number', 'PO Number', 'Amount', 'Status', 'Year', 'Month', 'Branch', 'Company'];
+	var detailFields = ['Date', 'Unit Number',  'PO Number', 'Invoice #', 'Amount', 'Status', 'Year', 'Month', 'Branch', 'Company', 'Origin'];
+	
+	excel.worksheetDetail.addRow(detailFields);
 	excel.worksheetDetail.lastRow.font = boldFont;
+	excel.worksheetDetail.lastRow.fill = reportBgColor;
+	//detail
+	
+	for (var i=0;i<detailFields.length;i++) {
+		excel.worksheetDetail.getCell(1,i+1).border = border;
+		excel.worksheetDetail.getCell(1,i+1).fill = labelBgColor;
+	};
 	//first of all i'm showing the month/year
 	for(var i = 0; i < invoices.length; i++){
-		excel.worksheetDetail.addRow([invoices[i].month + ' - ' + invoices[i].year + '(' + invoices[i].status.description + ')', '', '', '', '', '', '', '', '', '', '']);
-		excel.worksheetDetail.lastRow.font = boldFont;
+		// excel.worksheetDetail.addRow([invoices[i].month + ' - ' + invoices[i].year + '(' + invoices[i].status.description + ')', '', '', '', '', '', '', '', '', '', '']);
+		// excel.worksheetDetail.lastRow.font = boldFont;
+		// excel.worksheetDetail.lastRow.fill = reportBgColor;
 		for(var j = 0; j < invoices[i].invoices.length; j++){
 			var invoice = invoices[i].invoices[j];
-			excel.worksheetDetail.addRow([invoice.client.name, moment(invoice.date).format('MM/DD/YYYY'), invoice.invoiceNumber, invoice.unitno, invoice.pono, invoice.total, invoice.status.description, invoice.year, invoice.month, invoice.branch ? invoice.branch.name : '', invoice.company ? invoice.company.name: '']);
+			excel.worksheetDetail.addRow([moment(invoice.date).format('MM/DD/YYYY'), invoice.unitno, invoice.pono, invoice.invoiceNumber, invoice.total, invoice.status.description, invoice.year, invoice.month, invoice.branch ? invoice.branch.name : '', invoice.company ? invoice.company.name: '', invoice.sor ? 'S' : 'W']);
 			excel.worksheetDetail.lastRow.font = normalFont;
 		}
+		// for (var j=0;j<invoices.length;j++) {
+		// 	excel.worksheet.getCell(i+1,j+1).border = border;
+		// }
 	}
 	//saving file
-	var relPath =  '/monthlystatement/ms-' + moment().format('MM-DD-YYYY hh:mm') + '.xlsx';
+	var relPath =  '/monthystatement/ms-' + moment().format('MM-DD-YYYY hh:mm') + '.xlsx';
 	var filePath = __dirname + relPath;
-	excel.workbook.xlsx.writeFile(filePath)
+	excel.workbook.xlsx.writeFile(filePath) 
 	.then(function(){
 		d.resolve({ path: filePath });
 	});
@@ -213,13 +422,17 @@ var createReport = function(objs, whoIs, query, queryDescription, user){
 	var fieldsArray = [];
 
 	if (whoIs != "Invoice") {
-		fieldsArray = ['Created Date', 'Unit Number', 'PO Number',  (whoIs == 'ServiceOrder' ? 'Service' : 'Work') + ' Order #', 'Invoice',  'Total Amount', 'Branch', 'Status', 'Year', 'Month'];
+		if (whoIs == "ServiceOrder") {
+			fieldsArray = ['Created Date', 'Company', 'Branch', 'Customer', 'Service Order #', 'Unit #', 'Invoice #', 'PO #',  'Total Amount', 'Reference Branch', 'Tech Asign', 'Status'];
+		} else {
+			fieldsArray = ['Created Date', 'Unit Number', 'PO Number',  (whoIs == 'ServiceOrder' ? 'Service' : (whoIs == 'WorkOrder' ? 'Work' : 'Delivery')) + ' Order #', 'Invoice',  'Total Amount', 'Branch', 'Status', 'Year', 'Month'];
+		}
 		
 	} else {
 		if (queryDescription.expenses) {
-				fieldsArray = ['Created Date', 'Unit Number', 'PO Number', 'Invoice', 'Total Amount', 'Expenses', 'Profit', 'Service Order #','Work Order #', 'Branch', 'Status', 'Year', 'Month'];
+				fieldsArray = ['Created Date', 'Unit Number', 'PO Number', 'Invoice', 'Total Amount', 'Expenses', 'Profit', 'Service Order #','Work Order #', 'Delivery Order #', 'Branch', 'Status', 'Year', 'Month'];
 		} else {
-				fieldsArray = ['Created Date', 'Unit Number', 'PO Number', 'Invoice', 'Total Amount', 'Service Order #','Work Order #', 'Branch', 'Status', 'Year', 'Month'];			
+				fieldsArray = ['Created Date', 'Unit Number', 'PO Number', 'Invoice', 'Total Amount', 'Service Order #','Work Order #', 'Delivery Order #', 'Branch', 'Status', 'Year', 'Month'];			
 		}
 	}
 
@@ -258,14 +471,18 @@ var createReport = function(objs, whoIs, query, queryDescription, user){
 
 		var valueArray = [];
 
-	
+		console.log(obj.crewHeader)
 		if (whoIs != "Invoice") {
-			valueArray = [moment(obj.date).format('MM/DD/YYYY'), obj.unitno, obj.pono, whoIs == 'ServiceOrder' ? obj.sor : obj.wor, obj.invoiceNumber, subTotal, obj.client.branch.name, obj.status.description, moment(obj.date).format('YYYY'), moment(obj.date).format('MM')];
+			if (whoIs == "ServiceOrder") {
+				valueArray = [moment(obj.date).format('MM/DD/YYYY'), obj.client.company.entity.name, obj.client.branch.name, obj.client.entity.fullName, obj.sor, obj.unitno, obj.invoiceNumber, obj.pono,  subTotal, obj.siteAddressFrom ? obj.siteAddressFrom.city.description : '', obj.crewHeader ? obj.crewHeader[0].name : '', obj.status.description];
+			} else {
+				valueArray = [moment(obj.date).format('MM/DD/YYYY'), obj.unitno, obj.pono, whoIs == 'ServiceOrder' ? obj.sor : (whoIs == 'WorkOrder' ? obj.wor: obj.dor), obj.invoiceNumber, subTotal, obj.client.branch.name, obj.status.description, moment(obj.date).format('YYYY'), moment(obj.date).format('MM')];
+			}
 		} else {
 			if (queryDescription.expenses) {
-					valueArray = [moment(obj.date).format('MM/DD/YYYY'), obj.unitno, obj.pono, obj.invoiceNumber, subTotal, subTotalExpenses, subTotalProfit, obj.sor, obj.wor, obj.client.branch.name, obj.status.description, moment(obj.date).format('YYYY'), moment(obj.date).format('MM')];
+					valueArray = [moment(obj.date).format('MM/DD/YYYY'), obj.unitno, obj.pono, obj.invoiceNumber, subTotal, subTotalExpenses, subTotalProfit, obj.sor, obj.wor, obj.dor, obj.client.branch.name, obj.status.description, moment(obj.date).format('YYYY'), moment(obj.date).format('MM')];
 			} else {
-					valueArray = [moment(obj.date).format('MM/DD/YYYY'), obj.unitno, obj.pono, obj.invoiceNumber, subTotal, obj.sor, obj.wor, obj.client && obj.client.branch ? obj.client.branch.name : '', obj.status.description, moment(obj.date).format('YYYY'), moment(obj.date).format('MM')];
+					valueArray = [moment(obj.date).format('MM/DD/YYYY'), obj.unitno, obj.pono, obj.invoiceNumber, subTotal, obj.sor, obj.wor, obj.dor, obj.client && obj.client.branch ? obj.client.branch.name : '', obj.status.description, moment(obj.date).format('YYYY'), moment(obj.date).format('MM')];
 			}
 		}
 

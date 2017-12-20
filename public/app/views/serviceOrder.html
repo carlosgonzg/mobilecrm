@@ -138,8 +138,14 @@
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
 							<label for="sor">Service order #</label>
-							<input type="text" name="sor" class="form-control" ng-model="serviceOrder.sor" ng-class="isChanged('sor')" ng-change="changed('sor')"
-							 ng-disabled="isDisabled()" validator="required">
+							<div class="input-group">
+								<input type="text" name="sor" class="form-control" ng-model="serviceOrder.sor" ng-class="isChanged('sor')" ng-change="changed('sor')"
+								 ng-disabled="isDisabled()" validator="required">
+								 <span class="input-group-addon" ng-click="showHistory()">
+									<i class="fa fa-calendar"></i>
+								 </span>
+								
+							</div>
 						</div>
 					</div>
 				</div>

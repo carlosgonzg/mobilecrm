@@ -22,23 +22,22 @@
 		</div>
 	</div>
    <div class="row">
-      <div class="col-md-4 col-lg-4 col-xs-12">
+      <div class="col-md-3 col-lg-3 col-xs-12">
         <div class="input-group">
           <div class="input-group-addon">Desde:</div>
           <sc-datepicker ng-model="params.start" id="startDate" ng-required="false" left="true"></sc-datepicker>
         </div>
       </div>
-      <div class="col-md-4 col-lg-4 col-xs-12">
+      <div class="col-md-3 col-lg-3 col-xs-12">
         <div class="input-group">
           <div class="input-group-addon">Hasta:</div>
           <sc-datepicker ng-model="params.end" id="startDate" ng-required="false" left="true"></sc-datepicker>
         </div>
       </div>
-      <div class="col-md-4 col-lg-4 col-xs-12">
+      <div class="col-md-3 col-lg-3 col-xs-12">
         <div class="input-group">
-          <div class="input-group-addon">Invoice:</div>
-          <input type="text" class="form-control" name="" ng-model="params.invoiceNumber">
-       
+           <div class="input-group-addon">Client:</div>
+          <entitypicker ng-model="params.client" ws-class="wsClass" ws-fields="wsFields" ws-filter="wsFilter" disable="userData.role._id != 1"></entitypicker>
         </div>
       </div>
       <!-- <div class="col-md-3 col-lg-3 col-xs-12">
@@ -50,22 +49,29 @@
       </div> -->
     </div>
     <div class="row" style="padding-top:10px; padding-bottom: 10px">
-      <div class="col-md-4 col-lg-4 col-xs-12">
-        <div class="input-group">
-           <div class="input-group-addon">Client:</div>
-          <entitypicker ng-model="params.client" ws-class="wsClass" ws-fields="wsFields" ws-filter="wsFilter" disable="userData.role._id != 1"></entitypicker>
-        </div>
-      </div>
-      <div class="col-md-4 col-lg-4 col-xs-12">
+      <div class="col-md-3 col-lg-3 col-xs-12">
         <div class="input-group">
            <div class="input-group-addon">Company:</div>
            <select class="form-control" ng-model="params.company" id="role" ng-options="company as company.entity.name for company in companies track by company._id" ng-change="getBranches(params.company)"></select>
         </div>
       </div>
-      <div class="col-md-4 col-lg-4 col-xs-12">
+      <div class="col-md-3 col-lg-3 col-xs-12">
         <div class="input-group">
           <div class="input-group-addon">Branch:</div>
           <select class="form-control" ng-model="params.branch" id="branch" ng-options="branch as branch.name for branch in branches track by branch._id" ng-disabled="userData.role._id != 1"></select>
+        </div>
+      </div>
+      <div class="col-md-3 col-lg-3 col-xs-12 pull-right">
+	      <div class="input-group">
+		    	<div class="input-group-addon" >Type:</div>
+			    <select class="form-control" name="type" ng-model="params.invoiceType" ng-options="o._id as o.description for o in invoiceTypeList"></select>
+	  		</div>
+  	  </div>
+      <div class="col-md-3 col-lg-3 col-xs-12">
+        <div class="input-group">
+          <div class="input-group-addon">Invoice:</div>
+          <input type="text" class="form-control" name="" ng-model="params.invoiceNumber">
+       
         </div>
       </div>
     </div>

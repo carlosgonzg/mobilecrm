@@ -43,6 +43,12 @@
           <select class="form-control" ng-model="params.invoiceType" ng-options="type as type.description for type in invoiceTypeList track by type._id"
             ng-change="filterByOrigin()"></select>
       </div>
+      <div class="col-xs-12 col-md-2" ng-if="filterDate">
+        <label for="date">Branch:</label>
+        <select class="form-control" ng-model="params.branch" ng-options="branch as branch.name for branch in branches track by branch._id"
+          ng-change="filterByBranch()"></select>
+       
+      </div>
       <div class="col-xs-12 text-center" ng-if="!list.length">
         <br>
         <h4>

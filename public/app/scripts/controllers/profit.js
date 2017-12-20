@@ -31,6 +31,14 @@ angular.module('MobileCRMApp')
 			show: true
 		}
 	];
+
+	$scope.invoiceTypeList = [
+		{_id: 'sor', description: 'Service Order'},
+		{_id: 'wor', description: 'Work Order'},
+		{_id: 'dor', description: 'Delivery Order'},
+		{_id: 'smo', description: 'Service Miles Only'},
+		{_id: 'All', description: 'All'}
+	];
 	
 	$scope.getBranches = function(company){
 		$scope.branches = [];
@@ -75,6 +83,7 @@ angular.module('MobileCRMApp')
 	    if ($scope.params.branch && $scope.params.branch._id) {
 	      query['client.branch._id'] = $scope.params.branch._id;
 	    }
+
 	    if ($scope.params.invoiceNumber) {
 	      query['invoiceNumber'] = $scope.params.invoiceNumber;
 	    }
@@ -84,6 +93,22 @@ angular.module('MobileCRMApp')
 	    if ($scope.params.document) {
 	      query['wor'] = $scope.params.document;
 	    }
+
+	    if ($scope.params.invoiceType) {
+			if ($scope.params.invoiceType == 'sor') {
+				query['sor'] = {'$exists': true}
+			}
+			if ($scope.params.invoiceType == 'wor') {
+				query['wor'] = {'$exists': true}
+			}
+			if ($scope.params.invoiceType == 'dor') {
+				query['dor'] = {'$exists': true}
+			}
+			if ($scope.params.invoiceType == 'smo') {
+				query['status._id'] = 8
+			}
+		}
+
 
 	    $scope.totalIncome = 0;
 	    $scope.totalExpenses= 0;
