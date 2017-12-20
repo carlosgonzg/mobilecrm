@@ -249,6 +249,7 @@ Invoice.prototype.update = function (query, invoice, user, mail) {
 			if (invoice.items[index]._id == 805 && costPerHours == 0) {
 				if (invoice.items[index].quantity <= initialMile) {
 					total += InitPrice
+					invoice.items[index].price = InitPrice
 				} else {
 					var minMiles = initialMile;
 					var miles = invoice.items[index].quantity;

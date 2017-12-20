@@ -321,6 +321,7 @@ DeliveryOrder.prototype.update = function (query, deliveryOrder, user, mail) {
 		if (deliveryOrder.items[index]._id == 805 && costPerHours == 0) {
 			if (deliveryOrder.items[index].quantity <= initialMile) {
 				total += InitPrice
+				deliveryOrder.items[index].price = InitPrice
 			} else {
 				var minMiles = initialMile;
 				var miles = deliveryOrder.items[index].quantity;
