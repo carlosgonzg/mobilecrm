@@ -204,7 +204,7 @@ angular.module('MobileCRMApp')
 		};
 		$scope.filterDO = {
 			'status._id': {
-				$in: [1, 2, 3, 4]
+				$in: [1, 2, 3, 4, 8]
 			}
 		};
 
