@@ -103,12 +103,12 @@ angular.module('MobileCRMApp')
 	];
 
 	if (data.unitno) {
-		new WorkOrder().filter({'unitno': data.unitno})
+		new WorkOrder().filter({'unitno': data.unitno, '_id': {$ne:data._id}})
 		.then(function(result) {
 			$scope.workOrderList = result.data;
 		});
 
-		new ServiceOrder().filter({'unitno': data.unitno})
+		new ServiceOrder().filter({'unitno': data.unitno, '_id': {$ne:data._id}})
 		.then(function(result) {
 			$scope.serviceOrderList = result.data;
 		});

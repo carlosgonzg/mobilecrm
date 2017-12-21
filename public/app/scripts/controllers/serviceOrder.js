@@ -631,7 +631,8 @@ angular.module('MobileCRMApp')
 
 		$scope.showHistory = function () {
 			var dialog = dialogs.create('views/historyModal.html', 'HistoryModalCtrl', {
-				unitno: $scope.serviceOrder.unitno
+				unitno: $scope.serviceOrder.unitno,
+				_id: $scope.serviceOrder._id
 			});
 			dialog.result
 				.then(function (res) {
