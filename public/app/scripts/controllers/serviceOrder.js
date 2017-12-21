@@ -466,7 +466,11 @@ angular.module('MobileCRMApp')
 				},
 				function (error) {
 					console.log(error);
-					toaster.error('The Service Order couldn\'t be saved, please check if some required field is empty or if its duplicated');
+					if (error.errors.error == "The object already exists") {
+						toaster.error('Service Order # Duplicated');
+					} else {
+						toaster.error('The Service Order couldn\'t be saved, please check if some required field is empty');
+					}
 					$scope.waiting = false;
 				});
 		};
