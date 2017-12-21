@@ -371,7 +371,11 @@ angular.module('MobileCRMApp')
 		};
 
 		$scope.isDisabled = function () {
-			return $rootScope.userData.role._id > 1;
+			if ($rootScope.userData.role._id == 1 || $rootScope.userData.role._id == 5) {
+				return false
+			} else {
+				return true
+			}
 		};
 
 		$scope.uploadFiles = function (files) {
