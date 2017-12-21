@@ -492,11 +492,11 @@ var createReport = function(objs, whoIs, query, queryDescription, user){
 		for (var j=0;j<fieldsArray.length;j++) {
 			excel.worksheet.getCell(i+7,j+1).border = border;
 		}
-		excel.worksheet.getCell('E' + (i + 7).toString()).numFmt = '$ #,###,###,##0.00';	
+		excel.worksheet.getCell('I' + (i + 7).toString()).numFmt = '$ #,###,###,##0.00';	
 	}
 	var key = (objs.length + 7).toString();
-	excel.worksheet.addRow(['', '', '', 'Total', total, queryDescription.expenses ? totalExpenses : '', queryDescription.expenses ?  totalProfit :'', '',  '', '', '', '', '']);
-	excel.worksheet.getCell('E' + key).numFmt = '$ #,###,###,##0.00';
+	excel.worksheet.addRow(['', '', '', '', '', '', '', 'Total', total, queryDescription.expenses ? totalExpenses : '', queryDescription.expenses ?  totalProfit :'', '', '']);
+	excel.worksheet.getCell('I' + key).numFmt = '$ #,###,###,##0.00';
 	excel.worksheet.getCell('F' + key).numFmt = '$ #,###,###,##0.00';
 	excel.worksheet.getCell('G' + key).numFmt = '$ #,###,###,##0.00';
 	excel.worksheet.mergeCells('A' + key + ':C' + key);
