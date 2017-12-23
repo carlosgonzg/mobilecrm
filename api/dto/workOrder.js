@@ -196,6 +196,11 @@ WorkOrder.prototype.update = function (query, workOrder, user, mail) {
 	var sendMail = workOrder.sendMail || false;
 	var sendMailTech = workOrder.sendTotech || false;
 
+	if (workOrder.serviceType._id == 2 && workOrder.quotes == 1) {
+		_this.insert(workOrder, user, mail)
+		return d.promise;
+	}
+
 	//busco los email de los crew leader - fz
 	if (sendMailTech == true) {
 		for (var row = 0; row < workOrder.items.length; row++) {

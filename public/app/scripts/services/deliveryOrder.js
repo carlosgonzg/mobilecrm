@@ -423,6 +423,20 @@ angular.module('MobileCRMApp')
 		return total;
 	};
 
+		DeliveryOrder.prototype.sendDelete = function (deliveryOrder) {
+			var d = $q.defer();
+			toaster.warning('Sending the email');
+			$http.post(this.baseApiPath + '/sendDelete', { id: this._id, deliveryOrder: deliveryOrder })
+				.success(function (data) {
+					toaster.success('The Service Order has been sent!.');
+				})
+				.error(function (data, status, headers, config) {
+					toaster.error('There was an error sending the file, please try again')
+					d.reject(data);
+				});
+			return d.promise;
+		};
+		
 		function formatDate(date) {
 
 			var day = date.getDate();

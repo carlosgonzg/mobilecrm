@@ -20,6 +20,7 @@ angular.module('MobileCRMApp')
 		$scope.crewHeader = []
 		$scope.crewHeaderAdded = []
 		$scope.CrewHeaderSel = ""
+		$scope.workOrder.quotes = 0
 
 		$scope.items = [];
 		$scope.params = {};

@@ -63,7 +63,7 @@ var sendMail = function (to, subject, body, isHtmlBody, attached, cc, cco, reply
 		mailOptions.text = body;
 	}
 
-	if (attached)
+ 	if (attached)
 		mailOptions.attachments = attached;
 	else {
 		mailOptions.attachments = [];
@@ -76,8 +76,8 @@ var sendMail = function (to, subject, body, isHtmlBody, attached, cc, cco, reply
 			console.log('Message sent');
 			deferred.resolve(response);
 		}
-	});
-	return deferred.promise;
+	}); 
+	return deferred.promise; 
 };
 
 var sendActivationEmail = function (to, link, config) {
@@ -825,6 +825,111 @@ var sendDeliveryOrderDelete = function (deliveryOrder, mails, dirname) {
 	return deferred.promise;
 };
 
+
+var sendQuotes = function (serviceQuotes, mails, cc, file, fileName) {
+	var deferred = q.defer();
+	bringTemplateData('/email/templateQuotes.html')
+		.then(function (body) {
+			var url = config.SERVER_URL;
+			body = body.replace('<emailUrl>', url);
+			body = body.replace('<clientName>', serviceQuotes.client.entity.fullName);
+			body = body.replace('<quotesNumber>', serviceQuotes.quotesNumber);
+			body = body.replace('<confirm>', !serviceQuotes.pono ? '' : 'Please confirm as received.<br/><br/>I wait for your comment.<br/>');
+
+			var attachments = setAttachment(file, fileName)
+			var companyName = "";
+
+			if (serviceQuotes.client.company) {
+				companyName = serviceQuotes.client.company._id === 7 ? "Portable Storage - " : serviceQuotes.client.company.entity.name + ' - ';
+			}
+
+			var subject = companyName + 'Estimate: ' + serviceQuotes.quotesNumber;
+
+			subject += ' – MobileOne Restoration LLC';
+			mails = _.uniq(mails);
+			sendMail(mails.join(', '), subject, body, true, attachments, cc.join(', '), null, 'mf@mobileonecontainers.com')
+				.then(function (response) {
+					console.log('DONE Sending Mail: ', response)
+					deferred.resolve(response);
+				},
+				function (err) {
+					console.log('error', err)
+					deferred.reject(err);
+				});
+		},
+		function (err) {
+			console.log('error', err)
+			deferred.reject(err);
+		});
+	return deferred.promise;
+};
+
+var sendDeliveryOrderDelete = function (deliveryOrder, mails, dirname) {
+	var deferred = q.defer();
+	bringTemplateData('/deliveryorderDelete.html')
+		.then(function (body) {
+			var url = config.SERVER_URL;
+			body = body.replace('<emailUrl>', url);
+			body = body.replace('<createdDate>', moment(deliveryOrder.date).format('MM/DD/YYYY'));
+			body = body.replace('<createdBy>', deliveryOrder.createdBy.entity ? deliveryOrder.createdBy.entity.fullName : '');
+			body = body.replace('<clientCompany>', deliveryOrder.client.company ? deliveryOrder.client.company.entity.name : 'None');
+			body = body.replace('<clientBranch>', deliveryOrder.client.branch ? deliveryOrder.client.branch.name : 'None');
+			body = body.replace('<customer>', deliveryOrder.customer || 'None');
+			body = body.replace('<customerPhone>', deliveryOrder.phone ? (deliveryOrder.phone.number || '') : 'None');
+			body = body.replace('<dor>', deliveryOrder.dor);
+			body = body.replace('<unitno>', deliveryOrder.unitno || '');
+			body = body.replace('<unitSize>', deliveryOrder.unitSize || '');
+			body = body.replace('<pono>', deliveryOrder.pono || '');
+			body = body.replace('<isono>', deliveryOrder.isono || '');
+			body = body.replace('<contract>', deliveryOrder.contract || '');
+			body = body.replace('<clientName>', deliveryOrder.client.entity.fullName);
+			body = body.replace('<clientPhone>', deliveryOrder.client && deliveryOrder.client.branch && deliveryOrder.client.branch.phones && deliveryOrder.client.branch.phones.length > 0 ? deliveryOrder.client.branch.phones[0].number : 'None');
+			body = body.replace('<clientMail>', deliveryOrder.client.account.email);
+			body = body.replace('<clientAddress>', deliveryOrder.siteAddress.address1 + ', ' + deliveryOrder.siteAddress.city.description + ', ' + deliveryOrder.siteAddress.state.description + ' ' + deliveryOrder.siteAddress.zipcode);
+			body = body.replace('<issue>', deliveryOrder.issue || 'None');
+			body = body.replace('<comment>', deliveryOrder.comment || 'None');
+			var contacts = '';
+			for (var i = 0; i < deliveryOrder.contacts.length; i++) {
+				if (deliveryOrder.contacts[i].name)
+					contacts += '<b>Contact #' + (i + 1) + ':&nbsp;</b>' + (deliveryOrder.contacts[i].name || '') + '.&nbsp;<br/><b>Phone(' + (deliveryOrder.contacts[i].phoneType.description || '') + '):</b>&nbsp;' + (deliveryOrder.contacts[i].number || '') + '<br/>';
+			}
+			body = body.replace('<contacts>', contacts || '');
+			var company = '' + (deliveryOrder && deliveryOrder.client && deliveryOrder.client.company && deliveryOrder.client.company.entity ? deliveryOrder.client.company.entity.name : 'Not Defined');
+			var branch = deliveryOrder && deliveryOrder.client && deliveryOrder.client.branch ? '' + deliveryOrder.client.branch.name : '' + deliveryOrder.client.entity.fullName;
+			var subject = 'DELETED - Delivery Order: ' + deliveryOrder.dor + ' | ' + company + ' | ' + branch;
+
+			var deliveryOrderAttachments = [];
+			if (deliveryOrder.photos) {
+				for (var i = 0; i < deliveryOrder.photos.length; i++) {
+					var photoDir = dirname + '/public/app' + deliveryOrder.photos[i].url;
+					//console.log(photoDir)
+					deliveryOrderAttachments.push({
+						filename: deliveryOrder.photos[i].name,
+						//content: fs.readFileSync(photoDir),
+						contentType: deliveryOrder.photos[i].type,
+						path: photoDir
+					});
+				}
+			}
+			console.log('sending mail', subject);
+			mails = _.uniq(mails);
+			sendMail('mf@mobileonecontainers.com', subject, body, true, deliveryOrderAttachments, null, null, 'mf@mobileonecontainers.com')
+				.then(function (response) {
+					console.log('DONE Sending Mail: ', response)
+					deferred.resolve(response);
+				},
+				function (err) {
+					console.log('error?', err)
+					deferred.reject(err);
+				});
+		},
+		function (err) {
+			console.log('error!', err)
+			deferred.reject(err);
+		});
+	return deferred.promise;
+};
+
 exports.sendInvoice = sendInvoice;
 exports.sendInvoiceUpdate = sendInvoiceUpdate;
 exports.sendInvoiceDelete = sendInvoiceDelete;
@@ -840,3 +945,5 @@ exports.sendActivationEmail = sendActivationEmail;
 exports.sendForgotPasswordMail = sendForgotPasswordMail;
 exports.sendDeliveryOrder = sendDeliveryOrder;
 exports.sendDeliveryOrderUpdate = sendDeliveryOrderUpdate;
+exports.sendQuotes = sendQuotes
+exports.sendDeliveryOrderDelete = sendDeliveryOrderDelete;
