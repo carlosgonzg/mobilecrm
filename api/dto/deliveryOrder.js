@@ -570,4 +570,32 @@ DeliveryOrder.prototype.changeStatus = function (id) {
 };
 
 
+DeliveryOrder.prototype.sendDeliveryOrderDelete = function (id, user, mail, DeliveryOrder) {
+	var d = q.defer();
+	var _this = this;
+	var emails = [];
+
+	_this.user.getAdminUsers()
+		.then(function (users) {
+			emails = [];
+			for (var i = 0; i < users.data.length; i++) {
+				emails.push(users.data[i].account.email);
+			}
+
+			emails = _.uniq(emails);
+			return mail.sendDeliveryOrderDelete(DeliveryOrder, emails, user);
+		})
+		.then(function () {
+			d.resolve(true);
+		})
+		.catch(function (err) {
+			console.log(err)
+			d.reject({
+				result: 'Not ok',
+				errors: err
+			});
+		});
+	return d.promise;
+};
+
 module.exports = DeliveryOrder;

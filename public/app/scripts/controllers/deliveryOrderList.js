@@ -24,7 +24,7 @@ angular.module('MobileCRMApp')
 			name: 'client.entity.fullName',
 			type: 'text'
 		}, {
-			title: 'Delivered Date',
+			title: 'Created Date',
 			name: 'originalShipDate',
 			type: 'date'
 		}, {
@@ -85,7 +85,7 @@ angular.module('MobileCRMApp')
 			name: 'client.entity.fullName',
 			type: 'text'
 		}, {
-			title: 'Delivery Date',
+			title: 'Created Date',
 			name: 'originalShipDate',
 			type: 'date'
 		}, {

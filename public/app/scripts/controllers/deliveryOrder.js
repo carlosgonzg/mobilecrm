@@ -542,7 +542,10 @@ angular.module('MobileCRMApp')
 					.then(function () {
 						toaster.success('The service order was deleted successfully');
 						$location.path('/DeliveryOrderList')
-					});
+					})
+					.then(function () {
+						$scope.DeliveryOrder.sendDelete($scope.DeliveryOrder)
+				});
 			});
 		};
 
@@ -1099,6 +1102,42 @@ angular.module('MobileCRMApp')
 						$scope.invoice.save()
 					})
 			}
+		}
+
+		$scope.changeRelocation = function () {
+			console.log($scope.DeliveryOrder.Relocation)
+
+			if ($scope.DeliveryOrder.Relocation == false) {
+				for (var row = 0; row < $scope.DeliveryOrder.items.length; row++) {
+					var id = $scope.DeliveryOrder.items[row]._id;
+					if (id == 839) {
+						$scope.DeliveryOrder.items.splice(row, 1);
+						return
+					}
+				}
+			} else {
+				new Item().filter({ _id: 839 })
+					.then(function (result) {
+						_.map(result.data, function (obj) {
+							$scope.DeliveryOrder.items.unshift(obj)
+						});
+					})
+			}
+/*
+			if ($scope.DeliveryOrder.serviceType._id == 1) {
+				var Serv = false
+				for (var row = 0; row < $scope.DeliveryOrder.items.length; row++) {
+					var code = $scope.DeliveryOrder.items[row].code;
+					if (ItemDefault.data[0].code == code) {
+						Serv = true;
+					}
+				}
+				if (Serv == false) {
+					$scope.DeliveryOrder.items.unshift(ItemDefault.data[0]);
+				}
+			} else {
+				$scope.DeliveryOrder.items = [];
+			} */
 		}
 		
 	});

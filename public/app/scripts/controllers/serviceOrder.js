@@ -485,6 +485,7 @@ angular.module('MobileCRMApp')
 						$location.path('/serviceOrderList')
 					})
 					.then(function () {
+						console.log(7899)
 						$scope.serviceOrder.sendDelete($scope.serviceOrder)
 					});
 			});

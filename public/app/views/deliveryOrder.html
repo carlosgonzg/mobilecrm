@@ -173,6 +173,19 @@
 						</div>
 					</div>
 				</div>
+
+
+				<div class="col-sm-6">
+					<div class="col-xs-12 pull-right">
+						<div class="checkbox">
+							<label>
+								<input type="checkbox" ng-model="DeliveryOrder.Relocation" ng-class="isChanged('Relocation')" ng-change="changeRelocation('Relocation')"
+								 id="Relocation" ng-disabled="isDisabled()"> Relocation
+							</label>
+						</div>
+					</div>
+				</div>
+
 				<div class="col-xs-12">
 					<div class="col-xs-12 pull-right">
 						<uib-accordion>

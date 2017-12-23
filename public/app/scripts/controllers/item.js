@@ -16,7 +16,8 @@ angular.module('MobileCRMApp')
 		$scope.list = [
 			{ item: 'Material' },
 			{ item: 'Labor' },
-			{ item: 'By Default' }
+			{ item: 'Service' },
+			{ item: 'By Default'}
 		]
 
 		$scope.save = function () {

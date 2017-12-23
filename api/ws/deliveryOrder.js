@@ -48,5 +48,10 @@ module.exports = function (prefix, app, mail, dirname) {
 		deliveryOrder.changeStatus(req.body.id, req.user)
 			.then(util.success(res), util.error(res));
 	});
+	app.post(prefix + '/sendDelete', function (req, res) {
+		var deliveryOrder = new DeliveryOrder(app.db, req.user, dirname);
+		deliveryOrder.sendDeliveryOrderDelete(req.body.id, req.user, mail, req.body.deliveryOrder)
+			.then(util.success(res), util.error(res));
+	});
 	require('./crud')(prefix, app, DeliveryOrder);
 }
