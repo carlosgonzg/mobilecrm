@@ -826,32 +826,26 @@ var sendDeliveryOrderDelete = function (deliveryOrder, mails, dirname) {
 };
 
 
-var sendQuotes = function (invoice, mails, cc, file, fileName) {
+var sendQuotes = function (serviceQuotes, mails, cc, file, fileName) {
 	var deferred = q.defer();
 	bringTemplateData('/email/templateQuotes.html')
 		.then(function (body) {
 			var url = config.SERVER_URL;
 			body = body.replace('<emailUrl>', url);
-			body = body.replace('<clientName>', invoice.client.entity.fullName);
-			body = body.replace('<pono>', invoice.pono ? 'With PO Number: ' + invoice.pono : 'Without PO Number. Please provide PO Number for this Invoice');
-			body = body.replace('<invoiceNumber>', invoice.invoiceNumber);
-			body = body.replace('<confirm>', !invoice.pono ? '' : 'Please confirm as received.<br/><br/>I wait for your comment.<br/>');
+			body = body.replace('<clientName>', serviceQuotes.client.entity.fullName);
+			body = body.replace('<quotesNumber>', serviceQuotes.quotesNumber);
+			body = body.replace('<confirm>', !serviceQuotes.pono ? '' : 'Please confirm as received.<br/><br/>I wait for your comment.<br/>');
 
 			var attachments = setAttachment(file, fileName)
-
+			var attachments;
 			var companyName = "";
 
-			if (invoice.client.company) {
-				companyName = invoice.client.company._id === 7 ? "Portable Storage - " : invoice.client.company.entity.name + ' - ';
+			if (serviceQuotes.client.company) {
+				companyName = serviceQuotes.client.company._id === 7 ? "Portable Storage - " : serviceQuotes.client.company.entity.name + ' - ';
 			}
 
-			var subject = companyName + 'Invoice: ' + invoice.invoiceNumber;
-			if (!invoice.pono) {
-				subject += ' Without po number';
-			}
-			else {
-				subject += '  with po number ' + invoice.pono;
-			}
+			var subject = companyName + 'Estimate: ' + serviceQuotes.quotesNumber;
+
 			subject += ' – MobileOne Restoration LLC';
 			mails = _.uniq(mails);
 			sendMail(mails.join(', '), subject, body, true, attachments, cc.join(', '), null, 'mf@mobileonecontainers.com')
