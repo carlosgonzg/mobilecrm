@@ -15,6 +15,7 @@ angular.module('MobileCRMApp')
 		WorkOrder.super.constructor.apply(this, arguments);
 		this.baseApiPath = "/api/WorkOrder";
 		this.client = this.client || {};
+		this.wor = this.wor;
 		this.invoiceNumber = this.invoiceNumber || '';
 		this.pono = this.pono || '';
 		this.unitno = this.unitno || '';

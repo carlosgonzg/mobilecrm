@@ -16,6 +16,7 @@ angular.module('MobileCRMApp')
 			this.baseApiPath = "/api/deliveryOrder";
 			this.client = this.client || {};
 			this.invoiceNumber = this.invoiceNumber || '';
+			this.dor = this.dor;
 			this.unitno = this.unitno || '';
 			this.siteAddress = this.siteAddress || {};
 			this.phone = this.phone || {};
@@ -69,6 +70,7 @@ angular.module('MobileCRMApp')
 			var costPerMile = 3.25;
 			var costPerHours = 0;
 			var qtity = 0;
+			console.log(quantitymiles, comp)
 
 			if (this.client._id == undefined) {
 				return 0
