@@ -529,7 +529,7 @@ angular.module('MobileCRMApp')
 					},
 					function (error) {
 						console.log(error);
-						if (error.errors.error == "The object already exists") {
+						if (error && error.errors && error.errors.error == "The object already exists") {
 							toaster.error('Delivery Order # Duplicated');
 						} else {
 							toaster.error('The Delivery Order couldn\'t be saved, please check if some required field is empty');
