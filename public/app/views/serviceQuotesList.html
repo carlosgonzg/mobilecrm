@@ -1,0 +1,39 @@
+<div class="col-xs-12">
+	<h1 class="pull-left">
+		<i class="fa fa-lg fa-file-text"></i>
+		<span>Quotes & Estimates</span>
+	</h1>
+	<div class="btn-group pull-right" style="margin-top: 20px;" role="group" aria-label="...">
+		<back-button></back-button>
+		<button type="button" class="btn btn-primary new" ng-click="createNew()" ng-if="userData.getAccessOfView('/serviceOrder', true).write">
+			<i class="fa fa-plus"></i>&nbsp;
+			<span>Create New</span>
+		</button>
+	</div>
+	<hr />
+</div>
+
+<br />
+<br />
+<div class="col-xs-10">
+	<ul class="nav nav-tabs">
+		<li role="presentation" style="cursor: pointer" ng-class="{ active: selectedTab == role.description }" ng-repeat="role in roles track by $index"
+		 ng-click="selectTab(role)">
+			<a>{{role.description}}</a>
+		</li>
+	</ul>
+</div>
+<div ng-show="pending" class="ng-hide" style="margin-top: 73px">
+	<div class="row">
+		<div class="col-xs-14">
+			<list clase="ServiceQuotes" fields="fields" showid="false" search-fields="search" filter-field="approval" filter-date="filterDate" list="list"></list>
+		</div>
+	</div>
+</div>
+<div ng-show="completed" class="ng-hide" style="margin-top: 73px">
+	<div class="row">
+		<div class="col-xs-14">
+			<list clase="ServiceQuotes" fields="fields" showid="false" search-fields="search" filter-field="approved" filter-date="filterDate" list="list"></list>
+		</div>
+	</div>
+</div>

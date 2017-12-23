@@ -240,7 +240,6 @@ angular.module('MobileCRMApp')
 								obj.temp = obj.temp || {};
 								obj.temp[field.name] = field.function(obj);
 								obj[field.name] = obj.temp[field.name];
-								console.log(field, obj)
 							});
 						});
 

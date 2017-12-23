@@ -47,7 +47,7 @@ var createInvoiceBody = function (obj, company, branch) {
 	} else {
 		body = body.replace(/<clientAddress>/g, obj.sor ? obj.siteAddress.address1 : obj.client.branch.addresses.length > 0 ? obj.client.branch.addresses[0].address1 : company.address.address1 || '');
 		body = body.replace(/<clientState>/g, obj.sor ? (obj.siteAddress.city.description + ', ' + obj.siteAddress.state.id + ', ' + obj.siteAddress.zipcode || '') : obj.client.branch.addresses.length > 0 ? obj.client.branch.addresses[0].city.description + ', ' + obj.client.branch.addresses[0].state.id + ', ' + obj.client.branch.addresses[0].zipcode : (company.address.city.description + ', ' + company.address.state.id + ', ' + company.address.zipcode || ''));
-	}	
+	}
 
 	body = body.replace(/<clientPhone>/g, obj.phone.number || '');
 	body = body.replace(/<clientMail>/g, obj.client.account.email || '');
@@ -74,7 +74,7 @@ var createInvoiceBody = function (obj, company, branch) {
 		tableItems += item.part || '';
 		tableItems += '</td>';
 		tableItems += '<td style="text-align: right;border: thin solid black; border-top: none; border-right: none;">';
-		tableItems += numeral(item.price || 0).format('$0,0.00'); 
+		tableItems += numeral(item.price || 0).format('$0,0.00');
 		tableItems += '</td>';
 		tableItems += '<td style="text-align: right;border: thin solid black; border-top: none; border-right: none;">';
 		tableItems += item.quantity || 1;
@@ -84,7 +84,7 @@ var createInvoiceBody = function (obj, company, branch) {
 			tableItems += numeral(item.price || 1).format('$0,0.00');
 		} else {
 			tableItems += numeral((item.price || 0) * (item.quantity || 1)).format('$0,0.00');
-		}	
+		}
 		tableItems += '</td>';
 		total += (item.price || 0) * (item.quantity || 1);
 		tableItems += '</tr>';
@@ -129,9 +129,21 @@ var createInvoice = function (obj, company, branch) {
 		},
 		timeout: 60000
 	};
-	var fileName = obj.invoiceNumber + '.pdf';
-	var url = __dirname + '/invoices/' + fileName;
-	var body = createInvoiceBody(obj, company, branch);
+
+	var fileName = ""
+	var url = ""
+	var body = "";
+
+	if (obj.quotes == 1) {
+		fileName = obj.quotesNumber + moment().format('-MM-DD-YYYY-HHmmss').toString() + '.pdf';
+		url = __dirname + '/quotes/' + fileName;
+		body = createQuotesBody(obj, company, branch);
+	} else {
+		fileName = obj.invoiceNumber + '.pdf';
+		url = __dirname + '/invoices/' + fileName;
+		body = createInvoiceBody(obj, company, branch);
+	}
+
 	pdf.create(body, options).toFile(url, function (err, res) {
 		if (err) {
 			console.log(err);
@@ -599,6 +611,84 @@ var createWorkOrderBodyCrew = function (workOrder, company, Crewdata) {
 	body = body.replace('<subtotal>', numeral(total).format('$0,0.00'));
 	body = body.replace('<total>', numeral(total).format('$0,0.00'));
 
+	return body;
+};
+
+var createQuotesBody = function (obj, company, branch) {
+	var body = fs.readFileSync(__dirname + '/quotes.html', 'utf8').toString();
+	//replacement of data
+	body = body.replace(/<createdDate>/g, moment(obj.date).format('MM/DD/YYYY'));
+	body = body.replace(/<dueDate>/g, moment(obj.date).add(30, 'days').format('MM/DD/YYYY'));
+	body = body.replace(/<quotesNumber>/g, obj.quotesNumber || '');
+	//Company
+
+	body = body.replace(/<companyName>/g, company.entity.name || '');
+	body = body.replace(/<companyAddress>/g, company.address.address1 || '');
+	body = body.replace(/<companyState>/g, (company.address.state.description ? (company.address.state.description + ' ' + company.address.zipcode) || '' : ''));
+	//Cliente
+	body = body.replace(/<clientName>/g, obj.client.entity.fullName || '');
+	body = body.replace(/<clientPhone>/g, obj.phone.number || '');
+	body = body.replace(/<clientMail>/g, obj.client.account.email || '');
+	body = body.replace(/<comment>/g, obj.comment || '');
+	body = body.replace(/<clientCity>/g, obj.client && obj.client.branch ? (obj.client.branch.name || '') : '');
+	body = body.replace(/<labelDocument>/g, obj.serviceType.description);
+
+	//Inserting table of items
+	var total = 0;
+	var tableItems = '';
+	for (var i = 0; i < obj.items.length; i++) {
+		var item = obj.items[i];
+		tableItems += '<tr>';
+		tableItems += '<td style="text-align: center;border: thin solid black; border-top: none; border-right: none;">';
+		tableItems += item.code || '';
+		tableItems += '</td>';
+		tableItems += '<td colspan="4" style="border: thin solid black; border-top: none; border-right: none;">';
+		tableItems += item.description || '';
+		tableItems += '</td>';
+		tableItems += '<td style="text-align: right;border: thin solid black; border-top: none; border-right: none;">';
+		tableItems += item.part || '';
+		tableItems += '</td>';
+		tableItems += '<td style="text-align: right;border: thin solid black; border-top: none; border-right: none;">';
+		tableItems += numeral(item.price || 0).format('$0,0.00');
+		tableItems += '</td>';
+		tableItems += '<td style="text-align: right;border: thin solid black; border-top: none; border-right: none;">';
+		tableItems += item.quantity || 1;
+		tableItems += '</td>';
+		tableItems += '<td style="text-align: right;border: thin solid black; border-top: none;">';
+		if (obj.dor) {
+			tableItems += numeral(item.price || 1).format('$0,0.00');
+		} else {
+			tableItems += numeral((item.price || 0) * (item.quantity || 1)).format('$0,0.00');
+		}
+		tableItems += '</td>';
+		total += (item.price || 0) * (item.quantity || 1);
+		tableItems += '</tr>';
+	}
+	body = body.replace('<tableItems>', tableItems || '');
+
+	if (obj.dor) {
+		total = obj.total;
+	}
+
+	total = total || 0;
+	var taxes = (company.taxes || 0);
+	body = body.replace('<subtotal>', numeral(total).format('$0,0.00'));
+	if (obj.client.hideDueDates) {
+		body = body.replace('<showTable>', '<div style="display:none">');
+	} else {
+		body = body.replace('<showTable>', '<div>');
+	}
+
+	body = body.replace('<date15>', moment(obj.date, 'MM/DD/YYYY').add(45, 'days').format('MM/DD/YYYY'));
+	body = body.replace('<date30>', moment(obj.date, 'MM/DD/YYYY').add(60, 'days').format('MM/DD/YYYY'));
+	body = body.replace('<date60>', moment(obj.date, 'MM/DD/YYYY').add(90, 'days').format('MM/DD/YYYY'));
+
+	body = body.replace('<taxesPorcentage>', Math.round(taxes * 100) || 0);
+	body = body.replace('<taxes>', numeral(total * taxes).format('$0,0.00'));
+	body = body.replace('<total>', numeral(total + (total * taxes)).format('$0,0.00'));
+	body = body.replace('<total15>', numeral((total + (total * taxes)) * 1.05).format('$0,0.00'));
+	body = body.replace('<total30>', numeral((total + (total * taxes)) * 1.10).format('$0,0.00'));
+	body = body.replace('<total60>', numeral((total + (total * taxes)) * 1.15).format('$0,0.00'));
 	return body;
 };
 

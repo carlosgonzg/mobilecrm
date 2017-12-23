@@ -1,0 +1,406 @@
+<div class="row">
+	<div class="col-xs-12">
+		<h1 class="pull-left">
+			<i class="fa fa-lg fa-file-text"></i>
+			<span> Quotes & Estimates</span>
+		</h1>
+		<div class="btn-group pull-right" style="margin-top: 20px;" role="group" aria-label="...">
+			<button type="submit" form="userForm" class="btn btn-primary update" ng-disabled="!serviceQuotes.client._id" ng-click="save(1)">
+				<i class="fa fa-save"></i>&nbsp;
+				<span>Save</span>
+			</button>
+			<button type="submit" form="userForm" class="btn btn-primary update" ng-disabled="!serviceQuotes.client._id || serviceQuotes.approved == 2"
+			 ng-if="serviceQuotes._id" ng-click="save(2)">
+				<i class="fa fa-save"></i>&nbsp;
+				<span>Save & Approve</span>
+			</button>
+			<button type="submit" form="userForm" class="btn btn-primary update" ng-disabled="!serviceQuotes.client._id" ng-click="saveSend()">
+				<i class="fa fa-save"></i>&nbsp;
+				<span>Save & Send To:</span>
+			</button>
+			<button type="button" class="btn btn-danger" ng-click="delete()" ng-if="serviceQuotes._id && userData.role._id == 1" data-toggle="tooltip"
+			 title="Detele">
+				<i class="fa fa-trash"></i>&nbsp;
+				<span></span>
+			</button>
+			<back-button></back-button>
+		</div>
+		<hr />
+	</div>
+</div>
+<form class="form" id="userForm" name="userForm" novalidate>
+	<div class="row" style="margin-top:50px">
+		<div class="col-xs-12">
+			<div class="col-sm-4">
+				<div class="col-xs-12 pull-left">
+					<div class="form-group">
+						<label for="Client">Client</label>
+						<entitypicker ng-model="serviceQuotes.client" ng-change="clientChanged(serviceQuotes.client)" ws-class="wsClass" ws-fields="wsFields"
+						 ws-filter="filterC" disable="userData.role._id != 1"></entitypicker>
+					</div>
+				</div>
+				<div class="col-sm-12 pull-left">
+					<div class="panel panel-default" ng-show="serviceQuotes.client._id">
+						<div class="panel-heading">{{serviceQuotes.client.entity.fullName}}&nbsp;-&nbsp;{{serviceQuotes.client.company.entity.name}}</div>
+						<div class="panel-body">
+							<p class="col-xs-12 text-left">
+								<b>{{serviceQuotes.client.branch.name}}</b>
+								<br/>
+								<p class="col-xs-12 text-left" ng-repeat="address in serviceQuotes.client.branch.addresses track by $index">
+									<i class="fa fa-map"></i>&nbsp;{{ address.address1 }},&nbsp;{{ address.city.description }},&nbsp;{{ address.state.description}},&nbsp;{{
+									address.country.description }}
+								</p>
+							</p>
+							<p class="col-xs-12 text-left" ng-repeat="phone in serviceQuotes.client.branch.phones track by $index">
+								<i class="fa fa-phone"></i>&nbsp;{{ phone.number }}
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-8">
+				<div class="col-sm-6">
+					<div class="col-xs-12 pull-right">
+						<div class="form-group">
+							<label for="date">Customer</label>
+							<input type="text" class="form-control" ng-model="serviceQuotes.customer" ng-class="isChanged('customer')" ng-change="changed('customer')"
+							 ng-disabled="isDisabled()">
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="col-xs-12 pull-right">
+						<div class="form-group">
+							<label for="quotesNumber">Estimate #</label>
+							<input type="text" class="form-control" ng-model="serviceQuotes.quotesNumber" ng-class="isChanged('quotesNumber')" ng-change="changed('quotesNumber')"
+							 ng-disabled="isDisabled()">
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="col-xs-12 pull-right">
+						<div class="form-group">
+							<label for="date">Company</label>
+							<select class="form-control" ng-model="serviceQuotes.client.company" ng-class="isChanged('company')" ng-change="changed('company'); companyChanged(serviceQuotes.client.company)"
+							 ng-options="company as company.entity.name for company in listCompany track by company._id" ng-disabled="isDisabled() || userData.role._id != 1 || !serviceQuotes.client._id"></select>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="col-xs-12 pull-right">
+						<div class="form-group">
+							<label for="quotesStatus">Status</label>
+							<input type="text" class="form-control" ng-model="serviceQuotes.quotesStatus" ng-class="isChanged('quotesStatus')" ng-change="changed('quotesStatus')"
+							 ng-disabled="true">
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="col-xs-12 pull-right">
+						<div class="form-group">
+							<label for="date">Service Type</label>
+							<select class="form-control" ng-model="serviceQuotes.serviceType" ng-class="isChanged('serviceType')" ng-change="serviceTypeChanged()" ng-options="data as data.description for data in serviceTypeData track by data._id"
+							 ng-disabled="serviceQuotes.approved == 2 || serviceQuotes._id || !serviceQuotes.client._id"></select>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-sm-6">
+					<div class="col-xs-12 pull-right">
+						<div class="form-group" ng-show="serviceQuotes.serviceType._id==1">
+							<label for="dueDate">Service order #</label>
+							<input type="text" class="form-control" ng-model="serviceQuotes.sor" ng-change="changed('sor')" ng-disabled="serviceQuotes.approved == 2 || !serviceQuotes._id">
+						</div>
+						<div class="form-group" ng-show="serviceQuotes.serviceType._id==2">
+							<label for="dueDate">Work order #</label>
+							<input type="text" class="form-control" ng-model="serviceQuotes.wor" ng-change="changed('wor')" ng-disabled="serviceQuotes.approved == 2 || !serviceQuotes._id">
+						</div>
+					</div>
+				</div>
+
+				<div class="col-sm-6">
+					<div class="col-xs-12 pull-right">
+						<div class="form-group">
+
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="col-xs-12 pull-right">
+						<div class="form-group">
+							<label for="date">Invoice #</label>
+							<input type="text" class="form-control" ng-model="serviceQuotes.invoiceNumber" ng-change="changed('invoiceNumber')" ng-disabled="true">
+						</div>
+					</div>
+				</div>
+
+				<div class="col-sm-6">
+					<div class="col-xs-12 pull-right">
+						<div class="form-group">
+							<label for="date">Date</label>
+							<sc-datepicker ng-model="serviceQuotes.date" ng-class="isChanged('date')" ng-change="changed('date')" ng-disabled="isDisabled()"></sc-datepicker>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="col-xs-12 pull-right">
+						<div class="form-group">
+							<label for="dueDate">Due Date</label>
+							<sc-datepicker ng-model="serviceQuotes.dueDate" ng-class="isChanged('dueDate')" ng-change="changed('dueDate')" ng-disabled="isDisabled()"></sc-datepicker>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-sm-6">
+					<div class="col-xs-12 pull-right">
+						<div class="form-group">
+							<label for="pono">PO #</label>
+							<input type="text" class="form-control" ng-model="serviceQuotes.pono" ng-class="isChanged('pono')" ng-change="changed('pono')"
+							 ng-disabled="isDisabled()">
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="col-xs-12 pull-right">
+						<div class="form-group">
+							<label for="pono">Unit Size</label>
+							<input type="text" class="form-control" ng-model="serviceQuotes.unitSize" ng-class="isChanged('unitSize')" ng-change="changed('unitSize')"
+							 ng-disabled="isDisabled()">
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="col-xs-12 pull-right">
+						<div class="form-group">
+							<label for="pono">Serial #</label>
+							<input type="text" class="form-control" ng-model="serviceQuotes.unitno" ng-class="isChanged('unitno')" ng-change="changed('unitno')"
+							 ng-disabled="isDisabled()">
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="col-xs-12 pull-right" ng-if="!serviceQuotes.dor">
+						<div class="form-group">
+							<label for="isono">ISO #</label>
+							<input type="text" class="form-control" ng-model="serviceQuotes.isono" ng-class="isChanged('isono')" ng-change="changed('isono')"
+							 ng-disabled="isDisabled()">
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="col-xs-12 pull-right">
+						<div class="form-group" ng-if="serviceQuotes.dor">
+							<label for="pono">Driver</label>
+							<select class="form-control" ng-model="serviceQuotes.driver" id="role" ng-options="driver as driver.entity.fullName for driver in driver track by driver._id">
+								<option style="display:none" value="">Select a Driver</option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div ng-if="serviceQuotes.serviceType._id==1">
+					<div class="col-xs-12" ng-if="userData.role._id == 1">
+						<div class="col-xs-12 pull-right">
+							<uib-accordion>
+								<uib-accordion-group class="panel-default">
+									<uib-accordion-heading>
+										<span class="fa fa-map-pin fa-lg"> </span> From Branch Address
+
+										<small ng-if="serviceQuotes.siteAddressFrom.address1">{{serviceQuotes.siteAddressFrom.address1 }}, {{serviceQuotes.siteAddressFrom.city.description}} </small>
+									</uib-accordion-heading>
+
+
+									<select ng-model="serviceQuotes.siteAddressFrom" class="form-control" ng-class="isChanged('siteAddressFrom')" ng-change="changed('siteAddressFrom');recalculate()"
+									 ng-disabled="isDisabled()" ng-options="address as address.addressString for address in addresses track by address.address1">
+									</select>
+
+								</uib-accordion-group>
+							</uib-accordion>
+						</div>
+					</div>
+					<div class="col-xs-12">
+						<div class="col-xs-12 pull-right">
+							<uib-accordion>
+								<uib-accordion-group class="panel-default">
+									<uib-accordion-heading>
+										<span class="fa fa-map-marker fa-lg"></span> To Customer Address
+										<small ng-if="serviceQuotes.siteAddress.city">{{serviceQuotes.siteAddress.address1 }}, {{serviceQuotes.siteAddress.city.description}} </small>
+									</uib-accordion-heading>
+
+									<address-model ng-model="serviceQuotes.siteAddress" origin-point="serviceQuotes.siteAddressFrom" ng-class="isChanged('siteAddress')"
+									 ng-change="changed('siteAddress')" ng-disabled="isDisabled()" show-map="showMap"></address-model>
+
+								</uib-accordion-group>
+							</uib-accordion>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="col-xs-12 pull-right">
+							<div class="form-group">
+								<label for="distanceFrom">Service Miles (Miles)</label>
+								<input type="text" name="distanceFrom" class="form-control" ng-model="serviceQuotes.siteAddress.distanceFrom" validator="required"
+								 ng-disabled="userData.role._id == 5" ng-class="isChanged('distanceFrom')" ng-change="changed('serviceMiles')">
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-xs-12">
+					<div class="btn btn-default" ngf-select="uploadFiles($files)" ngf-max-size="5MB" ngf-accept="'image/*'" multiple="multiple">Upload Photo(s) (5MB Max)</div>
+				</div>
+				<div class="col-xs-12">
+					<label>Photos</label>
+				</div>
+				<div class="col-sm-3" ng-repeat="photo in serviceQuotes.photos track by $index">
+					<img class="img-rounded" style="width:120px" ng-src="{{photo.url}}" ng-click="showPicture($index)" />
+					<button type="button" ng-click="removePhoto($index)" class="btn btn-sm btn-danger">
+						<i class="fa fa-times"></i>
+					</button>
+				</div>
+
+				<div class="col-xs-12" style="margin-top: 15px">
+					<div class="btn btn-default" ngf-select="uploadPDF($files)" ngf-max-size="5MB" ngf-accept="'application/pdf'" multiple="multiple">Upload File(s) (5MB Max)</div>
+				</div>
+				<div class="col-xs-12">
+					<label>Files</label>
+				</div>
+
+				<div class="col-sm-3" ng-repeat="docs in serviceQuotes.docs track by $index">
+					<a ng-href="../images/uploads/Quotes/{{serviceQuotes._id}}/{{docs.name}}" download="{{docs.name}}">
+						<i class="fa fa-file-text fa-4x" aria-hidden="true" ng-click="downloadFile($index)"></i>
+					</a>
+					<button type="button" ng-click="removeDoc($index)" class="btn btn-xs btn-danger">
+						<i class="fa fa-times"></i>
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-xs-12">
+			<table class="table table-striped table-hover" width="100%" style="margin: 0 auto">
+				<thead>
+					<tr>
+						<th width="20%">
+							Item
+						</th>
+						<th width="10%">
+							Code
+						</th>
+						<th width="20%">
+							Description
+						</th>
+						<th width="10%">
+							Quantity
+						</th>
+						<th width="15%">
+							Price
+						</th>
+						<th width="15%">
+							Total
+						</th>
+						<th width="10%">
+							<button type="button" class="btn btn-sm btn-primary update" ng-disabled="serviceQuotes.dor" ng-click="addItem()">
+								<i class="fa fa-plus"></i>
+							</button>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="item in serviceQuotes.items track by $index">
+						<td>
+							<entitypicker ng-model="serviceQuotes.items[$index]" ws-class="wsClassItem" ws-fields="wsFieldsItem" ws-filter="wsFilterItem"
+							 ws-label="'description'" disable="!serviceQuotes.client._id || serviceQuotes.dor" order-by="'code'"></entitypicker>
+						</td>
+						<td>
+							<input type="text" class="form-control" ng-model="item.code" ng-disabled="isDisabled()">
+						</td>
+						<td>
+							<input type="text" class="form-control" ng-model="item.description" ng-disabled="isDisabled()">
+						</td>
+						<td>
+							<input type="number" class="form-control" ng-model="item.quantity" ng-disabled="isDisabled()">
+						</td>
+						<td>
+							<input type="number" class="form-control" ng-model="item.price" ng-disabled="isDisabled()">
+						</td>
+						<td>
+							<div ng-if="serviceQuotes.dor">
+								{{item.getTotalPriceDelivery(item.quantity, serviceQuotes.client.company, $index, serviceQuotes.typeTruck) | currency }}
+							</div>
+							<div ng-if="!serviceQuotes.dor">
+								{{item.getTotalPrice(serviceQuotes.client.company) | currency }}
+							</div>
+						</td>
+						<td>
+							<button type="button" class="btn btn-sm btn-danger update" ng-disabled="serviceQuotes.dor" ng-click="removeItem($index)">
+								<i class="fa fa-times"></i>
+							</button>
+						</td>
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<th colspan="3">
+							<span class="pull-right">
+								SubTotal
+							</span>
+						</th>
+						<th colspan="4">
+							<span class="pull-left">
+								<div ng-if="serviceQuotes.dor">
+									{{serviceQuotes.getTotalDelivery() | currency}}
+								</div>
+								<div ng-if="!serviceQuotes.dor">
+									{{serviceQuotes.getTotal() | currency}}
+								</div>
+							</span>
+						</th>
+					</tr>
+					<tr>
+						<th colspan="3">
+							<span class="pull-right">
+								({{Math.round((serviceQuotes.client.branch.taxes || serviceQuotes.client.company.taxes || 0) * 100)}}%)
+							</span>
+						</th>
+						<th colspan="4">
+							<span class="pull-left">
+								{{serviceQuotes.getTaxes() | currency}}
+							</span>
+						</th>
+					</tr>
+					<tr>
+						<th colspan="3">
+							<span class="pull-right">
+								Total
+							</span>
+						</th>
+						<th colspan="4">
+							<span class="pull-left">
+								<div ng-if="serviceQuotes.dor">
+									{{serviceQuotes.getTotalDelivery() + serviceQuotes.getTaxes() | currency}}
+								</div>
+								<div ng-if="!serviceQuotes.dor">
+									{{serviceQuotes.getTotal() + serviceQuotes.getTaxes() | currency}}
+								</div>
+							</span>
+						</th>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12">
+			<div class="col-sm-4 pull-left">
+				<div class="form-group">
+					<label for="comment">Project Description</label>
+					<textarea id="comment" ng-show="!serviceQuotes.dor" ng-model="serviceQuotes.comment" class="form-control">
+					</textarea>
+					<textarea id="comment" ng-show="serviceQuotes.dor" ng-model="serviceQuotes.comments" class="form-control">
+					</textarea>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</form>

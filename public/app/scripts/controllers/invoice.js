@@ -8,7 +8,7 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-	.controller('InvoiceCtrl', function ($scope, $rootScope, $location, toaster, $window, User, invoice, statusList, statusDelivery, Item, ServiceOrder, WorkOrder, DeliveryOrder, dialogs, Invoice, Company, companies, Driver) {
+	.controller('InvoiceCtrl', function ($scope, $rootScope, $location, toaster, $window, User, invoice, statusList, statusDelivery, Item, ServiceOrder, WorkOrder, DeliveryOrder, dialogs, Invoice, Company, companies, Driver, ServiceQuotes) {
 		$scope.invoice = invoice;
 		$scope.items = [];
 		$scope.waiting = false;
@@ -16,7 +16,7 @@ angular.module('MobileCRMApp')
 		$scope.expenses = []
 		$scope.driver = Driver.data || {};
 		$scope.statusTech = {};
-
+		
 		if ($rootScope.userData.role._id != 1) {
 			$scope.invoice.client = new User($rootScope.userData);
 		}
@@ -491,7 +491,6 @@ angular.module('MobileCRMApp')
 							$scope.ServiceOrder.sendTotech = sendTotech
 							$scope.ServiceOrder.statusTech = $scope.statusTech;
 							$scope.ServiceOrder.sendMail = false;
-							console.log($scope.invoice.sor)
 						});
 						$scope.ServiceOrder.save()
 					})
@@ -505,7 +504,6 @@ angular.module('MobileCRMApp')
 							$scope.WorkOrder.sendTotech = sendTotech
 							$scope.WorkOrder.statusTech = $scope.statusTech;
 							$scope.WorkOrder.sendMail = false;
-							console.log($scope.invoice.wor)
 						});
 						$scope.WorkOrder.save()
 					})
@@ -517,9 +515,23 @@ angular.module('MobileCRMApp')
 							$scope.DeliveryOrder = obj
 							$scope.DeliveryOrder.status = $scope.invoice.status
 							$scope.DeliveryOrder.sendMail = false;
-							console.log($scope.invoice.dor)
 						});
 						$scope.DeliveryOrder.save()
+					})
+			}
+			if ($scope.invoice.quotes) {
+				console.log(7458)
+				new ServiceQuotes().filter({ "quotesNumber": $scope.invoice.quotesNumber })
+					.then(function (result) {
+						_.map(result.data, function (obj) {
+							$scope.ServiceQuotes = obj
+							$scope.ServiceQuotes.invoiceNumber = $scope.invoice.invoiceNumber;
+							$scope.ServiceQuotes.pono = $scope.invoice.pono;
+							$scope.ServiceQuotes.unitSize = $scope.invoice.unitSize;
+							$scope.ServiceQuotes.unitno = $scope.invoice.unitno;
+							$scope.ServiceQuotes.isono = $scope.invoice.isono;
+						});
+						$scope.ServiceQuotes.save()
 					})
 			}
 		}

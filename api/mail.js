@@ -63,7 +63,7 @@ var sendMail = function (to, subject, body, isHtmlBody, attached, cc, cco, reply
 		mailOptions.text = body;
 	}
 
-	if (attached)
+ 	if (attached)
 		mailOptions.attachments = attached;
 	else {
 		mailOptions.attachments = [];
@@ -76,7 +76,7 @@ var sendMail = function (to, subject, body, isHtmlBody, attached, cc, cco, reply
 			console.log('Message sent');
 			deferred.resolve(response);
 		}
-	});
+	}); 
 	return deferred.promise;
 };
 
@@ -825,6 +825,52 @@ var sendDeliveryOrderDelete = function (deliveryOrder, mails, dirname) {
 	return deferred.promise;
 };
 
+
+var sendQuotes = function (invoice, mails, cc, file, fileName) {
+	var deferred = q.defer();
+	bringTemplateData('/email/templateQuotes.html')
+		.then(function (body) {
+			var url = config.SERVER_URL;
+			body = body.replace('<emailUrl>', url);
+			body = body.replace('<clientName>', invoice.client.entity.fullName);
+			body = body.replace('<pono>', invoice.pono ? 'With PO Number: ' + invoice.pono : 'Without PO Number. Please provide PO Number for this Invoice');
+			body = body.replace('<invoiceNumber>', invoice.invoiceNumber);
+			body = body.replace('<confirm>', !invoice.pono ? '' : 'Please confirm as received.<br/><br/>I wait for your comment.<br/>');
+
+			var attachments = setAttachment(file, fileName)
+
+			var companyName = "";
+
+			if (invoice.client.company) {
+				companyName = invoice.client.company._id === 7 ? "Portable Storage - " : invoice.client.company.entity.name + ' - ';
+			}
+
+			var subject = companyName + 'Invoice: ' + invoice.invoiceNumber;
+			if (!invoice.pono) {
+				subject += ' Without po number';
+			}
+			else {
+				subject += '  with po number ' + invoice.pono;
+			}
+			subject += ' – MobileOne Restoration LLC';
+			mails = _.uniq(mails);
+			sendMail(mails.join(', '), subject, body, true, attachments, cc.join(', '), null, 'mf@mobileonecontainers.com')
+				.then(function (response) {
+					console.log('DONE Sending Mail: ', response)
+					deferred.resolve(response);
+				},
+				function (err) {
+					console.log('error', err)
+					deferred.reject(err);
+				});
+		},
+		function (err) {
+			console.log('error', err)
+			deferred.reject(err);
+		});
+	return deferred.promise;
+};
+
 exports.sendInvoice = sendInvoice;
 exports.sendInvoiceUpdate = sendInvoiceUpdate;
 exports.sendInvoiceDelete = sendInvoiceDelete;
@@ -840,3 +886,4 @@ exports.sendActivationEmail = sendActivationEmail;
 exports.sendForgotPasswordMail = sendForgotPasswordMail;
 exports.sendDeliveryOrder = sendDeliveryOrder;
 exports.sendDeliveryOrderUpdate = sendDeliveryOrderUpdate;
+exports.sendQuotes = sendQuotes

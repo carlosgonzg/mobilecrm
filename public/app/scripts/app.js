@@ -516,7 +516,7 @@ var app = angular
 				controller: 'DeliveryOrderCtrl',
 				resolve: {
 					statusList: function (List) {
-						return List.get('statusDelivery'); 
+						return List.get('statusDelivery');
 					},
 					EntranceList: function (List) {
 						return List.get('Entrance');
@@ -534,6 +534,35 @@ var app = angular
 					Driver: function (User) {
 						return new User().filter({ 'role._id': 6 })
 					},
+				}
+			})
+			.when('/serviceQuotesList', {
+				templateUrl: 'views/serviceQuotesList.html',
+				controller: 'serviceQuotesListCtrl'
+			})
+			.when('/serviceQuotes/:id?', {
+				templateUrl: 'views/serviceQuotes.html',
+				controller: 'ServiceQuotesCtrl',
+				resolve: {
+					statusList: function (List) {
+						return List.get('status');
+					},
+					serviceQuotes: function (ServiceQuotes, $route) {
+						if ($route.current.params.id) {
+							return new ServiceQuotes().findById(parseInt($route.current.params.id));
+						} else {
+							return new ServiceQuotes();
+						}
+					},
+					CrewCollection: function (CrewCollection, $route) {
+						return new CrewCollection().filter({ "role.description": 'Crew Leader' })
+					},
+					ItemDefault: function (Item) {
+						return new Item().filter({ _id: { $in: [253] } })
+					},
+					companies: function (Company) {
+						return new Company().filter({});
+					}
 				}
 			})
 			.when('/noaccess', {

@@ -8,11 +8,10 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-	.controller('ServiceOrderCtrl', function ($scope, $rootScope, $location, $window, toaster, User, statusList, serviceOrder, Item, dialogs, $q, Branch, CrewCollection, ItemDefault) {
-		$scope.serviceOrder = serviceOrder;
+	.controller('ServiceQuotesCtrl', function ($scope, $rootScope, $location, toaster, User, serviceQuotes, Item, dialogs, $q, Branch, CrewCollection, ItemDefault, companies, ServiceOrder, WorkOrder, Company) {
+		$scope.serviceQuotes = serviceQuotes;
+console.log($scope.serviceQuotes.items)
 		$scope.CrewCollection = CrewCollection.data
-		$scope.Math = $window.Math;
-		
 		$scope.addedItem = []
 		$scope.Crewadded = []
 		$scope.CrewLeaderSelected = []
@@ -20,14 +19,25 @@ angular.module('MobileCRMApp')
 		$scope.crewHeaderAdded = []
 		$scope.CrewHeaderSel = ""
 		$scope.statusTech = {}
-		$scope.serviceOrder.quotes = 0
-		
+		$scope.listCompany = companies.data;
+
 		$scope.items = [];
 		$scope.params = {};
 		$scope.branches = [];
 
-		if ($scope.serviceOrder.crewHeader != undefined) {
-			$scope.crewHeaderAdded = $scope.serviceOrder.crewHeader
+		if ($scope.serviceQuotes.approved == 1) {
+			if ($scope.serviceQuotes._id) {
+				if ($scope.serviceQuotes.serviceType._id == 1 && $scope.serviceQuotes.sor =='Pending Service Order #') {
+					$scope.serviceQuotes.sor = null
+				} 
+				if ($scope.serviceQuotes.serviceType._id == 2 && $scope.serviceQuotes.wor == 'Pending Work Order #') {
+					$scope.serviceQuotes.wor = null
+				}
+			}
+		}
+
+		if ($scope.serviceQuotes.crewHeader != undefined) {
+			$scope.crewHeaderAdded = $scope.serviceQuotes.crewHeader
 		}
 
 		$scope.readOnly = $rootScope.userData.role._id != 1;
@@ -39,13 +49,14 @@ angular.module('MobileCRMApp')
 		}
 
 		if ($rootScope.userData.role._id != 1 && $rootScope.userData.role._id != 5) {
-			$scope.serviceOrder.client = new User($rootScope.userData);
+			$scope.serviceQuotes.client = new User($rootScope.userData);
 		}
-		$scope.listStatus = statusList;
+
+		$scope.serviceTypeData = [{ _id: 1, description: 'Service Order' }, { _id: 2, description: 'Work Order' }]
 		$scope.waiting = false;
 
 		$scope.wsClass = User;
-		$scope.wsFilter = { 'role._id': 3 };
+		$scope.filterC = { 'role._id': 3 };
 		$scope.wsFields = [{
 			field: 'entity.fullName',
 			label: 'Name',
@@ -71,13 +82,13 @@ angular.module('MobileCRMApp')
 		$scope.addresses = [];
 		var address = {};
 
-		var originalPhotos = $scope.serviceOrder.photos;
-		var originalContacts = $scope.serviceOrder.contacts;
-		var originalSiteAddress = $scope.serviceOrder.siteAddress;
+		var originalPhotos = $scope.serviceQuotes.photos;
+		var originalContacts = $scope.serviceQuotes.contacts;
+		var originalSiteAddress = $scope.serviceQuotes.siteAddress;
 
-		// if (!$scope.serviceOrder.siteAddressFrom) {
-		// 	console.log($scope.serviceOrder.siteAddressFrom)
-		// 	$scope.serviceOrder.siteAddressFrom = $scope.serviceOrder.client && $scope.serviceOrder.client.branch ? $scope.serviceOrder.client.branch.addresses[0] : {};
+		// if (!$scope.serviceQuotes.siteAddressFrom) {
+		// 	console.log($scope.serviceQuotes.siteAddressFrom)
+		// 	$scope.serviceQuotes.siteAddressFrom = $scope.serviceQuotes.client && $scope.serviceQuotes.client.branch ? $scope.serviceQuotes.client.branch.addresses[0] : {};
 		// }
 
 		$scope.getBranches = function () {
@@ -97,10 +108,10 @@ angular.module('MobileCRMApp')
 		};
 
 		$scope.recalculate = function () {
-			if ($scope.serviceOrder.siteAddressFrom.address1 && $scope.serviceOrder.siteAddress.address1) {
-				var distance = getDistance($scope.serviceOrder.siteAddress, $scope.serviceOrder.siteAddressFrom);
+			if ($scope.serviceQuotes.siteAddressFrom.address1 && $scope.serviceQuotes.siteAddress.address1) {
+				var distance = getDistance($scope.serviceQuotes.siteAddress, $scope.serviceQuotes.siteAddressFrom);
 				console.log(distance)
-				// $scope.serviceOrder.siteAddress.distanceFrom = $scope.serviceOrder.siteAddressFrom.address1 && $scope.serviceOrder.siteAddress.address1 ? distance : 0;
+				// $scope.serviceQuotes.siteAddress.distanceFrom = $scope.serviceQuotes.siteAddressFrom.address1 && $scope.serviceQuotes.siteAddress.address1 ? distance : 0;
 			}
 		}
 
@@ -137,9 +148,9 @@ angular.module('MobileCRMApp')
 						result = 0;
 					}
 
-					if ($scope.serviceOrder.siteAddressFrom && $scope.serviceOrder.siteAddress) {
+					if ($scope.serviceQuotes.siteAddressFrom && $scope.serviceQuotes.siteAddress) {
 
-						$scope.serviceOrder.siteAddress.distanceFrom = $scope.serviceOrder.siteAddressFrom.address1 && $scope.serviceOrder.siteAddress.address1 ? parseFloat((result * 0.00062137).toFixed(2)) : 0;
+						$scope.serviceQuotes.siteAddress.distanceFrom = $scope.serviceQuotes.siteAddressFrom.address1 && $scope.serviceQuotes.siteAddress.address1 ? parseFloat((result * 0.00062137).toFixed(2)) : 0;
 						initMap(p1coord, p2coord);
 						$scope.$apply();
 
@@ -188,8 +199,8 @@ angular.module('MobileCRMApp')
 
 			// Retrieve the start and end locations and create a DirectionsRequest using
 			// WALKING directions.
-			var p1coord = new google.maps.LatLng($scope.serviceOrder.siteAddressFrom.latitude, $scope.serviceOrder.siteAddressFrom.longitude);
-			var p2coord = new google.maps.LatLng($scope.serviceOrder.siteAddress.latitude, $scope.serviceOrder.siteAddress.longitude);
+			var p1coord = new google.maps.LatLng($scope.serviceQuotes.siteAddressFrom.latitude, $scope.serviceQuotes.siteAddressFrom.longitude);
+			var p2coord = new google.maps.LatLng($scope.serviceQuotes.siteAddress.latitude, $scope.serviceQuotes.siteAddress.longitude);
 
 			directionsService.route({
 				origin: p1coord,
@@ -262,74 +273,81 @@ angular.module('MobileCRMApp')
 		}
 		];
 
-		$scope.clientChanged = function (client) {
+		$scope.clientChanged = function (client) {		
 			if (client && client.company) {
 				$scope.wsFilterItem = $rootScope.userData.role._id != 1 && $rootScope.userData.role._id != 5 ? { 'companies._id': $rootScope.userData.company._id } : { 'companies._id': client.company._id };
 
-				if (!$scope.serviceOrder.siteAddressFrom) {
-					$scope.serviceOrder.siteAddressFrom = $scope.serviceOrder.client.branch ? $scope.serviceOrder.client.branch.addresses[0] : {};
+				if (!$scope.serviceQuotes.siteAddressFrom) {
+					$scope.serviceQuotes.siteAddressFrom = $scope.serviceQuotes.client.branch ? $scope.serviceQuotes.client.branch.addresses[0] : {};
 				}
 			}
 
-			if (serviceOrder.client == undefined) {
-				$scope.serviceOrder.items = [];
+			if ($scope.serviceQuotes.client == undefined) {
+				$scope.serviceQuotes.items = [];
 			} else {
-				if ($scope.serviceOrder.client._id) {
-					var Serv = false 
+				if ($scope.serviceQuotes.client._id) {
+					var Serv = false
 
-					for (var row = 0; row < $scope.serviceOrder.items.length; row++) {
-						var code = $scope.serviceOrder.items[row].code;
+					for (var row = 0; row < $scope.serviceQuotes.items.length; row++) {
+						var code = $scope.serviceQuotes.items[row].code;
 						if (ItemDefault.data[0].code == code) {
 							Serv = true;
 						}
 					}
 					if (Serv == false) {
-						$scope.serviceOrder.items.unshift(ItemDefault.data[0]);
+						$scope.serviceQuotes.items.unshift(ItemDefault.data[0]);
 					}
 				}
 			}
+			console.log(7788)
+			var company = new Company(client.company);
+			company.peek(111)
+				.then(function (sequence) {
+					$scope.serviceQuotes.quotesNumber = sequence;
+				});
+			
 		};
 
 		$scope.addContact = function () {
-			$scope.serviceOrder.contacts.push({})
+			$scope.serviceQuotes.contacts.push({})
 			$scope.changed("contact")
 		};
 
 		$scope.removeContact = function (index) {
-			$scope.serviceOrder.contacts.splice(index, 1);
+			$scope.serviceQuotes.contacts.splice(index, 1);
 			$scope.changed("contact")
 		};
 
 		$scope.addItem = function (item) {
-			$scope.serviceOrder.items.unshift(item);
+			$scope.serviceQuotes.items.unshift(item);
 			item.crewLeaderCol = $scope.addedItem
 			item.CrewLeaderSelected = $scope.CrewLeaderSelected;
 			$scope.params.item = {};
 		};
 
 		$scope.removeItem = function (index) {
-			$scope.serviceOrder.items.splice(index, 1);
+			$scope.serviceQuotes.items.splice(index, 1);
 			$scope.changed('items');
 		};
 
 		$scope.setItem = function (item, index) {
-			$scope.serviceOrder.items[index] = new Item(item);
+			$scope.serviceQuotes.items[index] = new Item(item);
 		};
 
 		$scope.changed = function (field) {
 
-			if ($scope.serviceOrder._id /*&& $rootScope.userData.role._id != 1*/) {
+			if ($scope.serviceQuotes._id /*&& $rootScope.userData.role._id != 1*/) {
 				var isHere = false;
-				$scope.serviceOrder.fieldsChanged = $scope.serviceOrder.fieldsChanged || [];
-				for (var i = 0; i < $scope.serviceOrder.fieldsChanged.length; i++) {
-					if ($scope.serviceOrder.fieldsChanged[i].field == field) {
+				$scope.serviceQuotes.fieldsChanged = $scope.serviceQuotes.fieldsChanged || [];
+				for (var i = 0; i < $scope.serviceQuotes.fieldsChanged.length; i++) {
+					if ($scope.serviceQuotes.fieldsChanged[i].field == field) {
 						isHere = true;
 						break;
 					}
 				}
 				if (!isHere) {
-					$scope.serviceOrder.fieldsChanged.push({ field: field + (field === "Status" ? " - " + $scope.serviceOrder.status.description : ""), by: $rootScope.userData._id });
-					console.log($scope.serviceOrder.fieldsChanged)
+					$scope.serviceQuotes.fieldsChanged.push({ field: field + (field === "Status" ? " - " + $scope.serviceQuotes.status.description : ""), by: $rootScope.userData._id });
+					console.log($scope.serviceQuotes.fieldsChanged)
 				}
 			}
 
@@ -342,22 +360,22 @@ angular.module('MobileCRMApp')
 		};
 
 		$scope.isChanged = function (field) {
-			if ($scope.serviceOrder._id && $rootScope.userData.role._id == 1) {
+			if ($scope.serviceQuotes._id && $rootScope.userData.role._id == 1) {
 				var isHere = false;
-				$scope.serviceOrder.fieldsChanged = $scope.serviceOrder.fieldsChanged || [];
-				for (var i = 0; i < $scope.serviceOrder.fieldsChanged.length; i++) {
-					if ($scope.serviceOrder.fieldsChanged[i].field == field) {
+				$scope.serviceQuotes.fieldsChanged = $scope.serviceQuotes.fieldsChanged || [];
+				for (var i = 0; i < $scope.serviceQuotes.fieldsChanged.length; i++) {
+					if ($scope.serviceQuotes.fieldsChanged[i].field == field) {
 						isHere = true;
 						break;
 					}
 				}
-				return isHere ? 'changed' : ''; 
+				return isHere ? 'changed' : '';
 			}
 			return '';
 		};
 
 		$scope.isDisabled = function () {
-			return ($rootScope.userData.role._id != 1 && $scope.serviceOrder.status._id == 3) || $scope.userData.role._id == 5;
+			return ($rootScope.userData.role._id != 1 && $scope.serviceQuotes.status._id == 3) || $scope.userData.role._id == 5;
 		};
 
 		$scope.uploadFiles = function (files) {
@@ -385,37 +403,37 @@ angular.module('MobileCRMApp')
 			}
 			$q.all(promises)
 				.then(function (urls) {
-					$scope.serviceOrder.photos = $scope.serviceOrder.photos || [];
-					$scope.serviceOrder.photos = $scope.serviceOrder.photos.concat(urls)
+					$scope.serviceQuotes.photos = $scope.serviceQuotes.photos || [];
+					$scope.serviceQuotes.photos = $scope.serviceQuotes.photos.concat(urls)
 				})
 		};
 
 		$scope.showPicture = function (index) {
-			$scope.serviceOrder.showPicture(index);
+			$scope.serviceQuotes.showPicture(index);
 		};
 
 		$scope.removePhoto = function (index) {
-			$scope.serviceOrder.photos.splice(index, 1);
+			$scope.serviceQuotes.photos.splice(index, 1);
 		};
 
 		$scope.addItemCollection = function () {
-			var dialog = dialogs.create('views/addItemCollection.html', 'AddItemCollectionCtrl', { client: $scope.serviceOrder.client });
+			var dialog = dialogs.create('views/addItemCollection.html', 'AddItemCollectionCtrl', { client: $scope.serviceQuotes.client });
 			dialog.result
 				.then(function (res) {
-					//add items to collection serviceOrder.items
+					//add items to collection serviceQuotes.items
 					for (var i = 0; i < res.length; i++) {
 						var isHere = -1;
-						for (var j = 0; j < $scope.serviceOrder.items.length; j++) {
-							if (res[i]._id == $scope.serviceOrder.items[j]._id) {
+						for (var j = 0; j < $scope.serviceQuotes.items.length; j++) {
+							if (res[i]._id == $scope.serviceQuotes.items[j]._id) {
 								isHere = j;
 								break;
 							}
 						}
-						if (isHere != -1 && $scope.serviceOrder.items[isHere].price == res[i].price) {
-							$scope.serviceOrder.items[isHere].quantity += res[i].quantity;
+						if (isHere != -1 && $scope.serviceQuotes.items[isHere].price == res[i].price) {
+							$scope.serviceQuotes.items[isHere].quantity += res[i].quantity;
 						}
 						else {
-							$scope.serviceOrder.items.unshift(res[i]);
+							$scope.serviceQuotes.items.unshift(res[i]);
 						}
 					}
 
@@ -424,94 +442,129 @@ angular.module('MobileCRMApp')
 		};
 
 		$scope.recalculate = function () {
-			if ($scope.serviceOrder.siteAddress) {
-				$scope.serviceOrder.siteAddress.distanceFrom = $scope.serviceOrder.siteAddressFrom && $scope.serviceOrder.siteAddressFrom.address1 && $scope.serviceOrder.siteAddress && $scope.serviceOrder.siteAddress.address1 ? getDistance($scope.serviceOrder.siteAddress, $scope.serviceOrder.siteAddressFrom) : 0;
+			if ($scope.serviceQuotes.siteAddress) {
+				$scope.serviceQuotes.siteAddress.distanceFrom = $scope.serviceQuotes.siteAddressFrom && $scope.serviceQuotes.siteAddressFrom.address1 && $scope.serviceQuotes.siteAddress && $scope.serviceQuotes.siteAddress.address1 ? getDistance($scope.serviceQuotes.siteAddress, $scope.serviceQuotes.siteAddressFrom) : 0;
 			}
 		}
 
-		$scope.save = function (sendMail, sendTotech) {
+		$scope.save = function (approved) {
 			$scope.waiting = true;
-			delete $scope.serviceOrder.client.account.password;
-			if (sendMail) {
-				$scope.serviceOrder.sendMail = true;
-			} else {
-				$scope.serviceOrder.sendMail = false;
-			}
-			if (sendTotech) {
-				if ($scope.crewHeaderAdded.length == 0) {
-					toaster.error('The Service Order couldn\'t be saved, please check if some required field is empty');
-					$scope.waiting = false;
-					return
-				}
-				$scope.serviceOrder.sendTotech = true;
-			} else {
-				$scope.serviceOrder.sendTotech = false;
-			}
+			delete $scope.serviceQuotes.client.account.password;
 
-			if (originalContacts != $scope.serviceOrder.contacts) {
-				$scope.changed('contacts');
-			}
-
-			if (originalPhotos != $scope.serviceOrder.photos) {
+			if (originalPhotos != $scope.serviceQuotes.photos) {
 				$scope.changed('photos');
 			}
-			if (originalSiteAddress.address1 != $scope.serviceOrder.siteAddress.address1) {
-				$scope.changed('siteAddress');
+			if ($scope.serviceQuotes.quotesNumber == undefined) {
+				toaster.error('The Estimate number is required');
+				return
 			}
-				
-			$scope.serviceOrder.save()
+			if ($scope.serviceQuotes.customer == undefined) {
+				toaster.error('The Customer is required');
+				return
+			}
+			
+			if (approved == 2) {
+				if (!$scope.serviceQuotes.wor && !$scope.serviceQuotes.sor) {
+					toaster.error('Service Order Number or Work Order Number is required');
+					return
+				}
+				if ($scope.serviceQuotes.wor == null || $scope.serviceQuotes.sor == null) {
+					toaster.error('Service Order Number or Work Order Number is required');
+					return
+				}
+
+				$scope.serviceQuotes.approved = 2
+				$scope.serviceQuotes.quotesStatus = "Approved"
+			}
+
+			if ($scope.serviceQuotes.serviceType._id == 1) {
+				delete $scope.serviceQuotes.wor
+			} else {
+				delete $scope.serviceQuotes.sor
+			}
+
+			$scope.serviceQuotes.save()
 				.then(function (data) {
-					toaster.success('The Service Order was saved successfully');
-					$location.path('serviceOrderList')
+					if (approved == 2 && $scope.serviceQuotes.serviceType._id == 1) {
+						console.log(1)
+						$scope.serviceOrder = new ServiceOrder($scope.serviceQuotes);
+						delete $scope.serviceQuotes.wor
+						$scope.serviceOrder.save()
+						toaster.success('The Service Order was saved successfully');
+					} else if (approved == 2 && $scope.serviceQuotes.serviceType._id == 2) {
+						console.log(2)
+						$scope.workOrder = new WorkOrder($scope.serviceQuotes);
+						delete $scope.serviceQuotes.sor
+						$scope.workOrder.save()
+						toaster.success('The Work Order was saved successfully');
+					} else {
+						console.log(3)
+						toaster.success('The Estimate was saved successfully');
+					}
+					$location.path('serviceQuotesList')
 					$scope.waiting = false;
 				},
 				function (error) {
 					console.log(error);
-					if (error.errors.error == "The object already exists") {
-						toaster.error('Service Order # Duplicated');
-					} else {
-						toaster.error('The Service Order couldn\'t be saved, please check if some required field is empty');
-					}
+					toaster.error('The Service couldn\'t be saved, please check if some required field is empty or if its duplicated');
 					$scope.waiting = false;
 				});
 		};
+		$scope.saveSend = function () {
+			$scope.waiting = true;
+			delete $scope.serviceQuotes.client.account.password;
 
+			$scope.serviceQuotes.saveSendTo = true;
+			$scope.serviceQuotes.save()
+				.then(function (data) {
+					toaster.success('The Estimate was saved successfully');
+					$scope.serviceQuotes.send();
+					$scope.waiting = false;
+				},
+				function (error) {
+					console.log(error);
+					toaster.error('The Estimate couldn\'t be saved and/or sent, please check if some required field is empty or if its duplicated');
+					$scope.waiting = false;
+				});
+		};
 		$scope.delete = function () {
 			var dlg = dialogs.confirm('Warning', 'Are you sure you want to delete?');
 			dlg.result.then(function (btn) {
-				$scope.serviceOrder.remove()
+				$scope.serviceQuotes.remove()
 					.then(function () {
-						toaster.success('The service order was deleted successfully');
-						$location.path('/serviceOrderList')
+						toaster.success('The Service was deleted successfully');
+						$location.path('/serviceQuotesList')
 					})
 					.then(function () {
-						$scope.serviceOrder.sendDelete($scope.serviceOrder)
+						$scope.serviceQuotes.sendDelete($scope.serviceQuotes)
 					});
 			});
 		};
 
 		$scope.export = function () {
-			$scope.serviceOrder.download();
+			$scope.serviceQuotes.download();
 		};
 
 		$scope.send = function () {
-			$scope.serviceOrder.send();
+			$scope.serviceQuotes.send();
 		};
 
 		$scope.setNoInvoice = function () {
 			var array = [5, 7]
-			if (!$scope.serviceOrder.invoiceNumber || $scope.serviceOrder.invoiceNumber === "Pending Invoice" || $scope.serviceOrder.invoiceNumber === "No Invoice") {
-				if ($scope.serviceOrder.status._id === 5 || $scope.serviceOrder.status._id === 7) {
-					$scope.serviceOrder.invoiceNumber = "No Invoice";
+			if (!$scope.serviceQuotes.invoiceNumber || $scope.serviceQuotes.invoiceNumber === "Pending Invoice" || $scope.serviceQuotes.invoiceNumber === "No Invoice") {
+				if ($scope.serviceQuotes.status._id === 5 || $scope.serviceQuotes.status._id === 7) {
+					$scope.serviceQuotes.invoiceNumber = "No Invoice";
 				} else {
-					$scope.serviceOrder.invoiceNumber = "Pending Invoice";
+					$scope.serviceQuotes.invoiceNumber = "Pending Invoice";
 				}
 			}
 		}
 
-		if (serviceOrder.client) {
-			$scope.clientChanged(serviceOrder.client);
-		}
+/* 		if (serviceQuotes.client) {
+			console.log($scope.serviceQuotes.items)
+			$scope.clientChanged(serviceQuotes.client);
+			console.log($scope.serviceQuotes.items)
+		} */
 
 		$scope.getBranches();
 		$scope.recalculate();
@@ -546,7 +599,7 @@ angular.module('MobileCRMApp')
 							var item = array[n];
 							if (selectedItem == item.itemid) {
 
-								if ($scope.crewHeaderAdded.length > 0 && $scope.CrewHeaderSel.length > 0 ) {
+								if ($scope.crewHeaderAdded.length > 0 && $scope.CrewHeaderSel.length > 0) {
 									if ($scope.crewHeaderAdded[0].name == element.entity.fullName) {
 										$scope.newItem = {
 											name: element.entity.fullName,
@@ -581,9 +634,9 @@ angular.module('MobileCRMApp')
 		$scope.changedCrewLeaderValue = function (item, CrewL) {
 			item.CrewLeaderSelected = CrewL;
 
-			for (let index = 0; index < $scope.serviceOrder.items.length; index++) {
-				if ($scope.serviceOrder.items[index]._id == item._id) {
-					$scope.serviceOrder.items[index] = item;
+			for (let index = 0; index < $scope.serviceQuotes.items.length; index++) {
+				if ($scope.serviceQuotes.items[index]._id == item._id) {
+					$scope.serviceQuotes.items[index] = item;
 					break;
 				}
 			}
@@ -599,23 +652,23 @@ angular.module('MobileCRMApp')
 			}
 
 			$scope.crewHeaderAdded.push(item);
-			$scope.serviceOrder.crewHeader = $scope.crewHeaderAdded
+			$scope.serviceQuotes.crewHeader = $scope.crewHeaderAdded
 		}
 		$scope.crewHeaderRemove = function (index) {
 			$scope.crewHeaderAdded.splice(index, 1);
-			$scope.serviceOrder.crewHeader = $scope.crewHeaderAdded
+			$scope.serviceQuotes.crewHeader = $scope.crewHeaderAdded
 		};
 
 		$scope.setAmountToZero = function (status) {
 			if (status._id == 5 || status._id == 7) {
-				for (var i=0; i<$scope.serviceOrder.items.length; i++) {
-					$scope.serviceOrder.items[i].originalPrice = $scope.serviceOrder.items[i].price;
-					$scope.serviceOrder.items[i].price = 0;
+				for (var i = 0; i < $scope.serviceQuotes.items.length; i++) {
+					$scope.serviceQuotes.items[i].originalPrice = $scope.serviceQuotes.items[i].price;
+					$scope.serviceQuotes.items[i].price = 0;
 				}
 			} else {
-				for (var i=0; i<$scope.serviceOrder.items.length; i++) {
-					$scope.serviceOrder.items[i].price = $scope.serviceOrder.items[i].originalPrice ? $scope.serviceOrder.items[i].originalPrice : $scope.serviceOrder.items[i].price; 
-					delete $scope.serviceOrder.items[i].originalPrice;
+				for (var i = 0; i < $scope.serviceQuotes.items.length; i++) {
+					$scope.serviceQuotes.items[i].price = $scope.serviceQuotes.items[i].originalPrice ? $scope.serviceQuotes.items[i].originalPrice : $scope.serviceQuotes.items[i].price;
+					delete $scope.serviceQuotes.items[i].originalPrice;
 				}
 			}
 		}
@@ -626,18 +679,55 @@ angular.module('MobileCRMApp')
 			if (chk == true) {
 				$scope.CrewHeaderSel = $scope.crewHeaderAdded[0].name
 			} else {
-				$scope.CrewHeaderSel = []				
+				$scope.CrewHeaderSel = []
 			}
 		}
 
-		$scope.showHistory = function () {
-			var dialog = dialogs.create('views/historyModal.html', 'HistoryModalCtrl', {
-				unitno: $scope.serviceOrder.unitno,
-				_id: $scope.serviceOrder._id
-			});
-			dialog.result
-				.then(function (res) {
-				});
+		$scope.uploadPDF = function (files) {
+			$scope.files = angular.copy(files)
+			function getBase64(file) {
+				var d = $q.defer();
+				var reader = new FileReader();
+				reader.readAsDataURL(file);
+				reader.onload = function () {
+					d.resolve({
+						url: reader.result,
+						name: file.name,
+						type: file.type,
+						isNew: true
+					});
+				};
+				reader.onerror = function (error) {
+					d.reject(error);
+				};
+				return d.promise;
+			}
+			var promises = [];
+			for (var i = 0; i < files.length; i++) {
+				promises.push(getBase64(files[i]))
+			}
+			$q.all(promises)
+				.then(function (urls) {
+					$scope.serviceQuotes.docs = $scope.serviceQuotes.docs || [];
+					$scope.serviceQuotes.docs = $scope.serviceQuotes.docs.concat(urls)
+				})
 		};
+
+		$scope.serviceTypeChanged = function(){			
+			if ($scope.serviceQuotes.serviceType._id==1){
+					var Serv = false
+					for (var row = 0; row < $scope.serviceQuotes.items.length; row++) {
+						var code = $scope.serviceQuotes.items[row].code;
+						if (ItemDefault.data[0].code == code) {
+							Serv = true;
+						}
+					}
+					if (Serv == false) {
+						$scope.serviceQuotes.items.unshift(ItemDefault.data[0]);
+					}
+			}else{
+$scope.serviceQuotes.items = [];
+			}
+		}
 	});
 

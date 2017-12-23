@@ -179,9 +179,9 @@ ServiceOrder.prototype.insert = function (serviceOrder, user, mail) {
 			return _this.crud.update({ _id: serviceOrder._id }, serviceOrder)
 		})
 		.then(function (photos) {
-
-			if (sendMail || sendMailTech || user.role._id == 1)
+			if (sendMail || sendMailTech) {  
 				_this.sendServiceOrder(serviceOrder._id, user, mail, crewdata, sendMail, sendMailTech);
+}
 			d.resolve(serviceOrder);
 		})
 		.catch(function (err) {
@@ -202,6 +202,11 @@ ServiceOrder.prototype.update = function (query, serviceOrder, user, mail) {
 	var userIds = [];
 	var sendMail = serviceOrder.sendMail || false;
 	var sendMailTech = serviceOrder.sendTotech || false;
+
+	if (serviceOrder.serviceType._id == 1 && serviceOrder.quotes == 1) {
+		_this.insert(serviceOrder, user, mail)
+		return d.promise;
+	}
 
 	if (sendMailTech == true) {
 		/*
@@ -369,7 +374,7 @@ ServiceOrder.prototype.sendServiceOrderDelete = function (id, user, mail, servic
 	var _this = this;
 	var emails = [];
 
-	 _this.user.getAdminUsers()
+	_this.user.getAdminUsers()
 		.then(function (users) {
 			emails = [];
 			for (var i = 0; i < users.data.length; i++) {
