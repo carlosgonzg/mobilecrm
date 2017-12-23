@@ -299,12 +299,12 @@ console.log($scope.serviceQuotes.items)
 					}
 				}
 			}
-			console.log(7788)
+/* 			console.log(7788)
 			var company = new Company(client.company);
 			company.peek(111)
 				.then(function (sequence) {
 					$scope.serviceQuotes.quotesNumber = sequence;
-				});
+				}); */
 			
 		};
 
