@@ -577,10 +577,11 @@ var sendWorkOrderUpdate = function (workOrder, mails, user, company) {
 			else {
 				body = body.replace('<clientAddress>', 'None');
 			}
+
 			body = body.replace('<issue>', workOrder.issue || 'None');
 			body = body.replace('<comment>', workOrder.comment || 'None');
 			var changesByUser = '';
-			changesByUser += (user.entity.fullName || user.entity.name) + ', Changes: ';
+			changesByUser += (user.entity.fullName || user.entity.name) + '<br> Changes: ';
 			var fieldsChanged = '';
 			if (workOrder.fieldsChanged) {
 				for (var i = 0; i < workOrder.fieldsChanged.length; i++) {
@@ -738,7 +739,7 @@ var sendDeliveryOrderUpdate = function (deliveryOrder, mails, user) {
 
 			var company = '' + (deliveryOrder && deliveryOrder.client && deliveryOrder.client.company && deliveryOrder.client.company.entity ? deliveryOrder.client.company.entity.name : 'Not Defined');
 			var branch = deliveryOrder && deliveryOrder.client && deliveryOrder.client.branch ? '' + deliveryOrder.client.branch.name : '' + deliveryOrder.client.entity.fullName;
-			var subject = 'Service Order: ' + deliveryOrder.sor + ' | ' + company + ' | ' + branch;
+			var subject = 'Delivery Order: ' + deliveryOrder.dor + ' | ' + company + ' | ' + branch;
 
 			console.log('sending mail', subject);
 			mails = _.uniq(mails);

@@ -113,10 +113,12 @@ angular.module('MobileCRMApp')
 
 		$scope.addContact = function () {
 			$scope.workOrder.contacts.push({})
+			$scope.changed('Contact');
 		};
 
 		$scope.removeContact = function (index) {
 			$scope.workOrder.contacts.splice(index, 1);
+			$scope.changed('Contact');
 		};
 
 		$scope.addItem = function (item) {
@@ -124,10 +126,12 @@ angular.module('MobileCRMApp')
 			item.crewLeaderCol = $scope.addedItem
 			item.CrewLeaderSelected = $scope.CrewLeaderSelected;
 			$scope.params.item = {};
+			$scope.changed('Items');
 		};
 
 		$scope.removeItem = function (index) {
 			$scope.workOrder.items.splice(index, 1);
+			$scope.changed('Items');
 		};
 
 		$scope.setItem = function (item, index) {
@@ -386,10 +390,12 @@ angular.module('MobileCRMApp')
 
 			$scope.crewHeaderAdded.push(item);
 			$scope.workOrder.crewHeader = $scope.crewHeaderAdded
+			$scope.changed('Crew Leader');
 		}
 		$scope.crewHeaderRemove = function (index) {
 			$scope.crewHeaderAdded.splice(index, 1);
 			$scope.workOrder.crewHeader = $scope.crewHeaderAdded
+			$scope.changed('Crew Leader');
 		};
 
 		$scope.setAmountToZero = function (status) {

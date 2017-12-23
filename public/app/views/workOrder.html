@@ -116,7 +116,7 @@
 						<div class="form-group">
 							<label for="sor">Work order #</label>
 							<div class="input-group">
-								<input type="text" name="sor" class="form-control" ng-model="workOrder.wor" ng-class="isChanged('wor')" ng-change="changed('wor');fillComment()"
+								<input type="text" name="sor" class="form-control" ng-model="workOrder.wor" ng-class="isChanged('Work Order #')" ng-change="changed('Work Order #');fillComment()"
 								 ng-disabled="isDisabled()" validator="required">
 								<span class="input-group-addon" ng-click="showHistory()">
 									<i class="fa fa-calendar"></i>
@@ -129,8 +129,8 @@
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
 							<label for="invoiceNumber">Invoice #</label>
-							<input type="text" name="invoiceNumber" class="form-control" ng-model="workOrder.invoiceNumber" ng-class="isChanged('invoiceNumber')"
-							 ng-change="changed('invoiceNumber')" ng-disabled="isDisabled() || userData.role._id != 1">
+							<input type="text" name="invoiceNumber" class="form-control" ng-model="workOrder.invoiceNumber" ng-class="isChanged('Invoice #')"
+							 ng-change="changed('Invoice #')" ng-disabled="isDisabled() || userData.role._id != 1">
 						</div>
 					</div>
 				</div>
@@ -138,7 +138,7 @@
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
 							<label for="status">Status</label>
-							<select class="form-control" name="status" ng-model="workOrder.status" ng-class="isChanged('status')" ng-change="changed('status'); setAmountToZero(workOrder.status)"
+							<select class="form-control" name="status" ng-model="workOrder.status" ng-class="isChanged('Status')" ng-change="changed('Status'); setAmountToZero(workOrder.status)"
 							 ng-options="status as status.description for status in listStatus track by status._id" ng-disabled="isDisabled() || userData.role._id != 1"
 							 validator="required"></select>
 						</div>
@@ -148,7 +148,7 @@
 					<div class="col-xs-12 pull-right" ng-if="workOrder.quotesNumber">
 						<div class="form-group">
 							<label for="quotesNumber">Estimate #</label>
-							<input type="text" class="form-control" ng-model="workOrder.quotesNumber" ng-class="isChanged('quotesNumber')" ng-change="changed('quotesNumber')"
+							<input type="text" class="form-control" ng-model="workOrder.quotesNumber" ng-class="isChanged('Quote Number')" ng-change="changed('Quote Number')"
 							 ng-disabled="true">
 						</div>
 					</div>
@@ -157,7 +157,7 @@
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
 							<label for="date">Date</label>
-							<sc-datepicker ng-model="workOrder.date" ng-class="isChanged('date')" ng-change="changed('date');" ng-disabled="isDisabled()"></sc-datepicker>
+							<sc-datepicker ng-model="workOrder.date" ng-class="isChanged('Date')" ng-change="changed('Date');" ng-disabled="isDisabled()"></sc-datepicker>
 						</div>
 					</div>
 				</div>
@@ -166,7 +166,7 @@
 
 						<div class="form-group">
 							<label for="date">Unit Size</label>
-							<input type="text" class="form-control" ng-model="workOrder.unitSize" ng-class="isChanged('unitSize')" ng-change="changed('unitSize')"
+							<input type="text" class="form-control" ng-model="workOrder.unitSize" ng-class="isChanged('Unit Size')" ng-change="changed('Unit Size')"
 							 ng-disabled="isDisabled()">
 						</div>
 					</div>
@@ -175,7 +175,7 @@
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
 							<label for="originalShipDate">Completed Date</label>
-							<sc-datepicker ng-model="workOrder.originalShipDate" ng-class="isChanged('originalShipDate')" ng-change="changed('originalShipDate')"
+							<sc-datepicker ng-model="workOrder.originalShipDate" ng-class="isChanged('Completed Date')" ng-change="changed('Completed Date')"
 							 ng-disabled="userData.role._id != 1"></sc-datepicker>
 						</div>
 					</div>
@@ -184,7 +184,7 @@
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
 							<label for="pono">PO #</label>
-							<input type="text" name="pono" class="form-control" ng-model="workOrder.pono" ng-class="isChanged('pono')" ng-change="changed('pono')"
+							<input type="text" name="pono" class="form-control" ng-model="workOrder.pono" ng-class="isChanged('PO #')" ng-change="changed('PO #')"
 							 ng-disabled="isDisabled()">
 						</div>
 					</div>
@@ -193,7 +193,7 @@
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
 							<label for="pono">Contract #</label>
-							<input type="text" class="form-control" ng-model="workOrder.contract" ng-class="isChanged('isono')" ng-change="changed('isono')"
+							<input type="text" class="form-control" ng-model="workOrder.contract" ng-class="isChanged('Contract #')" ng-change="changed('Contract #')"
 							 ng-disabled="isDisabled()">
 						</div>
 					</div>
@@ -202,7 +202,7 @@
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
 							<label for="date">Serial #</label>
-							<input type="text" class="form-control" ng-model="workOrder.unitno" ng-class="isChanged('unitno')" ng-change="changed('unitno')"
+							<input type="text" class="form-control" ng-model="workOrder.unitno" ng-class="isChanged('Serial #')" ng-change="changed('Serial #')"
 							 ng-disabled="isDisabled()">
 						</div>
 					</div>
@@ -211,7 +211,7 @@
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
 							<label for="isono">ISO #</label>
-							<input type="text" class="form-control" ng-model="workOrder.isono" ng-class="isChanged('isono')" ng-change="changed('isono')"
+							<input type="text" class="form-control" ng-model="workOrder.isono" ng-class="isChanged('ISO #')" ng-change="changed('ISO #')"
 							 ng-disabled="isDisabled()">
 						</div>
 					</div>
@@ -220,7 +220,7 @@
 					<div class="col-xs-12 pull-right">
 						<div class="checkbox">
 							<label>
-								<input type="checkbox" ng-model="workOrder.clientResponsibleCharges" ng-class="isChanged('clientResponsibleCharges')" ng-change="changed('clientResponsibleCharges')"
+								<input type="checkbox" ng-model="workOrder.clientResponsibleCharges" ng-class="isChanged('Client Responsible for Charges')" ng-change="changed('Client Responsible for Charges')"
 								 id="clientResponsibleCharges" ng-disabled="isDisabled()"> Customer responsible for charges
 							</label>
 						</div>
@@ -230,7 +230,7 @@
 					<div class="col-xs-12 pull-right">
 						<div class="checkbox">
 							<label>
-								<input type="checkbox" ng-model="workOrder.partsFromTheYard" ng-class="isChanged('partsFromTheYard')" ng-change="changed('partsFromTheYard')"
+								<input type="checkbox" ng-model="workOrder.partsFromTheYard" ng-class="isChanged('Parts from the Yard')" ng-change="changed('Parts from the Yard')"
 								 id="partsFromTheYard" ng-disabled="isDisabled()"> Parts from the yard
 							</label>
 						</div>
@@ -433,12 +433,12 @@
 			<div class="col-sm-4 pull-left">
 				<div class="form-group">
 					<label for="comment">Issue</label>
-					<textarea id="comment" ng-model="workOrder.issue" class="form-control">
+					<textarea id="comment" ng-model="workOrder.issue" class="form-control" ng-class="isChanged('Issue')" ng-change="changed('Issue')">
 					</textarea>
 				</div>
 				<div class="form-group">
 					<label for="comment">Comment</label>
-					<textarea id="comment" ng-model="workOrder.comment" class="form-control">
+					<textarea id="comment" ng-model="workOrder.comment" class="form-control" ng-class="isChanged('Comment')" ng-change="changed('Comment')">
 					</textarea>
 				</div>
 			</div>

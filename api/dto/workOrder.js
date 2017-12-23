@@ -196,6 +196,8 @@ WorkOrder.prototype.update = function (query, workOrder, user, mail) {
 	var sendMail = workOrder.sendMail || false;
 	var sendMailTech = workOrder.sendTotech || false;
 
+	delete workOrder.sendMail;
+
 	if (workOrder.serviceType && workOrder.serviceType._id == 2 && workOrder.quotes == 1) {
 		_this.insert(workOrder, user, mail)
 		return d.promise;
@@ -223,7 +225,7 @@ WorkOrder.prototype.update = function (query, workOrder, user, mail) {
 	_this.savePhotos(workOrder)
 		.then(function (photos) {
 			workOrder.photos = photos;
-
+			
 			return _this.crud.update(query, workOrder);
 		})
 		.then(function (obj) {
@@ -350,6 +352,10 @@ WorkOrder.prototype.sendWorkOrderUpdate = function (id, emails, user, mail) {
 		})
 		.then(function (data) {
 			return mail.sendWorkOrderUpdate(workOrder, emails, user, workOrder.client.company);
+		})
+		.then(function (data) {
+			workOrder.fieldsChanged = [];
+			return _this.crud.update({_id: workOrder._id}, workOrder);
 		})
 		.then(function () {
 			d.resolve(true);

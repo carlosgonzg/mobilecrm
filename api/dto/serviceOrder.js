@@ -356,6 +356,10 @@ ServiceOrder.prototype.sendServiceOrderUpdate = function (id, user, mail, crewda
 			//	return q.when();
 			//}
 		})
+		.then(function (data) {
+			serviceOrder.fieldsChanged = [];
+			return _this.crud.update({_id: serviceOrder._id}, serviceOrder);
+		})
 		.then(function () {
 			d.resolve(true);
 		})
