@@ -193,10 +193,10 @@ ServiceQuotes.prototype.update = function (query, serviceQuotes, user, mail) {
 
 			var setObj = {};
 			if ([5, 7].indexOf(serviceQuotes.status._id) != -1) {
-				setObj = { invoiceNumber: "No Invoice" };
+				setObj = { quotesNumber: "No Estimate" };
 			}
 			else {
-				setObj = { invoiceNumber: serviceQuotes.invoiceNumber };
+				setObj = { quotesNumber: serviceQuotes.quotesNumber };
 			}
 
 			if (serviceQuotes.pono)
@@ -229,7 +229,7 @@ ServiceQuotes.prototype.sendServiceQuotes = function (id, username, mail, emails
 	var _this = this;
 	var serviceQuotes = {};
 	var url = '';
-	var urlPdf = '';
+	var urlPdfQuote = '';
 	var fileName = '';
 	var fileNamePdf = '';
 	var cc = [];
@@ -255,12 +255,12 @@ ServiceQuotes.prototype.sendServiceQuotes = function (id, username, mail, emails
 			}
 			emails = _.uniq(emails);
 			cc = _.uniq(cc);
-			fileNamePdf = serviceQuotes.invoiceNumber + '.pdf';
-			urlPdf = _this.dirname + '/api/quotes/' + fileNamePdf;
-			return pdf.createInvoice(serviceQuotes, serviceQuotes.client.company, branch, true);
+			fileNamePdf = serviceQuotes.quotesNumber + moment().format('-MM-DD-YYYY-HHmmss').toString() + '.pdf';
+			urlPdfQuote = _this.dirname + '/api/quotes/' + fileNamePdf;
+			return pdf.createInvoice(serviceQuotes, serviceQuotes.client.company, branch, urlPdfQuote);
 		})
 		.then(function () {
-			return mail.sendQuotes(serviceQuotes, emails, cc, urlPdf, fileNamePdf);
+			return mail.sendQuotes(serviceQuotes, emails, cc, urlPdfQuote, fileNamePdf);
 		})
 		.then(function () {
 			d.resolve(true);

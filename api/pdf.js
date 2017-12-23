@@ -117,7 +117,7 @@ var createInvoiceBody = function (obj, company, branch) {
 	return body;
 };
 
-var createInvoice = function (obj, company, branch) {
+var createInvoice = function (obj, company, branch, urlPdfQuote) {
 	var d = q.defer();
 	var options = {
 		format: 'Letter',
@@ -135,10 +135,8 @@ var createInvoice = function (obj, company, branch) {
 	var body = "";
 
 	if (obj.quotes == 1) {
-		fileName = obj.quotesNumber + moment().format('-MM-DD-YYYY-HHmmss').toString() + '.pdf';
-		url = __dirname + '/quotes/' + fileName;
-		return d.promise;
-	//	body = createQuotesBody(obj, company, branch);
+		url = urlPdfQuote
+		body = createQuotesBody(obj, company, branch);
 	} else {
 		fileName = obj.invoiceNumber + '.pdf';
 		url = __dirname + '/invoices/' + fileName;

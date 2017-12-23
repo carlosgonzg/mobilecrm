@@ -837,7 +837,6 @@ var sendQuotes = function (serviceQuotes, mails, cc, file, fileName) {
 			body = body.replace('<confirm>', !serviceQuotes.pono ? '' : 'Please confirm as received.<br/><br/>I wait for your comment.<br/>');
 
 			var attachments = setAttachment(file, fileName)
-			var attachments;
 			var companyName = "";
 
 			if (serviceQuotes.client.company) {
