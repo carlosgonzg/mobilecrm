@@ -355,6 +355,8 @@ WorkOrder.prototype.sendWorkOrderUpdate = function (id, emails, user, mail) {
 		})
 		.then(function (data) {
 			workOrder.fieldsChanged = [];
+			workOrder.addedItems = [];
+			workOrder.removedItems = [];
 			return _this.crud.update({_id: workOrder._id}, workOrder);
 		})
 		.then(function () {

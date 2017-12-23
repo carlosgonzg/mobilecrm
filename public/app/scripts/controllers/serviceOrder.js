@@ -13,7 +13,9 @@ angular.module('MobileCRMApp')
 		$scope.CrewCollection = CrewCollection.data
 		$scope.Math = $window.Math;
 		
-		$scope.addedItem = []
+		$scope.addedItem = [];
+		$scope.serviceOrder.addedItems = $scope.serviceOrder.addedItems ? $scope.serviceOrder.addedItems : [];
+		$scope.serviceOrder.removedItems = $scope.serviceOrder.removedItems ? $scope.serviceOrder.removedItems : [];
 		$scope.Crewadded = []
 		$scope.CrewLeaderSelected = []
 		$scope.crewHeader = []
@@ -306,11 +308,13 @@ angular.module('MobileCRMApp')
 			item.CrewLeaderSelected = $scope.CrewLeaderSelected;
 			$scope.params.item = {};
 			$scope.changed('Items');
+			$scope.serviceOrder.addedItems.push(item);
 		};
 
-		$scope.removeItem = function (index) {
+		$scope.removeItem = function (index, item) {
 			$scope.serviceOrder.items.splice(index, 1);
 			$scope.changed('Items');
+			$scope.serviceOrder.removedItems.push(item);
 		};
 
 		$scope.setItem = function (item, index) {

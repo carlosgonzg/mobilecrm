@@ -14,6 +14,8 @@ angular.module('MobileCRMApp')
 		$scope.Math = $window.Math;
 
 		$scope.addedItem = []
+		$scope.workOrder.addedItems = $scope.workOrder.addedItems ? $scope.workOrder.addedItems : [];
+		$scope.workOrder.removedItems = $scope.workOrder.removedItems ? $scope.workOrder.removedItems : [];
 		$scope.Crewadded = []
 		$scope.CrewLeaderSelected = []
 		$scope.SendToTechShow = false;
@@ -127,11 +129,13 @@ angular.module('MobileCRMApp')
 			item.CrewLeaderSelected = $scope.CrewLeaderSelected;
 			$scope.params.item = {};
 			$scope.changed('Items');
+			$scope.workOrder.addedItems.push(item);
 		};
 
-		$scope.removeItem = function (index) {
+		$scope.removeItem = function (index, item) {
 			$scope.workOrder.items.splice(index, 1);
 			$scope.changed('Items');
+			$scope.workOrder.removedItems.push(item);
 		};
 
 		$scope.setItem = function (item, index) {
@@ -254,8 +258,6 @@ angular.module('MobileCRMApp')
 			} else {
 				$scope.workOrder.sendTotech = false;
 			}
-
-			console.log($scope.workOrder.items);
 
 			$scope.workOrder.save()
 				.then(function (data) {

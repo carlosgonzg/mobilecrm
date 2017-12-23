@@ -358,6 +358,8 @@ ServiceOrder.prototype.sendServiceOrderUpdate = function (id, user, mail, crewda
 		})
 		.then(function (data) {
 			serviceOrder.fieldsChanged = [];
+			serviceOrder.addedItems = [];
+			serviceOrder.removedItems = [];
 			return _this.crud.update({_id: serviceOrder._id}, serviceOrder);
 		})
 		.then(function () {

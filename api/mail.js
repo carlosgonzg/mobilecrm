@@ -295,7 +295,31 @@ var sendServiceOrderUpdate = function (serviceOrder, mails, user) {
 					}
 				}
 			}
+			var addedItems = '';
+			if (serviceOrder.addedItems) {
+				for (var i = 0; i < serviceOrder.addedItems.length; i++) {
+					addedItems += serviceOrder.addedItems[i].description;
+					if (i != serviceOrder.addedItems.length - 1) {
+						addedItems += ', ';
+					}
+				}
+			}
+
+			var removedItems = '';
+			if (serviceOrder.removedItems) {
+				for (var i = 0; i < serviceOrder.removedItems.length; i++) {
+					removedItems += serviceOrder.removedItems[i].description;
+					if (i != serviceOrder.removedItems.length - 1) {
+						removedItems += ', ';
+					}
+				}
+			}
+
+			console.log(addedItems, removedItems)
 			changesByUser += fieldsChanged == '' ? 'None' : fieldsChanged;
+			changesByUser += addedItems == '' ? '' : '<br/> Added Items: ' + addedItems;
+			changesByUser += removedItems == '' ? '' : '<br/> Removed Items: ' + removedItems;
+			console.log(changesByUser, addedItems, removedItems)
 			body = body.replace('<client>', changesByUser);
 			var contacts = '';
 			for (var i = 0; i < serviceOrder.contacts.length; i++) {
@@ -593,7 +617,30 @@ var sendWorkOrderUpdate = function (workOrder, mails, user, company) {
 					}
 				}
 			}
+
+			var addedItems = '';
+			if (workOrder.addedItems.length > 0) {
+				for (var i = 0; i < workOrder.addedItems.length; i++) {
+					addedItems += workOrder.addedItems[i].description;
+					if (i != workOrder.addedItems.length - 1) {
+						addedItems += ', ';
+					}
+				}
+			}
+
+			var removedItems = '';
+			if (workOrder.removedItems.length > 0) {
+				for (var i = 0; i < workOrder.removedItems.length; i++) {
+					removedItems += workOrder.removedItems[i].description;
+					if (i != workOrder.removedItems.length - 1) {
+						removedItems += ', ';
+					}
+				}
+			}
+
 			changesByUser += fieldsChanged == '' ? 'None' : fieldsChanged;
+			changesByUser += addedItems == '' ? '' : '<br> Added Items: ' + addedItems;
+			changesByUser += removedItems == '' ? '' : '<br> Removed Items: ' + removedItems;
 			body = body.replace('<client>', changesByUser);
 
 			var companyS = '' + company.entity.name;
