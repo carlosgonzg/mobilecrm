@@ -137,7 +137,8 @@ var createInvoice = function (obj, company, branch) {
 	if (obj.quotes == 1) {
 		fileName = obj.quotesNumber + moment().format('-MM-DD-YYYY-HHmmss').toString() + '.pdf';
 		url = __dirname + '/quotes/' + fileName;
-		body = createQuotesBody(obj, company, branch);
+		return d.promise;
+	//	body = createQuotesBody(obj, company, branch);
 	} else {
 		fileName = obj.invoiceNumber + '.pdf';
 		url = __dirname + '/invoices/' + fileName;
