@@ -11,9 +11,13 @@ module.exports = function (prefix, app) {
 		if (req.params.id.split('&')[1] != 'undefined') {
 			dor = req.params.id.split('&')[1]
 		}
-		company.getSequence(id, true, dor)
-			.then(util.success(res), util.error(res));
+		company.getSequence(id, true, dor).then(util.success(res), util.error(res));
 	});
+	app.get(prefix + '/sequence/estimate/:id', function (req, res) {
+		var company = new Company(app.db, req.user);
+		var id = req.params.id
 
+		company.getSequenceQuote(id, true).then(util.success(res), util.error(res));
+	});
 	require('./crud')(prefix, app, Company);
 }

@@ -11,6 +11,7 @@ var moment = require('moment');
 var User = require('./user');
 var pdf = require('../pdf');
 var fs = require('fs')
+var Company = require('./company');
 
 function ServiceQuotes(db, userLogged, dirname) {
 	this.crud = new Crud(db, 'SERVICEQUOTES', userLogged);
@@ -141,7 +142,8 @@ ServiceQuotes.prototype.insert = function (serviceQuotes, user, mail) {
 	serviceQuotes.total = total;
 	var photos = serviceQuotes.photos;
 	//Consigo el sequencial de invoice
-	var promise = serviceQuotes.quotesNumber ? q.when(serviceQuotes.quotesNumber) : _this.company.getSequence(serviceQuotes.client.company._id, false, false, true);//util.getYearlySequence(_this.crud.db, 'Invoice');
+	var comp = _this.company;
+	var promise = serviceQuotes.quotesNumber ? q.when(serviceQuotes.quotesNumber) : _this.company.getSequenceQuote(serviceQuotes.client.company._id, false)
 	promise
 		.then(function (sequence) {
 			serviceQuotes.quotesNumber = sequence;
@@ -149,6 +151,13 @@ ServiceQuotes.prototype.insert = function (serviceQuotes, user, mail) {
 			delete serviceQuotes.photos;
 			//inserto
 			return _this.crud.insert(serviceQuotes);
+		})
+		.then(function (obj) {
+			if (serviceQuotes.quotesNumber != "Pending Estimate #") {
+				var company = new Company(_this.crew.db, _this.crew.userLogged);
+				company	.setSequenceQuote(serviceQuotes.client.company._id)
+			}
+			d.resolve(obj);
 		})
 		//Guardando las fotos
 		.then(function (obj) {
@@ -280,7 +289,7 @@ ServiceQuotes.prototype.sendServiceQuotesDelete = function (id, user, mail, serv
 	var _this = this;
 	var emails = [];
 
-	 _this.user.getAdminUsers()
+	_this.user.getAdminUsers()
 		.then(function (users) {
 			emails = [];
 			for (var i = 0; i < users.data.length; i++) {
