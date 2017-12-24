@@ -101,11 +101,17 @@ angular.module('MobileCRMApp')
 		$scope.recalculate = function () {
 			if ($scope.serviceOrder.siteAddressFrom.address1 && $scope.serviceOrder.siteAddress.address1) {
 				var distance = getDistance($scope.serviceOrder.siteAddress, $scope.serviceOrder.siteAddressFrom);
-				console.log(distance)
 				// $scope.serviceOrder.siteAddress.distanceFrom = $scope.serviceOrder.siteAddressFrom.address1 && $scope.serviceOrder.siteAddress.address1 ? distance : 0;
 			}
 		}
 
+		$scope.$watch("serviceOrder.siteAddress.distanceFrom",function(newValue,oldValue) {
+			for (var row = 0; row < $scope.serviceOrder.items.length; row++) {
+				if ($scope.serviceOrder.items[row]._id == 253) {
+					$scope.serviceOrder.items[row].quantity = Number(newValue);
+				}
+			}
+		});
 		var getDistance1 = function (p1, p2) {
 			var p1 = new google.maps.LatLng(p1.latitude, p1.longitude);
 			var p2 = new google.maps.LatLng(p2.latitude, p2.longitude);
@@ -130,8 +136,6 @@ angular.module('MobileCRMApp')
 					avoidHighways: false,
 					avoidTolls: false,
 				}, function (response, status) {
-					console.log(response);
-					console.log(status)
 
 					if (status === "OK" && response.rows[0].elements[0].status != "ZERO_RESULTS") {
 						result = response.rows[0].elements[0].distance.value;
@@ -144,8 +148,8 @@ angular.module('MobileCRMApp')
 						$scope.serviceOrder.siteAddress.distanceFrom = $scope.serviceOrder.siteAddressFrom.address1 && $scope.serviceOrder.siteAddress.address1 ? parseFloat((result * 0.00062137).toFixed(2)) : 0;
 						initMap(p1coord, p2coord);
 						$scope.$apply();
-
 					}
+
 
 					d.resolve(parseFloat((result * 0.00062137).toFixed(2)))
 				});
@@ -334,7 +338,6 @@ angular.module('MobileCRMApp')
 				}
 				if (!isHere) {
 					$scope.serviceOrder.fieldsChanged.push({ field: field + (field === "Status" ? " - " + $scope.serviceOrder.status.description : ""), by: $rootScope.userData._id });
-					console.log($scope.serviceOrder.fieldsChanged)
 				}
 			}
 
@@ -342,7 +345,6 @@ angular.module('MobileCRMApp')
 				$scope.setNoInvoice();
 			}
 
-			console.log(field)
 
 		};
 
@@ -432,7 +434,8 @@ angular.module('MobileCRMApp')
 			if ($scope.serviceOrder.siteAddress) {
 				$scope.serviceOrder.siteAddress.distanceFrom = $scope.serviceOrder.siteAddressFrom && $scope.serviceOrder.siteAddressFrom.address1 && $scope.serviceOrder.siteAddress && $scope.serviceOrder.siteAddress.address1 ? getDistance($scope.serviceOrder.siteAddress, $scope.serviceOrder.siteAddressFrom) : 0;
 			}
-		}
+
+		};
 
 		$scope.save = function (sendMail, sendTotech) {
 			$scope.waiting = true;
