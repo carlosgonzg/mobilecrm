@@ -619,7 +619,7 @@ var sendWorkOrderUpdate = function (workOrder, mails, user, company) {
 			}
 
 			var addedItems = '';
-			if (workOrder.addedItems.length > 0) {
+			if (workOrder.addedItems) {
 				for (var i = 0; i < workOrder.addedItems.length; i++) {
 					addedItems += workOrder.addedItems[i].description;
 					if (i != workOrder.addedItems.length - 1) {
@@ -629,7 +629,7 @@ var sendWorkOrderUpdate = function (workOrder, mails, user, company) {
 			}
 
 			var removedItems = '';
-			if (workOrder.removedItems.length > 0) {
+			if (workOrder.removedItems) {
 				for (var i = 0; i < workOrder.removedItems.length; i++) {
 					removedItems += workOrder.removedItems[i].description;
 					if (i != workOrder.removedItems.length - 1) {
