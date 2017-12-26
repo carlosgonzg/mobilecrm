@@ -1103,10 +1103,10 @@ angular.module('MobileCRMApp')
 				new Invoice().filter({ "dor": $scope.DeliveryOrder.dor })
 					.then(function (result) {
 						_.map(result.data, function (obj) {
-							$scope.invoice = obj
-							$scope.invoice.status = $scope.DeliveryOrder.status
-						});
-						$scope.invoice.save()
+							$scope.Invoice = obj
+							$scope.Invoice.status = $scope.DeliveryOrder.status
+							$scope.invoice.save()
+						});						
 					})
 			}
 		}

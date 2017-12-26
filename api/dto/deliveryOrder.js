@@ -333,7 +333,7 @@ DeliveryOrder.prototype.update = function (query, deliveryOrder, user, mail) {
 		} else {
 			total += (deliveryOrder.items[index].price * (deliveryOrder.items[index].quantity || 1));
 		}
-	}
+	}	
 
 	deliveryOrder.total = total;
 	delete deliveryOrder.sor
@@ -346,6 +346,7 @@ DeliveryOrder.prototype.update = function (query, deliveryOrder, user, mail) {
 			var setObj = {};
 			if ([5].indexOf(deliveryOrder.status._id) != -1) {
 				setObj = { invoiceNumber: "No Invoice" };
+				deliveryOrder.invoiceNumber = "No Invoice"
 			}
 			else {
 				setObj = { invoiceNumber: deliveryOrder.invoiceNumber };
