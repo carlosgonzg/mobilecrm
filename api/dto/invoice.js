@@ -255,6 +255,11 @@ Invoice.prototype.update = function (query, invoice, user, mail) {
 					var miles = invoice.items[index].quantity;
 
 					total += (miles - minMiles) * costPerMile + (InitPrice)
+
+					if (invoice.items[index].price == 0) {
+						var RInitPrice = Math.round(InitPrice * 100) / 100
+						invoice.items[index].price = RInitPrice
+					}
 				}
 			} else if (invoice.items[index]._id == 806 && costPerHours > 0) {
 				total += (costPerHours * (invoice.items[index].quantity || 1));

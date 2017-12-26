@@ -146,6 +146,11 @@ angular.module('MobileCRMApp')
 					var miles = qtity;
 
 					total += (miles - minMiles) * costPerMile + (InitPrice)
+
+					if (this.items[index].price == 0) {
+						var RInitPrice = Math.round(InitPrice * 100) / 100
+						this.items[index].price = RInitPrice
+					}
 				}
 			} else if (this.items[index]._id == 806 && costPerHours > 0) {
 				qtity = this.items[index].quantity;
