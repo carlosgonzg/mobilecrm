@@ -1140,7 +1140,7 @@ angular.module('MobileCRMApp')
 			if (DeliveryOrder.fromwriteAddress == true) {
 				$scope.DeliveryOrder.comments = "Delivery " + comment
 			} else {
-				$scope.DeliveryOrder.comments = "Pickup" + comment
+				$scope.DeliveryOrder.comments = "Pickup " + comment
 			}
 		}
 
