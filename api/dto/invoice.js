@@ -255,6 +255,11 @@ Invoice.prototype.update = function (query, invoice, user, mail) {
 					var miles = invoice.items[index].quantity;
 
 					total += (miles - minMiles) * costPerMile + (InitPrice)
+
+					if (invoice.items[index].price == 0) {
+						var RInitPrice = Math.round(InitPrice * 100) / 100
+						invoice.items[index].price = RInitPrice
+					}
 				}
 			} else if (invoice.items[index]._id == 806 && costPerHours > 0) {
 				total += (costPerHours * (invoice.items[index].quantity || 1));
@@ -603,7 +608,7 @@ Invoice.prototype.getMonthlyStatement = function (params, user) {
 				$gte: fromDate,
 				$lte: toDate
 			},
-			'status._id': { $ne: [5] },
+			'status._id': { $ne: 5 },
 			$or: [{'status._id': {$ne:7}}, {'dor': {$exists:true}}]
 		}
 	};
@@ -885,8 +890,22 @@ Invoice.prototype.changeStatus = function (id) {
 						description: 'Completed'
 					};
 				}
-				
+
+
 			}
+			
+/* 			if (obj.status._id == 3 || obj.status._id == 8) {
+				obj.status = {
+					_id: 4,
+					description: 'Paid'
+				};
+			}
+			else {
+				obj.status = {
+					_id: 3,
+					description: 'Completed'
+				};
+			} */
 
 			// return _this.crud.update({_id: Number(id)}, obj);
 			return _this.crud.update({ _id: Number(id) }, obj).then(function (result) {

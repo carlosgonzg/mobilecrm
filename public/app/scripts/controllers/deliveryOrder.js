@@ -8,7 +8,7 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-	.controller('DeliveryOrderCtrl', function ($scope, $rootScope, $location, $window, toaster, User, statusList, EntranceList, Item, dialogs, $q, Branch, DeliveryOrder, $timeout, ItemDefault, $route, Company, Driver, Invoice) {
+	.controller('DeliveryOrderCtrl', function ctrl($scope, $rootScope, $location, $window, toaster, User, statusList, EntranceList, Item, dialogs, $q, Branch, DeliveryOrder, $timeout, ItemDefault, $route, Company, Driver, Invoice) {
 		$scope.DeliveryOrder = DeliveryOrder;
 		$scope.item = ItemDefault;
 		$scope.Math = $window.Math;
@@ -44,7 +44,7 @@ angular.module('MobileCRMApp')
 			$scope.DeliveryOrder.fromwriteAddress = true
 			$scope.DeliveryOrder.fromCompanyAddress = false
 		}
-
+		$scope.DeliveryOrder.comments = "Delivery "
 		$scope.listStatus = statusList;
 		$scope.entranceList = EntranceList;
 		$scope.waiting = false;
@@ -143,10 +143,10 @@ angular.module('MobileCRMApp')
 						$scope.DeliveryOrder.siteAddress.distanceFrom = $scope.DeliveryOrder.siteAddressFrom.address1 && $scope.DeliveryOrder.siteAddress.address1 ? parseFloat((result * 0.00062137).toFixed(2)) : 0;
 
 						$scope.DeliveryOrder.siteAddress.distanceFrom += $scope.DeliveryOrder.RouteMile || 0
-						
+
 						var TotalMiles = Math.round($scope.DeliveryOrder.siteAddress.distanceFrom * 100) / 100
 						$scope.DeliveryOrder.siteAddress.distanceFrom = TotalMiles
-						
+
 						initMap(p1coord, p2coord);
 						$scope.$apply();
 
@@ -510,7 +510,7 @@ angular.module('MobileCRMApp')
 					$scope.DeliveryOrder.items[row].quantity = DeliveryOrder.siteAddress.distanceFrom
 				}
 			}
-			
+
 			if ($scope.DeliveryOrder.status.description == "Pending") {
 				$scope.DeliveryOrder.status.description = "Waiting for Availability"
 			}
@@ -520,8 +520,8 @@ angular.module('MobileCRMApp')
 			if ($scope.DeliveryOrder.client.company.perHours == undefined) {
 				$scope.addConfigComp()
 			} else {
- 				$scope.DeliveryOrder.save()
-						.then(function (data) {
+				$scope.DeliveryOrder.save()
+					.then(function (data) {
 						$scope.updateDoc();
 						toaster.success('The Delivery Order was saved successfully');
 						$location.path('DeliveryOrderList')
@@ -534,9 +534,9 @@ angular.module('MobileCRMApp')
 						} else {
 							toaster.error('The Delivery Order couldn\'t be saved, please check if some required field is empty');
 						}
-						
+
 						$scope.waiting = false;
-					}); 
+					});
 			}
 		};
 
@@ -550,7 +550,7 @@ angular.module('MobileCRMApp')
 					})
 					.then(function () {
 						$scope.DeliveryOrder.sendDelete($scope.DeliveryOrder)
-				});
+					});
 			});
 		};
 
@@ -931,7 +931,7 @@ angular.module('MobileCRMApp')
 							},
 							function (error) {
 								console.log(error);
-								
+
 								if (error.errors.error == "The object already exists") {
 									toaster.error('Delivery Order # Duplicated');
 								} else {
@@ -942,7 +942,6 @@ angular.module('MobileCRMApp')
 
 					})
 				})
-
 		}
 
 		$scope.FromCompany = function (e) {
@@ -953,14 +952,12 @@ angular.module('MobileCRMApp')
 				$scope.DeliveryOrder.fromwriteAddress = false
 				$scope.DeliveryOrder.fromCompanyAddress = true
 			}
+			$scope.CommentProyect()
 		};
 
 		if ($scope.DeliveryOrder.client._id) {
 			$scope.LoadItemDefault()
 		}
-		//console.log($scope.DeliveryOrder.client.company)
-
-
 		var originPointRoute = {};
 		var placeSearchRoute, autocompleteRoute, mapRoute, directionsServiceRoute, directionsDisplayRoute;
 
@@ -1106,17 +1103,16 @@ angular.module('MobileCRMApp')
 				new Invoice().filter({ "dor": $scope.DeliveryOrder.dor })
 					.then(function (result) {
 						_.map(result.data, function (obj) {
-							$scope.invoice = obj
-							$scope.invoice.status = $scope.DeliveryOrder.status
-						});
-						$scope.invoice.save()
+							$scope.Invoice = obj
+							$scope.Invoice.status = $scope.DeliveryOrder.status
+							$scope.invoice.save()
+						});						
 					})
 			}
 		}
 
 		$scope.changeRelocation = function () {
-			console.log($scope.DeliveryOrder.Relocation)
-
+			$scope.CommentProyect()
 			if ($scope.DeliveryOrder.Relocation == false) {
 				for (var row = 0; row < $scope.DeliveryOrder.items.length; row++) {
 					var id = $scope.DeliveryOrder.items[row]._id;
@@ -1133,21 +1129,34 @@ angular.module('MobileCRMApp')
 						});
 					})
 			}
-/*
-			if ($scope.DeliveryOrder.serviceType._id == 1) {
-				var Serv = false
-				for (var row = 0; row < $scope.DeliveryOrder.items.length; row++) {
-					var code = $scope.DeliveryOrder.items[row].code;
-					if (ItemDefault.data[0].code == code) {
-						Serv = true;
-					}
-				}
-				if (Serv == false) {
-					$scope.DeliveryOrder.items.unshift(ItemDefault.data[0]);
-				}
-			} else {
-				$scope.DeliveryOrder.items = [];
-			} */
 		}
-		
+
+		$scope.CommentProyect = function () {
+			var comment = ""
+			if ($scope.DeliveryOrder.Relocation == true) {
+				comment = "And Relocation"
+			}
+
+			if (DeliveryOrder.fromwriteAddress == true) {
+				$scope.DeliveryOrder.comments = "Delivery " + comment
+			} else {
+				$scope.DeliveryOrder.comments = "Pickup " + comment
+			}
+		}
+
+		var ctrl = this;
+		var inputTemplate = '<div><span ng-bind="$ctrl.testModel"></span>--<span>{{$ctrl.testModel}}</span><input type="text" name="testModel"/></div>';
+
+		ctrl.addControllDynamically = addControllDynamically;
+
+		var id = 0;
+		function addControllDynamically() {
+			console.log(1)
+			var name = "testModel_" + id;
+			var cloned = angular.element(inputTemplate.replace(/testModel/g, name)).clone();
+			cloned.find('input').attr("ng-model", "$ctrl." + name); //add ng-model attribute
+			$document.find('[ng-app]').append($compile(cloned)($scope)); //compile and append
+			id++;
+		}
+
 	});

@@ -68,7 +68,7 @@ var sendMail = function (to, subject, body, isHtmlBody, attached, cc, cco, reply
 	else {
 		mailOptions.attachments = [];
 	}
-	smtpTransport.sendMail(mailOptions, function (error, response) {
+	 smtpTransport.sendMail(mailOptions, function (error, response) {
 		if (error) {
 			console.log(error);
 			deferred.reject(error);
@@ -885,15 +885,8 @@ var sendQuotes = function (serviceQuotes, mails, cc, file, fileName) {
 			body = body.replace('<confirm>', !serviceQuotes.pono ? '' : 'Please confirm as received.<br/><br/>I wait for your comment.<br/>');
 
 			var attachments = setAttachment(file, fileName)
-			var companyName = "";
 
-			if (serviceQuotes.client.company) {
-				companyName = serviceQuotes.client.company._id === 7 ? "Portable Storage - " : serviceQuotes.client.company.entity.name + ' - ';
-			}
-
-			var subject = companyName + 'Estimate: ' + serviceQuotes.quotesNumber;
-
-			subject += ' – MobileOne Restoration LLC';
+			var subject = "Estimate : " + serviceQuotes.quotesNumber + ' – MobileOne Restoration LLC';
 			mails = _.uniq(mails);
 			sendMail(mails.join(', '), subject, body, true, attachments, cc.join(', '), null, 'mf@mobileonecontainers.com')
 				.then(function (response) {

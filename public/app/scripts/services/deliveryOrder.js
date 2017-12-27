@@ -70,7 +70,7 @@ angular.module('MobileCRMApp')
 			var costPerMile = 3.25;
 			var costPerHours = 0;
 			var qtity = 0;
-			console.log(quantitymiles, comp)
+			//console.log(quantitymiles, comp)
 
 			if (this.client._id == undefined) {
 				return 0
@@ -127,6 +127,11 @@ angular.module('MobileCRMApp')
 						var miles = qtity;
 
 						total += (miles - minMiles) * costPerMile + (InitPrice)
+
+						if (this.items[index].price == 0) {
+							var RInitPrice = Math.round(InitPrice * 100) / 100
+							this.items[index].price = RInitPrice
+						}
 					}
 				} else if (this.items[index]._id == 806 && costPerHours > 0) {
 					qtity = this.items[index].quantity;
