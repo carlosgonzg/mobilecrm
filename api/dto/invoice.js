@@ -863,7 +863,37 @@ Invoice.prototype.changeStatus = function (id) {
 	_this.crud.find({ _id: Number(id) })
 		.then(function (result) {
 			var obj = result.data[0];
-			if (obj.status._id == 3 || obj.status._id == 8) {
+
+			if (obj.dor) {
+				if (obj.status._id == 6) {
+					obj.status = {
+						_id: 7,
+						description: 'Paid'
+					};
+				}
+				else {
+					obj.status = {
+						_id: 6,
+						description: 'Pending to Pay'
+					};
+				}
+			} else {
+				if (obj.status._id == 3 || obj.status._id == 8) {
+					obj.status = {
+						_id: 4,
+						description: 'Paid'
+					};
+				}
+				else {
+					obj.status = {
+						_id: 3,
+						description: 'Completed'
+					};
+				}
+
+			}
+			
+/* 			if (obj.status._id == 3 || obj.status._id == 8) {
 				obj.status = {
 					_id: 4,
 					description: 'Paid'
@@ -874,7 +904,7 @@ Invoice.prototype.changeStatus = function (id) {
 					_id: 3,
 					description: 'Completed'
 				};
-			}
+			} */
 
 			// return _this.crud.update({_id: Number(id)}, obj);
 			return _this.crud.update({ _id: Number(id) }, obj).then(function (result) {
