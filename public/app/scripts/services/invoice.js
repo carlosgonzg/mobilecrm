@@ -76,6 +76,9 @@ angular.module('MobileCRMApp')
 			if (this.client && this.client.company) {
 				taxes = this.client.company.taxes || 0;
 			}
+			if (this.client && this.client.branch) {
+				taxes = this.client.branch.taxes || taxes;
+			}
 			return this.total * taxes;
 		} else {
 			for (var i = 0; i < this.items.length; i++) {
@@ -84,6 +87,9 @@ angular.module('MobileCRMApp')
 			
 			if (this.client && this.client.company) {
 				taxes = this.client.company.taxes || 0;
+			}
+			if (this.client && this.client.branch) {
+				taxes = this.client.branch.taxes || taxes;
 			}
 			return total * taxes;
 		}	
@@ -274,13 +280,17 @@ angular.module('MobileCRMApp')
 		var _this = this;
 		$http.post(_this.baseApiPath + '/monthlyStatement', { query: query })
 		.success(function (data) {
+			console.log(data)
 			for(var i = 0; i < data.length; i++){
 				for(var j = 0; j < data[i].invoices.length; j++){
-					data[i].invoices[j].itemType = data[i].invoices[j].sor ? "ServiceOrder" : "WorkOrder";
+					data[i].invoices[j].itemType = data[i].invoices[j].sor ? "ServiceOrder" : data[i].invoices[j].dor ? 'DeliveryOrder' : "WorkOrder";
 					if(data[i].invoices[j].itemType == 'ServiceOrder'){
 						data[i].invoices[j] = new Invoice(angular.copy(data[i].invoices[j]));
 					}
 					else if(data[i].invoices[j].itemType == 'WorkOrder'){
+						data[i].invoices[j] = new Invoice(angular.copy(data[i].invoices[j]));
+					}
+					else if(data[i].invoices[j].itemType == 'DeliveryOrder'){
 						data[i].invoices[j] = new Invoice(angular.copy(data[i].invoices[j]));
 					}
 				}
@@ -356,6 +366,7 @@ angular.module('MobileCRMApp')
 	};
 
 	Invoice.prototype.getExpenses = function(){
+		console.log("123")
 		var d = $q.defer();
 		var invoice = this;
 		$http.get(this.baseApiPath + '/expenses')
