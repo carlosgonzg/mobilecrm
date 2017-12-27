@@ -8,7 +8,7 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-	.controller('DeliveryOrderCtrl', function ($scope, $rootScope, $location, $window, toaster, User, statusList, EntranceList, Item, dialogs, $q, Branch, DeliveryOrder, $timeout, ItemDefault, $route, Company, Driver, Invoice) {
+	.controller('DeliveryOrderCtrl', function ctrl($scope, $rootScope, $location, $window, toaster, User, statusList, EntranceList, Item, dialogs, $q, Branch, DeliveryOrder, $timeout, ItemDefault, $route, Company, Driver, Invoice) {
 		$scope.DeliveryOrder = DeliveryOrder;
 		$scope.item = ItemDefault;
 		$scope.Math = $window.Math;
@@ -44,7 +44,7 @@ angular.module('MobileCRMApp')
 			$scope.DeliveryOrder.fromwriteAddress = true
 			$scope.DeliveryOrder.fromCompanyAddress = false
 		}
-		$scope.DeliveryOrder.comments = "Pickup "
+		$scope.DeliveryOrder.comments = "Delivery "
 		$scope.listStatus = statusList;
 		$scope.entranceList = EntranceList;
 		$scope.waiting = false;
@@ -1138,10 +1138,25 @@ angular.module('MobileCRMApp')
 			}
 
 			if (DeliveryOrder.fromwriteAddress == true) {
-				$scope.DeliveryOrder.comments = "Pickup " + comment
-			} else {
 				$scope.DeliveryOrder.comments = "Delivery " + comment
+			} else {
+				$scope.DeliveryOrder.comments = "Pickup" + comment
 			}
+		}
+
+		var ctrl = this;
+		var inputTemplate = '<div><span ng-bind="$ctrl.testModel"></span>--<span>{{$ctrl.testModel}}</span><input type="text" name="testModel"/></div>';
+
+		ctrl.addControllDynamically = addControllDynamically;
+
+		var id = 0;
+		function addControllDynamically() {
+			console.log(1)
+			var name = "testModel_" + id;
+			var cloned = angular.element(inputTemplate.replace(/testModel/g, name)).clone();
+			cloned.find('input').attr("ng-model", "$ctrl." + name); //add ng-model attribute
+			$document.find('[ng-app]').append($compile(cloned)($scope)); //compile and append
+			id++;
 		}
 
 	});
