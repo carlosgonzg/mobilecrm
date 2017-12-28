@@ -190,8 +190,12 @@ angular.module('MobileCRMApp')
 
 	$scope.getTotal = function(){
 		var total = 0;
-		for(var i = 0; i< $scope.invoices.length; i++){
-			total += $scope.invoices[i].getTotal();
+		for (var i = 0; i < $scope.invoices.length; i++){		
+			if ($scope.invoices[i].dor) {
+				total += $scope.invoices[i].getTotalDelivery();
+			} else {
+				total += $scope.invoices[i].getTotal();
+			}			
 		}
 		return total;
 	};
@@ -436,7 +440,6 @@ angular.module('MobileCRMApp')
 		new Invoice().filter(query, $scope.sort)
 		.then(function(invoices){
 			$scope.invoices = invoices.data;
-			console.log($scope.invoices)
 			Loading.hide();
 			if($scope.selectedTab != 'data')
 				drawChart();

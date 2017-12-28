@@ -1,11 +1,13 @@
 <div class="row">
 	<div class="col-xs-12">
 		<h1 class="pull-left">
-			<i class="fa fa-lg fa-area-chart"></i> <span> Reports (Invoice)</span>
+			<i class="fa fa-lg fa-area-chart"></i>
+			<span> Reports (Invoice)</span>
 		</h1>
 		<div class="btn-group pull-right" style="margin-top: 20px;" role="group" aria-label="...">
 			<back-button></back-button>
-			<button type="button" class="btn btn-default" ng-click="export()"><i class="fa fa-download"></i>&nbsp;Download as Excel</button>
+			<button type="button" class="btn btn-default" ng-click="export()">
+				<i class="fa fa-download"></i>&nbsp;Download as Excel</button>
 		</div>
 		<hr />
 	</div>
@@ -115,22 +117,22 @@
 								<label>Filter by:</label>
 								<div class="checkbox">
 									<label>
-								    	<input type="checkbox" ng-model="filter.withPO"> With PO Number
+										<input type="checkbox" ng-model="filter.withPO"> With PO Number
 									</label>
 								</div>
 								<div class="checkbox">
 									<label>
-								    	<input type="checkbox" ng-model="filter.pendingPO"> Without PO Number
+										<input type="checkbox" ng-model="filter.pendingPO"> Without PO Number
 									</label>
 								</div>
 								<div class="checkbox">
 									<label>
-								    	<input type="checkbox" ng-model="filter.partsFromTheYard"> Parts from the yard
+										<input type="checkbox" ng-model="filter.partsFromTheYard"> Parts from the yard
 									</label>
 								</div>
 								<div class="checkbox">
 									<label>
-								    	<input type="checkbox" ng-model="filter.clientResponsibleCharges"> Customer Responsible for Charges
+										<input type="checkbox" ng-model="filter.clientResponsibleCharges"> Customer Responsible for Charges
 									</label>
 								</div>
 							</div>
@@ -138,7 +140,8 @@
 					</div>
 					<div class="row">
 						<div class="col-md-12">
-							<button type="submit" class="btn btn-default pull-right"><i class="fa fa-search"></i>&nbsp;Search</button>
+							<button type="submit" class="btn btn-default pull-right">
+								<i class="fa fa-search"></i>&nbsp;Search</button>
 						</div>
 
 					</div>
@@ -149,12 +152,22 @@
 
 </div>
 <ul class="nav nav-pills">
-	<li role="presentation" ng-class="{ active: getActiveTab('data') }" ng-click="selectTab('data')"><a>Data</a></li>
-	<li role="presentation" ng-class="{ active: getActiveTab('items') }" ng-click="selectTab('items')"><a>Items</a></li>
-	<li role="presentation" ng-class="{ active: getActiveTab('countByClient') }" ng-click="selectTab('countByClient')" ng-if="userData.role._id == 1"><a>Count by Client</a></li>
+	<li role="presentation" ng-class="{ active: getActiveTab('data') }" ng-click="selectTab('data')">
+		<a>Data</a>
+	</li>
+	<li role="presentation" ng-class="{ active: getActiveTab('items') }" ng-click="selectTab('items')">
+		<a>Items</a>
+	</li>
+	<li role="presentation" ng-class="{ active: getActiveTab('countByClient') }" ng-click="selectTab('countByClient')" ng-if="userData.role._id == 1">
+		<a>Count by Client</a>
+	</li>
 	<li role="presentation" ng-class="{ active: getActiveTab('totalPriceByClient') }" ng-click="selectTab('totalPriceByClient')"
-	 ng-if="userData.role._id == 1"><a>Amount By Client</a></li>
-	<li role="presentation" ng-class="{ active: getActiveTab('status') }" ng-click="selectTab('status')"><a>Status</a></li>
+	 ng-if="userData.role._id == 1">
+		<a>Amount By Client</a>
+	</li>
+	<li role="presentation" ng-class="{ active: getActiveTab('status') }" ng-click="selectTab('status')">
+		<a>Status</a>
+	</li>
 </ul>
 <div class="row" ng-if="getActiveTab('data')">
 	<div class="col-xs-12">
@@ -162,31 +175,49 @@
 			<thead>
 				<tr>
 					<th style="width:10%" ng-click="sortBy('date')">
-						Created Date <span ng-if="sort.field == 'date' && sort.order == 1">^</span><span ng-if="sort.field == 'date' && sort.order == -1">v</span>
+						Created Date
+						<span ng-if="sort.field == 'date' && sort.order == 1">^</span>
+						<span ng-if="sort.field == 'date' && sort.order == -1">v</span>
 					</th>
 					<th style="width:10%" ng-click="sortBy('originalShipDate')">
-						Completed Date <span ng-if="sort.field == 'originalShipDate' && sort.order == 1">^</span><span ng-if="sort.field == 'originalShipDate' && sort.order == -1">v</span>
+						Completed Date
+						<span ng-if="sort.field == 'originalShipDate' && sort.order == 1">^</span>
+						<span ng-if="sort.field == 'originalShipDate' && sort.order == -1">v</span>
 					</th>
 					<th style="width:5%" ng-click="sortBy('invoiceNumber')">
-						Invoice <span ng-if="sort.field == 'invoiceNumber' && sort.order == 1">^</span><span ng-if="sort.field == 'invoiceNumber' && sort.order == -1">v</span>
+						Invoice
+						<span ng-if="sort.field == 'invoiceNumber' && sort.order == 1">^</span>
+						<span ng-if="sort.field == 'invoiceNumber' && sort.order == -1">v</span>
 					</th>
 					<th style="width:10%" ng-click="sortBy('pono')">
-						PO # <span ng-if="sort.order == 1">^</span><span ng-if="sort.order == -1">v</span>
+						PO #
+						<span ng-if="sort.order == 1">^</span>
+						<span ng-if="sort.order == -1">v</span>
 					</th>
 					<th style="width:10%" ng-click="sortBy('client.entity.fullName')">
-						Customer <span ng-if="sort.field == 'client.entity.fullName' && sort.order == 1">^</span><span ng-if="sort.field == 'client.entity.fullName' && sort.order == -1">v</span>
+						Customer
+						<span ng-if="sort.field == 'client.entity.fullName' && sort.order == 1">^</span>
+						<span ng-if="sort.field == 'client.entity.fullName' && sort.order == -1">v</span>
 					</th>
 					<th style="width:5%" ng-click="sortBy('status.description')">
-						Status <span ng-if="sort.field == 'status.description' && sort.order == 1">^</span><span ng-if="sort.field == 'status.description' && sort.order == -1">v</span>
+						Status
+						<span ng-if="sort.field == 'status.description' && sort.order == 1">^</span>
+						<span ng-if="sort.field == 'status.description' && sort.order == -1">v</span>
 					</th>
 					<th style="width:10%" ng-click="sortBy('unitno')">
-						Serial # <span ng-if="sort.field == 'unitno' && sort.order == 1">^</span><span ng-if="sort.field == 'unitno' && sort.order == -1">v</span>
+						Serial #
+						<span ng-if="sort.field == 'unitno' && sort.order == 1">^</span>
+						<span ng-if="sort.field == 'unitno' && sort.order == -1">v</span>
 					</th>
 					<th style="width:5%" ng-click="sortBy('clientResponsibleCharges')">
-						Resp. for Charges <span ng-if="sort.field =='clientResponsibleCharges' && sort.order == 1">^</span><span ng-if="sort.field == 'clientResponsibleCharges' && sort.order == -1">v</span>
+						Resp. for Charges
+						<span ng-if="sort.field =='clientResponsibleCharges' && sort.order == 1">^</span>
+						<span ng-if="sort.field == 'clientResponsibleCharges' && sort.order == -1">v</span>
 					</th>
 					<th style="width:5%" ng-click="sortBy('partsFromTheYard')">
-						Mat. from the Yard <span ng-if="sort.field =='partsFromTheYard' && sort.order == 1">^</span><span ng-if="sort.field == 'partsFromTheYard' && sort.order == -1">v</span>
+						Mat. from the Yard
+						<span ng-if="sort.field =='partsFromTheYard' && sort.order == 1">^</span>
+						<span ng-if="sort.field == 'partsFromTheYard' && sort.order == -1">v</span>
 					</th>
 					<th style="width:5%">
 						Items
@@ -237,19 +268,32 @@
 						<i class="fa fa-check" ng-if="invoice.partsFromTheYard"></i>
 					</td>
 					<td>
-						<button class="btn btn-sm" ng-click="showItems(invoice)"><i class="fa fa-eye"></i></button>
+						<button class="btn btn-sm" ng-click="showItems(invoice)">
+							<i class="fa fa-eye"></i>
+						</button>
 					</td>
 					<td>
-						<button class="btn btn-sm" ng-click="showYardComment(invoice)"><i class="fa fa-eye"></i></button>
+						<button class="btn btn-sm" ng-click="showYardComment(invoice)">
+							<i class="fa fa-eye"></i>
+						</button>
 					</td>
 					<td>
-						<button class="btn btn-sm" ng-click="showComment(invoice)"><i class="fa fa-eye"></i></button>
+						<button class="btn btn-sm" ng-click="showComment(invoice)">
+							<i class="fa fa-eye"></i>
+						</button>
 					</td>
 					<td>
-						<button class="btn btn-sm" ng-click="invoice.showPicture()"><i class="fa fa-picture-o" ng-disabled="invoice.photos.length <= 0"></i></button>
+						<button class="btn btn-sm" ng-click="invoice.showPicture()">
+							<i class="fa fa-picture-o" ng-disabled="invoice.photos.length <= 0"></i>
+						</button>
 					</td>
 					<td>
-						{{invoice.getTotal()|currency}}
+						<div ng-if="invoice.dor">
+							{{invoice.getTotalDelivery()|currency}}
+						</div>
+						<div ng-if="!invoice.dor">
+							{{invoice.getTotal()|currency}}
+						</div>
 					</td>
 				</tr>
 				<tr>
