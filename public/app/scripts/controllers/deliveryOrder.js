@@ -44,7 +44,7 @@ angular.module('MobileCRMApp')
 			$scope.DeliveryOrder.fromwriteAddress = true
 			$scope.DeliveryOrder.fromCompanyAddress = false
 		}
-		$scope.DeliveryOrder.comments = "Delivery "
+		$scope.DeliveryOrder.comments = "Pickup "
 		$scope.listStatus = statusList;
 		$scope.entranceList = EntranceList;
 		$scope.waiting = false;
@@ -1138,9 +1138,9 @@ angular.module('MobileCRMApp')
 			}
 
 			if (DeliveryOrder.fromwriteAddress == true) {
-				$scope.DeliveryOrder.comments = "Delivery " + comment
-			} else {
 				$scope.DeliveryOrder.comments = "Pickup " + comment
+			} else {
+				$scope.DeliveryOrder.comments = "Delivery " + comment
 			}
 		}
 
