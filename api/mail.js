@@ -764,7 +764,12 @@ var sendDeliveryOrderUpdate = function (deliveryOrder, mails, user) {
 			body = body.replace('<pickAddress>', pickAdress || '');
 			body = body.replace('<deliveryAddress>', deliveryOrder.siteAddress ? deliveryOrder.siteAddress.address1 + ', ' + deliveryOrder.siteAddress.city.description + ', ' + deliveryOrder.siteAddress.state.description + ' ' + deliveryOrder.siteAddress.zipcode : '');
 			body = body.replace('<issue>', deliveryOrder.issue || 'None');
-			body = body.replace('<comment>', deliveryOrder.comment || 'None');
+			body = body.replace('<comment>', deliveryOrder.comments || 'None');
+
+			body = body.replace('<entrance>', deliveryOrder.typeTruck.description);
+			body = body.replace('<pickupdate>', moment(deliveryOrder.pickupDate).format('MM/DD/YYYY'));
+			body = body.replace('<pickuptime>', moment(deliveryOrder.pickupTime).format('HH:mm'));
+			body = body.replace('<Clientcomment>', deliveryOrder.clientcomment || 'None');
 
 			var changesByUser = '';
 			changesByUser += (user.entity.fullName || user.entity.name) + '<br/> Changes: ';
