@@ -743,6 +743,9 @@ var sendDeliveryOrderUpdate = function (deliveryOrder, mails, user) {
 		.then(function (body) {
 			var url = config.SERVER_URL;
 
+			var adressArray = deliveryOrder.siteAddressFrom.address1 + ", " + deliveryOrder.siteAddressFrom.city.id + ", " + deliveryOrder.siteAddressFrom.city.stateId
+			var pickAdress = deliveryOrder.addresstr || adressArray;
+
 			body = body.replace('<emailUrl>', url);
 			body = body.replace('<createdDate>', moment(deliveryOrder.date).format('MM/DD/YYYY'));
 			body = body.replace('<clientCompany>', deliveryOrder.client.company ? deliveryOrder.client.company.entity.name : 'None');
@@ -752,13 +755,14 @@ var sendDeliveryOrderUpdate = function (deliveryOrder, mails, user) {
 			body = body.replace('<dor>', deliveryOrder.dor);
 			body = body.replace('<unitSize>', deliveryOrder.unitSize || '');
 			body = body.replace('<serialno>', deliveryOrder.unitno || '');
-			body = body.replace('<pono>', deliveryOrder.pono ? ('With PO Number: ' + deliveryOrder.pono) : '');
+			body = body.replace('<pono>', deliveryOrder.pono || '');
 			body = body.replace('<isono>', deliveryOrder.isono || '');
 			body = body.replace('<contract>', deliveryOrder.contract || '');
 			body = body.replace('<clientName>', deliveryOrder.client.entity.fullName);
 			body = body.replace('<clientPhone>', deliveryOrder.client && deliveryOrder.client.branch && deliveryOrder.client.branch.phones && deliveryOrder.client.branch.phones.length > 0 ? deliveryOrder.client.branch.phones[0].number : 'None');
 			body = body.replace('<clientMail>', deliveryOrder.client.account.email);
-			body = body.replace('<clientAddress>', deliveryOrder.siteAddress.address1 + ', ' + deliveryOrder.siteAddress.city.description + ', ' + deliveryOrder.siteAddress.state.description + ' ' + deliveryOrder.siteAddress.zipcode);
+			body = body.replace('<pickAddress>', pickAdress || '');
+			body = body.replace('<deliveryAddress>', deliveryOrder.siteAddress ? deliveryOrder.siteAddress.address1 + ', ' + deliveryOrder.siteAddress.city.description + ', ' + deliveryOrder.siteAddress.state.description + ' ' + deliveryOrder.siteAddress.zipcode : '');
 			body = body.replace('<issue>', deliveryOrder.issue || 'None');
 			body = body.replace('<comment>', deliveryOrder.comment || 'None');
 
