@@ -8,7 +8,7 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-	.controller('ServiceOrderCtrl', function ($scope, $rootScope, $location, $window, toaster, User, statusList, serviceOrder, Item, dialogs, $q, Branch, CrewCollection, ItemDefault) {
+	.controller('ServiceOrderCtrl', function ($route, $scope, $rootScope, $location, $window, toaster, User, statusList, serviceOrder, Item, dialogs, $q, Branch, CrewCollection, ItemDefault) {
 		$scope.serviceOrder = serviceOrder;
 		$scope.CrewCollection = CrewCollection.data
 		$scope.Math = $window.Math;
@@ -282,16 +282,17 @@ angular.module('MobileCRMApp')
 			} else {
 				if ($scope.serviceOrder.client._id) {
 					var Serv = false 
-
-					for (var row = 0; row < $scope.serviceOrder.items.length; row++) {
-						var code = $scope.serviceOrder.items[row].code;
-						if (ItemDefault.data[0].code == code) {
-							Serv = true;
+					if (!$route.current.params.id) {
+						for (var row = 0; row < $scope.serviceOrder.items.length; row++) {
+							var code = $scope.serviceOrder.items[row].code;
+							if (ItemDefault.data[0].code == code) {
+								Serv = true;
+							}
 						}
-					}
-					if (Serv == false) {
-						$scope.serviceOrder.items.unshift(ItemDefault.data[0]);
-					}
+						if (Serv == false) {
+							$scope.serviceOrder.items.unshift(ItemDefault.data[0]);
+						}
+					}	
 				}
 			}
 		};
