@@ -565,6 +565,55 @@ var app = angular
 					}
 				}
 			})
+			.when('/SetupTearDownList', {
+				templateUrl: 'views/SetupTearDownList.html',
+				controller: 'SetupTearDownListCtrl'
+			})
+			.when('/SetupTearDown/:id?', {
+				templateUrl: 'views/SetupTearDown.html',
+				controller: 'SetupTearDownCtrl',
+				resolve: {
+					statusList: function (List) {
+						return List.get('status');
+					},
+					SetupTearDown: function (SetupTearDown, $route) {
+						if ($route.current.params.id) {
+							return new SetupTearDown().findById(parseInt($route.current.params.id));
+						} else {
+							return new SetupTearDown();
+						}
+					},
+					CrewCollection: function (CrewCollection, $route) {
+						return new CrewCollection().filter({ "role.description": 'Crew Leader' })
+					},
+				}
+			})
+			.when('/homeBusinessList', {
+				templateUrl: 'views/homeBusinessList.html',
+				controller: 'homeBusinessListCtrl'
+			})
+			.when('/homeBusiness/:id?', {
+				templateUrl: 'views/homeBusiness.html',
+				controller: 'homeBusinessCtrl',
+				resolve: {
+					statusList: function (List) {
+						return List.get('status');
+					},
+					homeBusiness: function (homeBusiness, $route) {
+						if ($route.current.params.id) {
+							return new homeBusiness().findById(parseInt($route.current.params.id));
+						} else {
+							return new homeBusiness();
+						}
+					},
+					CrewCollection: function (CrewCollection, $route) {
+						return new CrewCollection().filter({ "role.description": 'Crew Leader' })
+					},
+					ItemDefault: function (Item) {
+						return new Item().filter({ _id: { $in: [253] } })
+					}
+				}
+			})
 			.when('/noaccess', {
 				templateUrl: 'views/noaccess.html'
 			})

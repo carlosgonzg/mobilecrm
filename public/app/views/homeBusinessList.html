@@ -1,0 +1,19 @@
+<div class="row">
+    <div class="col-xs-12">
+        <h1 class="pull-left">
+            <i class="fa fa-lg fa-home"></i> <span>Home & Business</span>
+        </h1>
+        <div class="btn-group pull-right" style="margin-top: 20px;" role="group" aria-label="...">
+            <back-button></back-button>
+            <button type="button" class="btn btn-primary new" ng-click="createNew()"  ng-if="userData.getAccessOfView('/homeBusiness', true).write">
+                <i class="fa fa-plus"></i>&nbsp;<span>Create New</span>
+            </button>
+        </div>
+        <hr />
+    </div>
+</div>
+<div class="row">
+	<div class="col-xs-14">
+		<list clase="homeBusiness" fields="fields" showid="false" search-fields="search" filter-field="filter" list="list" filter-date="filterDate" excel-fields="excelFields" excel-title="'Home & Business Report'"></list>
+	</div>
+</div>

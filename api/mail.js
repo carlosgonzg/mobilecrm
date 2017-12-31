@@ -980,6 +980,429 @@ var sendDeliveryOrderDelete = function (deliveryOrder, mails, dirname) {
 	return deferred.promise;
 };
 
+var sendSetupTearDown = function (SetupTearDown, mails, dirname) {
+	var deferred = q.defer();
+	bringTemplateData('/setupteardown.html')
+		.then(function (body) {
+			var url = config.SERVER_URL;
+			console.log(url)
+			body = body.replace('<emailUrl>', url);
+			body = body.replace('<createdDate>', moment(SetupTearDown.date).format('MM/DD/YYYY'));
+			body = body.replace('<createdBy>', SetupTearDown.createdBy.entity ? SetupTearDown.createdBy.entity.fullName : '');
+			body = body.replace('<clientCompany>', SetupTearDown.client.company ? SetupTearDown.client.company.entity.name : 'None');
+			body = body.replace('<clientBranch>', SetupTearDown.client.branch ? SetupTearDown.client.branch.name : 'None');
+			body = body.replace('<customer>', SetupTearDown.customer || 'None');
+			body = body.replace('<customerPhone>', SetupTearDown.phone ? (SetupTearDown.phone.number || '') : 'None');
+			body = body.replace('<tor>', SetupTearDown.tor);
+			body = body.replace('<serviceType>', SetupTearDown.typeItem.item);
+			body = body.replace('<unitno>', SetupTearDown.unitno || '');
+			body = body.replace('<unitSize>', SetupTearDown.unitSize || '');
+			body = body.replace('<pono>', SetupTearDown.pono || '');
+			body = body.replace('<contract>', SetupTearDown.contract || '');
+			body = body.replace('<clientName>', SetupTearDown.client.entity.fullName);
+			body = body.replace('<clientPhone>', SetupTearDown.client && SetupTearDown.client.branch && SetupTearDown.client.branch.phones && SetupTearDown.client.branch.phones.length > 0 ? SetupTearDown.client.branch.phones[0].number : 'None');
+			body = body.replace('<clientMail>', SetupTearDown.client.account.email);
+			body = body.replace('<clientAddress>', SetupTearDown.siteAddress.address1 + ', ' + SetupTearDown.siteAddress.city.description + ', ' + SetupTearDown.siteAddress.state.description + ' ' + SetupTearDown.siteAddress.zipcode);
+			body = body.replace('<issue>', SetupTearDown.issue || 'None');
+			body = body.replace('<comment>', SetupTearDown.comment || 'None');
+			var contacts = '';
+			for (var i = 0; i < SetupTearDown.contacts.length; i++) {
+				if (SetupTearDown.contacts[i].name)
+					contacts += '<b>Contact #' + (i + 1) + ':&nbsp;</b>' + (SetupTearDown.contacts[i].name || '') + '.&nbsp;<br/><b>Phone(' + (SetupTearDown.contacts[i].phoneType.description || '') + '):</b>&nbsp;' + (SetupTearDown.contacts[i].number || '') + '<br/>';
+			}
+			body = body.replace('<contacts>', contacts || '');
+			var company = '' + (SetupTearDown && SetupTearDown.client && SetupTearDown.client.company && SetupTearDown.client.company.entity ? SetupTearDown.client.company.entity.name : 'Not Defined');
+			var branch = SetupTearDown && SetupTearDown.client && SetupTearDown.client.branch ? '' + SetupTearDown.client.branch.name : '' + SetupTearDown.client.entity.fullName;
+			var subject = 'Set up & Tear Down: ' + SetupTearDown.tor + ' | ' + company + ' | ' + branch;
+
+			var SetupTearDownAttachments = [];
+			if (SetupTearDown.photos) {
+				for (var i = 0; i < SetupTearDown.photos.length; i++) {
+					var photoDir = dirname + '/public/app' + SetupTearDown.photos[i].url;
+					//console.log(photoDir)
+					SetupTearDownAttachments.push({
+						filename: SetupTearDown.photos[i].name,
+						//content: fs.readFileSync(photoDir),
+						contentType: SetupTearDown.photos[i].type,
+						path: photoDir
+					});
+				}
+			}
+			mails = _.uniq(mails);
+			sendMail(mails.join(', '), subject, body, true, SetupTearDownAttachments, null, null, 'mf@mobileonecontainers.com')
+				.then(function (response) {
+					deferred.resolve(response);
+				},
+				function (err) {
+					deferred.reject(err);
+				});
+		},
+		function (err) {
+			deferred.reject(err);
+		});
+	return deferred.promise;
+};
+
+var sendSetupTearDownUpdate = function (SetupTearDown, mails, user) {
+	var deferred = q.defer();
+	bringTemplateData('/email/templateSetupTearDownUpdate.html')
+		.then(function (body) {
+			var url = config.SERVER_URL;
+
+			body = body.replace('<emailUrl>', url);
+			body = body.replace('<createdDate>', moment(SetupTearDown.date).format('MM/DD/YYYY'));
+			body = body.replace('<clientCompany>', SetupTearDown.client.company ? SetupTearDown.client.company.entity.name : 'None');
+			body = body.replace('<clientBranch>', SetupTearDown.client.branch ? SetupTearDown.client.branch.name : 'None');
+			body = body.replace('<customer>', SetupTearDown.customer || 'None');
+			body = body.replace('<customerPhone>', SetupTearDown.phone ? (SetupTearDown.phone.number || '') : 'None');
+			body = body.replace('<tor>', SetupTearDown.tor);
+			body = body.replace('<serviceType>', SetupTearDown.typeItem.item);
+			body = body.replace('<unitno>', SetupTearDown.unitno || '');
+			body = body.replace('<unitSize>', SetupTearDown.unitSize || '');
+			body = body.replace('<pono>', SetupTearDown.pono ? (SetupTearDown.pono) : '');
+			body = body.replace('<contract>', SetupTearDown.contract || '');
+			body = body.replace('<clientName>', SetupTearDown.client.entity.fullName);
+			body = body.replace('<clientPhone>', SetupTearDown.client && SetupTearDown.client.branch && SetupTearDown.client.branch.phones && SetupTearDown.client.branch.phones.length > 0 ? SetupTearDown.client.branch.phones[0].number : 'None');
+			body = body.replace('<clientMail>', SetupTearDown.client.account.email);
+			body = body.replace('<clientAddress>', SetupTearDown.siteAddress.address1 + ', ' + SetupTearDown.siteAddress.city.description + ', ' + SetupTearDown.siteAddress.state.description + ' ' + SetupTearDown.siteAddress.zipcode);
+			body = body.replace('<issue>', SetupTearDown.issue || 'None');
+			body = body.replace('<comment>', SetupTearDown.comment || 'None');
+
+			var changesByUser = '';
+			changesByUser += (user.entity.fullName || user.entity.name) + '<br/> Changes: ';
+			var fieldsChanged = '';
+			if (SetupTearDown.fieldsChanged) {
+				for (var i = 0; i < SetupTearDown.fieldsChanged.length; i++) {
+					if (SetupTearDown.fieldsChanged[i].by != user._id)
+						continue;
+					fieldsChanged += SetupTearDown.fieldsChanged[i].field;
+					if (i != SetupTearDown.fieldsChanged.length - 1) {
+						fieldsChanged += ', ';
+					}
+				}
+			}
+			var addedItems = '';
+			if (SetupTearDown.addedItems) {
+				for (var i = 0; i < SetupTearDown.addedItems.length; i++) {
+					addedItems += SetupTearDown.addedItems[i].description;
+					if (i != SetupTearDown.addedItems.length - 1) {
+						addedItems += ', ';
+					}
+				}
+			}
+
+			var removedItems = '';
+			if (SetupTearDown.removedItems) {
+				for (var i = 0; i < SetupTearDown.removedItems.length; i++) {
+					removedItems += SetupTearDown.removedItems[i].description;
+					if (i != SetupTearDown.removedItems.length - 1) {
+						removedItems += ', ';
+					}
+				}
+			}
+
+			changesByUser += fieldsChanged == '' ? 'None' : fieldsChanged;
+			changesByUser += addedItems == '' ? '' : '<br/> Added Items: ' + addedItems;
+			changesByUser += removedItems == '' ? '' : '<br/> Removed Items: ' + removedItems;
+
+			body = body.replace('<client>', changesByUser);
+			var contacts = '';
+			for (var i = 0; i < SetupTearDown.contacts.length; i++) {
+				if (SetupTearDown.contacts[i].name)
+					contacts += '<b>Contact #' + (i + 1) + ':&nbsp;</b>' + SetupTearDown.contacts[i].name + '.&nbsp;<br/><b>Phone(' + SetupTearDown.contacts[i].phoneType.description + '):</b>&nbsp;' + SetupTearDown.contacts[i].number + '<br/>';
+			}
+			body = body.replace('<contacts>', contacts || '');
+
+			var company = '' + (SetupTearDown && SetupTearDown.client && SetupTearDown.client.company && SetupTearDown.client.company.entity ? SetupTearDown.client.company.entity.name : 'Not Defined');
+			var branch = SetupTearDown && SetupTearDown.client && SetupTearDown.client.branch ? '' + SetupTearDown.client.branch.name : '' + SetupTearDown.client.entity.fullName;
+			var subject = 'Set Up & Tear Down: ' + SetupTearDown.tor + ' | ' + company + ' | ' + branch;
+
+			mails = _.uniq(mails);
+			sendMail(mails.join(', '), subject, body, true, null, null, null, 'mf@mobileonecontainers.com')
+				.then(function (response) {
+					deferred.resolve(response);
+				},
+				function (err) {
+					deferred.reject(err);
+				});
+		},
+		function (err) {
+			deferred.reject(err);
+		});
+	return deferred.promise;
+};
+
+var sendSetupTearDownDelete = function (SetupTearDown, mails, dirname) {
+	var deferred = q.defer();
+	bringTemplateData('/setupteardownDelete.html')
+		.then(function (body) {
+			var url = config.SERVER_URL;
+			console.log(url)
+			body = body.replace('<emailUrl>', url);
+			body = body.replace('<createdDate>', moment(SetupTearDown.date).format('MM/DD/YYYY'));
+			body = body.replace('<createdBy>', SetupTearDown.createdBy.entity ? SetupTearDown.createdBy.entity.fullName : '');
+			body = body.replace('<clientCompany>', SetupTearDown.client.company ? SetupTearDown.client.company.entity.name : 'None');
+			body = body.replace('<clientBranch>', SetupTearDown.client.branch ? SetupTearDown.client.branch.name : 'None');
+			body = body.replace('<customer>', SetupTearDown.customer || 'None');
+			body = body.replace('<customerPhone>', SetupTearDown.phone ? (SetupTearDown.phone.number || '') : 'None');
+			body = body.replace('<tor>', SetupTearDown.tor);
+			body = body.replace('<unitno>', SetupTearDown.unitno || '');
+			body = body.replace('<unitSize>', SetupTearDown.unitSize || '');
+			body = body.replace('<pono>', SetupTearDown.pono || '');
+			body = body.replace('<contract>', SetupTearDown.contract || '');
+			body = body.replace('<clientName>', SetupTearDown.client.entity.fullName);
+			body = body.replace('<clientPhone>', SetupTearDown.client && SetupTearDown.client.branch && SetupTearDown.client.branch.phones && SetupTearDown.client.branch.phones.length > 0 ? SetupTearDown.client.branch.phones[0].number : 'None');
+			body = body.replace('<clientMail>', SetupTearDown.client.account.email);
+			body = body.replace('<clientAddress>', SetupTearDown.siteAddress.address1 + ', ' + SetupTearDown.siteAddress.city.description + ', ' + SetupTearDown.siteAddress.state.description + ' ' + SetupTearDown.siteAddress.zipcode);
+			body = body.replace('<issue>', SetupTearDown.issue || 'None');
+			body = body.replace('<comment>', SetupTearDown.comment || 'None');
+			var contacts = '';
+			for (var i = 0; i < SetupTearDown.contacts.length; i++) {
+				if (SetupTearDown.contacts[i].name)
+					contacts += '<b>Contact #' + (i + 1) + ':&nbsp;</b>' + (SetupTearDown.contacts[i].name || '') + '.&nbsp;<br/><b>Phone(' + (SetupTearDown.contacts[i].phoneType.description || '') + '):</b>&nbsp;' + (SetupTearDown.contacts[i].number || '') + '<br/>';
+			}
+			body = body.replace('<contacts>', contacts || '');
+			var company = '' + (SetupTearDown && SetupTearDown.client && SetupTearDown.client.company && SetupTearDown.client.company.entity ? SetupTearDown.client.company.entity.name : 'Not Defined');
+			var branch = SetupTearDown && SetupTearDown.client && SetupTearDown.client.branch ? '' + SetupTearDown.client.branch.name : '' + SetupTearDown.client.entity.fullName;
+			var subject = 'DELETED - Setup & TearDown: ' + SetupTearDown.tor + ' | ' + company + ' | ' + branch;
+
+			var SetupTearDownAttachments = [];
+			if (SetupTearDown.photos) {
+				for (var i = 0; i < SetupTearDown.photos.length; i++) {
+					var photoDir = dirname + '/public/app' + SetupTearDown.photos[i].url;
+					//console.log(photoDir)
+					SetupTearDownAttachments.push({
+						filename: SetupTearDown.photos[i].name,
+						//content: fs.readFileSync(photoDir),
+						contentType: SetupTearDown.photos[i].type,
+						path: photoDir
+					});
+				}
+			}
+
+			mails = _.uniq(mails);
+			sendMail('mf@mobileonecontainers.com', subject, body, true, SetupTearDownAttachments, null, null, 'mf@mobileonecontainers.com')
+				.then(function (response) {
+					deferred.resolve(response);
+				},
+				function (err) {
+					deferred.reject(err);
+				});
+		},
+		function (err) {
+			deferred.reject(err);
+		});
+
+	return deferred.promise;
+};
+
+var sendhomeBusiness = function (homeBusiness, mails, dirname) {
+	var deferred = q.defer();
+	bringTemplateData('/homeBusiness.html')
+		.then(function (body) {
+			var url = config.SERVER_URL;
+			body = body.replace('<emailUrl>', url);
+			body = body.replace('<createdDate>', moment(homeBusiness.date).format('MM/DD/YYYY'));
+			body = body.replace('<createdBy>', homeBusiness.createdBy.entity ? homeBusiness.createdBy.entity.fullName : '');
+			body = body.replace('<clientCompany>', homeBusiness.client.company ? homeBusiness.client.company.entity.name : 'None');
+			body = body.replace('<clientBranch>', homeBusiness.client.branch ? homeBusiness.client.branch.name : 'None');
+			body = body.replace('<customer>', homeBusiness.customer || 'None');
+			body = body.replace('<customerPhone>', homeBusiness.phone ? (homeBusiness.phone.number || '') : 'None');
+			body = body.replace('<hor>', homeBusiness.hor);
+			body = body.replace('<acserial>', homeBusiness.acserial || '');
+			body = body.replace('<ACtype>', homeBusiness.ACType.item || '');
+			body = body.replace('<pono>', homeBusiness.pono || '');
+			body = body.replace('<contract>', homeBusiness.contract || '');
+			body = body.replace('<clientName>', homeBusiness.client.entity.fullName);
+			body = body.replace('<clientPhone>', homeBusiness.client && homeBusiness.client.branch && homeBusiness.client.branch.phones && homeBusiness.client.branch.phones.length > 0 ? homeBusiness.client.branch.phones[0].number : 'None');
+			body = body.replace('<clientMail>', homeBusiness.client.account.email);
+			body = body.replace('<clientAddress>', homeBusiness.siteAddress.address1 + ', ' + homeBusiness.siteAddress.city.description + ', ' + homeBusiness.siteAddress.state.description + ' ' + homeBusiness.siteAddress.zipcode);
+			body = body.replace('<issue>', homeBusiness.issue || 'None');
+			body = body.replace('<comment>', homeBusiness.comment || 'None');
+			var contacts = '';
+			for (var i = 0; i < homeBusiness.contacts.length; i++) {
+				if (homeBusiness.contacts[i].name)
+					contacts += '<b>Contact #' + (i + 1) + ':&nbsp;</b>' + (homeBusiness.contacts[i].name || '') + '.&nbsp;<br/><b>Phone(' + (homeBusiness.contacts[i].phoneType.description || '') + '):</b>&nbsp;' + (homeBusiness.contacts[i].number || '') + '<br/>';
+			}
+			body = body.replace('<contacts>', contacts || '');
+			var company = '' + (homeBusiness && homeBusiness.client && homeBusiness.client.company && homeBusiness.client.company.entity ? homeBusiness.client.company.entity.name : 'Not Defined');
+			var branch = homeBusiness && homeBusiness.client && homeBusiness.client.branch ? '' + homeBusiness.client.branch.name : '' + homeBusiness.client.entity.fullName;
+			var subject = 'Home & Business: ' + homeBusiness.hor + ' | ' + company + ' | ' + branch;
+
+			var homeBusinessAttachments = [];
+			if (homeBusiness.photos) {
+				for (var i = 0; i < homeBusiness.photos.length; i++) {
+					var photoDir = dirname + '/public/app' + homeBusiness.photos[i].url;
+					//console.log(photoDir)
+					homeBusinessAttachments.push({
+						filename: homeBusiness.photos[i].name,
+						//content: fs.readFileSync(photoDir),
+						contentType: homeBusiness.photos[i].type,
+						path: photoDir
+					});
+				}
+			}
+			mails = _.uniq(mails);
+			sendMail(mails.join(', '), subject, body, true, homeBusinessAttachments, null, null, 'mf@mobileonecontainers.com')
+				.then(function (response) {
+					deferred.resolve(response);
+				},
+				function (err) {
+					deferred.reject(err);
+				});
+		},
+		function (err) {
+			deferred.reject(err);
+		});
+	return deferred.promise;
+};
+
+var sendhomeBusinessUpdate = function (homeBusiness, mails, user) {
+	var deferred = q.defer();
+	bringTemplateData('/email/templatehomeBusinessUpdate.html')
+		.then(function (body) {
+			var url = config.SERVER_URL;
+
+			body = body.replace('<emailUrl>', url);
+			body = body.replace('<createdDate>', moment(homeBusiness.date).format('MM/DD/YYYY'));
+			body = body.replace('<clientCompany>', homeBusiness.client.company ? homeBusiness.client.company.entity.name : 'None');
+			body = body.replace('<clientBranch>', homeBusiness.client.branch ? homeBusiness.client.branch.name : 'None');
+			body = body.replace('<customer>', homeBusiness.customer || 'None');
+			body = body.replace('<customerPhone>', homeBusiness.phone ? (homeBusiness.phone.number || '') : 'None');
+			body = body.replace('<hor>', homeBusiness.hor);
+			body = body.replace('<acserial>', homeBusiness.acserial || '');
+			body = body.replace('<ACtype>', homeBusiness.ACType.item || '');
+			body = body.replace('<pono>', homeBusiness.pono || '');
+			body = body.replace('<contract>', homeBusiness.contract || '');
+			body = body.replace('<clientName>', homeBusiness.client.entity.fullName);
+			body = body.replace('<clientPhone>', homeBusiness.client && homeBusiness.client.branch && homeBusiness.client.branch.phones && homeBusiness.client.branch.phones.length > 0 ? homeBusiness.client.branch.phones[0].number : 'None');
+			body = body.replace('<clientMail>', homeBusiness.client.account.email);
+			body = body.replace('<clientAddress>', homeBusiness.siteAddress.address1 + ', ' + homeBusiness.siteAddress.city.description + ', ' + homeBusiness.siteAddress.state.description + ' ' + homeBusiness.siteAddress.zipcode);
+			body = body.replace('<issue>', homeBusiness.issue || 'None');
+			body = body.replace('<comment>', homeBusiness.comment || 'None');
+
+			var changesByUser = '';
+			changesByUser += (user.entity.fullName || user.entity.name) + '<br/> Changes: ';
+			var fieldsChanged = '';
+			if (homeBusiness.fieldsChanged) {
+				for (var i = 0; i < homeBusiness.fieldsChanged.length; i++) {
+					if (homeBusiness.fieldsChanged[i].by != user._id)
+						continue;
+					fieldsChanged += homeBusiness.fieldsChanged[i].field;
+					if (i != homeBusiness.fieldsChanged.length - 1) {
+						fieldsChanged += ', ';
+					}
+				}
+			}
+			var addedItems = '';
+			if (homeBusiness.addedItems) {
+				for (var i = 0; i < homeBusiness.addedItems.length; i++) {
+					addedItems += homeBusiness.addedItems[i].description;
+					if (i != homeBusiness.addedItems.length - 1) {
+						addedItems += ', ';
+					}
+				}
+			}
+
+			var removedItems = '';
+			if (homeBusiness.removedItems) {
+				for (var i = 0; i < homeBusiness.removedItems.length; i++) {
+					removedItems += homeBusiness.removedItems[i].description;
+					if (i != homeBusiness.removedItems.length - 1) {
+						removedItems += ', ';
+					}
+				}
+			}
+
+			changesByUser += fieldsChanged == '' ? 'None' : fieldsChanged;
+			changesByUser += addedItems == '' ? '' : '<br/> Added Items: ' + addedItems;
+			changesByUser += removedItems == '' ? '' : '<br/> Removed Items: ' + removedItems;
+			body = body.replace('<client>', changesByUser);
+			var contacts = '';
+			for (var i = 0; i < homeBusiness.contacts.length; i++) {
+				if (homeBusiness.contacts[i].name)
+					contacts += '<b>Contact #' + (i + 1) + ':&nbsp;</b>' + homeBusiness.contacts[i].name + '.&nbsp;<br/><b>Phone(' + homeBusiness.contacts[i].phoneType.description + '):</b>&nbsp;' + homeBusiness.contacts[i].number + '<br/>';
+			}
+			body = body.replace('<contacts>', contacts || '');
+
+			var company = '' + (homeBusiness && homeBusiness.client && homeBusiness.client.company && homeBusiness.client.company.entity ? homeBusiness.client.company.entity.name : 'Not Defined');
+			var branch = homeBusiness && homeBusiness.client && homeBusiness.client.branch ? '' + homeBusiness.client.branch.name : '' + homeBusiness.client.entity.fullName;
+			var subject = 'Home & Business: ' + homeBusiness.hor + ' | ' + company + ' | ' + branch;
+
+			mails = _.uniq(mails);
+			sendMail(mails.join(', '), subject, body, true, null, null, null, 'mf@mobileonecontainers.com')
+				.then(function (response) {
+					deferred.resolve(response);
+				},
+				function (err) {
+					deferred.reject(err);
+				});
+		},
+		function (err) {
+			deferred.reject(err);
+		});
+	return deferred.promise;
+};
+
+var sendhomeBusinessDelete = function (homeBusiness, mails, dirname) {
+	var deferred = q.defer();
+	bringTemplateData('/homeBusinessDelete.html')
+		.then(function (body) {
+			var url = config.SERVER_URL;
+			body = body.replace('<emailUrl>', url);
+			body = body.replace('<createdDate>', moment(homeBusiness.date).format('MM/DD/YYYY'));
+			body = body.replace('<createdBy>', homeBusiness.createdBy.entity ? homeBusiness.createdBy.entity.fullName : '');
+			body = body.replace('<clientCompany>', homeBusiness.client.company ? homeBusiness.client.company.entity.name : 'None');
+			body = body.replace('<clientBranch>', homeBusiness.client.branch ? homeBusiness.client.branch.name : 'None');
+			body = body.replace('<customer>', homeBusiness.customer || 'None');
+			body = body.replace('<customerPhone>', homeBusiness.phone ? (homeBusiness.phone.number || '') : 'None');
+			body = body.replace('<hor>', homeBusiness.hor);
+			body = body.replace('<acserial>', homeBusiness.acserial || '');
+			body = body.replace('<ACtype>', homeBusiness.ACType.item || '');
+			body = body.replace('<pono>', homeBusiness.pono || '');
+			body = body.replace('<contract>', homeBusiness.contract || '');
+			body = body.replace('<clientName>', homeBusiness.client.entity.fullName);
+			body = body.replace('<clientPhone>', homeBusiness.client && homeBusiness.client.branch && homeBusiness.client.branch.phones && homeBusiness.client.branch.phones.length > 0 ? homeBusiness.client.branch.phones[0].number : 'None');
+			body = body.replace('<clientMail>', homeBusiness.client.account.email);
+			body = body.replace('<clientAddress>', homeBusiness.siteAddress.address1 + ', ' + homeBusiness.siteAddress.city.description + ', ' + homeBusiness.siteAddress.state.description + ' ' + homeBusiness.siteAddress.zipcode);
+			body = body.replace('<issue>', homeBusiness.issue || 'None');
+			body = body.replace('<comment>', homeBusiness.comment || 'None');
+			var contacts = '';
+			for (var i = 0; i < homeBusiness.contacts.length; i++) {
+				if (homeBusiness.contacts[i].name)
+					contacts += '<b>Contact #' + (i + 1) + ':&nbsp;</b>' + (homeBusiness.contacts[i].name || '') + '.&nbsp;<br/><b>Phone(' + (homeBusiness.contacts[i].phoneType.description || '') + '):</b>&nbsp;' + (homeBusiness.contacts[i].number || '') + '<br/>';
+			}
+			body = body.replace('<contacts>', contacts || '');
+			var company = '' + (homeBusiness && homeBusiness.client && homeBusiness.client.company && homeBusiness.client.company.entity ? homeBusiness.client.company.entity.name : 'Not Defined');
+			var branch = homeBusiness && homeBusiness.client && homeBusiness.client.branch ? '' + homeBusiness.client.branch.name : '' + homeBusiness.client.entity.fullName;
+			var subject = 'DELETED - Home & Business: ' + homeBusiness.hor + ' | ' + company + ' | ' + branch;
+
+			var homeBusinessAttachments = [];
+			if (homeBusiness.photos) {
+				for (var i = 0; i < homeBusiness.photos.length; i++) {
+					var photoDir = dirname + '/public/app' + homeBusiness.photos[i].url;
+					homeBusinessAttachments.push({
+						filename: homeBusiness.photos[i].name,
+						contentType: homeBusiness.photos[i].type,
+						path: photoDir
+					});
+				}
+			}
+			mails = _.uniq(mails);
+			sendMail('mf@mobileonecontainers.com', subject, body, true, homeBusinessAttachments, null, null, 'mf@mobileonecontainers.com')
+				.then(function (response) {
+					deferred.resolve(response);
+				},
+				function (err) {
+					deferred.reject(err);
+				});
+		},
+		function (err) {
+			deferred.reject(err);
+		});
+	return deferred.promise;
+};
+
 exports.sendInvoice = sendInvoice;
 exports.sendInvoiceUpdate = sendInvoiceUpdate;
 exports.sendInvoiceDelete = sendInvoiceDelete;
@@ -997,3 +1420,9 @@ exports.sendDeliveryOrder = sendDeliveryOrder;
 exports.sendDeliveryOrderUpdate = sendDeliveryOrderUpdate;
 exports.sendQuotes = sendQuotes
 exports.sendDeliveryOrderDelete = sendDeliveryOrderDelete;
+exports.sendSetupTearDown = sendSetupTearDown;
+exports.sendSetupTearDownUpdate = sendSetupTearDownUpdate;
+exports.sendSetupTearDownDelete = sendSetupTearDownDelete;
+exports.sendhomeBusiness = sendhomeBusiness
+exports.sendhomeBusinessUpdate = sendhomeBusinessUpdate;
+exports.sendhomeBusinessDelete = sendhomeBusinessDelete 

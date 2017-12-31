@@ -8,28 +8,35 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-	.controller('ServiceOrderCtrl', function ($scope, $rootScope, $location, $window, toaster, User, statusList, serviceOrder, Item, dialogs, $q, Branch, CrewCollection, ItemDefault) {
-		$scope.serviceOrder = serviceOrder;
+	.controller('homeBusinessCtrl', function ($scope, $rootScope, $location, $window, toaster, User, statusList, homeBusiness, Item, dialogs, $q, Branch, CrewCollection, ItemDefault) {
+	console.log(homeBusiness)
+		$scope.homeBusiness = homeBusiness;
 		$scope.CrewCollection = CrewCollection.data
 		$scope.Math = $window.Math;
 		
 		$scope.addedItem = [];
-		$scope.serviceOrder.addedItems = $scope.serviceOrder.addedItems ? $scope.serviceOrder.addedItems : [];
-		$scope.serviceOrder.removedItems = $scope.serviceOrder.removedItems ? $scope.serviceOrder.removedItems : [];
+		$scope.homeBusiness.addedItems = $scope.homeBusiness.addedItems ? $scope.homeBusiness.addedItems : [];
+		$scope.homeBusiness.removedItems = $scope.homeBusiness.removedItems ? $scope.homeBusiness.removedItems : [];
 		$scope.Crewadded = []
 		$scope.CrewLeaderSelected = []
 		$scope.crewHeader = []
 		$scope.crewHeaderAdded = []
 		$scope.CrewHeaderSel = ""
 		$scope.statusTech = {}
-		$scope.serviceOrder.quotes = 0
+		$scope.homeBusiness.quotes = 0
 		
 		$scope.items = [];
 		$scope.params = {};
 		$scope.branches = [];
 
-		if ($scope.serviceOrder.crewHeader != undefined) {
-			$scope.crewHeaderAdded = $scope.serviceOrder.crewHeader
+		$scope.list = [
+			{ item: 'Bard' },
+			{ item: 'Capacity' },
+			{ item: 'Window' },			
+		]
+
+		if ($scope.homeBusiness.crewHeader != undefined) {
+			$scope.crewHeaderAdded = $scope.homeBusiness.crewHeader
 		}
 
 		$scope.readOnly = $rootScope.userData.role._id != 1;
@@ -41,7 +48,7 @@ angular.module('MobileCRMApp')
 		}
 
 		if ($rootScope.userData.role._id != 1 && $rootScope.userData.role._id != 5) {
-			$scope.serviceOrder.client = new User($rootScope.userData);
+			$scope.homeBusiness.client = new User($rootScope.userData);
 		}
 		$scope.listStatus = statusList;
 		$scope.waiting = false;
@@ -73,13 +80,13 @@ angular.module('MobileCRMApp')
 		$scope.addresses = [];
 		var address = {};
 
-		var originalPhotos = $scope.serviceOrder.photos;
-		var originalContacts = $scope.serviceOrder.contacts;
-		var originalSiteAddress = $scope.serviceOrder.siteAddress;
+		var originalPhotos = $scope.homeBusiness.photos;
+		var originalContacts = $scope.homeBusiness.contacts;
+		var originalSiteAddress = $scope.homeBusiness.siteAddress;
 
-		// if (!$scope.serviceOrder.siteAddressFrom) {
-		// 	console.log($scope.serviceOrder.siteAddressFrom)
-		// 	$scope.serviceOrder.siteAddressFrom = $scope.serviceOrder.client && $scope.serviceOrder.client.branch ? $scope.serviceOrder.client.branch.addresses[0] : {};
+		// if (!$scope.homeBusiness.siteAddressFrom) {
+		// 	console.log($scope.homeBusiness.siteAddressFrom)
+		// 	$scope.homeBusiness.siteAddressFrom = $scope.homeBusiness.client && $scope.homeBusiness.client.branch ? $scope.homeBusiness.client.branch.addresses[0] : {};
 		// }
 
 		$scope.getBranches = function () {
@@ -99,16 +106,16 @@ angular.module('MobileCRMApp')
 		};
 
 		$scope.recalculate = function () {
-			if ($scope.serviceOrder.siteAddressFrom.address1 && $scope.serviceOrder.siteAddress.address1) {
-				var distance = getDistance($scope.serviceOrder.siteAddress, $scope.serviceOrder.siteAddressFrom);
-				// $scope.serviceOrder.siteAddress.distanceFrom = $scope.serviceOrder.siteAddressFrom.address1 && $scope.serviceOrder.siteAddress.address1 ? distance : 0;
+			if ($scope.homeBusiness.siteAddressFrom.address1 && $scope.homeBusiness.siteAddress.address1) {
+				var distance = getDistance($scope.homeBusiness.siteAddress, $scope.homeBusiness.siteAddressFrom);
+				// $scope.homeBusiness.siteAddress.distanceFrom = $scope.homeBusiness.siteAddressFrom.address1 && $scope.homeBusiness.siteAddress.address1 ? distance : 0;
 			}
 		}
 
-		$scope.$watch("serviceOrder.siteAddress.distanceFrom",function(newValue,oldValue) {
-			for (var row = 0; row < $scope.serviceOrder.items.length; row++) {
-				if ($scope.serviceOrder.items[row]._id == 253) {
-					$scope.serviceOrder.items[row].quantity = Number(newValue);
+		$scope.$watch("homeBusiness.siteAddress.distanceFrom",function(newValue,oldValue) {
+			for (var row = 0; row < $scope.homeBusiness.items.length; row++) {
+				if ($scope.homeBusiness.items[row]._id == 253) {
+					$scope.homeBusiness.items[row].quantity = Number(newValue);
 				}
 			}
 		});
@@ -143,9 +150,9 @@ angular.module('MobileCRMApp')
 						result = 0;
 					}
 
-					if ($scope.serviceOrder.siteAddressFrom && $scope.serviceOrder.siteAddress) {
+					if ($scope.homeBusiness.siteAddressFrom && $scope.homeBusiness.siteAddress) {
 
-						$scope.serviceOrder.siteAddress.distanceFrom = $scope.serviceOrder.siteAddressFrom.address1 && $scope.serviceOrder.siteAddress.address1 ? parseFloat((result * 0.00062137).toFixed(2)) : 0;
+						$scope.homeBusiness.siteAddress.distanceFrom = $scope.homeBusiness.siteAddressFrom.address1 && $scope.homeBusiness.siteAddress.address1 ? parseFloat((result * 0.00062137).toFixed(2)) : 0;
 						initMap(p1coord, p2coord);
 						$scope.$apply();
 					}
@@ -194,8 +201,8 @@ angular.module('MobileCRMApp')
 
 			// Retrieve the start and end locations and create a DirectionsRequest using
 			// WALKING directions.
-			var p1coord = new google.maps.LatLng($scope.serviceOrder.siteAddressFrom.latitude, $scope.serviceOrder.siteAddressFrom.longitude);
-			var p2coord = new google.maps.LatLng($scope.serviceOrder.siteAddress.latitude, $scope.serviceOrder.siteAddress.longitude);
+			var p1coord = new google.maps.LatLng($scope.homeBusiness.siteAddressFrom.latitude, $scope.homeBusiness.siteAddressFrom.longitude);
+			var p2coord = new google.maps.LatLng($scope.homeBusiness.siteAddress.latitude, $scope.homeBusiness.siteAddress.longitude);
 
 			directionsService.route({
 				origin: p1coord,
@@ -272,72 +279,73 @@ angular.module('MobileCRMApp')
 			if (client && client.company) {
 				$scope.wsFilterItem = $rootScope.userData.role._id != 1 && $rootScope.userData.role._id != 5 ? { 'companies._id': $rootScope.userData.company._id } : { 'companies._id': client.company._id };
 
-				if (!$scope.serviceOrder.siteAddressFrom) {
-					$scope.serviceOrder.siteAddressFrom = $scope.serviceOrder.client.branch ? $scope.serviceOrder.client.branch.addresses[0] : {};
+				if (!$scope.homeBusiness.siteAddressFrom) {
+					$scope.homeBusiness.siteAddressFrom = $scope.homeBusiness.client.branch ? $scope.homeBusiness.client.branch.addresses[0] : {};
 				}
 			}
 
-			if (serviceOrder.client == undefined) {
-				$scope.serviceOrder.items = [];
+			if (homeBusiness.client == undefined) {
+				$scope.homeBusiness.items = [];
 			} else {
-				if ($scope.serviceOrder.client._id) {
-					var Serv = false 
-
-					for (var row = 0; row < $scope.serviceOrder.items.length; row++) {
-						var code = $scope.serviceOrder.items[row].code;
-						if (ItemDefault.data[0].code == code) {
-							Serv = true;
+				if ($scope.homeBusiness.client._id) {
+					var Serv = false
+					if ($scope.homeBusiness.quotes > 0) {
+						for (var row = 0; row < $scope.homeBusiness.items.length; row++) {
+							var code = $scope.homeBusiness.items[row].code;
+							if (ItemDefault.data[0].code == code) {
+								Serv = true;
+							}
+						}
+						if (Serv == false) {
+							$scope.homeBusiness.items.unshift(ItemDefault.data[0]);
 						}
 					}
-					if (Serv == false) {
-						$scope.serviceOrder.items.unshift(ItemDefault.data[0]);
-					}
-				}
+				}	
 			}
 		};
 
 		$scope.addContact = function () {
-			$scope.serviceOrder.contacts.push({})
+			$scope.homeBusiness.contacts.push({})
 			$scope.changed("Contact")
 		};
 
 		$scope.removeContact = function (index) {
-			$scope.serviceOrder.contacts.splice(index, 1);
+			$scope.homeBusiness.contacts.splice(index, 1);
 			$scope.changed("Contact")
 		};
 
 		$scope.addItem = function (item) {
-			$scope.serviceOrder.items.unshift(item);
+			$scope.homeBusiness.items.unshift(item);
 			item.crewLeaderCol = $scope.addedItem
 			item.CrewLeaderSelected = $scope.CrewLeaderSelected;
 			$scope.params.item = {};
 			$scope.changed('Items');
-			$scope.serviceOrder.addedItems.push(item);
+			$scope.homeBusiness.addedItems.push(item);
 		};
 
 		$scope.removeItem = function (index, item) {
-			$scope.serviceOrder.items.splice(index, 1);
+			$scope.homeBusiness.items.splice(index, 1);
 			$scope.changed('Items');
-			$scope.serviceOrder.removedItems.push(item);
+			$scope.homeBusiness.removedItems.push(item);
 		};
 
 		$scope.setItem = function (item, index) {
-			$scope.serviceOrder.items[index] = new Item(item);
+			$scope.homeBusiness.items[index] = new Item(item);
 		};
 
 		$scope.changed = function (field) {
 
-			if ($scope.serviceOrder._id /*&& $rootScope.userData.role._id != 1*/) {
+			if ($scope.homeBusiness._id /*&& $rootScope.userData.role._id != 1*/) {
 				var isHere = false;
-				$scope.serviceOrder.fieldsChanged = $scope.serviceOrder.fieldsChanged || [];
-				for (var i = 0; i < $scope.serviceOrder.fieldsChanged.length; i++) {
-					if ($scope.serviceOrder.fieldsChanged[i].field == field) {
+				$scope.homeBusiness.fieldsChanged = $scope.homeBusiness.fieldsChanged || [];
+				for (var i = 0; i < $scope.homeBusiness.fieldsChanged.length; i++) {
+					if ($scope.homeBusiness.fieldsChanged[i].field == field) {
 						isHere = true;
 						break;
 					}
 				}
 				if (!isHere) {
-					$scope.serviceOrder.fieldsChanged.push({ field: field + (field === "Status" ? " - " + $scope.serviceOrder.status.description : ""), by: $rootScope.userData._id });
+					$scope.homeBusiness.fieldsChanged.push({ field: field + (field === "Status" ? " - " + $scope.homeBusiness.status.description : ""), by: $rootScope.userData._id });
 				}
 			}
 
@@ -349,11 +357,11 @@ angular.module('MobileCRMApp')
 		};
 
 		$scope.isChanged = function (field) {
-			if ($scope.serviceOrder._id && $rootScope.userData.role._id == 1) {
+			if ($scope.homeBusiness._id && $rootScope.userData.role._id == 1) {
 				var isHere = false;
-				$scope.serviceOrder.fieldsChanged = $scope.serviceOrder.fieldsChanged || [];
-				for (var i = 0; i < $scope.serviceOrder.fieldsChanged.length; i++) {
-					if ($scope.serviceOrder.fieldsChanged[i].field == field) {
+				$scope.homeBusiness.fieldsChanged = $scope.homeBusiness.fieldsChanged || [];
+				for (var i = 0; i < $scope.homeBusiness.fieldsChanged.length; i++) {
+					if ($scope.homeBusiness.fieldsChanged[i].field == field) {
 						isHere = true;
 						break;
 					}
@@ -364,7 +372,7 @@ angular.module('MobileCRMApp')
 		};
 
 		$scope.isDisabled = function () {
-			return ($rootScope.userData.role._id != 1 && $scope.serviceOrder.status._id == 3) || $scope.userData.role._id == 5;
+			return ($rootScope.userData.role._id != 1 && $scope.homeBusiness.status._id == 3) || $scope.userData.role._id == 5;
 		};
 
 		$scope.uploadFiles = function (files) {
@@ -392,37 +400,37 @@ angular.module('MobileCRMApp')
 			}
 			$q.all(promises)
 				.then(function (urls) {
-					$scope.serviceOrder.photos = $scope.serviceOrder.photos || [];
-					$scope.serviceOrder.photos = $scope.serviceOrder.photos.concat(urls)
+					$scope.homeBusiness.photos = $scope.homeBusiness.photos || [];
+					$scope.homeBusiness.photos = $scope.homeBusiness.photos.concat(urls)
 				})
 		};
 
 		$scope.showPicture = function (index) {
-			$scope.serviceOrder.showPicture(index);
+			$scope.homeBusiness.showPicture(index);
 		};
 
 		$scope.removePhoto = function (index) {
-			$scope.serviceOrder.photos.splice(index, 1);
+			$scope.homeBusiness.photos.splice(index, 1);
 		};
 
 		$scope.addItemCollection = function () {
-			var dialog = dialogs.create('views/addItemCollection.html', 'AddItemCollectionCtrl', { client: $scope.serviceOrder.client });
+			var dialog = dialogs.create('views/addItemCollection.html', 'AddItemCollectionCtrl', { client: $scope.homeBusiness.client });
 			dialog.result
 				.then(function (res) {
-					//add items to collection serviceOrder.items
+					//add items to collection homeBusiness.items
 					for (var i = 0; i < res.length; i++) {
 						var isHere = -1;
-						for (var j = 0; j < $scope.serviceOrder.items.length; j++) {
-							if (res[i]._id == $scope.serviceOrder.items[j]._id) {
+						for (var j = 0; j < $scope.homeBusiness.items.length; j++) {
+							if (res[i]._id == $scope.homeBusiness.items[j]._id) {
 								isHere = j;
 								break;
 							}
 						}
-						if (isHere != -1 && $scope.serviceOrder.items[isHere].price == res[i].price) {
-							$scope.serviceOrder.items[isHere].quantity += res[i].quantity;
+						if (isHere != -1 && $scope.homeBusiness.items[isHere].price == res[i].price) {
+							$scope.homeBusiness.items[isHere].quantity += res[i].quantity;
 						}
 						else {
-							$scope.serviceOrder.items.unshift(res[i]);
+							$scope.homeBusiness.items.unshift(res[i]);
 						}
 					}
 
@@ -431,54 +439,54 @@ angular.module('MobileCRMApp')
 		};
 
 		$scope.recalculate = function () {
-			if ($scope.serviceOrder.siteAddress) {
-				$scope.serviceOrder.siteAddress.distanceFrom = $scope.serviceOrder.siteAddressFrom && $scope.serviceOrder.siteAddressFrom.address1 && $scope.serviceOrder.siteAddress && $scope.serviceOrder.siteAddress.address1 ? getDistance($scope.serviceOrder.siteAddress, $scope.serviceOrder.siteAddressFrom) : 0;
+			if ($scope.homeBusiness.siteAddress) {
+				$scope.homeBusiness.siteAddress.distanceFrom = $scope.homeBusiness.siteAddressFrom && $scope.homeBusiness.siteAddressFrom.address1 && $scope.homeBusiness.siteAddress && $scope.homeBusiness.siteAddress.address1 ? getDistance($scope.homeBusiness.siteAddress, $scope.homeBusiness.siteAddressFrom) : 0;
 			}
 
 		};
 
 		$scope.save = function (sendMail, sendTotech) {
 			$scope.waiting = true;
-			delete $scope.serviceOrder.client.account.password;
+			delete $scope.homeBusiness.client.account.password;
 			if (sendMail) {
-				$scope.serviceOrder.sendMail = true;
+				$scope.homeBusiness.sendMail = true;
 			} else {
-				$scope.serviceOrder.sendMail = false;
+				$scope.homeBusiness.sendMail = false;
 			}
 			if (sendTotech) {
 				if ($scope.crewHeaderAdded.length == 0) {
-					toaster.error('The Service Order couldn\'t be saved, please check if some required field is empty');
+					toaster.error('The Home & Business couldn\'t be saved, please check if some required field is empty');
 					$scope.waiting = false;
 					return
 				}
-				$scope.serviceOrder.sendTotech = true;
+				$scope.homeBusiness.sendTotech = true;
 			} else {
-				$scope.serviceOrder.sendTotech = false;
+				$scope.homeBusiness.sendTotech = false;
 			}
 
-			if (originalContacts != $scope.serviceOrder.contacts) {
+			if (originalContacts != $scope.homeBusiness.contacts) {
 				$scope.changed('Contacts');
 			}
 
-			if (originalPhotos != $scope.serviceOrder.photos) {
+			if (originalPhotos != $scope.homeBusiness.photos) {
 				$scope.changed('Photos');
 			}
-			if (originalSiteAddress.address1 != $scope.serviceOrder.siteAddress.address1) {
+			if (originalSiteAddress.address1 != $scope.homeBusiness.siteAddress.address1) {
 				$scope.changed('Site Address');
 			}
 				
-			$scope.serviceOrder.save()
+			$scope.homeBusiness.save()
 				.then(function (data) {
-					toaster.success('The Service Order was saved successfully');
-					$location.path('serviceOrderList')
+					toaster.success('The Home & Business was saved successfully');
+					$location.path('homeBusinessList')
 					$scope.waiting = false;
 				},
 				function (error) {
 					console.log(error);
 					if (error && error.errors && error.errors.error == "The object already exists") {
-						toaster.error('Service Order # Duplicated');
+						toaster.error('Home & Business # Duplicated');
 					} else {
-						toaster.error('The Service Order couldn\'t be saved, please check if some required field is empty');
+						toaster.error('The Home & Business couldn\'t be saved, please check if some required field is empty');
 					}
 					$scope.waiting = false;
 				});
@@ -487,39 +495,39 @@ angular.module('MobileCRMApp')
 		$scope.delete = function () {
 			var dlg = dialogs.confirm('Warning', 'Are you sure you want to delete?');
 			dlg.result.then(function (btn) {
-				$scope.serviceOrder.remove()
+				$scope.homeBusiness.remove()
 					.then(function () {
-						toaster.success('The service order was deleted successfully');
-						$location.path('/serviceOrderList')
+						toaster.success('The Home & Business was deleted successfully');
+						$location.path('/homeBusinessList')
 					})
 					.then(function () {
 						console.log(7899)
-						$scope.serviceOrder.sendDelete($scope.serviceOrder)
+						$scope.homeBusiness.sendDelete($scope.homeBusiness)
 					});
 			});
 		};
 
 		$scope.export = function () {
-			$scope.serviceOrder.download();
+			$scope.homeBusiness.download();
 		};
 
 		$scope.send = function () {
-			$scope.serviceOrder.send();
+			$scope.homeBusiness.send();
 		};
 
 		$scope.setNoInvoice = function () {
 			var array = [5, 7]
-			if (!$scope.serviceOrder.invoiceNumber || $scope.serviceOrder.invoiceNumber === "Pending Invoice" || $scope.serviceOrder.invoiceNumber === "No Invoice") {
-				if ($scope.serviceOrder.status._id === 5 || $scope.serviceOrder.status._id === 7) {
-					$scope.serviceOrder.invoiceNumber = "No Invoice";
+			if (!$scope.homeBusiness.invoiceNumber || $scope.homeBusiness.invoiceNumber === "Pending Invoice" || $scope.homeBusiness.invoiceNumber === "No Invoice") {
+				if ($scope.homeBusiness.status._id === 5 || $scope.homeBusiness.status._id === 7) {
+					$scope.homeBusiness.invoiceNumber = "No Invoice";
 				} else {
-					$scope.serviceOrder.invoiceNumber = "Pending Invoice";
+					$scope.homeBusiness.invoiceNumber = "Pending Invoice";
 				}
 			}
 		}
 
-		if (serviceOrder.client) {
-			$scope.clientChanged(serviceOrder.client);
+		if (homeBusiness.client) {
+			$scope.clientChanged(homeBusiness.client);
 		}
 
 		$scope.getBranches();
@@ -590,9 +598,9 @@ angular.module('MobileCRMApp')
 		$scope.changedCrewLeaderValue = function (item, CrewL) {
 			item.CrewLeaderSelected = CrewL;
 
-			for (let index = 0; index < $scope.serviceOrder.items.length; index++) {
-				if ($scope.serviceOrder.items[index]._id == item._id) {
-					$scope.serviceOrder.items[index] = item;
+			for (let index = 0; index < $scope.homeBusiness.items.length; index++) {
+				if ($scope.homeBusiness.items[index]._id == item._id) {
+					$scope.homeBusiness.items[index] = item;
 					break;
 				}
 			}
@@ -608,25 +616,25 @@ angular.module('MobileCRMApp')
 			}
 
 			$scope.crewHeaderAdded.push(item);
-			$scope.serviceOrder.crewHeader = $scope.crewHeaderAdded
+			$scope.homeBusiness.crewHeader = $scope.crewHeaderAdded
 			$scope.changed('Crew Leader');
 		}
 		$scope.crewHeaderRemove = function (index) {
 			$scope.crewHeaderAdded.splice(index, 1);
-			$scope.serviceOrder.crewHeader = $scope.crewHeaderAdded
+			$scope.homeBusiness.crewHeader = $scope.crewHeaderAdded
 			$scope.changed('Crew Leader');	
 		};
 
 		$scope.setAmountToZero = function (status) {
 			if (status._id == 5 || status._id == 7) {
-				for (var i=0; i<$scope.serviceOrder.items.length; i++) {
-					$scope.serviceOrder.items[i].originalPrice = $scope.serviceOrder.items[i].price;
-					$scope.serviceOrder.items[i].price = 0;
+				for (var i=0; i<$scope.homeBusiness.items.length; i++) {
+					$scope.homeBusiness.items[i].originalPrice = $scope.homeBusiness.items[i].price;
+					$scope.homeBusiness.items[i].price = 0;
 				}
 			} else {
-				for (var i=0; i<$scope.serviceOrder.items.length; i++) {
-					$scope.serviceOrder.items[i].price = $scope.serviceOrder.items[i].originalPrice ? $scope.serviceOrder.items[i].originalPrice : $scope.serviceOrder.items[i].price; 
-					delete $scope.serviceOrder.items[i].originalPrice;
+				for (var i=0; i<$scope.homeBusiness.items.length; i++) {
+					$scope.homeBusiness.items[i].price = $scope.homeBusiness.items[i].originalPrice ? $scope.homeBusiness.items[i].originalPrice : $scope.homeBusiness.items[i].price; 
+					delete $scope.homeBusiness.items[i].originalPrice;
 				}
 			}
 		}
@@ -643,8 +651,8 @@ angular.module('MobileCRMApp')
 
 		$scope.showHistory = function () {
 			var dialog = dialogs.create('views/historyModal.html', 'HistoryModalCtrl', {
-				unitno: $scope.serviceOrder.unitno,
-				_id: $scope.serviceOrder._id
+				unitno: $scope.homeBusiness.unitno,
+				_id: $scope.homeBusiness._id
 			});
 			dialog.result
 				.then(function (res) {

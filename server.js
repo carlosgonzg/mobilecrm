@@ -72,6 +72,8 @@ d.run(function () {
 	require('./api/ws/technicians')('/api/technicians', app, mail, __dirname);
 	require('./api/ws/deliveryOrder')('/api/deliveryOrder', app, mail, __dirname);
 	require('./api/ws/serviceQuotes')('/api/serviceQuotes', app, mail, __dirname);
+	require('./api/ws/SetupTearDown')('/api/SetupTearDown', app, mail, __dirname);
+	require('./api/ws/homeBusiness')('/api/homeBusiness', app, mail, __dirname);
 	//Inicializando Server
 	http.createServer(app).listen(config.APP_PORT, function () {
 		console.log("\n[*] Server Listening on port %d", config.APP_PORT);
