@@ -12,7 +12,8 @@ var config = {
 	},
 	production : {
 		APP_PORT : process.env.PORT || 80,
-		DB_URL: 'mmini:MobileMini2017*@ds139023-a0.mlab.com:39023/heroku_74tjnnf6?replicaSet=rs-ds139023',
+		//DB_URL: 'mmini:MobileMini2017*@ds139023-a0.mlab.com:39023/heroku_74tjnnf6?replicaSet=rs-ds139023',
+    DB_URL: 'mmini:MobileMini2017*@ds139023-a0.mlab.com:39023,ds139023-a1.mlab.com:39023/heroku_74tjnnf6?replicaSet=rs-ds139023',
 		DB_USER: 'mmini',
 		DB_PASS: 'MobileMini2017*',
 		SERVER_URL: 'https://mobileonecrm.herokuapp.com',
