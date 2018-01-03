@@ -9,11 +9,11 @@
  */
 angular.module('MobileCRMApp')
 	.controller('homeBusinessCtrl', function ($scope, $rootScope, $location, $window, toaster, User, statusList, homeBusiness, Item, dialogs, $q, Branch, CrewCollection, ItemDefault) {
-	console.log(homeBusiness)
+		console.log(homeBusiness)
 		$scope.homeBusiness = homeBusiness;
 		$scope.CrewCollection = CrewCollection.data
 		$scope.Math = $window.Math;
-		
+
 		$scope.addedItem = [];
 		$scope.homeBusiness.addedItems = $scope.homeBusiness.addedItems ? $scope.homeBusiness.addedItems : [];
 		$scope.homeBusiness.removedItems = $scope.homeBusiness.removedItems ? $scope.homeBusiness.removedItems : [];
@@ -24,15 +24,15 @@ angular.module('MobileCRMApp')
 		$scope.CrewHeaderSel = ""
 		$scope.statusTech = {}
 		$scope.homeBusiness.quotes = 0
-		
+
 		$scope.items = [];
 		$scope.params = {};
 		$scope.branches = [];
 
 		$scope.list = [
+			{ item: '' },
 			{ item: 'Bard' },
-			{ item: 'Capacity' },
-			{ item: 'Window' },			
+			{ item: 'Window Unit' },
 		]
 
 		if ($scope.homeBusiness.crewHeader != undefined) {
@@ -112,10 +112,12 @@ angular.module('MobileCRMApp')
 			}
 		}
 
-		$scope.$watch("homeBusiness.siteAddress.distanceFrom",function(newValue,oldValue) {
+		$scope.$watch("homeBusiness.siteAddress.distanceFrom", function (newValue, oldValue) {
 			for (var row = 0; row < $scope.homeBusiness.items.length; row++) {
+				console.log($scope.homeBusiness.items[row]._id)
 				if ($scope.homeBusiness.items[row]._id == 253) {
 					$scope.homeBusiness.items[row].quantity = Number(newValue);
+					console.log(4777)
 				}
 			}
 		});
@@ -300,7 +302,7 @@ angular.module('MobileCRMApp')
 							$scope.homeBusiness.items.unshift(ItemDefault.data[0]);
 						}
 					}
-				}	
+				}
 			}
 		};
 
@@ -366,7 +368,7 @@ angular.module('MobileCRMApp')
 						break;
 					}
 				}
-				return isHere ? 'changed' : ''; 
+				return isHere ? 'changed' : '';
 			}
 			return '';
 		};
@@ -474,7 +476,7 @@ angular.module('MobileCRMApp')
 			if (originalSiteAddress.address1 != $scope.homeBusiness.siteAddress.address1) {
 				$scope.changed('Site Address');
 			}
-				
+
 			$scope.homeBusiness.save()
 				.then(function (data) {
 					toaster.success('The Home & Business was saved successfully');
@@ -563,7 +565,7 @@ angular.module('MobileCRMApp')
 							var item = array[n];
 							if (selectedItem == item.itemid) {
 
-								if ($scope.crewHeaderAdded.length > 0 && $scope.CrewHeaderSel.length > 0 ) {
+								if ($scope.crewHeaderAdded.length > 0 && $scope.CrewHeaderSel.length > 0) {
 									if ($scope.crewHeaderAdded[0].name == element.entity.fullName) {
 										$scope.newItem = {
 											name: element.entity.fullName,
@@ -622,18 +624,18 @@ angular.module('MobileCRMApp')
 		$scope.crewHeaderRemove = function (index) {
 			$scope.crewHeaderAdded.splice(index, 1);
 			$scope.homeBusiness.crewHeader = $scope.crewHeaderAdded
-			$scope.changed('Crew Leader');	
+			$scope.changed('Crew Leader');
 		};
 
 		$scope.setAmountToZero = function (status) {
 			if (status._id == 5 || status._id == 7) {
-				for (var i=0; i<$scope.homeBusiness.items.length; i++) {
+				for (var i = 0; i < $scope.homeBusiness.items.length; i++) {
 					$scope.homeBusiness.items[i].originalPrice = $scope.homeBusiness.items[i].price;
 					$scope.homeBusiness.items[i].price = 0;
 				}
 			} else {
-				for (var i=0; i<$scope.homeBusiness.items.length; i++) {
-					$scope.homeBusiness.items[i].price = $scope.homeBusiness.items[i].originalPrice ? $scope.homeBusiness.items[i].originalPrice : $scope.homeBusiness.items[i].price; 
+				for (var i = 0; i < $scope.homeBusiness.items.length; i++) {
+					$scope.homeBusiness.items[i].price = $scope.homeBusiness.items[i].originalPrice ? $scope.homeBusiness.items[i].originalPrice : $scope.homeBusiness.items[i].price;
 					delete $scope.homeBusiness.items[i].originalPrice;
 				}
 			}
@@ -645,7 +647,7 @@ angular.module('MobileCRMApp')
 			if (chk == true) {
 				$scope.CrewHeaderSel = $scope.crewHeaderAdded[0].name
 			} else {
-				$scope.CrewHeaderSel = []				
+				$scope.CrewHeaderSel = []
 			}
 		}
 

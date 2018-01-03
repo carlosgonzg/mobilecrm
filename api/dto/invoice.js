@@ -253,13 +253,15 @@ Invoice.prototype.update = function (query, invoice, user, mail) {
 				} else {
 					var minMiles = initialMile;
 					var miles = invoice.items[index].quantity;
+					var cosTotalmiles = (miles - minMiles) * costPerMile + (InitPrice)
 
-					total += (miles - minMiles) * costPerMile + (InitPrice)
+					total += cosTotalmiles
+					invoice.items[index].price = cosTotalmiles
 
 					if (invoice.items[index].price == 0) {
 						var RInitPrice = Math.round(InitPrice * 100) / 100
 						invoice.items[index].price = RInitPrice
-					}
+					}					
 				}
 			} else if (invoice.items[index]._id == 806 && costPerHours > 0) {
 				total += (costPerHours * (invoice.items[index].quantity || 1));

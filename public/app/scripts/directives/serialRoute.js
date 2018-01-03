@@ -1,12 +1,13 @@
 angular.module('MobileCRMApp')
-    .directive('control', function ($compile) {    
+    .directive('serialRoute', function ($compile) {    
     return {
         restrict: 'E',
         scope: {
             ngModel: '=',
-            xtest: '@'
+            xtest: '@',
+            ngChange: '&'
         },
-        template: '<input class="form-control" id="{{xtest}}">',
+        template: '<input class="form-control" placeHolder="Serial Number" id="{{xtest}}">',
         replace: true,
         require: 'ngModel',
         link: function ($scope, elem, attr, ctrl) {
@@ -16,7 +17,6 @@ angular.module('MobileCRMApp')
                 val($scope.$parent.$eval(attr.ngModel));
 
             $compile(textField)($scope.$parent);
-            console.log(attr.ngModel)
         }
     };
 });

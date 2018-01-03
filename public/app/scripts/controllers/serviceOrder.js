@@ -109,6 +109,7 @@ angular.module('MobileCRMApp')
 			for (var row = 0; row < $scope.serviceOrder.items.length; row++) {
 				if ($scope.serviceOrder.items[row]._id == 253) {
 					$scope.serviceOrder.items[row].quantity = Number(newValue);
+					console.log(4777)
 				}
 			}
 		});
@@ -144,7 +145,6 @@ angular.module('MobileCRMApp')
 					}
 
 					if ($scope.serviceOrder.siteAddressFrom && $scope.serviceOrder.siteAddress) {
-
 						$scope.serviceOrder.siteAddress.distanceFrom = $scope.serviceOrder.siteAddressFrom.address1 && $scope.serviceOrder.siteAddress.address1 ? parseFloat((result * 0.00062137).toFixed(2)) : 0;
 						initMap(p1coord, p2coord);
 						$scope.$apply();

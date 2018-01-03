@@ -26,7 +26,7 @@ var a;
 		this.total = this.total || '';
 		this.items = this.items || [];
 		this.contacts = this.contacts || [{}, {}, {}];
-		this.ACType = this.ACType || { item: 'Bard' };
+		this.ACType = this.ACType || { item: '' };
 
 		for(var i = 0; i < this.items.length; i++){
 			this.items[i] = new Item(this.items[i]);
