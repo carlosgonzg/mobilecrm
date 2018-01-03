@@ -298,6 +298,27 @@ var app = angular
 					}
 				}
 			})
+			.when('/dashboard', {
+				templateUrl: 'views/dashboard.html',
+				controller: 'DashboardCtrl',
+				resolve: {
+					clients: function (User) {
+						return new User().filter({ 'role._id': { $ne: 1 } });
+					},
+					countries: function (Country) {
+						return new Country().find();
+					},
+					statusList: function (List) {
+						return List.get('status');
+					},
+					items: function (Item) {
+						return new Item().filter({});
+					},
+					companyList: function (Company) {
+						return new Company().filter({});
+					}
+				}
+			})
 			.when('/reportExpenses', {
 				templateUrl: 'views/reportExpenses.html',
 				controller: 'ReportExpensesCtrl',
