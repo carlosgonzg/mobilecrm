@@ -197,8 +197,8 @@
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
 							<label for="yardComment">{{homeBusiness.ACType.item}} Capacity</label>
-							<textarea id="yardComment" ng-model="homeBusiness.capacity" class="form-control">
-															</textarea>
+							<input type="text" name="Capacity" class="form-control" ng-model="homeBusiness.capacity" ng-class="isChanged('Capacity')"
+							 ng-change="changed('Capacity')">
 						</div>
 					</div>
 				</div>
