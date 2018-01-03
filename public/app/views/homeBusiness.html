@@ -211,7 +211,57 @@
 						</div>
 					</div>
 				</div>
+				<div class="col-sm-6">
+					<div class="col-xs-12 pull-right">
+						<div class="form-group">
+							<label for="pono">PO #</label>
+							<input type="text" class="form-control" ng-model="homeBusiness.pono" ng-class="isChanged('PO #')" ng-change="changed('PO #')"
+							 ng-disabled="isDisabled()">
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="col-xs-12 pull-right">
+						<div class="form-group">
+							<label for="date">AC Serial #</label>
+							<input type="text" class="form-control" ng-model="homeBusiness.acserial" ng-class="isChanged('AC Serial #')" ng-change="changed('AC Serial #')"
+							 ng-disabled="isDisabled()">
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="col-xs-12 pull-right">
+						<div class="checkbox">
+							<label>
+								<input type="checkbox" ng-model="homeBusiness.clientResponsibleCharges" ng-class="isChanged('Customer Responsible for Charges')"
+								 ng-change="changed('Customer Responsible for Charges')" id="clientResponsibleCharges" ng-disabled="isDisabled()"> Customer responsible for charges
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="col-xs-12 pull-right">
+						<div class="checkbox">
+							<label>
+								<input type="checkbox" ng-model="homeBusiness.partsFromTheYard" ng-class="isChanged('Parts from the Yard')" ng-change="changed('Parts from the Yard')"
+								 id="partsFromTheYard" ng-disabled="isDisabled()"> Parts from the yard
+							</label>
+						</div>
+					</div>
+					<div class="col-xs-12 pull-right " ng-if="homeBusiness.partsFromTheYard">
+						<div class="form-group">
+							<label for="yardComment">Parts from the Yard</label>
+							<textarea id="yardComment" ng-model="homeBusiness.yardComment" class="form-control">
+							</textarea>
+						</div>
+					</div>
+				</div>
+				<br>
+				<div class="col-xs-12 pull-right">
+					<div class="checkbox">
 
+					</div>
+				</div>
 				<div class="col-xs-12">
 					<div class="col-xs-12 pull-right">
 						<uib-accordion ng-disabled="userData.role._id == 5">
@@ -236,30 +286,17 @@
 						</uib-accordion>
 					</div>
 				</div>
-				<!-- <div class="col-xs-12">
-					<div class="col-xs-12 pull-right">
-						<uib-accordion>
-				 			<uib-accordion-group class="panel-default" heading="Address (From)">
-								<address-model ng-model="homeBusiness.siteAddressFrom" origin-point="homeBusiness.client.branch.addresses[0]" ng-class="isChanged('siteAddressFrom')" ng-change="changed('siteAddressFrom')" ng-disabled="isDisabled()"></address-model>
-							</uib-accordion-group>
-						</uib-accordion>
-					</div>
-				</div> -->
 				<div class="col-xs-12" ng-if="userData.role._id == 1">
 					<div class="col-xs-12 pull-right">
 						<uib-accordion>
 							<uib-accordion-group class="panel-default">
 								<uib-accordion-heading>
 									<span class="fa fa-map-pin fa-lg"> </span> From Branch Address
-
 									<small ng-if="homeBusiness.siteAddressFrom.address1">{{homeBusiness.siteAddressFrom.address1 }}, {{homeBusiness.siteAddressFrom.city.description}} </small>
 								</uib-accordion-heading>
-
-
 								<select ng-model="homeBusiness.siteAddressFrom" class="form-control" ng-class="isChanged('From Branch Address')" ng-change="changed('From Branch Address');recalculate()"
 								 ng-disabled="isDisabled()" ng-options="address as address.addressString for address in addresses track by address.address1">
 								</select>
-
 							</uib-accordion-group>
 						</uib-accordion>
 					</div>
@@ -272,76 +309,18 @@
 									<span class="fa fa-map-marker fa-lg"></span> To Customer Address
 									<small ng-if="homeBusiness.siteAddress.city">{{homeBusiness.siteAddress.address1 }}, {{homeBusiness.siteAddress.city.description}} </small>
 								</uib-accordion-heading>
-
 								<address-model ng-model="homeBusiness.siteAddress" origin-point="homeBusiness.siteAddressFrom" ng-class="isChanged('Customer Address')"
 								 ng-change="changed('Customer Address')" ng-disabled="isDisabled()" show-map="showMap"></address-model>
-
 							</uib-accordion-group>
 						</uib-accordion>
 					</div>
 				</div>
-				<!--
-				<div class="col-xs-12">
-					<div class="col-xs-12 pull-right">
-						<uib-accordion>
-				 			<uib-accordion-group class="panel-default" heading="Phone">
-								<phone-model ng-model="homeBusiness.phone" ng-class="isChanged('phone')" ng-change="changed('phone')" ng-disabled="isDisabled()"></phone-model>
-							</uib-accordion-group>
-						</uib-accordion>
-					</div>
-				</div> -->
 				<div class="col-sm-6">
-					<div class="col-xs-12 pull-right">
-						<div class="form-group">
-							<label for="pono">PO #</label>
-							<input type="text" class="form-control" ng-model="homeBusiness.pono" ng-class="isChanged('PO #')" ng-change="changed('PO #')"
-							 ng-disabled="isDisabled()">
-						</div>
-					</div>
-				</div>
-
-				<div class="col-sm-6">
-					<div class="col-xs-12 pull-right">
-						<div class="form-group">
-							<label for="date">AC Serial #</label>
-							<input type="text" class="form-control" ng-model="homeBusiness.acserial" ng-class="isChanged('AC Serial #')" ng-change="changed('AC Serial #')"
-							 ng-disabled="isDisabled()">
-						</div>
-					</div>
-				</div>
-
-
-				<div class="col-sm-6">
-					<div class="col-xs-12 pull-right">
-						<div class="checkbox">
-							<label>
-								<input type="checkbox" ng-model="homeBusiness.clientResponsibleCharges" ng-class="isChanged('Customer Responsible for Charges')"
-								 ng-change="changed('Customer Responsible for Charges')" id="clientResponsibleCharges" ng-disabled="isDisabled()"> Customer responsible for charges
-							</label>
-						</div>
-					</div>
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
 							<label for="distanceFrom">Service Miles (Miles)</label>
 							<input type="text" name="distanceFrom" class="form-control" ng-model="homeBusiness.siteAddress.distanceFrom" validator="required"
 							 ng-disabled="userData.role._id == 5" ng-class="isChanged('Service Miles')" ng-change="changed('Service Miles')">
-						</div>
-					</div>
-				</div>
-				<div class="col-sm-6">
-					<div class="col-xs-12 pull-right">
-						<div class="checkbox">
-							<label>
-								<input type="checkbox" ng-model="homeBusiness.partsFromTheYard" ng-class="isChanged('Parts from the Yard')" ng-change="changed('Parts from the Yard')"
-								 id="partsFromTheYard" ng-disabled="isDisabled()"> Parts from the yard
-							</label>
-						</div>
-					</div>
-					<div class="col-xs-12 pull-right " ng-if="homeBusiness.partsFromTheYard">
-						<div class="form-group">
-							<label for="yardComment">Parts from the Yard</label>
-							<textarea id="yardComment" ng-model="homeBusiness.yardComment" class="form-control">
-							</textarea>
 						</div>
 					</div>
 				</div>

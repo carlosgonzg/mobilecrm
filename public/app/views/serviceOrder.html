@@ -229,6 +229,57 @@
 						</div>
 					</div>
 				</div>
+				<div class="col-sm-6">
+					<div class="col-xs-12 pull-right">
+						<div class="form-group">
+							<label for="pono">ISO #</label>
+							<input type="text" class="form-control" ng-model="serviceOrder.isono" ng-class="isChanged('ISO #')" ng-change="changed('ISO #')"
+							 ng-disabled="isDisabled()">
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="col-xs-12 pull-right">
+						<div class="form-group">
+							<label for="date">Unit Size</label>
+							<input type="text" class="form-control" ng-model="serviceOrder.unitSize" ng-class="isChanged('Unit Size')" ng-change="changed('Unit Size')"
+							 ng-disabled="isDisabled()">
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="col-xs-12 pull-right">
+						<div class="checkbox">
+							<label>
+								<input type="checkbox" ng-model="serviceOrder.clientResponsibleCharges" ng-class="isChanged('Customer Responsible for Charges')"
+								 ng-change="changed('Customer Responsible for Charges')" id="clientResponsibleCharges" ng-disabled="isDisabled()"> Customer responsible for charges
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="col-xs-12 pull-right">
+						<div class="checkbox">
+							<label>
+								<input type="checkbox" ng-model="serviceOrder.partsFromTheYard" ng-class="isChanged('Parts from the Yard')" ng-change="changed('Parts from the Yard')"
+								 id="partsFromTheYard" ng-disabled="isDisabled()"> Parts from the yard
+							</label>
+						</div>
+					</div>
+					<div class="col-xs-12 pull-right " ng-if="serviceOrder.partsFromTheYard">
+						<div class="form-group">
+							<label for="yardComment">Parts from the Yard</label>
+							<textarea id="yardComment" ng-model="serviceOrder.yardComment" class="form-control">
+							</textarea>
+						</div>
+					</div>
+				</div>
+				<br>
+				<div class="col-xs-12 pull-right">
+					<div class="checkbox">
+				
+					</div>
+				</div>
 				<div class="col-xs-12">
 					<div class="col-xs-12 pull-right">
 						<uib-accordion ng-disabled="userData.role._id == 5">
@@ -253,15 +304,6 @@
 						</uib-accordion>
 					</div>
 				</div>
-				<!-- <div class="col-xs-12">
-					<div class="col-xs-12 pull-right">
-						<uib-accordion>
-				 			<uib-accordion-group class="panel-default" heading="Address (From)">
-								<address-model ng-model="serviceOrder.siteAddressFrom" origin-point="serviceOrder.client.branch.addresses[0]" ng-class="isChanged('siteAddressFrom')" ng-change="changed('siteAddressFrom')" ng-disabled="isDisabled()"></address-model>
-							</uib-accordion-group>
-						</uib-accordion>
-					</div>
-				</div> -->
 				<div class="col-xs-12" ng-if="userData.role._id == 1">
 					<div class="col-xs-12 pull-right">
 						<uib-accordion>
@@ -297,44 +339,8 @@
 						</uib-accordion>
 					</div>
 				</div>
-				<!--
-				<div class="col-xs-12">
-					<div class="col-xs-12 pull-right">
-						<uib-accordion>
-				 			<uib-accordion-group class="panel-default" heading="Phone">
-								<phone-model ng-model="serviceOrder.phone" ng-class="isChanged('phone')" ng-change="changed('phone')" ng-disabled="isDisabled()"></phone-model>
-							</uib-accordion-group>
-						</uib-accordion>
-					</div>
-				</div> -->
-				<div class="col-sm-6">
-					<div class="col-xs-12 pull-right">
-						<div class="form-group">
-							<label for="pono">ISO #</label>
-							<input type="text" class="form-control" ng-model="serviceOrder.isono" ng-class="isChanged('ISO #')" ng-change="changed('ISO #')"
-							 ng-disabled="isDisabled()">
-						</div>
-					</div>
-				</div>
 
 				<div class="col-sm-6">
-					<div class="col-xs-12 pull-right">
-						<div class="form-group">
-							<label for="date">Unit Size</label>
-							<input type="text" class="form-control" ng-model="serviceOrder.unitSize" ng-class="isChanged('Unit Size')" ng-change="changed('Unit Size')"
-							 ng-disabled="isDisabled()">
-						</div>
-					</div>
-				</div>
-				<div class="col-sm-6">
-					<div class="col-xs-12 pull-right">
-						<div class="checkbox">
-							<label>
-								<input type="checkbox" ng-model="serviceOrder.clientResponsibleCharges" ng-class="isChanged('Customer Responsible for Charges')"
-								 ng-change="changed('Customer Responsible for Charges')" id="clientResponsibleCharges" ng-disabled="isDisabled()"> Customer responsible for charges
-							</label>
-						</div>
-					</div>
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
 							<label for="distanceFrom">Service Miles (Miles)</label>
@@ -346,17 +352,12 @@
 				<div class="col-sm-6">
 					<div class="col-xs-12 pull-right">
 						<div class="checkbox">
-							<label>
-								<input type="checkbox" ng-model="serviceOrder.partsFromTheYard" ng-class="isChanged('Parts from the Yard')" ng-change="changed('Parts from the Yard')"
-								 id="partsFromTheYard" ng-disabled="isDisabled()"> Parts from the yard
-							</label>
+
 						</div>
 					</div>
 					<div class="col-xs-12 pull-right " ng-if="serviceOrder.partsFromTheYard">
 						<div class="form-group">
-							<label for="yardComment">Parts from the Yard</label>
-							<textarea id="yardComment" ng-model="serviceOrder.yardComment" class="form-control">
-							</textarea>
+
 						</div>
 					</div>
 				</div>
