@@ -42,11 +42,34 @@ var createInvoiceBody = function (obj, company, branch) {
 
 	// body = body.replace(/<clientState>/g, obj.sor ? (obj.siteAddress.state.description + ' ' + obj.siteAddress.zipcode || '') : (company.address.state.description + ' ' + company.address.zipcode || ''));
 	if (obj.dor) {
-		body = body.replace(/<clientAddress>/g, obj.dor ? obj.siteAddress.address1 : obj.client.branch.addresses.length > 0 ? obj.client.branch.addresses[0].address1 : company.address.address1 || '');
-		body = body.replace(/<clientState>/g, obj.dor ? (obj.siteAddress.city.description + ', ' + obj.siteAddress.state.id + ', ' + obj.siteAddress.zipcode || '') : obj.client.branch.addresses.length > 0 ? obj.client.branch.addresses[0].city.description + ', ' + obj.client.branch.addresses[0].state.id + ', ' + obj.client.branch.addresses[0].zipcode : (company.address.city.description + ', ' + company.address.state.id + ', ' + company.address.zipcode || ''));
+	
+		var addressfrom = "Address From : " + obj.siteAddressFrom.address1 + ', ' + obj.siteAddressFrom.city.description + ', ' + obj.siteAddressFrom.city.stateId + ', ' + obj.siteAddressFrom.country.description
+		var addressto = "<br /><br /> Address To : " + obj.siteAddress.address1 + ', ' + obj.siteAddress.city.description + ', ' + obj.siteAddress.city.stateId + ', ' + obj.siteAddress.country.description
+
+		var additionalrouteStart = obj.additionalRoute ? (obj.additionalRoute.Start ? 'Additional Route <br /><br />Start : ' + obj.additionalRoute.Start : "") : ""
+		var additionalRouteEnd = obj.additionalRoute ? (obj.additionalRoute.End ? 'End : ' + obj.additionalRoute.End : "") : "" 
+		var AddRoute = ""
+		var waypts = ""
+
+		for (let I = 0; I < obj.additionalRoute.waypts.length; I++) {
+			var N = I + 1;
+			const element = obj.additionalRoute.waypts[I];
+			waypts += 'Way Points # ' + N + ' - ' + element.location + ' <br /><br />'
+		}			
+
+		AddRoute = addressto + '<br /><br />' + additionalrouteStart + ' <br /><br />' + waypts + " " + additionalRouteEnd
+ 
+		body = body.replace(/<clientAddress>/g, addressfrom.replace(/, , /g, ""));
+		body = body.replace(/<clientState>/g, AddRoute.replace(/, , /g, ""));		
 	} else {
-		body = body.replace(/<clientAddress>/g, obj.sor ? obj.siteAddress.address1 : obj.client.branch.addresses.length > 0 ? obj.client.branch.addresses[0].address1 : company.address.address1 || '');
-		body = body.replace(/<clientState>/g, obj.sor ? (obj.siteAddress.city.description + ', ' + obj.siteAddress.state.id + ', ' + obj.siteAddress.zipcode || '') : obj.client.branch.addresses.length > 0 ? obj.client.branch.addresses[0].city.description + ', ' + obj.client.branch.addresses[0].state.id + ', ' + obj.client.branch.addresses[0].zipcode : (company.address.city.description + ', ' + company.address.state.id + ', ' + company.address.zipcode || ''));
+		var addressFrom = obj.sor ? obj.siteAddress.address1 : obj.client.branch.addresses.length > 0 ? obj.client.branch.addresses[0].address1 : company.address.address1 || ''
+		var addressTo = obj.sor ? (obj.siteAddress.city.description + ', ' + obj.siteAddress.state.id + ', ' + obj.siteAddress.zipcode || '') : obj.client.branch.addresses.length > 0 ? obj.client.branch.addresses[0].city.description + ', ' + obj.client.branch.addresses[0].state.id + ', ' + obj.client.branch.addresses[0].zipcode : (company.address.city.description + ', ' + company.address.state.id + ', ' + company.address.zipcode || '')
+
+		addressFrom = addressFrom.replace("undefined", "")
+		addressTo = addressTo.replace("undefined", "")
+
+		body = body.replace(/<clientAddress>/g, addressFrom ? "ADDRESS: " + addressFrom : "");
+		body = body.replace(/<clientState>/g, addressTo);
 	}
 
 	body = body.replace(/<clientPhone>/g, obj.phone.number || '');
@@ -631,6 +654,7 @@ var createQuotesBody = function (obj, company, branch) {
 	body = body.replace(/<comment>/g, obj.comment || '');
 	body = body.replace(/<clientCity>/g, obj.client && obj.client.branch ? (obj.client.branch.name || '') : '');
 	body = body.replace(/<labelDocument>/g, obj.serviceType.description);
+	body = body.replace(/<serialno>/g, obj.unitno || '');
 
 	//Inserting table of items
 	var total = 0;

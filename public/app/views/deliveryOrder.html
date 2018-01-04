@@ -84,6 +84,14 @@
 				<div class="col-sm-6">
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
+							<label for="ServiceType">Service Type</label>
+							<select class="form-control" ng-model="DeliveryOrder.ServiceType" id="category" ng-options="item as item.item for item in list track by item.item"></select>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="col-xs-12 pull-right">
+						<div class="form-group">
 							<label for="date">PO #</label>
 							<input type="text" class="form-control" ng-model="DeliveryOrder.pono" ng-class="isChanged('pono')" ng-change="changed('pono')"
 							/>
@@ -153,6 +161,7 @@
 						</div>
 					</div>
 				</div>
+
 				<div class="col-sm-6">
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
@@ -175,7 +184,7 @@
 				</div>
 
 
-				<div class="col-sm-6">
+				<div class="col-sm-6" ng-show="DeliveryOrder.ServiceType.item == 'Relocation'">
 					<div class="col-xs-12 pull-right">
 						<div class="checkbox">
 							<label>
@@ -319,7 +328,7 @@
 							</div>
 							<br/>
 							<div style="padding-left: 30px">
-								<button type="submit" class="btn btn-sm btn-primary update" id="submit" ng-click="resetRoute(2)">
+								<button type="submit" class="btn btn-sm btn-primary update" id="submit">
 									<i class="fa fa-plus"></i>
 									<span>Get Route</span>
 								</button>

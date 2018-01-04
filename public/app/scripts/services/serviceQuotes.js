@@ -26,7 +26,7 @@ angular.module('MobileCRMApp')
 			this.total = this.total || '';
 			this.items = this.items || [];
 			this.contacts = this.contacts || [{}, {}, {}];
-			this.serviceType = this.serviceType || { _id: 1, description: 'Service Order' };
+			this.serviceType = this.serviceType || { _id: 2, description: 'Work Order' };
 			this.approved = this.approved || 1;
 			this.quotes = this.quotes || 1;
 			this.quotesStatus = this.quotesStatus || 'Pending for Approval'

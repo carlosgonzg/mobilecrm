@@ -23,7 +23,7 @@ angular.module('MobileCRMApp')
 			controller: function ($scope, $rootScope, $timeout, dialogs, toaster, Loading, $window, Company, Branch, $location) {
 				$scope.list = [];
 				$scope.companies = [];
-				$scope.branches = [{_id:-1, name: "All Branches"}];
+				$scope.branches = [{ _id: -1, name: "All Branches" }];
 				$scope.currentElement = {};
 				$scope.objeto = new $scope.clase();
 				$scope.qty = 0;
@@ -39,17 +39,17 @@ angular.module('MobileCRMApp')
 					field: '_id'
 				};
 				$scope.invoiceTypeList = [
-					{_id: 'sor', description: 'Service Order'},
-					{_id: 'wor', description: 'Work Order'},
-					{_id: 'dor', description: 'Delivery Order'},
-					{_id: 'smo', description: 'Service Miles Only'},
-					{_id: 'All', description: 'All Types'}
+					{ _id: 'sor', description: 'Service Order' },
+					{ _id: 'wor', description: 'Work Order' },
+					{ _id: 'dor', description: 'Delivery Order' },
+					{ _id: 'smo', description: 'Service Miles Only' },
+					{ _id: 'All', description: 'All Types' }
 				];
 
 				var today = new Date();
 				$scope.filterDateOptions = {
 					fromDate: new Date(today.getFullYear(), today.getMonth() - 1, today.getDate()),
-					toDate: new Date(today.getFullYear(), today.getMonth(), today.getDate()+1),
+					toDate: new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1),
 					enabled: true
 				};
 
@@ -64,7 +64,7 @@ angular.module('MobileCRMApp')
 				var actualPath = $location.path();
 				if ($window.sessionStorage.params && actualPath === $window.sessionStorage.path) {
 					$scope.params = JSON.parse($window.sessionStorage.params);
-					var functionFields = _.where($scope.fields,{type:'function'})
+					var functionFields = _.where($scope.fields, { type: 'function' })
 					delete $window.sessionStorage.params;
 				}
 				else {
@@ -85,7 +85,7 @@ angular.module('MobileCRMApp')
 						branch: {}
 					};
 
-					var functionFields = _.where($scope.fields,{type:'function'})
+					var functionFields = _.where($scope.fields, { type: 'function' })
 
 					if ($scope.sortList == "-1") {
 						$scope.params.sort = {
@@ -98,7 +98,7 @@ angular.module('MobileCRMApp')
 					};
 
 					if ($scope.objeto.baseApiPath === '/api/invoice')
-						$scope.params['invoiceType'] = {_id:'All', description: 'All Types'};
+						$scope.params['invoiceType'] = { _id: 'All', description: 'All Types' };
 
 
 					if ($scope.filterDate && $scope.filterDateOptions.enabled) {
@@ -231,12 +231,12 @@ angular.module('MobileCRMApp')
 
 					$scope.objeto.paginatedSearch(pParams).then(function (result) {
 						if (result.data.length == 0) {
-						//	toaster.pop('error', 'Information', 'Couldn\'t load the items');
+							//	toaster.pop('error', 'Information', 'Couldn\'t load the items');
 						}
 						$scope.list = angular.copy(result.data);
 						//- Aqui se preparan las opciones para los Fields que son select
-						functionFields.forEach(function(field) {
-							$scope.list.forEach(function(obj) {
+						functionFields.forEach(function (field) {
+							$scope.list.forEach(function (obj) {
 								obj.temp = obj.temp || {};
 								obj.temp[field.name] = field.function(obj);
 								obj[field.name] = obj.temp[field.name];
@@ -366,7 +366,7 @@ angular.module('MobileCRMApp')
 							});
 					});
 				};
-				
+
 				$scope.matching = function (value) {
 					return (value === parseInt(value));
 				};
@@ -405,19 +405,22 @@ angular.module('MobileCRMApp')
 				};
 
 				$scope.getCompanies = function () {
-						new Company().find().then(function (result) {
-							$scope.companies = result.data;
-							$scope.companies.push({_id:-1, entity: {name:"All Companies"}})
-						})
+					new Company().find().then(function (result) {
+						$scope.companies.push({ _id: -1, entity: { name: "All Companies" } })
+
+						for (let index = 0; index < result.data.length; index++) {
+							$scope.companies.push({ _id: result.data[index]._id, entity: { name: result.data[index].entity.name } })
+						}
+					})
 				}
 
 				$scope.getBranches = function (company) {
 					$scope.branches = [];
-					var query = {'company._id': company._id};
-					new Branch().filter(query).then(function(result) {
-								$scope.branches = result.data;
-								$scope.branches.push({_id:-1, name: "All Branches"})
-							})
+					var query = { 'company._id': company._id };
+					new Branch().filter(query).then(function (result) {
+						$scope.branches = result.data;
+						$scope.branches.push({ _id: -1, name: "All Branches" })
+					})
 				}
 
 				$scope.filterByCompany = function () {
@@ -444,13 +447,13 @@ angular.module('MobileCRMApp')
 					delete $scope.params.filter.wor;
 					delete $scope.params.filter.dor;
 
-					if ($scope.params.invoiceType._id === 'sor') 
-						$scope.params.filter["sor"] = {$exists:true};
-					else if ($scope.params.invoiceType._id === 'wor') 
-						$scope.params.filter["wor"] = {$exists:true};
-					else if ($scope.params.invoiceType._id === 'dor') 
-						$scope.params.filter["dor"] = {$exists:true};
-					else if ($scope.params.invoiceType._id === 'smo') 
+					if ($scope.params.invoiceType._id === 'sor')
+						$scope.params.filter["sor"] = { $exists: true };
+					else if ($scope.params.invoiceType._id === 'wor')
+						$scope.params.filter["wor"] = { $exists: true };
+					else if ($scope.params.invoiceType._id === 'dor')
+						$scope.params.filter["dor"] = { $exists: true };
+					else if ($scope.params.invoiceType._id === 'smo')
 						$scope.params.filter["status._id"] = 8;
 
 					$scope.search();
@@ -486,8 +489,8 @@ angular.module('MobileCRMApp')
 				}
 
 				$scope.getCompanies();
-				$scope.params.company = {_id:-1,description: "All Companies"};
-				$scope.params.branch = {_id:-1,description: "All Branches"};
+				$scope.params.company = { _id: -1, description: "All Companies" };
+				$scope.params.branch = { _id: -1, description: "All Branches" };
 			}
 		};
 	});

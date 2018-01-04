@@ -29,6 +29,7 @@ angular.module('MobileCRMApp')
 			this.contacts = this.contacts || [{}, {}, {}];
 			this.additionalRoute = this.additionalRoute || {};
 			this.RouteMile = this.RouteMile || 0;
+			this.ServiceType = this.ServiceType || { item: 'Pickup' };
 
 			if ($rootScope.userData.role._id != 1 && $rootScope.userData.role._id != 5) {
 				this.invoiceNumber = 'Pending Invoice';

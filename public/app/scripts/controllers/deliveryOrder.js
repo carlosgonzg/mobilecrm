@@ -13,7 +13,6 @@ angular.module('MobileCRMApp')
 		$scope.item = ItemDefault;
 		$scope.Math = $window.Math;
 
-
 		LoadData()
 		ConcatenateAddress();
 
@@ -48,6 +47,12 @@ angular.module('MobileCRMApp')
 			$scope.DeliveryOrder.fromwriteAddress = true
 			$scope.DeliveryOrder.fromCompanyAddress = false
 		}
+
+		$scope.list = [
+			{ item: 'Pickup' },
+			{ item: 'Delivery' },
+			{ item: 'Relocation' },
+		]
 
 		$scope.DeliveryOrder.comments = $scope.DeliveryOrder.comments ? $scope.DeliveryOrder.comments : "Pickup ";
 		$scope.listStatus = statusList;
@@ -997,7 +1002,6 @@ angular.module('MobileCRMApp')
 			});
 
 			directionsDisplay.setMap(map);
-			
 			document.getElementById('submit').addEventListener('click', function () {
 				calculateAndShowRoute(directionsService, directionsDisplay);
 			});
@@ -1037,13 +1041,9 @@ angular.module('MobileCRMApp')
 						summaryPanel.innerHTML += route.legs[i].start_address + ' to ';
 						summaryPanel.innerHTML += route.legs[i].end_address + '<br>';
 						summaryPanel.innerHTML += '<strong>' + route.legs[i].distance.text + '</strong><br>';
-
 						var countID = routeSegment - 1
-
 						summaryPanel.innerHTML += "<div class='input-group' style='padding-left: 0px; padding-right: 0px; width: 99%; margin-botton: 5px' id='wrapper" + countID + "'></div>"
-
 						miles += parseFloat(route.legs[i].distance.text.replace(' mi', ''));
-
 						if ($scope.SerialNumberCol == undefined) {
 							$scope.SerialNumberCol = [
 								{ name: '' }
@@ -1165,7 +1165,6 @@ angular.module('MobileCRMApp')
 		}
 
 		$scope.building = function (divID, Count) {
-			console.log(1111)
 			var chart = angular.element(document.createElement('serial-Route'));
 			chart.attr('ng-model', "SerialNumberCol[" + Count + "].name");
 			chart.attr('ng-blur', "splitSerialNumber()");
@@ -1194,7 +1193,6 @@ angular.module('MobileCRMApp')
 			var str = serialN;
 			str = str.substring(0, str.length - 2)
 			$scope.DeliveryOrder.unitno = str
-			console.log(3333)
 		}
 
 		$scope.SetSerialNumber()
