@@ -44,20 +44,23 @@ var createInvoiceBody = function (obj, company, branch) {
 	if (obj.dor) {
 	
 		var addressfrom = "Address From : " + obj.siteAddressFrom.address1 + ', ' + obj.siteAddressFrom.city.description + ', ' + obj.siteAddressFrom.city.stateId + ', ' + obj.siteAddressFrom.country.description
-		var addressto = "<br /><br /> Address To : " + obj.siteAddress.address1 + ', ' + obj.siteAddress.city.description + ', ' + obj.siteAddress.city.stateId + ', ' + obj.siteAddress.country.description
-
-		var additionalrouteStart = obj.additionalRoute ? (obj.additionalRoute.Start ? 'Additional Route <br /><br />Start : ' + obj.additionalRoute.Start : "") : ""
-		var additionalRouteEnd = obj.additionalRoute ? (obj.additionalRoute.End ? 'End : ' + obj.additionalRoute.End : "") : "" 
+		var addressto = "<br /><br />Address To : " + obj.siteAddress.address1 + ', ' + obj.siteAddress.city.description + ', ' + obj.siteAddress.city.stateId + ', ' + obj.siteAddress.country.description
 		var AddRoute = ""
-		var waypts = ""
 
-		for (let I = 0; I < obj.additionalRoute.waypts.length; I++) {
-			var N = I + 1;
-			const element = obj.additionalRoute.waypts[I];
-			waypts += 'Way Points # ' + N + ' - ' + element.location + ' <br /><br />'
-		}			
+		if (obj.additionalRoute && obj.additionalRoute.waypts) {
+			var additionalrouteStart = obj.additionalRoute ? (obj.additionalRoute.Start ? 'Additional Route <br /><br />Start : ' + obj.additionalRoute.Start : "") : ""
+			var additionalRouteEnd = obj.additionalRoute ? (obj.additionalRoute.End ? 'End : ' + obj.additionalRoute.End : "") : ""
+			var waypts = ""
 
-		AddRoute = addressto + '<br /><br />' + additionalrouteStart + ' <br /><br />' + waypts + " " + additionalRouteEnd
+			for (let I = 0; I < obj.additionalRoute.waypts.length; I++) {
+				var N = I + 1;
+				const element = obj.additionalRoute.waypts[I];
+				waypts += 'Way Points # ' + N + ' - ' + element.location + ' <br /><br />'
+			}
+			AddRoute = addressto + '<br /><br />' + additionalrouteStart + ' <br /><br />' + waypts + " " + additionalRouteEnd
+		} else {
+			AddRoute = addressto
+		}		
  
 		body = body.replace(/<clientAddress>/g, addressfrom.replace(/, , /g, ""));
 		body = body.replace(/<clientState>/g, AddRoute.replace(/, , /g, ""));		
@@ -654,7 +657,15 @@ var createQuotesBody = function (obj, company, branch) {
 	body = body.replace(/<comment>/g, obj.comment || '');
 	body = body.replace(/<clientCity>/g, obj.client && obj.client.branch ? (obj.client.branch.name || '') : '');
 	body = body.replace(/<labelDocument>/g, obj.serviceType.description);
-	body = body.replace(/<serialno>/g, obj.unitno || '');
+
+	if (obj.serviceType._id == 4) {
+		body = body.replace(/<serialno>/g, obj.acserial || '');
+		body = body.replace(/<serialnoText>/g, 'AC Serial #');
+	} else {
+		body = body.replace(/<serialno>/g, obj.unitno || '');
+		body = body.replace(/<serialnoText>/g, 'Serial #');
+	}
+	
 
 	//Inserting table of items
 	var total = 0;

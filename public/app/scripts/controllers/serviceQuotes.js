@@ -8,7 +8,7 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-	.controller('ServiceQuotesCtrl', function ($scope, $rootScope, $location, toaster, User, serviceQuotes, Item, dialogs, $q, Branch, CrewCollection, ItemDefault, companies, ServiceOrder, WorkOrder, Company, SetupTearDown, homeBusiness) {
+	.controller('ServiceQuotesCtrl', function ($scope, $rootScope, $route, $location, toaster, User, serviceQuotes, Item, dialogs, $q, Branch, CrewCollection, ItemDefault, companies, ServiceOrder, WorkOrder, Company, SetupTearDown, homeBusiness) {
 		$scope.serviceQuotes = serviceQuotes;
 
 		$scope.CrewCollection = CrewCollection.data
@@ -65,6 +65,10 @@ angular.module('MobileCRMApp')
 
 		if ($rootScope.userData.role._id != 1 && $rootScope.userData.role._id != 5) {
 			$scope.serviceQuotes.client = new User($rootScope.userData);
+		}
+
+		if ($route.current.params.id && $scope.serviceQuotes.serviceType._id == 2) {
+			$scope.serviceQuotes.wor = $scope.serviceQuotes.quotesNumber
 		}
 
 		$scope.serviceTypeData = [{ _id: 1, description: 'Service Order' }, { _id: 2, description: 'Work Order' }, { _id: 3, description: 'Set up & Tear Down' }, { _id: 4, description: 'Home & Business' }]

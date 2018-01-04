@@ -44,8 +44,8 @@ angular.module('MobileCRMApp')
 		}
 
 		if ($scope.DeliveryOrder.fromwriteAddress == undefined) {
-			$scope.DeliveryOrder.fromwriteAddress = true
-			$scope.DeliveryOrder.fromCompanyAddress = false
+			$scope.DeliveryOrder.fromwriteAddress = false
+			$scope.DeliveryOrder.fromCompanyAddress = true
 		}
 
 		$scope.list = [
