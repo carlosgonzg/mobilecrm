@@ -274,7 +274,7 @@ angular.module('MobileCRMApp')
 
 		$scope.clientChanged = function (client) {
 			if (client && client.company) {
-				$scope.wsFilterItem =  { 'typeItem': 'Set UP' };
+				$scope.wsFilterItem =  { 'typeItem': 'Set Up' };
 
 				if (!$scope.SetupTearDown.siteAddressFrom) {
 					$scope.SetupTearDown.siteAddressFrom = $scope.SetupTearDown.client.branch ? $scope.SetupTearDown.client.branch.addresses[0] : {};
@@ -334,8 +334,8 @@ angular.module('MobileCRMApp')
 		$scope.changeItem = function(client){
 			 if (client && client.company) {
 				 $scope.SetupTearDown.items = []
-				if ($scope.SetupTearDown.typeItem.item == 'Set UP'){
-					$scope.wsFilterItem =  { 'typeItem': 'Set UP'}
+				if ($scope.SetupTearDown.typeItem.item == 'Set Up'){
+					$scope.wsFilterItem =  { 'typeItem': 'Set Up'}
 				}else{
 					$scope.wsFilterItem =  { 'typeItem': 'TearDown' }
 				} 
