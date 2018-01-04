@@ -54,7 +54,6 @@ angular.module('MobileCRMApp')
 			{ item: 'Relocation' },
 		]
 
-		$scope.DeliveryOrder.comments = $scope.DeliveryOrder.comments ? $scope.DeliveryOrder.comments : "Pickup ";
 		$scope.listStatus = statusList;
 		$scope.entranceList = EntranceList;
 		$scope.waiting = false;
@@ -1154,13 +1153,9 @@ angular.module('MobileCRMApp')
 		$scope.CommentProyect = function () {
 			var comment = ""
 			if ($scope.DeliveryOrder.Relocation == true) {
-				comment = "And Relocation"
-			}
-
-			if (DeliveryOrder.fromwriteAddress == true) {
-				$scope.DeliveryOrder.comments = "Pickup " + comment
+				$scope.DeliveryOrder.comments = $scope.DeliveryOrder.comments ? $scope.DeliveryOrder.comments : "Relocation ";
 			} else {
-				$scope.DeliveryOrder.comments = "Delivery " + comment
+				$scope.DeliveryOrder.comments = $scope.DeliveryOrder.comments.replace("Relocation","")
 			}
 		}
 
