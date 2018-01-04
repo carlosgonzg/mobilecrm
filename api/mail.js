@@ -68,7 +68,7 @@ var sendMail = function (to, subject, body, isHtmlBody, attached, cc, cco, reply
 	else {
 		mailOptions.attachments = [];
 	}
-/* 	 smtpTransport.sendMail(mailOptions, function (error, response) {
+ 	 smtpTransport.sendMail(mailOptions, function (error, response) {
 		if (error) {
 			console.log(error);
 			deferred.reject(error);
@@ -76,7 +76,7 @@ var sendMail = function (to, subject, body, isHtmlBody, attached, cc, cco, reply
 			console.log('Message sent');
 			deferred.resolve(response);
 		}
-	});  */
+	});  
 	return deferred.promise; 
 };
 
