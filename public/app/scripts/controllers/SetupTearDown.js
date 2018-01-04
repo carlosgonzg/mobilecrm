@@ -337,7 +337,7 @@ angular.module('MobileCRMApp')
 				if ($scope.SetupTearDown.typeItem.item == 'Set Up'){
 					$scope.wsFilterItem =  { 'typeItem': 'Set Up'}
 				}else{
-					$scope.wsFilterItem =  { 'typeItem': 'TearDown' }
+					$scope.wsFilterItem = { 'typeItem': 'Tear Down' }
 				} 
 		  } 
 		}
