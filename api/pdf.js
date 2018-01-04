@@ -43,8 +43,8 @@ var createInvoiceBody = function (obj, company, branch) {
 	// body = body.replace(/<clientState>/g, obj.sor ? (obj.siteAddress.state.description + ' ' + obj.siteAddress.zipcode || '') : (company.address.state.description + ' ' + company.address.zipcode || ''));
 	if (obj.dor) {
 	
-		var addressfrom = "Address From : " + obj.siteAddressFrom.address1 + ', ' + obj.siteAddressFrom.city.description + ', ' + obj.siteAddressFrom.city.stateId + ', ' + obj.siteAddressFrom.country.description
-		var addressto = "<br /><br />Address To : " + obj.siteAddress.address1 + ', ' + obj.siteAddress.city.description + ', ' + obj.siteAddress.city.stateId + ', ' + obj.siteAddress.country.description
+		var addressfrom = "From Address : " + obj.siteAddressFrom.address1 + ', ' + obj.siteAddressFrom.city.description + ', ' + obj.siteAddressFrom.city.stateId + ', ' + obj.siteAddressFrom.country.description
+		var addressto = "<br /><br />To Address : " + obj.siteAddress.address1 + ', ' + obj.siteAddress.city.description + ', ' + obj.siteAddress.city.stateId + ', ' + obj.siteAddress.country.description
 		var AddRoute = ""
 
 		if (obj.additionalRoute && obj.additionalRoute.waypts) {

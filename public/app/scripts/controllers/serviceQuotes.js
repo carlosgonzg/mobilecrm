@@ -301,6 +301,12 @@ angular.module('MobileCRMApp')
 				}
 			}
 
+			if (client && client.company) {
+				$scope.serviceQuotes.customer = $scope.serviceQuotes.client.company.entity.name
+			} else if (client && !client.company) {
+				$scope.serviceQuotes.customer = $scope.serviceQuotes.client.entity.fullName
+			}
+
 			if ($scope.serviceQuotes.client == undefined) {
 				$scope.serviceQuotes.items = [];
 			} else {
@@ -320,11 +326,16 @@ angular.module('MobileCRMApp')
 					}
 				}
 			}
-			var company = new Company(client.company);
-			company.quotes($scope.serviceQuotes.quotesNumber)
-				.then(function (sequence) {
-					$scope.serviceQuotes.quotesNumber = sequence;
-				});
+			if (client && client.company) {				
+				var company = new Company(client.company);
+				company.quotes($scope.serviceQuotes.quotesNumber)
+					.then(function (sequence) {
+						$scope.serviceQuotes.quotesNumber = sequence;
+					});
+			} else {
+				$scope.serviceQuotes.quotesNumber = "";
+				$scope.serviceQuotes.customer = ""
+			}
 		};
 
 		$scope.addContact = function () {
