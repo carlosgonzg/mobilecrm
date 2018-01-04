@@ -686,6 +686,7 @@ var sendDeliveryOrder = function (deliveryOrder, mails, dirname) {
 			body = body.replace('<customer>', deliveryOrder.customer || 'None');
 			body = body.replace('<customerPhone>', deliveryOrder.phone ? (deliveryOrder.phone.number || '') : 'None');
 			body = body.replace('<entrance>', deliveryOrder.typeTruck.description);
+			body = body.replace('<servicetype>', deliveryOrder.ServiceType.item);
 			body = body.replace('<pono>', deliveryOrder.pono || '');
 			body = body.replace('<pickupdate>', moment(deliveryOrder.pickupDate).format('MM/DD/YYYY'));
 			body = body.replace('<pickuptime>', moment(deliveryOrder.pickupTime).format('HH:mm'));
@@ -694,6 +695,7 @@ var sendDeliveryOrder = function (deliveryOrder, mails, dirname) {
 			body = body.replace('<deliveryAddress>', deliveryOrder.siteAddress ? deliveryOrder.siteAddress.address1 + ', ' + deliveryOrder.siteAddress.city.description + ', ' + deliveryOrder.siteAddress.state.description + ' ' + deliveryOrder.siteAddress.zipcode : '');
 			body = body.replace('<Clientcomment>', deliveryOrder.clientcomment || 'None');
 			body = body.replace('<comment>', deliveryOrder.comments || 'None');
+
 			var contacts = '';
 			for (var i = 0; i < deliveryOrder.contacts.length; i++) {
 				if (deliveryOrder.contacts[i].name)
