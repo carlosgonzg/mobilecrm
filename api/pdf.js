@@ -647,7 +647,7 @@ var createQuotesBody = function (obj, company, branch) {
 	body = body.replace(/<quotesNumber>/g, obj.quotesNumber || '');
 	//Company
 
-	body = body.replace(/{logoUrl}/g, 'file:///mobilecrm/public/app/images/mobileone.png' || '');
+	body = body.replace(/{logoUrl}/g, 'file:///' + __dirname + '/quotes/mobileone.png' || '');
 	body = body.replace(/<companyName>/g, company.entity.name || '');
 	body = body.replace(/<companyAddress>/g, company.address.address1 || '');
 	body = body.replace(/<companyState>/g, (company.address.state.description ? (company.address.state.description + ' ' + company.address.zipcode) || '' : ''));
