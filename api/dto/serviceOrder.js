@@ -203,7 +203,7 @@ ServiceOrder.prototype.update = function (query, serviceOrder, user, mail) {
 	var sendMail = serviceOrder.sendMail || false;
 	var sendMailTech = serviceOrder.sendTotech || false;
 
-	if (serviceOrder.serviceType && serviceOrder.serviceType._id == 1 && serviceOrder.quotes == 1) {
+	if (serviceOrder.serviceType && serviceOrder.serviceType._id == 1 && serviceOrder.quotes == 1 && (serviceOrder.fromQuotes || 0) == 0) {
 		_this.insert(serviceOrder, user, mail)
 		return d.promise;
 	}

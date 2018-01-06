@@ -430,7 +430,7 @@ angular.module('MobileCRMApp')
 			}
 
 		};
-
+		$scope.SetupTearDown.fromQuotes = 0
 		$scope.save = function (sendMail, sendTotech) {
 			$scope.waiting = true;
 			delete $scope.SetupTearDown.client.account.password;

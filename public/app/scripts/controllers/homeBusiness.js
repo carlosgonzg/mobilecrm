@@ -446,7 +446,7 @@ angular.module('MobileCRMApp')
 			}
 
 		};
-
+		$scope.homeBusiness.fromQuotes = 0
 		$scope.save = function (sendMail, sendTotech) {
 			$scope.waiting = true;
 			delete $scope.homeBusiness.client.account.password;

@@ -258,7 +258,7 @@ angular.module('MobileCRMApp')
 			} else {
 				$scope.workOrder.sendTotech = false;
 			}
-
+			$scope.workOrder.fromQuotes = 0 			
 			$scope.workOrder.save()
 				.then(function (data) {
 					toaster.success('The Work Order was saved successfully');

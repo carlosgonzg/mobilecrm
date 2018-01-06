@@ -77,13 +77,7 @@ angular.module('MobileCRMApp')
 		var originalContacts = $scope.serviceOrder.contacts;
 		var originalSiteAddress = $scope.serviceOrder.siteAddress;
 
-		// if (!$scope.serviceOrder.siteAddressFrom) {
-		// 	console.log($scope.serviceOrder.siteAddressFrom)
-		// 	$scope.serviceOrder.siteAddressFrom = $scope.serviceOrder.client && $scope.serviceOrder.client.branch ? $scope.serviceOrder.client.branch.addresses[0] : {};
-		// }
-
 		$scope.getBranches = function () {
-
 			$scope.branches = [];
 			new Branch().filter({})
 				.then(function (res) {
@@ -109,7 +103,6 @@ angular.module('MobileCRMApp')
 			for (var row = 0; row < $scope.serviceOrder.items.length; row++) {
 				if ($scope.serviceOrder.items[row]._id == 253) {
 					$scope.serviceOrder.items[row].quantity = Number(newValue);
-					console.log(4777)
 				}
 			}
 		});
@@ -467,7 +460,7 @@ angular.module('MobileCRMApp')
 			if (originalSiteAddress.address1 != $scope.serviceOrder.siteAddress.address1) {
 				$scope.changed('Site Address');
 			}
-				
+			$scope.serviceOrder.fromQuotes = 0
 			$scope.serviceOrder.save()
 				.then(function (data) {
 					toaster.success('The Service Order was saved successfully');
@@ -475,7 +468,6 @@ angular.module('MobileCRMApp')
 					$scope.waiting = false;
 				},
 				function (error) {
-					console.log(error);
 					if (error && error.errors && error.errors.error == "The object already exists") {
 						toaster.error('Service Order # Duplicated');
 					} else {
@@ -494,7 +486,6 @@ angular.module('MobileCRMApp')
 						$location.path('/serviceOrderList')
 					})
 					.then(function () {
-						console.log(7899)
 						$scope.serviceOrder.sendDelete($scope.serviceOrder)
 					});
 			});

@@ -519,6 +519,20 @@ angular.module('MobileCRMApp')
 					$scope.DeliveryOrder.items[row].quantity = DeliveryOrder.siteAddress.distanceFrom
 				}
 			}
+			if ($scope.DeliveryOrder.ServiceType.item == undefined) {
+				toaster.error('The Service Type can not be empty');
+				angular.element('#category').css('border', '2px solid red');
+				return
+			} else {
+				angular.element('#category').css('border', '2px #CCCCCC solid');
+			}
+			if ($scope.DeliveryOrder.typeTruck._id == undefined) {
+				toaster.error('The Type Truck can not be empty');
+				angular.element('#optEntrance').css('border', '2px red solid');
+				return
+			} else {
+				angular.element('#optEntrance').css('border', '2px #CCCCCC solid');
+			}
 
 			if ($scope.DeliveryOrder.status.description == "Pending") {
 				$scope.DeliveryOrder.status.description = "Waiting for Availability"
@@ -530,7 +544,7 @@ angular.module('MobileCRMApp')
 
 			if ($scope.DeliveryOrder.client.company.perHours == undefined) {
 				$scope.addConfigComp()
-			} else {
+			} else {			
 				$scope.DeliveryOrder.save()
 					.then(function (data) {
 						$scope.updateDoc();

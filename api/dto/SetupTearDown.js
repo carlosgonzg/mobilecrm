@@ -200,7 +200,7 @@ SetupTearDown.prototype.update = function (query, SetupTearDown, user, mail) {
 	var sendMail = SetupTearDown.sendMail || false;
 	var sendMailTech = SetupTearDown.sendTotech || false;
 
-	if (SetupTearDown.serviceType && SetupTearDown.serviceType._id == 3 && SetupTearDown.quotes == 1) {
+	if (SetupTearDown.serviceType && SetupTearDown.serviceType._id == 3 && SetupTearDown.quotes == 1 && (SetupTearDown.fromQuotes || 0) == 0) {
 		_this.insert(SetupTearDown, user, mail)
 		return d.promise;
 	}

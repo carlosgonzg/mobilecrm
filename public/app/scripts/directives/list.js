@@ -372,11 +372,9 @@ angular.module('MobileCRMApp')
 				};
 
 				$scope.dblClick = function (elem, event) {
-					console.log(event)
 					if (event.type == 'click') {
 						$window.sessionStorage.params = JSON.stringify($scope.params);
 						$window.sessionStorage.path = $location.path();
-						console.log(event)
 						if ($scope.dblClickFn) {
 							$scope.dblClickFn(elem);
 						} else {

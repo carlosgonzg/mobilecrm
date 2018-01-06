@@ -156,7 +156,7 @@
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
 							<label for="contract">Entrance</label>
-							<select class="form-control" name="typeTruck" ng-model="DeliveryOrder.typeTruck" ng-class="isChanged('typeTruck')" ng-change="changed('typeTruck')"
+							<select class="form-control" name="typeTruck" id='optEntrance' ng-model="DeliveryOrder.typeTruck" ng-class="isChanged('typeTruck')" ng-change="changed('typeTruck')"
 							 ng-options="typeTruck as typeTruck.description for typeTruck in entranceList track by typeTruck._id" validator="required"></select>
 						</div>
 					</div>

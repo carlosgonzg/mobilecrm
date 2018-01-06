@@ -185,12 +185,12 @@
 							<div ng-if="!invoice.dor">
 								<label for="pono">Status</label>
 								<select class="form-control" ng-model="invoice.status" ng-class="isChanged('status')" ng-change="changed('status'); setAmountToZero(invoice.status)"
-								 ng-options="status as status.description for status in listStatus track by status._id" ng-disabled="isDisabled() || userData.role._id != 1"></select>
+								 ng-options="status as status.description for status in listStatus track by status._id" ng-disabled="userData.role._id != 1"></select>
 							</div>
 							<div ng-if="invoice.dor">
 								<label for="pono">Status</label>
 								<select class="form-control" name="status" ng-model="invoice.status" ng-class="isChanged('Status')" ng-change="changed('Status')"
-								 ng-options="status as status.description for status in statusDelivery track by status._id" ng-disabled="isDisabled()"
+								 ng-options="status as status.description for status in statusDelivery track by status._id" ng-disabled="userData.role._id != 1"
 								 validator="required"></select>
 							</div>
 						</div>

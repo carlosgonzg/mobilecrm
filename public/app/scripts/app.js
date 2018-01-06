@@ -554,7 +554,7 @@ var app = angular
 							return new ServiceQuotes();
 						}
 					},
-					CrewCollection: function (CrewCollection, $route) {
+					CrewCollection: function (CrewCollection) {
 						return new CrewCollection().filter({ "role.description": 'Crew Leader' })
 					},
 					ItemDefault: function (Item) {
