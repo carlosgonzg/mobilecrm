@@ -283,6 +283,7 @@ angular.module('MobileCRMApp')
 		Invoice.prototype.getMonthlyStatement = function (query) {
 			var d = $q.defer();
 			var _this = this;
+			console.log(query)
 			$http.post(_this.baseApiPath + '/monthlyStatement', { query: query })
 				.success(function (data) {
 					console.log(data)
@@ -304,6 +305,54 @@ angular.module('MobileCRMApp')
 				})
 				.error(function (data) {
 					console.log(data);
+					toaster.error('There was an error, please try again');
+					d.reject(data);
+				});
+			return d.promise;
+		};
+
+		Invoice.prototype.getInvoicesByCompany = function (query) {
+			var d = $q.defer();
+			var _this = this;
+			console.log(query)
+			$http.post(_this.baseApiPath + '/invoicesByCompany', { query: query })
+				.success(function (data) {
+					
+					d.resolve(data)
+				})
+				.error(function (data) {
+					toaster.error('There was an error, please try again');
+					d.reject(data);
+				});
+			return d.promise;
+		};
+
+		Invoice.prototype.getInvoicesByServiceType = function (query) {
+			var d = $q.defer();
+			var _this = this;
+			console.log(query)
+			$http.post(_this.baseApiPath + '/invoicesByServiceType', { query: query })
+				.success(function (data) {
+					
+					d.resolve(data)
+				})
+				.error(function (data) {
+					toaster.error('There was an error, please try again');
+					d.reject(data);
+				});
+			return d.promise;
+		};
+
+		Invoice.prototype.getTotalPendingToPay = function (query) {
+			var d = $q.defer();
+			var _this = this;
+			console.log(query)
+			$http.post(_this.baseApiPath + '/totalPendingToPay', { query: query })
+				.success(function (data) {
+					
+					d.resolve(data)
+				})
+				.error(function (data) {
 					toaster.error('There was an error, please try again');
 					d.reject(data);
 				});
