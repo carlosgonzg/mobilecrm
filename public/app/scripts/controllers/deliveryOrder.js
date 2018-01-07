@@ -13,7 +13,6 @@ angular.module('MobileCRMApp')
 		$scope.item = ItemDefault;
 		$scope.Math = $window.Math;
 
-
 		LoadData()
 		ConcatenateAddress();
 
@@ -45,11 +44,16 @@ angular.module('MobileCRMApp')
 		}
 
 		if ($scope.DeliveryOrder.fromwriteAddress == undefined) {
-			$scope.DeliveryOrder.fromwriteAddress = true
-			$scope.DeliveryOrder.fromCompanyAddress = false
+			$scope.DeliveryOrder.fromwriteAddress = false
+			$scope.DeliveryOrder.fromCompanyAddress = true
 		}
 
-		$scope.DeliveryOrder.comments = $scope.DeliveryOrder.comments ? $scope.DeliveryOrder.comments : "Pickup ";
+		$scope.list = [
+			{ item: 'Pickup' },
+			{ item: 'Delivery' },
+			{ item: 'Relocation' },
+		]
+
 		$scope.listStatus = statusList;
 		$scope.entranceList = EntranceList;
 		$scope.waiting = false;
@@ -515,6 +519,20 @@ angular.module('MobileCRMApp')
 					$scope.DeliveryOrder.items[row].quantity = DeliveryOrder.siteAddress.distanceFrom
 				}
 			}
+			if ($scope.DeliveryOrder.ServiceType.item == undefined) {
+				toaster.error('The Service Type can not be empty');
+				angular.element('#category').css('border', '2px solid red');
+				return
+			} else {
+				angular.element('#category').css('border', '2px #CCCCCC solid');
+			}
+			if ($scope.DeliveryOrder.typeTruck._id == undefined) {
+				toaster.error('The Type Truck can not be empty');
+				angular.element('#optEntrance').css('border', '2px red solid');
+				return
+			} else {
+				angular.element('#optEntrance').css('border', '2px #CCCCCC solid');
+			}
 
 			if ($scope.DeliveryOrder.status.description == "Pending") {
 				$scope.DeliveryOrder.status.description = "Waiting for Availability"
@@ -526,7 +544,7 @@ angular.module('MobileCRMApp')
 
 			if ($scope.DeliveryOrder.client.company.perHours == undefined) {
 				$scope.addConfigComp()
-			} else {
+			} else {			
 				$scope.DeliveryOrder.save()
 					.then(function (data) {
 						$scope.updateDoc();
@@ -997,7 +1015,6 @@ angular.module('MobileCRMApp')
 			});
 
 			directionsDisplay.setMap(map);
-			
 			document.getElementById('submit').addEventListener('click', function () {
 				calculateAndShowRoute(directionsService, directionsDisplay);
 			});
@@ -1037,13 +1054,9 @@ angular.module('MobileCRMApp')
 						summaryPanel.innerHTML += route.legs[i].start_address + ' to ';
 						summaryPanel.innerHTML += route.legs[i].end_address + '<br>';
 						summaryPanel.innerHTML += '<strong>' + route.legs[i].distance.text + '</strong><br>';
-
 						var countID = routeSegment - 1
-
 						summaryPanel.innerHTML += "<div class='input-group' style='padding-left: 0px; padding-right: 0px; width: 99%; margin-botton: 5px' id='wrapper" + countID + "'></div>"
-
 						miles += parseFloat(route.legs[i].distance.text.replace(' mi', ''));
-
 						if ($scope.SerialNumberCol == undefined) {
 							$scope.SerialNumberCol = [
 								{ name: '' }
@@ -1154,18 +1167,13 @@ angular.module('MobileCRMApp')
 		$scope.CommentProyect = function () {
 			var comment = ""
 			if ($scope.DeliveryOrder.Relocation == true) {
-				comment = "And Relocation"
-			}
-
-			if (DeliveryOrder.fromwriteAddress == true) {
-				$scope.DeliveryOrder.comments = "Pickup " + comment
+				$scope.DeliveryOrder.comments = $scope.DeliveryOrder.comments ? $scope.DeliveryOrder.comments : "Relocation ";
 			} else {
-				$scope.DeliveryOrder.comments = "Delivery " + comment
+				$scope.DeliveryOrder.comments = $scope.DeliveryOrder.comments.replace("Relocation","")
 			}
 		}
 
 		$scope.building = function (divID, Count) {
-			console.log(1111)
 			var chart = angular.element(document.createElement('serial-Route'));
 			chart.attr('ng-model', "SerialNumberCol[" + Count + "].name");
 			chart.attr('ng-blur', "splitSerialNumber()");
@@ -1194,7 +1202,6 @@ angular.module('MobileCRMApp')
 			var str = serialN;
 			str = str.substring(0, str.length - 2)
 			$scope.DeliveryOrder.unitno = str
-			console.log(3333)
 		}
 
 		$scope.SetSerialNumber()

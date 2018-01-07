@@ -5,7 +5,7 @@
 			<span> Quotes & Estimates</span>
 		</h1>
 		<div class="btn-group pull-right" style="margin-top: 20px;" role="group" aria-label="...">
-			<button type="submit" form="userForm" class="btn btn-primary update" ng-disabled="!serviceQuotes.client._id || serviceQuotes.approved == 2" ng-click="save(1)">
+			<button type="submit" form="userForm" class="btn btn-primary update" ng-disabled="!serviceQuotes.client._id" ng-click="save(1)">
 				<i class="fa fa-save"></i>&nbsp;
 				<span>Save</span>
 			</button>
@@ -117,11 +117,11 @@
 						</div>
 						<div class="form-group" ng-show="serviceQuotes.serviceType._id==3">
 							<label for="tor">Set Up #</label>
-							<input type="text" class="form-control" ng-model="serviceQuotes.tor" ng-change="changed('tor')" ng-disabled="serviceQuotes.approved == 3 || !serviceQuotes._id">
+							<input type="text" class="form-control" ng-model="serviceQuotes.tor" ng-change="changed('tor')" ng-disabled="serviceQuotes.approved == 2 || !serviceQuotes._id">
 						</div>
 						<div class="form-group" ng-show="serviceQuotes.serviceType._id==4">
 							<label for="hor">Home & Business #</label>
-							<input type="text" class="form-control" ng-model="serviceQuotes.hor" ng-change="changed('hor')" ng-disabled="serviceQuotes.approved == 4 || !serviceQuotes._id">
+							<input type="text" class="form-control" ng-model="serviceQuotes.hor" ng-change="changed('hor')" ng-disabled="serviceQuotes.approved == 2 || !serviceQuotes._id">
 						</div>
 					</div>
 				</div>
@@ -136,7 +136,7 @@
 						<div class="form-group" ng-show="serviceQuotes.serviceType._id==4">
 							<label for="acserial">AC Serial #</label>
 							<input type="text" class="form-control" ng-model="serviceQuotes.acserial" ng-class="isChanged('AC Serial #')" ng-change="changed('AC Serial #')"
-								ng-disabled="isDisabled()">
+							 ng-disabled="isDisabled()">
 						</div>
 					</div>
 				</div>
@@ -188,7 +188,9 @@
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
 							<label for="contract">Service Type</label>
-								<select class="form-control" ng-model="serviceQuotes.typeItem" id="category" ng-options="item as item.item for item in list track by item.item" ng-change="changeItem(serviceQuotes.client)" ng-disabled="!serviceQuotes.client._id"><select/>
+							<select class="form-control" ng-model="serviceQuotes.typeItem" id="category" ng-options="item as item.item for item in list track by item.item"
+							 ng-change="changeItem(serviceQuotes.client)" ng-disabled="!serviceQuotes.client._id">
+								<select/>
 						</div>
 					</div>
 				</div>
@@ -357,12 +359,12 @@
 					<tr>
 						<th colspan="3">
 							<span class="pull-right">
-								({{Math.round((serviceQuotes.client.branch.taxes || serviceQuotes.client.company.taxes || 0) * 100)}}%)
+								({{serviceQuotes.taxes}}%)
 							</span>
 						</th>
 						<th colspan="4">
 							<span class="pull-left">
-								{{serviceQuotes.getTaxes() | currency}}
+								{{serviceQuotes.getTaxes(serviceQuotes.taxes || 0) | currency}}
 							</span>
 						</th>
 					</tr>
@@ -374,7 +376,7 @@
 						</th>
 						<th colspan="4">
 							<span class="pull-left">
-								{{serviceQuotes.getTotal() + serviceQuotes.getTaxes() | currency}}
+								{{serviceQuotes.getTotal() + serviceQuotes.getTaxes(serviceQuotes.taxes || 0) | currency}}
 							</span>
 						</th>
 					</tr>

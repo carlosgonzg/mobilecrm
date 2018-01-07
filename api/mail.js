@@ -68,7 +68,7 @@ var sendMail = function (to, subject, body, isHtmlBody, attached, cc, cco, reply
 	else {
 		mailOptions.attachments = [];
 	}
-	 smtpTransport.sendMail(mailOptions, function (error, response) {
+ 	 smtpTransport.sendMail(mailOptions, function (error, response) {
 		if (error) {
 			console.log(error);
 			deferred.reject(error);
@@ -76,7 +76,7 @@ var sendMail = function (to, subject, body, isHtmlBody, attached, cc, cco, reply
 			console.log('Message sent');
 			deferred.resolve(response);
 		}
-	}); 
+	});  
 	return deferred.promise; 
 };
 
@@ -686,6 +686,7 @@ var sendDeliveryOrder = function (deliveryOrder, mails, dirname) {
 			body = body.replace('<customer>', deliveryOrder.customer || 'None');
 			body = body.replace('<customerPhone>', deliveryOrder.phone ? (deliveryOrder.phone.number || '') : 'None');
 			body = body.replace('<entrance>', deliveryOrder.typeTruck.description);
+			body = body.replace('<servicetype>', deliveryOrder.ServiceType.item);
 			body = body.replace('<pono>', deliveryOrder.pono || '');
 			body = body.replace('<pickupdate>', moment(deliveryOrder.pickupDate).format('MM/DD/YYYY'));
 			body = body.replace('<pickuptime>', moment(deliveryOrder.pickupTime).format('HH:mm'));
@@ -694,6 +695,7 @@ var sendDeliveryOrder = function (deliveryOrder, mails, dirname) {
 			body = body.replace('<deliveryAddress>', deliveryOrder.siteAddress ? deliveryOrder.siteAddress.address1 + ', ' + deliveryOrder.siteAddress.city.description + ', ' + deliveryOrder.siteAddress.state.description + ' ' + deliveryOrder.siteAddress.zipcode : '');
 			body = body.replace('<Clientcomment>', deliveryOrder.clientcomment || 'None');
 			body = body.replace('<comment>', deliveryOrder.comments || 'None');
+
 			var contacts = '';
 			for (var i = 0; i < deliveryOrder.contacts.length; i++) {
 				if (deliveryOrder.contacts[i].name)
@@ -897,7 +899,7 @@ var sendQuotes = function (serviceQuotes, mails, cc, file, fileName) {
 
 			var subject = "Estimate : " + serviceQuotes.quotesNumber + ' – MobileOne Restoration LLC';
 			mails = _.uniq(mails);
-			sendMail(mails.join(', '), subject, body, true, attachments, cc.join(', '), null, 'mf@mobileonecontainers.com')
+			sendMail(mails.join(', '), subject, body, true, attachments, 'mf@mobileonecontainers.com', null, null)
 				.then(function (response) {
 					console.log('DONE Sending Mail: ', response)
 					deferred.resolve(response);

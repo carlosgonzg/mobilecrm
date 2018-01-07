@@ -23,7 +23,7 @@ function Company(db, userLogged) {
 }
 function pad(number, mask) {
 	var dif = mask - number.length;
-	dif = dif > 0 ? dif : mask + Math.abs(dif);
+	dif = dif >= 0 ? dif : mask + Math.abs(dif);
 	var s = '';
 	for (var i = 0; i < dif; i++) { s += '0'; }
 	return s + number;

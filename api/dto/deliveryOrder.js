@@ -87,6 +87,10 @@ function DeliveryOrder(db, userLogged, dirname) {
 				type: 'date',
 				required: false
 			},
+			ServiceType: {
+				type: 'object',
+				required: true
+			},
 		}
 	};
 	this.crud.schema = this.schema;

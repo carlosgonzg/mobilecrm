@@ -8,7 +8,7 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-	.controller('ServiceQuotesCtrl', function ($scope, $rootScope, $location, toaster, User, serviceQuotes, Item, dialogs, $q, Branch, CrewCollection, ItemDefault, companies, ServiceOrder, WorkOrder, Company, SetupTearDown, homeBusiness) {
+	.controller('ServiceQuotesCtrl', function ($scope, $rootScope, $route, $location, toaster, User, serviceQuotes, Item, dialogs, $q, Branch, CrewCollection, ItemDefault, companies, ServiceOrder, WorkOrder, Company, SetupTearDown, homeBusiness) {
 		$scope.serviceQuotes = serviceQuotes;
 
 		$scope.CrewCollection = CrewCollection.data
@@ -67,6 +67,10 @@ angular.module('MobileCRMApp')
 			$scope.serviceQuotes.client = new User($rootScope.userData);
 		}
 
+		if ($route.current.params.id && $scope.serviceQuotes.serviceType._id == 2) {
+			$scope.serviceQuotes.wor = $scope.serviceQuotes.quotesNumber
+		}
+
 		$scope.serviceTypeData = [{ _id: 1, description: 'Service Order' }, { _id: 2, description: 'Work Order' }, { _id: 3, description: 'Set up & Tear Down' }, { _id: 4, description: 'Home & Business' }]
 		$scope.waiting = false;
 
@@ -107,7 +111,6 @@ angular.module('MobileCRMApp')
 		// }
 
 		$scope.getBranches = function () {
-
 			$scope.branches = [];
 			new Branch().filter({})
 				.then(function (res) {
@@ -154,9 +157,6 @@ angular.module('MobileCRMApp')
 					avoidHighways: false,
 					avoidTolls: false,
 				}, function (response, status) {
-					console.log(response);
-					console.log(status)
-
 					if (status === "OK" && response.rows[0].elements[0].status != "ZERO_RESULTS") {
 						result = response.rows[0].elements[0].distance.value;
 					} else {
@@ -174,7 +174,7 @@ angular.module('MobileCRMApp')
 					d.resolve(parseFloat((result * 0.00062137).toFixed(2)))
 				});
 
-			return d.promise;
+			//	return d.promise;
 		};
 
 		function initMap(p1, p2) {
@@ -297,6 +297,12 @@ angular.module('MobileCRMApp')
 				}
 			}
 
+			if (client && client.company) {
+				$scope.serviceQuotes.customer = $scope.serviceQuotes.client.company.entity.name
+			} else if (client && !client.company) {
+				$scope.serviceQuotes.customer = $scope.serviceQuotes.client.entity.fullName
+			}
+
 			if ($scope.serviceQuotes.client == undefined) {
 				$scope.serviceQuotes.items = [];
 			} else {
@@ -316,11 +322,22 @@ angular.module('MobileCRMApp')
 					}
 				}
 			}
-			var company = new Company(client.company);
-			company.quotes($scope.serviceQuotes.quotesNumber)
-				.then(function (sequence) {
-					$scope.serviceQuotes.quotesNumber = sequence;
-				});
+			if (client && client.company) {
+				var company = new Company(client.company);
+				company.quotes($scope.serviceQuotes.quotesNumber)
+					.then(function (sequence) {
+						$scope.serviceQuotes.quotesNumber = sequence;
+					});
+
+				new Company().filter({ _id: client.company._id })
+					.then(function (res) {
+						$scope.serviceQuotes.taxes = res.data[0].taxes
+						console.log($scope.serviceQuotes)
+					});
+			} else {
+				$scope.serviceQuotes.quotesNumber = "";
+				$scope.serviceQuotes.customer = ""
+			}
 		};
 
 		$scope.addContact = function () {
@@ -482,7 +499,6 @@ angular.module('MobileCRMApp')
 					toaster.error('Work Order Number is required');
 					return
 				}
-				console.log($scope.serviceQuotes.tor)
 				if ($scope.serviceQuotes.serviceType._id == 3 && !$scope.serviceQuotes.tor) {
 					toaster.error('Set Up Number is required');
 					return
@@ -519,9 +535,56 @@ angular.module('MobileCRMApp')
 
 			$scope.serviceQuotes.save()
 				.then(function (data) {
-					if (approved == 2) {
+					if (approved == 1) {
+						if ($route.current.params.id && $scope.serviceQuotes.approved == 2) {
+							if ($scope.serviceQuotes.serviceType._id == 1) {
+								new ServiceOrder().filter({ 'sor': $scope.serviceQuotes.sor })
+									.then(function (dataId) {
+										$scope.serviceOrder = new ServiceOrder($scope.serviceQuotes);
+										$scope.serviceOrder.fromQuotes = 1;
+										$scope.serviceOrder._id = dataId.data[0]._id
+										$scope.serviceOrder.save()
+											.then(function (data) {
+												toaster.success('The Estimate was saved successfully');
+											});
+									})
+							} else if ($scope.serviceQuotes.serviceType._id == 2) {
+								new WorkOrder().filter({ 'wor': $scope.serviceQuotes.wor })
+									.then(function (dataId) {
+										$scope.workOrder = new WorkOrder($scope.serviceQuotes);
+										$scope.workOrder.fromQuotes = 1;
+										$scope.workOrder._id = dataId.data[0]._id
+										$scope.workOrder.save()
+											.then(function (data) {
+												toaster.success('The Estimate was saved successfully');
+											});
+									})
+							} else if ($scope.serviceQuotes.serviceType._id == 3) {
+								new SetupTearDown().filter({ 'tor': $scope.serviceQuotes.tor })
+									.then(function (dataId) {
+										$scope.SetupTearDown = new SetupTearDown($scope.serviceQuotes);
+										$scope.SetupTearDown.fromQuotes = 1;
+										$scope.SetupTearDown._id = dataId.data[0]._id
+										$scope.SetupTearDown.save()
+											.then(function (data) {
+												toaster.success('The Estimate was saved successfully');
+											});
+									})
+							} else if ($scope.serviceQuotes.serviceType._id == 4) {
+								new homeBusiness().filter({ 'hor': $scope.serviceQuotes.hor })
+									.then(function (dataId) {
+										$scope.homeBusiness = new homeBusiness($scope.serviceQuotes);
+										$scope.homeBusiness.fromQuotes = 1;
+										$scope.homeBusiness._id = dataId.data[0]._id
+										$scope.homeBusiness.save()
+											.then(function (data) {
+												toaster.success('The Estimate was saved successfully');
+											});
+									})
+							}
+						}
+					} else if (approved == 2) {
 						if ($scope.serviceQuotes.serviceType._id == 1) {
-							console.log(1)
 							$scope.serviceOrder = new ServiceOrder($scope.serviceQuotes);
 							delete $scope.serviceQuotes.wor
 							delete $scope.serviceQuotes.tor
@@ -529,7 +592,6 @@ angular.module('MobileCRMApp')
 							$scope.serviceOrder.save()
 							toaster.success('The Service Order was saved successfully');
 						} else if ($scope.serviceQuotes.serviceType._id == 2) {
-							console.log(2)
 							$scope.workOrder = new WorkOrder($scope.serviceQuotes);
 							delete $scope.serviceQuotes.sor
 							delete $scope.serviceQuotes.tor
@@ -537,7 +599,6 @@ angular.module('MobileCRMApp')
 							$scope.workOrder.save()
 							toaster.success('The Work Order was saved successfully');
 						} else if ($scope.serviceQuotes.serviceType._id == 3) {
-							console.log(3)
 							$scope.SetupTearDown = new SetupTearDown($scope.serviceQuotes);
 							delete $scope.serviceQuotes.sor
 							delete $scope.serviceQuotes.wor
@@ -545,7 +606,6 @@ angular.module('MobileCRMApp')
 							$scope.SetupTearDown.save()
 							toaster.success('The Set Up and Tear Down was saved successfully');
 						} else if ($scope.serviceQuotes.serviceType._id == 4) {
-							console.log(4)
 							$scope.homeBusiness = new homeBusiness($scope.serviceQuotes);
 							delete $scope.serviceQuotes.sor
 							delete $scope.serviceQuotes.wor
@@ -554,7 +614,6 @@ angular.module('MobileCRMApp')
 							toaster.success('The Home & Business was saved successfully');
 						}
 					} else {
-						console.log(5)
 						toaster.success('The Estimate was saved successfully');
 					}
 					$location.path('serviceQuotesList')
@@ -786,4 +845,3 @@ angular.module('MobileCRMApp')
 			}
 		}
 	});
-

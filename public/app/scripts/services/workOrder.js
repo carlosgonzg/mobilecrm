@@ -27,6 +27,8 @@ angular.module('MobileCRMApp')
 		this.total = this.total || '';
 		this.items = this.items || [];
 		this.contacts = this.contacts || [{}, {}, {}];
+		this.fromQuotes = this.fromQuotes || 0 
+		
 		for(var i = 0; i < this.items.length; i++){
 			this.items[i] = new Item(this.items[i]);
 		}

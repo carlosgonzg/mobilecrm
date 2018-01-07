@@ -22,13 +22,14 @@ angular.module('MobileCRMApp')
 			this.phone = this.phone || {};
 			this.comment = this.comment || '';
 			this.status = this.status || { _id: 1, description: 'Waiting for Availability' };
-			this.typeTruck = this.typeTruck || { _id: 1, description: 'Big truck' };
+			this.typeTruck = this.typeTruck || {};
 			this.driver = this.driver || {};
 			this.total = this.total || '';
 			this.items = this.items || [];
 			this.contacts = this.contacts || [{}, {}, {}];
 			this.additionalRoute = this.additionalRoute || {};
 			this.RouteMile = this.RouteMile || 0;
+			this.ServiceType = this.ServiceType || {};
 
 			if ($rootScope.userData.role._id != 1 && $rootScope.userData.role._id != 5) {
 				this.invoiceNumber = 'Pending Invoice';

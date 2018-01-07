@@ -36,7 +36,7 @@ angular.module('MobileCRMApp')
 			type: 'text'
 		}, {
 			title: 'Service Type',
-				name: 'serviceType.description',
+			name: 'serviceType.description',
 			type: 'text'
 		}, {
 			title: 'Serial #',
@@ -49,7 +49,8 @@ angular.module('MobileCRMApp')
 		}, {
 			title: 'Total Amount',
 			name: 'total',
-			type: 'currency'
+			type: 'function',
+			function: function (elem) { return elem.taxes ? (((elem.taxes * elem.total) / 100) + elem.total) : elem.total }
 		}
 		];
 
@@ -63,7 +64,8 @@ angular.module('MobileCRMApp')
 			"serviceType.description",
 			'unitno',
 			'pono',
-			'total'
+			'total',
+			'taxes'
 		];
 
 		$scope.filterDate = 'date';

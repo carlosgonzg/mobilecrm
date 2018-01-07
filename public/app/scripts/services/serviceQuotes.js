@@ -26,7 +26,7 @@ angular.module('MobileCRMApp')
 			this.total = this.total || '';
 			this.items = this.items || [];
 			this.contacts = this.contacts || [{}, {}, {}];
-			this.serviceType = this.serviceType || { _id: 1, description: 'Service Order' };
+			this.serviceType = this.serviceType || { _id: 2, description: 'Work Order' };
 			this.approved = this.approved || 1;
 			this.quotes = this.quotes || 1;
 			this.quotesStatus = this.quotesStatus || 'Pending for Approval'
@@ -68,7 +68,6 @@ angular.module('MobileCRMApp')
 
 		ServiceQuotes.prototype.getTotal = function (servicesMiles) {
 			var total = 0;
-
 			for (var i = 0; i < this.items.length; i++) {
 				if (this.items[i]._id == 253) {
 					if (servicesMiles) {
@@ -203,15 +202,21 @@ angular.module('MobileCRMApp')
 			return d.promise;
 		};
 
-
 		function formatDate(date) {
-
 			var day = date.getDate();
 			var month = date.getMonth();
 			var year = date.getFullYear();
 
 			return day + "-" + month + "-" + year;
 		}
+
+		ServiceQuotes.prototype.getTaxes = function (taxes) {
+			var total = 0;
+			for (var i = 0; i < this.items.length; i++) {
+				total += (this.items[i].price * this.items[i].quantity)
+			}
+			return (total * taxes) / 100
+		};
 
 		return ServiceQuotes;
 	});

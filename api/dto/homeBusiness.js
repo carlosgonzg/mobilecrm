@@ -199,7 +199,7 @@ homeBusiness.prototype.update = function (query, homeBusiness, user, mail) {
 	var sendMail = homeBusiness.sendMail || false;
 	var sendMailTech = homeBusiness.sendTotech || false;
 
-	if (homeBusiness.serviceType && homeBusiness.serviceType._id == 4 && homeBusiness.quotes == 1) {
+	if (homeBusiness.serviceType && homeBusiness.serviceType._id == 4 && homeBusiness.quotes == 1 && (homeBusiness.fromQuotes || 0) == 0) {
 		_this.insert(homeBusiness, user, mail)
 		return d.promise;
 	}
