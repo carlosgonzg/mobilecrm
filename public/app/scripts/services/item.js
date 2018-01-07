@@ -108,7 +108,9 @@ angular.module('MobileCRMApp')
 		Item.prototype.getTotalPrice = function () {
 			return this.price * (this.quantity || 1);
 		};
-
+		Item.prototype.getTotalPriceQuotes = function (servicesMiles) {
+			return this.price * (servicesMiles || 1);
+		};
 		Item.prototype.goTo = function () {
 			$location.path('/item/' + this._id);
 		};

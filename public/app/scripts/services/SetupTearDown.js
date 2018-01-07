@@ -1,22 +1,22 @@
 'use strict';
 
 angular.module('MobileCRMApp')
-.factory('ServiceOrder', function (Base, Item, $rootScope, $location, $q,$http, toaster, dialogs) {
+.factory('SetupTearDown', function (Base, Item, $rootScope, $location, $q,$http, toaster, dialogs) {
 
 	// Variable que se utiliza para comprobar si un objeto tiene una propiedad
 	// var hasProp = Object.prototype.hasOwnProperty;
 
 	// Nombre de la clase
-	var ServiceOrder;
+	var SetupTearDown;
 var a;
-	function ServiceOrder(propValues) {
+	function SetupTearDown(propValues) {
 		a = document.createElement("a");
 			document.body.appendChild(a);
-		ServiceOrder.super.constructor.apply(this, arguments);
-		this.baseApiPath = "/api/ServiceOrder";
+		SetupTearDown.super.constructor.apply(this, arguments);
+		this.baseApiPath = "/api/SetupTearDown";
 		this.client = this.client || {};
 		this.invoiceNumber = this.invoiceNumber || '';
-		this.sor = this.sor;
+		this.tor = this.tor || '';
 		this.pono = this.pono || '';
 		this.unitno = this.unitno || '';
 		this.isono = this.isono || '';
@@ -27,6 +27,8 @@ var a;
 		this.total = this.total || '';
 		this.items = this.items || [];
 		this.contacts = this.contacts || [{}, {}, {}];
+		this.typeItem = this.typeItem || { item: 'Set Up' };
+
 		for(var i = 0; i < this.items.length; i++){
 			this.items[i] = new Item(this.items[i]);
 		}
@@ -51,15 +53,15 @@ var a;
 		return child;
 	};
 	// Extender de la clase Base
-	extend(ServiceOrder, Base);
+	extend(SetupTearDown, Base);
 
 	// Funcion que retorna las propiedades de una cuenta
-	ServiceOrder.properties = function () {
+	SetupTearDown.properties = function () {
 		var at = {};
 		return at;
 	};
 	
-	ServiceOrder.prototype.getTotal = function(){
+	SetupTearDown.prototype.getTotal = function(){
 		var total = 0;
 		for(var i = 0; i < this.items.length; i++){
 			total += this.items[i].getTotalPrice();
@@ -69,11 +71,11 @@ var a;
 	};
 	
 	
-	ServiceOrder.prototype.goTo = function () {
-		$location.path('/serviceOrder/' + this._id);
+	SetupTearDown.prototype.goTo = function () {
+		$location.path('/SetupTearDown/' + this._id);
 	};
 
-	ServiceOrder.prototype.download = function(){
+	SetupTearDown.prototype.download = function(){
 		var d = $q.defer();
 		var _this = this;
 		toaster.warning('Generating the document');
@@ -94,7 +96,7 @@ var a;
 			var url = window.URL.createObjectURL(blob);
 			
 			a.href = url;
-			a.download = _this.sor + '.pdf';
+			a.download = _this.tor + '.pdf';
 			a.click();
 			window.URL.revokeObjectURL(url);
 			d.resolve(url);
@@ -105,7 +107,7 @@ var a;
 	    });
 	    return d.promise;
 	};
-	ServiceOrder.prototype.getReport = function(query, queryDescription){
+	SetupTearDown.prototype.getReport = function(query, queryDescription){
 		var d = $q.defer();
 		var _this = this;
 		$http({
@@ -126,7 +128,7 @@ var a;
 			
 			a.href = url;
 
-			a.download = 'Home & Business Report '+formatDate(new Date()) + '.xlsx';
+			a.download = 'Set Up & Tear Down Report '+formatDate(new Date()) + '.xlsx';
 			a.click();
 			window.URL.revokeObjectURL(url);
 			d.resolve(url);
@@ -137,12 +139,13 @@ var a;
 	    });
 	    return d.promise;
 	};
-	ServiceOrder.prototype.send = function(){
+	SetupTearDown.prototype.send = function(){
 		var d = $q.defer();
 		toaster.warning('Sending the email');
+		console.log(65487)
 		$http.post(this.baseApiPath + '/send', { id: this._id })
 		.success(function (data) {
-			toaster.success('The Home & Business has been sent!.');
+			toaster.success('The Set Up & Tear Down has been sent!.');
 	    })
 	    .error(function (data, status, headers, config) {
 	    	toaster.error('There was an error sending the file, please try again')
@@ -151,12 +154,13 @@ var a;
 		return d.promise;
 	};
 
-	ServiceOrder.prototype.sendDelete = function(serviceOrder){
+	SetupTearDown.prototype.sendDelete = function(SetupTearDown){
 		var d = $q.defer();
 		toaster.warning('Sending the email');
-		$http.post(this.baseApiPath + '/sendDelete', { id: this._id, serviceOrder: serviceOrder })
+		console.log(this.baseApiPath)
+		$http.post(this.baseApiPath + '/Delete', { id: this._id, SetupTearDown: SetupTearDown })
 		.success(function (data) {
-			toaster.success('The Home & Business has been sent!.');
+			toaster.success('The Set Up & Tear Down has been sent!.');
 	    })
 	    .error(function (data, status, headers, config) {
 	    	toaster.error('There was an error sending the file, please try again')
@@ -165,14 +169,14 @@ var a;
 		return d.promise;
 	};
 
-	ServiceOrder.prototype.showPicture = function(index){
+	SetupTearDown.prototype.showPicture = function(index){
 		var dialog = dialogs.create('views/photo.html', 'PhotoCtrl', { photos: this.photos, index: (index || 0) });
 		dialog.result
 		.then(function (res) {
 		}, function (res) {});
 	};
 
-	ServiceOrder.prototype.filter = function(query, sort){
+	SetupTearDown.prototype.filter = function(query, sort){
 		var deferred = $q.defer();
 		var _this = this.constructor;
 		$http.post(this.baseApiPath + '/filter', { query: query, sort: sort })
@@ -200,7 +204,7 @@ var a;
 		return deferred.promise;
 	};
 
-	ServiceOrder.prototype.changeStatus = function(){
+	SetupTearDown.prototype.changeStatus = function(){
 		var d = $q.defer();
 		$http.post(this.baseApiPath + '/status', { id: this._id })
 		.success(function(res){
@@ -214,7 +218,7 @@ var a;
 		return d.promise;
 	};
 
-	ServiceOrder.prototype.getTaxes = function(){
+	SetupTearDown.prototype.getTaxes = function(){
 		var total = 0;
 		var taxes = 0;
 		if (this.dor) {
@@ -240,7 +244,7 @@ var a;
 		}	
 	};
 
-	ServiceOrder.prototype.getTotal = function(){
+	SetupTearDown.prototype.getTotal = function(){
 		var total = 0;
 		for(var i = 0; i < this.items.length; i++){
 			total += this.items[i].getTotalPrice();
@@ -259,5 +263,5 @@ var a;
 	  return day + "-" + month + "-" + year;
 	}
 
-	return ServiceOrder;
+	return SetupTearDown;
 });

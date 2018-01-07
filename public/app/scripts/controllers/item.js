@@ -17,7 +17,9 @@ angular.module('MobileCRMApp')
 			{ item: 'Material' },
 			{ item: 'Labor' },
 			{ item: 'Service' },
-			{ item: 'By Default'}
+			{ item: 'By Default' },
+			{ item: 'Set Up' },
+			{ item: 'Tear Down' },
 		]
 
 		$scope.save = function () {

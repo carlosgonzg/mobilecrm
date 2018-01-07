@@ -8,10 +8,11 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-	.controller('DeliveryOrderCtrl', function ctrl($scope, $rootScope, $location, $window, toaster, User, statusList, EntranceList, Item, dialogs, $q, Branch, DeliveryOrder, $timeout, ItemDefault, $route, Company, Driver, Invoice) {
+	.controller('DeliveryOrderCtrl', function ctrl($scope, $rootScope, $location, $window, $compile, toaster, User, statusList, EntranceList, Item, dialogs, $q, Branch, DeliveryOrder, $timeout, ItemDefault, $route, Company, Driver, Invoice) {
 		$scope.DeliveryOrder = DeliveryOrder;
 		$scope.item = ItemDefault;
 		$scope.Math = $window.Math;
+
 
 		LoadData()
 		ConcatenateAddress();
@@ -21,10 +22,13 @@ angular.module('MobileCRMApp')
 
 		$scope.company = []
 		$scope.driver = Driver.data || {};
+		$scope.serialNumber = []
 
 		$scope.readOnly = $rootScope.userData.role._id != 1;
 		$scope.showMap = $rootScope.userData.role._id == 1;
 		$scope.commentDiabled = true;
+		$scope.seralNumberAdd = []
+		$scope.SerialNumberCol = $scope.DeliveryOrder.SerialNumberCol
 
 		if ($rootScope.userData.role._id == 1 || $rootScope.userData.role._id == 5) {
 			$scope.commentDiabled = false;
@@ -44,6 +48,7 @@ angular.module('MobileCRMApp')
 			$scope.DeliveryOrder.fromwriteAddress = true
 			$scope.DeliveryOrder.fromCompanyAddress = false
 		}
+
 		$scope.DeliveryOrder.comments = $scope.DeliveryOrder.comments ? $scope.DeliveryOrder.comments : "Pickup ";
 		$scope.listStatus = statusList;
 		$scope.entranceList = EntranceList;
@@ -137,7 +142,7 @@ angular.module('MobileCRMApp')
 					}
 
 					SetAddress();
-					console.log($scope.DeliveryOrder.siteAddressFrom, $scope.DeliveryOrder.siteAddress)
+					
 					if ($scope.DeliveryOrder.siteAddressFrom && $scope.DeliveryOrder.siteAddress) {
 
 						$scope.DeliveryOrder.siteAddress.distanceFrom = $scope.DeliveryOrder.siteAddressFrom.address1 && $scope.DeliveryOrder.siteAddress.address1 ? parseFloat((result * 0.00062137).toFixed(2)) : 0;
@@ -516,6 +521,8 @@ angular.module('MobileCRMApp')
 			}
 
 			if (!$route.current.params.id) { $scope.DeliveryOrder.date = new Date() }
+			
+			$scope.DeliveryOrder.SerialNumberCol = $scope.SerialNumberCol
 
 			if ($scope.DeliveryOrder.client.company.perHours == undefined) {
 				$scope.addConfigComp()
@@ -831,7 +838,6 @@ angular.module('MobileCRMApp')
 					}
 					return;
 				} else if ($scope.company.initialCost) { // SI NO ES POR HORA
-					console.log(3)
 					SetDefaulItems(805)
 					$scope.DeliveryOrder.items[0].price = $scope.company.initialCost;
 					return;
@@ -930,8 +936,6 @@ angular.module('MobileCRMApp')
 								$scope.waiting = false;
 							},
 							function (error) {
-								console.log(error);
-
 								if (error.errors.error == "The object already exists") {
 									toaster.error('Delivery Order # Duplicated');
 								} else {
@@ -978,6 +982,7 @@ angular.module('MobileCRMApp')
 
 		$scope.deleteWaypoints = function (index) {
 			$scope.DeliveryOrder.additionalRoute.waypts.splice(index, 1)
+			$scope.SerialNumberCol.splice(index, 1)
 		}
 
 		function initMapRoute() {
@@ -992,7 +997,7 @@ angular.module('MobileCRMApp')
 			});
 
 			directionsDisplay.setMap(map);
-
+			
 			document.getElementById('submit').addEventListener('click', function () {
 				calculateAndShowRoute(directionsService, directionsDisplay);
 			});
@@ -1018,6 +1023,8 @@ angular.module('MobileCRMApp')
 				travelMode: 'DRIVING'
 			}, function (response, status) {
 				if (status === 'OK') {
+				//	$scope.SerialNumberCol = []
+					$scope.serialNumber = []
 					directionsDisplay.setDirections(response);
 					var route = response.routes[0];
 					var summaryPanel = document.getElementById('directions-panel');
@@ -1026,15 +1033,28 @@ angular.module('MobileCRMApp')
 					// For each route, display summary information.
 					for (var i = 0; i < route.legs.length; i++) {
 						var routeSegment = i + 1;
-						summaryPanel.innerHTML += '<b>Route Segment: ' + routeSegment +
-							'</b><br>';
+						summaryPanel.innerHTML += '<b>Route Segment: ' + routeSegment + '</b><br>';
 						summaryPanel.innerHTML += route.legs[i].start_address + ' to ';
 						summaryPanel.innerHTML += route.legs[i].end_address + '<br>';
-						summaryPanel.innerHTML += '<strong>' + route.legs[i].distance.text + '</strong><br><br>';
+						summaryPanel.innerHTML += '<strong>' + route.legs[i].distance.text + '</strong><br>';
+
+						var countID = routeSegment - 1
+
+						summaryPanel.innerHTML += "<div class='input-group' style='padding-left: 0px; padding-right: 0px; width: 99%; margin-botton: 5px' id='wrapper" + countID + "'></div>"
 
 						miles += parseFloat(route.legs[i].distance.text.replace(' mi', ''));
-					}
 
+						if ($scope.SerialNumberCol == undefined) {
+							$scope.SerialNumberCol = [
+								{ name: '' }
+							]
+						} else if (routeSegment >= 1) {
+							if (routeSegment > $scope.SerialNumberCol.length) {
+								var x = { name: '' }
+								$scope.SerialNumberCol.unshift(x)
+							}
+						}
+					}
 					$scope.DeliveryOrder.additionalRoute.Start = route.legs[0].start_address
 					$scope.DeliveryOrder.additionalRoute.waypts = waypts
 					$scope.DeliveryOrder.additionalRoute.End = route.legs[route.legs.length - 1].end_address
@@ -1042,12 +1062,12 @@ angular.module('MobileCRMApp')
 					$scope.DeliveryOrder.RouteMile = miles;
 					document.getElementById('totalMiles').innerHTML = miles;
 					$scope.recalculate()
+					$scope.SetSerialNumber()
 				} else {
 					$scope.DeliveryOrder.RouteMile = 0
 					document.getElementById('totalMiles').innerHTML = 0;
 					$scope.recalculate()
 				}
-				console.log($scope.DeliveryOrder.RouteMile)
 			});
 		}
 
@@ -1106,7 +1126,7 @@ angular.module('MobileCRMApp')
 							$scope.Invoice = obj
 							$scope.Invoice.status = $scope.DeliveryOrder.status
 							$scope.invoice.save()
-						});						
+						});
 					})
 			}
 		}
@@ -1144,19 +1164,38 @@ angular.module('MobileCRMApp')
 			}
 		}
 
-		var ctrl = this;
-		var inputTemplate = '<div><span ng-bind="$ctrl.testModel"></span>--<span>{{$ctrl.testModel}}</span><input type="text" name="testModel"/></div>';
-
-		ctrl.addControllDynamically = addControllDynamically;
-
-		var id = 0;
-		function addControllDynamically() {
-			console.log(1)
-			var name = "testModel_" + id;
-			var cloned = angular.element(inputTemplate.replace(/testModel/g, name)).clone();
-			cloned.find('input').attr("ng-model", "$ctrl." + name); //add ng-model attribute
-			$document.find('[ng-app]').append($compile(cloned)($scope)); //compile and append
-			id++;
+		$scope.building = function (divID, Count) {
+			console.log(1111)
+			var chart = angular.element(document.createElement('serial-Route'));
+			chart.attr('ng-model', "SerialNumberCol[" + Count + "].name");
+			chart.attr('ng-blur', "splitSerialNumber()");
+			chart.attr('xtest', "x" + Count);
+			$compile(chart)($scope);
+			angular.element(document.getElementById(divID)).append(chart);
 		}
 
+		$scope.SetSerialNumber = function () {
+			if ($scope.SerialNumberCol != undefined) {
+				for (let index = 0; index < $scope.SerialNumberCol.length; index++) {
+					var a = $scope.serialNumber.indexOf(index);
+					if (a == -1) {
+						$scope.building("wrapper" + index, index);
+						$scope.serialNumber.unshift(index)
+					}
+				}
+			}	
+		}
+		$scope.splitSerialNumber = function () {			
+			var serialN = "";
+			for (let index = 0; index < $scope.SerialNumberCol.length; index++) {
+				const element = $scope.SerialNumberCol[index];				
+				serialN = serialN + element.name + " / ";
+			}
+			var str = serialN;
+			str = str.substring(0, str.length - 2)
+			$scope.DeliveryOrder.unitno = str
+			console.log(3333)
+		}
+
+		$scope.SetSerialNumber()
 	});

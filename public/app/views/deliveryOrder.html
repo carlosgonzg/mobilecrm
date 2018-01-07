@@ -230,7 +230,7 @@
 								<br />
 								<div class="input-group" style="width: 100%">
 									<input type="checkbox" name="chkaddress" id="chkaddress" style="cursor: pointer" ng-checked="DeliveryOrder.fromwriteAddress"
-									 ng-click="FromCompany(1)"> From costumer address
+									 ng-click="FromCompany(1)"> From customer address
 
 									<input type="text" class="form-control" ng-model="DeliveryOrder.addresstr" id="addressFromsId" ng-focus="geoLocate();recalculate();melost()"
 									 origin-point="address.addressString" ng-change="recalculate()" ng-disabled="DeliveryOrder.fromCompanyAddress == true"
@@ -319,8 +319,19 @@
 							</div>
 							<br/>
 							<div style="padding-left: 30px">
-								<input type="submit" class="btn btn-secondary" id="submit" value="Get Route">
+								<button type="submit" class="btn btn-sm btn-primary update" id="submit" ng-click="resetRoute(2)">
+									<i class="fa fa-plus"></i>
+									<span>Get Route</span>
+								</button>
+
+								<!--	<div class="pull-right" style="padding-right: 30px">
+									<button type="button" class="btn btn-sm btn-primary update" ng-click="SetSerialNumber()" tooltip="Add new Route">
+										<i class="fa fa-plus"></i>
+										<span>Add Serial Number</span>
+									</button>
+								</div> -->
 							</div>
+
 							<br/>
 							<div style="padding-left: 30px">
 								<div id="directions-panel" style="font-size: 14px"></div>
@@ -525,8 +536,6 @@
 					</textarea>
 				</div>
 			</div>
-
 		</div>
 	</div>
-
 </div>

@@ -8,28 +8,33 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-	.controller('ServiceOrderCtrl', function ($route, $scope, $rootScope, $location, $window, toaster, User, statusList, serviceOrder, Item, dialogs, $q, Branch, CrewCollection, ItemDefault) {
-		$scope.serviceOrder = serviceOrder;
+	.controller('SetupTearDownCtrl', function ($scope, $rootScope, $location, $window, toaster, User, statusList, Item, SetupTearDown, dialogs, $q, Branch, CrewCollection) {
+		$scope.SetupTearDown = SetupTearDown;
 		$scope.CrewCollection = CrewCollection.data
 		$scope.Math = $window.Math;
 		
 		$scope.addedItem = [];
-		$scope.serviceOrder.addedItems = $scope.serviceOrder.addedItems ? $scope.serviceOrder.addedItems : [];
-		$scope.serviceOrder.removedItems = $scope.serviceOrder.removedItems ? $scope.serviceOrder.removedItems : [];
+		$scope.SetupTearDown.addedItems = $scope.SetupTearDown.addedItems ? $scope.SetupTearDown.addedItems : [];
+		$scope.SetupTearDown.removedItems = $scope.SetupTearDown.removedItems ? $scope.SetupTearDown.removedItems : [];
 		$scope.Crewadded = []
 		$scope.CrewLeaderSelected = []
 		$scope.crewHeader = []
 		$scope.crewHeaderAdded = []
 		$scope.CrewHeaderSel = ""
 		$scope.statusTech = {}
-		$scope.serviceOrder.quotes = 0
+		$scope.SetupTearDown.quotes = 0
 		
 		$scope.items = [];
 		$scope.params = {};
 		$scope.branches = [];
 
-		if ($scope.serviceOrder.crewHeader != undefined) {
-			$scope.crewHeaderAdded = $scope.serviceOrder.crewHeader
+		$scope.list = [
+			{ item: 'Set Up' },
+			{ item: 'Tear Down' },
+		]
+
+		if ($scope.SetupTearDown.crewHeader != undefined) {
+			$scope.crewHeaderAdded = $scope.SetupTearDown.crewHeader
 		}
 
 		$scope.readOnly = $rootScope.userData.role._id != 1;
@@ -41,7 +46,7 @@ angular.module('MobileCRMApp')
 		}
 
 		if ($rootScope.userData.role._id != 1 && $rootScope.userData.role._id != 5) {
-			$scope.serviceOrder.client = new User($rootScope.userData);
+			$scope.SetupTearDown.client = new User($rootScope.userData);
 		}
 		$scope.listStatus = statusList;
 		$scope.waiting = false;
@@ -73,13 +78,13 @@ angular.module('MobileCRMApp')
 		$scope.addresses = [];
 		var address = {};
 
-		var originalPhotos = $scope.serviceOrder.photos;
-		var originalContacts = $scope.serviceOrder.contacts;
-		var originalSiteAddress = $scope.serviceOrder.siteAddress;
+		var originalPhotos = $scope.SetupTearDown.photos;
+		var originalContacts = $scope.SetupTearDown.contacts;
+		var originalSiteAddress = $scope.SetupTearDown.siteAddress;
 
-		// if (!$scope.serviceOrder.siteAddressFrom) {
-		// 	console.log($scope.serviceOrder.siteAddressFrom)
-		// 	$scope.serviceOrder.siteAddressFrom = $scope.serviceOrder.client && $scope.serviceOrder.client.branch ? $scope.serviceOrder.client.branch.addresses[0] : {};
+		// if (!$scope.SetupTearDown.siteAddressFrom) {
+		// 	console.log($scope.SetupTearDown.siteAddressFrom)
+		// 	$scope.SetupTearDown.siteAddressFrom = $scope.SetupTearDown.client && $scope.SetupTearDown.client.branch ? $scope.SetupTearDown.client.branch.addresses[0] : {};
 		// }
 
 		$scope.getBranches = function () {
@@ -99,17 +104,16 @@ angular.module('MobileCRMApp')
 		};
 
 		$scope.recalculate = function () {
-			if ($scope.serviceOrder.siteAddressFrom.address1 && $scope.serviceOrder.siteAddress.address1) {
-				var distance = getDistance($scope.serviceOrder.siteAddress, $scope.serviceOrder.siteAddressFrom);
-				// $scope.serviceOrder.siteAddress.distanceFrom = $scope.serviceOrder.siteAddressFrom.address1 && $scope.serviceOrder.siteAddress.address1 ? distance : 0;
+			if ($scope.SetupTearDown.siteAddressFrom.address1 && $scope.SetupTearDown.siteAddress.address1) {
+				var distance = getDistance($scope.SetupTearDown.siteAddress, $scope.SetupTearDown.siteAddressFrom);
+				// $scope.SetupTearDown.siteAddress.distanceFrom = $scope.SetupTearDown.siteAddressFrom.address1 && $scope.SetupTearDown.siteAddress.address1 ? distance : 0;
 			}
 		}
 
-		$scope.$watch("serviceOrder.siteAddress.distanceFrom",function(newValue,oldValue) {
-			for (var row = 0; row < $scope.serviceOrder.items.length; row++) {
-				if ($scope.serviceOrder.items[row]._id == 253) {
-					$scope.serviceOrder.items[row].quantity = Number(newValue);
-					console.log(4777)
+		$scope.$watch("SetupTearDown.siteAddress.distanceFrom",function(newValue,oldValue) {
+			for (var row = 0; row < $scope.SetupTearDown.items.length; row++) {
+				if ($scope.SetupTearDown.items[row]._id == 253) {
+					$scope.SetupTearDown.items[row].quantity = Number(newValue);
 				}
 			}
 		});
@@ -144,8 +148,9 @@ angular.module('MobileCRMApp')
 						result = 0;
 					}
 
-					if ($scope.serviceOrder.siteAddressFrom && $scope.serviceOrder.siteAddress) {
-						$scope.serviceOrder.siteAddress.distanceFrom = $scope.serviceOrder.siteAddressFrom.address1 && $scope.serviceOrder.siteAddress.address1 ? parseFloat((result * 0.00062137).toFixed(2)) : 0;
+					if ($scope.SetupTearDown.siteAddressFrom && $scope.SetupTearDown.siteAddress) {
+
+						$scope.SetupTearDown.siteAddress.distanceFrom = $scope.SetupTearDown.siteAddressFrom.address1 && $scope.SetupTearDown.siteAddress.address1 ? parseFloat((result * 0.00062137).toFixed(2)) : 0;
 						initMap(p1coord, p2coord);
 						$scope.$apply();
 					}
@@ -194,8 +199,8 @@ angular.module('MobileCRMApp')
 
 			// Retrieve the start and end locations and create a DirectionsRequest using
 			// WALKING directions.
-			var p1coord = new google.maps.LatLng($scope.serviceOrder.siteAddressFrom.latitude, $scope.serviceOrder.siteAddressFrom.longitude);
-			var p2coord = new google.maps.LatLng($scope.serviceOrder.siteAddress.latitude, $scope.serviceOrder.siteAddress.longitude);
+			var p1coord = new google.maps.LatLng($scope.SetupTearDown.siteAddressFrom.latitude, $scope.SetupTearDown.siteAddressFrom.longitude);
+			var p2coord = new google.maps.LatLng($scope.SetupTearDown.siteAddress.latitude, $scope.SetupTearDown.siteAddress.longitude);
 
 			directionsService.route({
 				origin: p1coord,
@@ -238,8 +243,7 @@ angular.module('MobileCRMApp')
 			});
 		}
 
-		$scope.wsClassItem = Item;
-		$scope.wsFilterItem = $rootScope.userData.role._id != 1 && $rootScope.userData.role._id != 5 ? { 'companies._id': $rootScope.userData.company._id } : {};
+		$scope.wsClassItem = Item;		
 		$scope.wsFieldsItem = [{
 			label: 'Code',
 			field: 'code',
@@ -270,91 +274,80 @@ angular.module('MobileCRMApp')
 
 		$scope.clientChanged = function (client) {
 			if (client && client.company) {
-				$scope.wsFilterItem = $rootScope.userData.role._id != 1 && $rootScope.userData.role._id != 5 ? { 'companies._id': $rootScope.userData.company._id } : { 'companies._id': client.company._id };
+				$scope.wsFilterItem =  { 'typeItem': 'Set UP' };
 
-				if (!$scope.serviceOrder.siteAddressFrom) {
-					$scope.serviceOrder.siteAddressFrom = $scope.serviceOrder.client.branch ? $scope.serviceOrder.client.branch.addresses[0] : {};
-				}
-			}
-
-			if (serviceOrder.client == undefined) {
-				$scope.serviceOrder.items = [];
-			} else {
-				if ($scope.serviceOrder.client._id) {
-					var Serv = false 
-					if (!$route.current.params.id) {
-						for (var row = 0; row < $scope.serviceOrder.items.length; row++) {
-							var code = $scope.serviceOrder.items[row].code;
-							if (ItemDefault.data[0].code == code) {
-								Serv = true;
-							}
-						}
-						if (Serv == false) {
-							$scope.serviceOrder.items.unshift(ItemDefault.data[0]);
-						}
-					}	
+				if (!$scope.SetupTearDown.siteAddressFrom) {
+					$scope.SetupTearDown.siteAddressFrom = $scope.SetupTearDown.client.branch ? $scope.SetupTearDown.client.branch.addresses[0] : {};
 				}
 			}
 		};
 
 		$scope.addContact = function () {
-			$scope.serviceOrder.contacts.push({})
+			$scope.SetupTearDown.contacts.push({})
 			$scope.changed("Contact")
 		};
 
 		$scope.removeContact = function (index) {
-			$scope.serviceOrder.contacts.splice(index, 1);
+			$scope.SetupTearDown.contacts.splice(index, 1);
 			$scope.changed("Contact")
 		};
 
 		$scope.addItem = function (item) {
-			$scope.serviceOrder.items.unshift(item);
+			$scope.SetupTearDown.items.unshift(item);
 			item.crewLeaderCol = $scope.addedItem
 			item.CrewLeaderSelected = $scope.CrewLeaderSelected;
 			$scope.params.item = {};
 			$scope.changed('Items');
-			$scope.serviceOrder.addedItems.push(item);
+			$scope.SetupTearDown.addedItems.push(item);
 		};
 
 		$scope.removeItem = function (index, item) {
-			$scope.serviceOrder.items.splice(index, 1);
+			$scope.SetupTearDown.items.splice(index, 1);
 			$scope.changed('Items');
-			$scope.serviceOrder.removedItems.push(item);
+			$scope.SetupTearDown.removedItems.push(item);
 		};
 
 		$scope.setItem = function (item, index) {
-			$scope.serviceOrder.items[index] = new Item(item);
+			$scope.SetupTearDown.items[index] = new Item(item);
 		};
 
 		$scope.changed = function (field) {
-
-			if ($scope.serviceOrder._id /*&& $rootScope.userData.role._id != 1*/) {
+			if ($scope.SetupTearDown._id /*&& $rootScope.userData.role._id != 1*/) {
 				var isHere = false;
-				$scope.serviceOrder.fieldsChanged = $scope.serviceOrder.fieldsChanged || [];
-				for (var i = 0; i < $scope.serviceOrder.fieldsChanged.length; i++) {
-					if ($scope.serviceOrder.fieldsChanged[i].field == field) {
+				$scope.SetupTearDown.fieldsChanged = $scope.SetupTearDown.fieldsChanged || [];
+				for (var i = 0; i < $scope.SetupTearDown.fieldsChanged.length; i++) {
+					if ($scope.SetupTearDown.fieldsChanged[i].field == field) {
 						isHere = true;
 						break;
 					}
 				}
 				if (!isHere) {
-					$scope.serviceOrder.fieldsChanged.push({ field: field + (field === "Status" ? " - " + $scope.serviceOrder.status.description : ""), by: $rootScope.userData._id });
+					$scope.SetupTearDown.fieldsChanged.push({ field: field + (field === "Status" ? " - " + $scope.SetupTearDown.status.description : ""), by: $rootScope.userData._id });
 				}
 			}
 
 			if (field === "Status") {
 				$scope.setNoInvoice();
 			}
-
-
 		};
 
+		$scope.changeItem = function(client){
+			 if (client && client.company) {
+				 $scope.SetupTearDown.items = []
+				if ($scope.SetupTearDown.typeItem.item == 'Set UP'){
+					$scope.wsFilterItem =  { 'typeItem': 'Set UP'}
+				}else{
+					$scope.wsFilterItem =  { 'typeItem': 'TearDown' }
+				} 
+		  } 
+		}
+
 		$scope.isChanged = function (field) {
-			if ($scope.serviceOrder._id && $rootScope.userData.role._id == 1) {
+			if ($scope.SetupTearDown._id && $rootScope.userData.role._id == 1) {
 				var isHere = false;
-				$scope.serviceOrder.fieldsChanged = $scope.serviceOrder.fieldsChanged || [];
-				for (var i = 0; i < $scope.serviceOrder.fieldsChanged.length; i++) {
-					if ($scope.serviceOrder.fieldsChanged[i].field == field) {
+				$scope.SetupTearDown.fieldsChanged = $scope.SetupTearDown.fieldsChanged || [];
+				for (var i = 0; i < $scope.SetupTearDown.fieldsChanged.length; i++) {
+					if ($scope.SetupTearDown.fieldsChanged[i].field == field) {
 						isHere = true;
 						break;
 					}
@@ -365,7 +358,7 @@ angular.module('MobileCRMApp')
 		};
 
 		$scope.isDisabled = function () {
-			return ($rootScope.userData.role._id != 1 && $scope.serviceOrder.status._id == 3) || $scope.userData.role._id == 5;
+			return ($rootScope.userData.role._id != 1 && $scope.SetupTearDown.status._id == 3) || $scope.userData.role._id == 5;
 		};
 
 		$scope.uploadFiles = function (files) {
@@ -393,37 +386,37 @@ angular.module('MobileCRMApp')
 			}
 			$q.all(promises)
 				.then(function (urls) {
-					$scope.serviceOrder.photos = $scope.serviceOrder.photos || [];
-					$scope.serviceOrder.photos = $scope.serviceOrder.photos.concat(urls)
+					$scope.SetupTearDown.photos = $scope.SetupTearDown.photos || [];
+					$scope.SetupTearDown.photos = $scope.SetupTearDown.photos.concat(urls)
 				})
 		};
 
 		$scope.showPicture = function (index) {
-			$scope.serviceOrder.showPicture(index);
+			$scope.SetupTearDown.showPicture(index);
 		};
 
 		$scope.removePhoto = function (index) {
-			$scope.serviceOrder.photos.splice(index, 1);
+			$scope.SetupTearDown.photos.splice(index, 1);
 		};
 
 		$scope.addItemCollection = function () {
-			var dialog = dialogs.create('views/addItemCollection.html', 'AddItemCollectionCtrl', { client: $scope.serviceOrder.client });
+			var dialog = dialogs.create('views/addItemCollection.html', 'AddItemCollectionCtrl', { client: $scope.SetupTearDown.client });
 			dialog.result
 				.then(function (res) {
-					//add items to collection serviceOrder.items
+					//add items to collection SetupTearDown.items
 					for (var i = 0; i < res.length; i++) {
 						var isHere = -1;
-						for (var j = 0; j < $scope.serviceOrder.items.length; j++) {
-							if (res[i]._id == $scope.serviceOrder.items[j]._id) {
+						for (var j = 0; j < $scope.SetupTearDown.items.length; j++) {
+							if (res[i]._id == $scope.SetupTearDown.items[j]._id) {
 								isHere = j;
 								break;
 							}
 						}
-						if (isHere != -1 && $scope.serviceOrder.items[isHere].price == res[i].price) {
-							$scope.serviceOrder.items[isHere].quantity += res[i].quantity;
+						if (isHere != -1 && $scope.SetupTearDown.items[isHere].price == res[i].price) {
+							$scope.SetupTearDown.items[isHere].quantity += res[i].quantity;
 						}
 						else {
-							$scope.serviceOrder.items.unshift(res[i]);
+							$scope.SetupTearDown.items.unshift(res[i]);
 						}
 					}
 
@@ -432,95 +425,96 @@ angular.module('MobileCRMApp')
 		};
 
 		$scope.recalculate = function () {
-			if ($scope.serviceOrder.siteAddress) {
-				$scope.serviceOrder.siteAddress.distanceFrom = $scope.serviceOrder.siteAddressFrom && $scope.serviceOrder.siteAddressFrom.address1 && $scope.serviceOrder.siteAddress && $scope.serviceOrder.siteAddress.address1 ? getDistance($scope.serviceOrder.siteAddress, $scope.serviceOrder.siteAddressFrom) : 0;
+			if ($scope.SetupTearDown.siteAddress) {
+				$scope.SetupTearDown.siteAddress.distanceFrom = $scope.SetupTearDown.siteAddressFrom && $scope.SetupTearDown.siteAddressFrom.address1 && $scope.SetupTearDown.siteAddress && $scope.SetupTearDown.siteAddress.address1 ? getDistance($scope.SetupTearDown.siteAddress, $scope.SetupTearDown.siteAddressFrom) : 0;
 			}
 
 		};
 
 		$scope.save = function (sendMail, sendTotech) {
 			$scope.waiting = true;
-			delete $scope.serviceOrder.client.account.password;
+			delete $scope.SetupTearDown.client.account.password;
 			if (sendMail) {
-				$scope.serviceOrder.sendMail = true;
+				$scope.SetupTearDown.sendMail = true;
 			} else {
-				$scope.serviceOrder.sendMail = false;
+				$scope.SetupTearDown.sendMail = false;
 			}
 			if (sendTotech) {
 				if ($scope.crewHeaderAdded.length == 0) {
-					toaster.error('The Service Order couldn\'t be saved, please check if some required field is empty');
+					toaster.error('The Setup & TearDown couldn\'t be saved, please check if some required field is empty');
 					$scope.waiting = false;
 					return
 				}
-				$scope.serviceOrder.sendTotech = true;
+				$scope.SetupTearDown.sendTotech = true;
 			} else {
-				$scope.serviceOrder.sendTotech = false;
+				$scope.SetupTearDown.sendTotech = false;
 			}
 
-			if (originalContacts != $scope.serviceOrder.contacts) {
+			if (originalContacts != $scope.SetupTearDown.contacts) {
 				$scope.changed('Contacts');
 			}
 
-			if (originalPhotos != $scope.serviceOrder.photos) {
+			if (originalPhotos != $scope.SetupTearDown.photos) {
 				$scope.changed('Photos');
 			}
-			if (originalSiteAddress.address1 != $scope.serviceOrder.siteAddress.address1) {
+			if (originalSiteAddress.address1 != $scope.SetupTearDown.siteAddress.address1) {
 				$scope.changed('Site Address');
 			}
 				
-			$scope.serviceOrder.save()
+			$scope.SetupTearDown.save()
 				.then(function (data) {
-					toaster.success('The Service Order was saved successfully');
-					$location.path('serviceOrderList')
+					toaster.success('The Set Up & TearDown was saved successfully');
+					$location.path('SetupTearDownList')
 					$scope.waiting = false;
 				},
 				function (error) {
 					console.log(error);
 					if (error && error.errors && error.errors.error == "The object already exists") {
-						toaster.error('Service Order # Duplicated');
+						toaster.error('Set Up # Duplicated');
 					} else {
-						toaster.error('The Service Order couldn\'t be saved, please check if some required field is empty');
+						toaster.error('The Set Up & TearDown couldn\'t be saved, please check if some required field is empty');
 					}
 					$scope.waiting = false;
 				});
 		};
 
 		$scope.delete = function () {
+			$scope.SetupTearDelete = $scope.SetupTearDown
 			var dlg = dialogs.confirm('Warning', 'Are you sure you want to delete?');
 			dlg.result.then(function (btn) {
-				$scope.serviceOrder.remove()
+				$scope.SetupTearDown.remove()
 					.then(function () {
-						toaster.success('The service order was deleted successfully');
-						$location.path('/serviceOrderList')
+						toaster.success('The Set Up & TearDown was deleted successfully');
+						$location.path('/SetupTearDownList')
 					})
 					.then(function () {
 						console.log(7899)
-						$scope.serviceOrder.sendDelete($scope.serviceOrder)
+						$scope.SetupTearDown.sendDelete($scope.SetupTearDelete)
 					});
 			});
 		};
 
 		$scope.export = function () {
-			$scope.serviceOrder.download();
+			$scope.SetupTearDown.download();
 		};
 
 		$scope.send = function () {
-			$scope.serviceOrder.send();
+			$scope.SetupTearDown.send();
 		};
 
 		$scope.setNoInvoice = function () {
 			var array = [5, 7]
-			if (!$scope.serviceOrder.invoiceNumber || $scope.serviceOrder.invoiceNumber === "Pending Invoice" || $scope.serviceOrder.invoiceNumber === "No Invoice") {
-				if ($scope.serviceOrder.status._id === 5 || $scope.serviceOrder.status._id === 7) {
-					$scope.serviceOrder.invoiceNumber = "No Invoice";
+			if (!$scope.SetupTearDown.invoiceNumber || $scope.SetupTearDown.invoiceNumber === "Pending Invoice" || $scope.SetupTearDown.invoiceNumber === "No Invoice") {
+				if ($scope.SetupTearDown.status._id === 5 || $scope.SetupTearDown.status._id === 7) {
+					$scope.SetupTearDown.invoiceNumber = "No Invoice";
 				} else {
-					$scope.serviceOrder.invoiceNumber = "Pending Invoice";
+					$scope.SetupTearDown.invoiceNumber = "Pending Invoice";
 				}
 			}
 		}
 
-		if (serviceOrder.client) {
-			$scope.clientChanged(serviceOrder.client);
+		if (SetupTearDown.client) {
+			$scope.clientChanged(SetupTearDown.client);
 		}
 
 		$scope.getBranches();
@@ -591,9 +585,9 @@ angular.module('MobileCRMApp')
 		$scope.changedCrewLeaderValue = function (item, CrewL) {
 			item.CrewLeaderSelected = CrewL;
 
-			for (let index = 0; index < $scope.serviceOrder.items.length; index++) {
-				if ($scope.serviceOrder.items[index]._id == item._id) {
-					$scope.serviceOrder.items[index] = item;
+			for (let index = 0; index < $scope.SetupTearDown.items.length; index++) {
+				if ($scope.SetupTearDown.items[index]._id == item._id) {
+					$scope.SetupTearDown.items[index] = item;
 					break;
 				}
 			}
@@ -609,25 +603,25 @@ angular.module('MobileCRMApp')
 			}
 
 			$scope.crewHeaderAdded.push(item);
-			$scope.serviceOrder.crewHeader = $scope.crewHeaderAdded
+			$scope.SetupTearDown.crewHeader = $scope.crewHeaderAdded
 			$scope.changed('Crew Leader');
 		}
 		$scope.crewHeaderRemove = function (index) {
 			$scope.crewHeaderAdded.splice(index, 1);
-			$scope.serviceOrder.crewHeader = $scope.crewHeaderAdded
+			$scope.SetupTearDown.crewHeader = $scope.crewHeaderAdded
 			$scope.changed('Crew Leader');	
 		};
 
 		$scope.setAmountToZero = function (status) {
 			if (status._id == 5 || status._id == 7) {
-				for (var i=0; i<$scope.serviceOrder.items.length; i++) {
-					$scope.serviceOrder.items[i].originalPrice = $scope.serviceOrder.items[i].price;
-					$scope.serviceOrder.items[i].price = 0;
+				for (var i=0; i<$scope.SetupTearDown.items.length; i++) {
+					$scope.SetupTearDown.items[i].originalPrice = $scope.SetupTearDown.items[i].price;
+					$scope.SetupTearDown.items[i].price = 0;
 				}
 			} else {
-				for (var i=0; i<$scope.serviceOrder.items.length; i++) {
-					$scope.serviceOrder.items[i].price = $scope.serviceOrder.items[i].originalPrice ? $scope.serviceOrder.items[i].originalPrice : $scope.serviceOrder.items[i].price; 
-					delete $scope.serviceOrder.items[i].originalPrice;
+				for (var i=0; i<$scope.SetupTearDown.items.length; i++) {
+					$scope.SetupTearDown.items[i].price = $scope.SetupTearDown.items[i].originalPrice ? $scope.SetupTearDown.items[i].originalPrice : $scope.SetupTearDown.items[i].price; 
+					delete $scope.SetupTearDown.items[i].originalPrice;
 				}
 			}
 		}
@@ -644,8 +638,8 @@ angular.module('MobileCRMApp')
 
 		$scope.showHistory = function () {
 			var dialog = dialogs.create('views/historyModal.html', 'HistoryModalCtrl', {
-				unitno: $scope.serviceOrder.unitno,
-				_id: $scope.serviceOrder._id
+				unitno: $scope.SetupTearDown.unitno,
+				_id: $scope.SetupTearDown._id
 			});
 			dialog.result
 				.then(function (res) {

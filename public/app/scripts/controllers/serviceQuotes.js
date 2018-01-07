@@ -8,9 +8,9 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-	.controller('ServiceQuotesCtrl', function ($scope, $rootScope, $location, toaster, User, serviceQuotes, Item, dialogs, $q, Branch, CrewCollection, ItemDefault, companies, ServiceOrder, WorkOrder, Company) {
+	.controller('ServiceQuotesCtrl', function ($scope, $rootScope, $location, toaster, User, serviceQuotes, Item, dialogs, $q, Branch, CrewCollection, ItemDefault, companies, ServiceOrder, WorkOrder, Company, SetupTearDown, homeBusiness) {
 		$scope.serviceQuotes = serviceQuotes;
-console.log($scope.serviceQuotes.items)
+
 		$scope.CrewCollection = CrewCollection.data
 		$scope.addedItem = []
 		$scope.Crewadded = []
@@ -27,14 +27,29 @@ console.log($scope.serviceQuotes.items)
 
 		if ($scope.serviceQuotes.approved == 1) {
 			if ($scope.serviceQuotes._id) {
-				if ($scope.serviceQuotes.serviceType._id == 1 && $scope.serviceQuotes.sor =='Pending Service Order #') {
+				if ($scope.serviceQuotes.serviceType._id == 1 && $scope.serviceQuotes.sor == 'Pending Service Order #') {
 					$scope.serviceQuotes.sor = null
-				} 
+				}
 				if ($scope.serviceQuotes.serviceType._id == 2 && $scope.serviceQuotes.wor == 'Pending Work Order #') {
 					$scope.serviceQuotes.wor = null
 				}
+				if ($scope.serviceQuotes.serviceType._id == 3 && $scope.serviceQuotes.tor == 'Pending Set Up #') {
+					$scope.serviceQuotes.tor = null
+				}
+				if ($scope.serviceQuotes.serviceType._id == 4 && $scope.serviceQuotes.hor == 'Pending Home & Business #') {
+					$scope.serviceQuotes.hor = null
+				}
 			}
 		}
+		$scope.list = [
+			{ item: 'Set Up' },
+			{ item: 'Tear Down' },
+		]
+		$scope.listHB = [
+			{ item: 'Bard' },
+			{ item: 'Capacity' },
+			{ item: 'Window' },
+		]
 
 		if ($scope.serviceQuotes.crewHeader != undefined) {
 			$scope.crewHeaderAdded = $scope.serviceQuotes.crewHeader
@@ -52,7 +67,7 @@ console.log($scope.serviceQuotes.items)
 			$scope.serviceQuotes.client = new User($rootScope.userData);
 		}
 
-		$scope.serviceTypeData = [{ _id: 1, description: 'Service Order' }, { _id: 2, description: 'Work Order' }]
+		$scope.serviceTypeData = [{ _id: 1, description: 'Service Order' }, { _id: 2, description: 'Work Order' }, { _id: 3, description: 'Set up & Tear Down' }, { _id: 4, description: 'Home & Business' }]
 		$scope.waiting = false;
 
 		$scope.wsClass = User;
@@ -273,7 +288,7 @@ console.log($scope.serviceQuotes.items)
 		}
 		];
 
-		$scope.clientChanged = function (client) {		
+		$scope.clientChanged = function (client) {
 			if (client && client.company) {
 				$scope.wsFilterItem = $rootScope.userData.role._id != 1 && $rootScope.userData.role._id != 5 ? { 'companies._id': $rootScope.userData.company._id } : { 'companies._id': client.company._id };
 
@@ -286,16 +301,18 @@ console.log($scope.serviceQuotes.items)
 				$scope.serviceQuotes.items = [];
 			} else {
 				if ($scope.serviceQuotes.client._id) {
-					var Serv = false
+					if ($scope.serviceQuotes.serviceType._id == 1) {
+						var Serv = false
 
-					for (var row = 0; row < $scope.serviceQuotes.items.length; row++) {
-						var code = $scope.serviceQuotes.items[row].code;
-						if (ItemDefault.data[0].code == code) {
-							Serv = true;
+						for (var row = 0; row < $scope.serviceQuotes.items.length; row++) {
+							var code = $scope.serviceQuotes.items[row].code;
+							if (ItemDefault.data[0].code == code) {
+								Serv = true;
+							}
 						}
-					}
-					if (Serv == false) {
-						$scope.serviceQuotes.items.unshift(ItemDefault.data[0]);
+						if (Serv == false) {
+							$scope.serviceQuotes.items.unshift(ItemDefault.data[0]);
+						}
 					}
 				}
 			}
@@ -303,7 +320,7 @@ console.log($scope.serviceQuotes.items)
 			company.quotes($scope.serviceQuotes.quotesNumber)
 				.then(function (sequence) {
 					$scope.serviceQuotes.quotesNumber = sequence;
-				});			
+				});
 		};
 
 		$scope.addContact = function () {
@@ -345,16 +362,11 @@ console.log($scope.serviceQuotes.items)
 				}
 				if (!isHere) {
 					$scope.serviceQuotes.fieldsChanged.push({ field: field + (field === "Status" ? " - " + $scope.serviceQuotes.status.description : ""), by: $rootScope.userData._id });
-					console.log($scope.serviceQuotes.fieldsChanged)
 				}
 			}
-
 			if (field === "Status") {
 				$scope.setNoInvoice();
 			}
-
-			console.log(field)
-
 		};
 
 		$scope.isChanged = function (field) {
@@ -460,14 +472,23 @@ console.log($scope.serviceQuotes.items)
 				toaster.error('The Customer is required');
 				return
 			}
-			
+
 			if (approved == 2) {
-				if (!$scope.serviceQuotes.wor && !$scope.serviceQuotes.sor) {
-					toaster.error('Service Order Number or Work Order Number is required');
+				if ($scope.serviceQuotes.serviceType._id == 1 && !$scope.serviceQuotes.sor) {
+					toaster.error('Service Order Number is required');
 					return
 				}
-				if ($scope.serviceQuotes.wor == null || $scope.serviceQuotes.sor == null) {
-					toaster.error('Service Order Number or Work Order Number is required');
+				if ($scope.serviceQuotes.serviceType._id == 2 && !$scope.serviceQuotes.wor) {
+					toaster.error('Work Order Number is required');
+					return
+				}
+				console.log($scope.serviceQuotes.tor)
+				if ($scope.serviceQuotes.serviceType._id == 3 && !$scope.serviceQuotes.tor) {
+					toaster.error('Set Up Number is required');
+					return
+				}
+				if ($scope.serviceQuotes.serviceType._id == 4 && !$scope.serviceQuotes.hor) {
+					toaster.error('Home & Business Number is required');
 					return
 				}
 
@@ -477,26 +498,63 @@ console.log($scope.serviceQuotes.items)
 
 			if ($scope.serviceQuotes.serviceType._id == 1) {
 				delete $scope.serviceQuotes.wor
-			} else {
+				delete $scope.serviceQuotes.tor
+				delete $scope.serviceQuotes.hor
+			} else if ($scope.serviceQuotes.serviceType._id == 2) {
 				delete $scope.serviceQuotes.sor
+				delete $scope.serviceQuotes.tor
+				delete $scope.serviceQuotes.hor
+			} else if ($scope.serviceQuotes.serviceType._id == 3) {
+				delete $scope.serviceQuotes.sor
+				delete $scope.serviceQuotes.wor
+				delete $scope.serviceQuotes.hor
+			} else if ($scope.serviceQuotes.serviceType._id == 4) {
+				delete $scope.serviceQuotes.sor
+				delete $scope.serviceQuotes.wor
+				delete $scope.serviceQuotes.tor
+				$scope.serviceQuotes.unitno = ""
+				$scope.serviceQuotes.unitSize = ""
+				delete $scope.serviceQuotes.typeItem
 			}
 
 			$scope.serviceQuotes.save()
 				.then(function (data) {
-					if (approved == 2 && $scope.serviceQuotes.serviceType._id == 1) {
-						console.log(1)
-						$scope.serviceOrder = new ServiceOrder($scope.serviceQuotes);
-						delete $scope.serviceQuotes.wor
-						$scope.serviceOrder.save()
-						toaster.success('The Service Order was saved successfully');
-					} else if (approved == 2 && $scope.serviceQuotes.serviceType._id == 2) {
-						console.log(2)
-						$scope.workOrder = new WorkOrder($scope.serviceQuotes);
-						delete $scope.serviceQuotes.sor
-						$scope.workOrder.save()
-						toaster.success('The Work Order was saved successfully');
+					if (approved == 2) {
+						if ($scope.serviceQuotes.serviceType._id == 1) {
+							console.log(1)
+							$scope.serviceOrder = new ServiceOrder($scope.serviceQuotes);
+							delete $scope.serviceQuotes.wor
+							delete $scope.serviceQuotes.tor
+							delete $scope.serviceQuotes.hor
+							$scope.serviceOrder.save()
+							toaster.success('The Service Order was saved successfully');
+						} else if ($scope.serviceQuotes.serviceType._id == 2) {
+							console.log(2)
+							$scope.workOrder = new WorkOrder($scope.serviceQuotes);
+							delete $scope.serviceQuotes.sor
+							delete $scope.serviceQuotes.tor
+							delete $scope.serviceQuotes.hor
+							$scope.workOrder.save()
+							toaster.success('The Work Order was saved successfully');
+						} else if ($scope.serviceQuotes.serviceType._id == 3) {
+							console.log(3)
+							$scope.SetupTearDown = new SetupTearDown($scope.serviceQuotes);
+							delete $scope.serviceQuotes.sor
+							delete $scope.serviceQuotes.wor
+							delete $scope.serviceQuotes.hor
+							$scope.SetupTearDown.save()
+							toaster.success('The Set Up and Tear Down was saved successfully');
+						} else if ($scope.serviceQuotes.serviceType._id == 4) {
+							console.log(4)
+							$scope.homeBusiness = new homeBusiness($scope.serviceQuotes);
+							delete $scope.serviceQuotes.sor
+							delete $scope.serviceQuotes.wor
+							delete $scope.serviceQuotes.tor
+							$scope.homeBusiness.save()
+							toaster.success('The Home & Business was saved successfully');
+						}
 					} else {
-						console.log(3)
+						console.log(5)
 						toaster.success('The Estimate was saved successfully');
 					}
 					$location.path('serviceQuotesList')
@@ -558,11 +616,11 @@ console.log($scope.serviceQuotes.items)
 			}
 		}
 
-/* 		if (serviceQuotes.client) {
-			console.log($scope.serviceQuotes.items)
-			$scope.clientChanged(serviceQuotes.client);
-			console.log($scope.serviceQuotes.items)
-		} */
+		/* 		if (serviceQuotes.client) {
+					console.log($scope.serviceQuotes.items)
+					$scope.clientChanged(serviceQuotes.client);
+					console.log($scope.serviceQuotes.items)
+				} */
 
 		$scope.getBranches();
 		$scope.recalculate();
@@ -711,20 +769,20 @@ console.log($scope.serviceQuotes.items)
 				})
 		};
 
-		$scope.serviceTypeChanged = function(){			
-			if ($scope.serviceQuotes.serviceType._id==1){
-					var Serv = false
-					for (var row = 0; row < $scope.serviceQuotes.items.length; row++) {
-						var code = $scope.serviceQuotes.items[row].code;
-						if (ItemDefault.data[0].code == code) {
-							Serv = true;
-						}
+		$scope.serviceTypeChanged = function () {
+			if ($scope.serviceQuotes.serviceType._id == 1) {
+				var Serv = false
+				for (var row = 0; row < $scope.serviceQuotes.items.length; row++) {
+					var code = $scope.serviceQuotes.items[row].code;
+					if (ItemDefault.data[0].code == code) {
+						Serv = true;
 					}
-					if (Serv == false) {
-						$scope.serviceQuotes.items.unshift(ItemDefault.data[0]);
-					}
-			}else{
-$scope.serviceQuotes.items = [];
+				}
+				if (Serv == false) {
+					$scope.serviceQuotes.items.unshift(ItemDefault.data[0]);
+				}
+			} else {
+				$scope.serviceQuotes.items = [];
 			}
 		}
 	});

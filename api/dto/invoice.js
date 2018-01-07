@@ -253,13 +253,15 @@ Invoice.prototype.update = function (query, invoice, user, mail) {
 				} else {
 					var minMiles = initialMile;
 					var miles = invoice.items[index].quantity;
+					var cosTotalmiles = (miles - minMiles) * costPerMile + (InitPrice)
 
-					total += (miles - minMiles) * costPerMile + (InitPrice)
+					total += cosTotalmiles
+					invoice.items[index].price = cosTotalmiles
 
 					if (invoice.items[index].price == 0) {
 						var RInitPrice = Math.round(InitPrice * 100) / 100
 						invoice.items[index].price = RInitPrice
-					}
+					}					
 				}
 			} else if (invoice.items[index]._id == 806 && costPerHours > 0) {
 				total += (costPerHours * (invoice.items[index].quantity || 1));
@@ -309,7 +311,6 @@ Invoice.prototype.update = function (query, invoice, user, mail) {
 };
 
 Invoice.prototype.sendInvoice = function (id, username, mail, emails, sendToAllAdmin) {
-	console.log("SEND INVOICEEEE", emails, sendToAllAdmin)
 	var d = q.defer();
 	var _this = this;
 	var invoice = {};
@@ -739,6 +740,335 @@ Invoice.prototype.getMonthlyStatement = function (params, user) {
 	return d.promise;
 };
 
+Invoice.prototype.getInvoicesByCompany = function (params, user) {
+	var d = q.defer();
+	var _this = this;
+	var today = new Date();
+	var fromDate = params.fromDate ? new Date(params.fromDate) : new Date(today.getFullYear(), 0, 1, 0, 0, 0, 0);
+	var toDate = params.toDate ? new Date(params.toDate) : new Date(today.getFullYear(), 11, 31, 23, 59, 59, 999);
+	var queryDate = {
+		$gte: fromDate,
+		$lte: toDate
+	};
+	var pipeline = [];
+
+	var project = {
+		$project: {
+			
+			company: {
+				_id: '$client.company._id',
+				name: '$client.company.entity.name'
+			},
+			taxes: {
+				$ifNull: ['$client.company.taxes', 0]
+			},
+			totalWithTaxes: {
+				$add: [{ $multiply: ['$total', { $ifNull: ['$client.company.taxes', 0] }] }, { $ifNull: ['$total', 0] }]
+			},
+			total: 1,
+			status: {
+				_id: '$status._id',
+				description: '$status.description'
+			},
+			statusPaid: {
+				_id: {
+					$cond: [{ $not: ["$dor"] }, { $cond: [{ $eq: ['$status._id', 4] }, 4, { $cond: [{ $eq: ['$status._id', 3] }, 3, { $cond: [{ eq: ['$status._id', 8] }, 3, 1] }] }] }, { $cond: [{ $eq: ['$status._id', 7] }, 4, { $cond: [{ $eq: ['$status._id', 4] }, 3, { $cond: [{ eq: ['$status._id', 8] }, 3, 1] }] }] }]
+				},
+				description: {
+					$cond: [{ $not: ["$dor"] }, { $cond: [{ $eq: ['$status._id', 4] }, 'Paid', { $cond: [{ $eq: ['$status._id', 3] }, 'Pending to Pay', { $cond: [{ $eq: ['$status._id', 8] }, 'Pending to Pay', 'Pending'] }] }] }, { $cond: [{ $eq: ['$status._id', 7] }, 'Paid', { $cond: [{ $eq: ['$status._id', 4] }, 'Pending to Pay', { $cond: [{ $eq: ['$status._id', 8] }, 'Pending to Pay', 'Pending'] }] }] }]
+				}
+			},
+			date: 1
+		}
+	};
+
+	var query = {
+		$match: {
+			date: {
+				$gte: fromDate,
+				$lte: toDate
+			},
+			'status._id': { $ne: 5 },
+			$or: [{'status._id': {$ne:7}}, {'dor': {$exists:true}}]
+		}
+	};
+
+	if (params.clientId) {
+		query.$match['client._id'] = Number(params.clientId);
+	}
+	if (params.companyId) {
+		query.$match['company._id'] = Number(params.companyId);
+	}
+	if (params.branchId) {
+		query.$match['branch._id'] = Number(params.branchId);
+	}
+	if (params.invoiceType) {
+		if (params.invoiceType == 'sor') {
+			query.$match['sor'] = {'$exists': true}
+		}
+		if (params.invoiceType == 'wor') {
+			query.$match['wor'] = {'$exists': true}
+		}
+		if (params.invoiceType == 'dor') {
+			query.$match['dor'] = {'$exists': true}
+		}
+		if (params.invoiceType == 'hor') {
+			query.$match['hor'] = {'$exists': true}
+		}
+		if (params.invoiceType == 'tor') {
+			query.$match['tor'] = {'$exists': true}
+		}
+	}
+
+	var group = {
+		$group: {
+			_id: {
+				status: '$statusPaid',
+				company: '$company'
+			},
+			total: {
+				$sum: '$total'
+			},
+			count: {$sum:1}
+		}
+	};
+
+	var project2 = {
+		$project: {
+			_id: 0,
+			status: '$_id.status',
+			company: '$company',
+			count: '$count',
+			total: '$total'
+
+			
+		}
+	};
+
+	var group2 = {
+		$group: {
+			_id: {
+				status: '$_id.status'
+
+			},
+			company: {
+				$push: {
+					company: '$_id.company',
+					count: '$count',
+					total: '$total'
+				},
+
+			}
+		}
+	};
+
+	pipeline.push(project);
+	pipeline.push(query);
+	pipeline.push(group);
+	pipeline.push(group2);
+	pipeline.push(project2);
+	var results = [];
+	var invoices = [];
+
+	_this.crud.db.get('INVOICE').aggregate(pipeline, function (error, data) {
+				if (error) {
+					d.reject(error);
+					throw new Error("Error happened: ", error);
+				}
+				d.resolve(data);
+	});
+	return d.promise;
+};
+
+Invoice.prototype.getTotalPendingToPay = function (params, user) {
+	var d = q.defer();
+	var _this = this;
+	var today = new Date();
+	
+	var pipeline = [];
+
+	var group = {
+		$group: {
+			_id: null,
+			total: {$sum: '$total'},
+			count: {$sum: 1}
+		}
+	};
+
+	var query = {
+		$match: {
+			'status._id': { $nin: [4, 5, 7] }
+		}
+	};
+	
+	var query = {
+		$match: {
+			'status._id': {$nin: [4,5]},
+			$or: [{'status._id': {$ne:7}}, {'dor': {$exists:true}}]
+		}
+	};
+
+	pipeline.push(query);
+	pipeline.push(group);
+	var results = [];
+	var invoices = [];
+
+	_this.crud.db.get('INVOICE').aggregate(pipeline, function (error, data) {
+				if (error) {
+					d.reject(error);
+					throw new Error("Error happened: ", error);
+				}
+				d.resolve(data);
+	});
+	return d.promise;
+};
+
+Invoice.prototype.getInvoicesByServiceType = function (params, user) {
+	var d = q.defer();
+	var _this = this;
+	var today = new Date();
+	var fromDate = params.fromDate ? new Date(params.fromDate) : new Date(today.getFullYear(), 0, 1, 0, 0, 0, 0);
+	var toDate = params.toDate ? new Date(params.toDate) : new Date(today.getFullYear(), 11, 31, 23, 59, 59, 999);
+	var queryDate = {
+		$gte: fromDate,
+		$lte: toDate
+	};
+	var pipeline = [];
+
+	var project = {
+		$project: {
+			dor: 1,
+			sor: 1,
+			wor: 1,
+			serviceType: {
+				_id: {
+					$cond: [{$not:'$dor'},{$cond:[{$not:'$sor'},'wor','sor']},'dor']
+				},
+				description: {
+					$cond: [{$not:'$dor'},{$cond:[{$not:'$sor'},'Work Order','Service Order']},'Delivery Order']
+				}
+			},
+			taxes: {
+				$ifNull: ['$client.company.taxes', 0]
+			},
+			totalWithTaxes: {
+				$add: [{ $multiply: ['$total', { $ifNull: ['$client.company.taxes', 0] }] }, { $ifNull: ['$total', 0] }]
+			},
+			total: 1,
+			status: {
+				_id: '$status._id',
+				description: '$status.description'
+			},
+			statusPaid: {
+				_id: {
+					$cond: [{ $not: ["$dor"] }, { $cond: [{ $eq: ['$status._id', 4] }, 4, { $cond: [{ $eq: ['$status._id', 3] }, 3, { $cond: [{ eq: ['$status._id', 8] }, 3, 1] }] }] }, { $cond: [{ $eq: ['$status._id', 7] }, 4, { $cond: [{ $eq: ['$status._id', 4] }, 3, { $cond: [{ eq: ['$status._id', 8] }, 3, 1] }] }] }]
+				},
+				description: {
+					$cond: [{ $not: ["$dor"] }, { $cond: [{ $eq: ['$status._id', 4] }, 'Paid', { $cond: [{ $eq: ['$status._id', 3] }, 'Pending to Pay', { $cond: [{ $eq: ['$status._id', 8] }, 'Pending to Pay', 'Pending'] }] }] }, { $cond: [{ $eq: ['$status._id', 7] }, 'Paid', { $cond: [{ $eq: ['$status._id', 4] }, 'Pending to Pay', { $cond: [{ $eq: ['$status._id', 8] }, 'Pending to Pay', 'Pending'] }] }] }]
+				}
+			},
+			date: 1
+		}
+	};
+
+	var query = {
+		$match: {
+			date: {
+				$gte: fromDate,
+				$lte: toDate
+			},
+			'status._id': { $ne: 5 },
+			$or: [{'status._id': {$ne:7}}, {'dor': {$exists:true}}]
+		}
+	};
+
+	if (params.clientId) {
+		query.$match['client._id'] = Number(params.clientId);
+	}
+	if (params.companyId) {
+		query.$match['company._id'] = Number(params.companyId);
+	}
+	if (params.branchId) {
+		query.$match['branch._id'] = Number(params.branchId);
+	}
+	if (params.invoiceType) {
+		if (params.invoiceType == 'sor') {
+			query.$match['sor'] = {'$exists': true}
+		}
+		if (params.invoiceType == 'wor') {
+			query.$match['wor'] = {'$exists': true}
+		}
+		if (params.invoiceType == 'dor') {
+			query.$match['dor'] = {'$exists': true}
+		}
+		if (params.invoiceType == 'hor') {
+			query.$match['hor'] = {'$exists': true}
+		}
+		if (params.invoiceType == 'tor') {
+			query.$match['tor'] = {'$exists': true}
+		}
+	}
+
+	var group = {
+		$group: {
+			_id: {
+				status: '$statusPaid',
+				serviceType: '$serviceType'
+			},
+			total: {
+				$sum: '$total'
+			},
+			count: {$sum:1}
+		}
+	};
+
+	var project2 = {
+		$project: {
+			_id: 0,
+			status: '$_id.status',
+			serviceType: '$serviceType',
+			count: '$count',
+			total: '$total'
+
+			
+		}
+	};
+
+	var group2 = {
+		$group: {
+			_id: {
+				status: '$_id.status'
+
+			},
+			serviceType: {
+				$push: {
+					serviceType: '$_id.serviceType',
+					count: '$count',
+					total: '$total'
+				},
+
+			}
+		}
+	};
+
+	pipeline.push(project);
+	pipeline.push(query);
+	pipeline.push(group);
+	pipeline.push(group2);
+	pipeline.push(project2);
+	var results = [];
+	var invoices = [];
+
+	_this.crud.db.get('INVOICE').aggregate(pipeline, function (error, data) {
+				if (error) {
+					d.reject(error);
+					throw new Error("Error happened: ", error);
+				}
+				d.resolve(data);
+	});
+	return d.promise;
+};
+
 Invoice.prototype.createMonthlyStatement = function (params, format, user) {
 	var d = q.defer();
 	var _this = this;
@@ -783,7 +1113,6 @@ Invoice.prototype.createMonthlyStatement = function (params, format, user) {
 			var defer = q.defer();
 			var companies = {};
 			var branchesList = {};
-			// console.log(params)
 			if(params.companyId){
 				for(var i = 0; i < data.length; i++){
 					for(var j = 0; j < data[i].invoices.length; j++){
@@ -1003,7 +1332,6 @@ Invoice.prototype.getExpensesByFilter = function (query, start, end) {
 		}
 	}
 
-	console.log(where.$and);
 
 	_crud.find(where, sort)
 		.then(function (result) {
@@ -1030,7 +1358,6 @@ Invoice.prototype.getExpensesByFilter = function (query, start, end) {
 				}
 				obj.push(inv);
 			}
-			console.log(obj)
 			deferred.resolve(obj);
 		}, function (err) {
 			deferred.reject(err);

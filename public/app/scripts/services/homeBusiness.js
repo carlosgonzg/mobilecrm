@@ -1,25 +1,24 @@
 'use strict';
 
 angular.module('MobileCRMApp')
-.factory('ServiceOrder', function (Base, Item, $rootScope, $location, $q,$http, toaster, dialogs) {
+.factory('homeBusiness', function (Base, Item, $rootScope, $location, $q,$http, toaster, dialogs) {
 
 	// Variable que se utiliza para comprobar si un objeto tiene una propiedad
 	// var hasProp = Object.prototype.hasOwnProperty;
 
 	// Nombre de la clase
-	var ServiceOrder;
+	var homeBusiness;
 var a;
-	function ServiceOrder(propValues) {
+	function homeBusiness(propValues) {
 		a = document.createElement("a");
 			document.body.appendChild(a);
-		ServiceOrder.super.constructor.apply(this, arguments);
-		this.baseApiPath = "/api/ServiceOrder";
+		homeBusiness.super.constructor.apply(this, arguments);
+		this.baseApiPath = "/api/homeBusiness";
 		this.client = this.client || {};
 		this.invoiceNumber = this.invoiceNumber || '';
-		this.sor = this.sor;
+		this.sor = this.sor || '';
 		this.pono = this.pono || '';
-		this.unitno = this.unitno || '';
-		this.isono = this.isono || '';
+		this.acserial = this.acserial || '';
 		this.siteAddress = this.siteAddress || {};
 		this.phone = this.phone || {};
 		this.comment = this.comment || '';
@@ -27,6 +26,8 @@ var a;
 		this.total = this.total || '';
 		this.items = this.items || [];
 		this.contacts = this.contacts || [{}, {}, {}];
+		this.ACType = this.ACType || { item: '' };
+
 		for(var i = 0; i < this.items.length; i++){
 			this.items[i] = new Item(this.items[i]);
 		}
@@ -51,15 +52,15 @@ var a;
 		return child;
 	};
 	// Extender de la clase Base
-	extend(ServiceOrder, Base);
+	extend(homeBusiness, Base);
 
 	// Funcion que retorna las propiedades de una cuenta
-	ServiceOrder.properties = function () {
+	homeBusiness.properties = function () {
 		var at = {};
 		return at;
 	};
 	
-	ServiceOrder.prototype.getTotal = function(){
+	homeBusiness.prototype.getTotal = function(){
 		var total = 0;
 		for(var i = 0; i < this.items.length; i++){
 			total += this.items[i].getTotalPrice();
@@ -69,11 +70,11 @@ var a;
 	};
 	
 	
-	ServiceOrder.prototype.goTo = function () {
-		$location.path('/serviceOrder/' + this._id);
+	homeBusiness.prototype.goTo = function () {
+		$location.path('/homeBusiness/' + this._id);
 	};
 
-	ServiceOrder.prototype.download = function(){
+	homeBusiness.prototype.download = function(){
 		var d = $q.defer();
 		var _this = this;
 		toaster.warning('Generating the document');
@@ -105,7 +106,7 @@ var a;
 	    });
 	    return d.promise;
 	};
-	ServiceOrder.prototype.getReport = function(query, queryDescription){
+	homeBusiness.prototype.getReport = function(query, queryDescription){
 		var d = $q.defer();
 		var _this = this;
 		$http({
@@ -137,7 +138,7 @@ var a;
 	    });
 	    return d.promise;
 	};
-	ServiceOrder.prototype.send = function(){
+	homeBusiness.prototype.send = function(){
 		var d = $q.defer();
 		toaster.warning('Sending the email');
 		$http.post(this.baseApiPath + '/send', { id: this._id })
@@ -151,10 +152,10 @@ var a;
 		return d.promise;
 	};
 
-	ServiceOrder.prototype.sendDelete = function(serviceOrder){
+	homeBusiness.prototype.sendDelete = function(homeBusiness){
 		var d = $q.defer();
 		toaster.warning('Sending the email');
-		$http.post(this.baseApiPath + '/sendDelete', { id: this._id, serviceOrder: serviceOrder })
+		$http.post(this.baseApiPath + '/sendDelete', { id: this._id, homeBusiness: homeBusiness })
 		.success(function (data) {
 			toaster.success('The Home & Business has been sent!.');
 	    })
@@ -165,14 +166,14 @@ var a;
 		return d.promise;
 	};
 
-	ServiceOrder.prototype.showPicture = function(index){
+	homeBusiness.prototype.showPicture = function(index){
 		var dialog = dialogs.create('views/photo.html', 'PhotoCtrl', { photos: this.photos, index: (index || 0) });
 		dialog.result
 		.then(function (res) {
 		}, function (res) {});
 	};
 
-	ServiceOrder.prototype.filter = function(query, sort){
+	homeBusiness.prototype.filter = function(query, sort){
 		var deferred = $q.defer();
 		var _this = this.constructor;
 		$http.post(this.baseApiPath + '/filter', { query: query, sort: sort })
@@ -200,7 +201,7 @@ var a;
 		return deferred.promise;
 	};
 
-	ServiceOrder.prototype.changeStatus = function(){
+	homeBusiness.prototype.changeStatus = function(){
 		var d = $q.defer();
 		$http.post(this.baseApiPath + '/status', { id: this._id })
 		.success(function(res){
@@ -214,7 +215,7 @@ var a;
 		return d.promise;
 	};
 
-	ServiceOrder.prototype.getTaxes = function(){
+	homeBusiness.prototype.getTaxes = function(){
 		var total = 0;
 		var taxes = 0;
 		if (this.dor) {
@@ -240,7 +241,7 @@ var a;
 		}	
 	};
 
-	ServiceOrder.prototype.getTotal = function(){
+	homeBusiness.prototype.getTotal = function(){
 		var total = 0;
 		for(var i = 0; i < this.items.length; i++){
 			total += this.items[i].getTotalPrice();
@@ -259,5 +260,5 @@ var a;
 	  return day + "-" + month + "-" + year;
 	}
 
-	return ServiceOrder;
+	return homeBusiness;
 });
