@@ -44,6 +44,27 @@ module.exports = function (prefix, app, mail, dirname) {
 		.then(util.success(res), util.error(res));
 	});
 
+	app.post(prefix + '/invoicesByCompany', function (req, res) {
+		var invoice = new Invoice(app.db, req.user, dirname);
+		console.log(req.body.query)
+		invoice.getInvoicesByCompany(req.body.query, req.user)
+		.then(util.success(res), util.error(res));
+	});
+
+	app.post(prefix + '/invoicesByServiceType', function (req, res) {
+		var invoice = new Invoice(app.db, req.user, dirname);
+		console.log(req.body.query)
+		invoice.getInvoicesByServiceType(req.body.query, req.user)
+		.then(util.success(res), util.error(res));
+	});
+
+	app.post(prefix + '/totalPendingToPay', function (req, res) {
+		var invoice = new Invoice(app.db, req.user, dirname);
+		console.log(req.body.query)
+		invoice.getTotalPendingToPay(req.body.query, req.user)
+		.then(util.success(res), util.error(res));
+	});
+
 	app.post(prefix + '/monthlyStatement/export', function (req, res) {
 		var invoice = new Invoice(app.db, req.user, dirname);
 		invoice.getMonthlyStatementFile(req.body.query, req.body.format, req.user, res);
