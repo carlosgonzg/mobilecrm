@@ -173,7 +173,6 @@ Company.prototype.setSequence = function (id) {
 
 								_this.crud.update({ _id: Number(otherCompany) }, otherCompanyData, true)
 									.then(function () {
-										console.log("ACTIVO ACTUALIZANDO")
 										d.resolve(sequence);
 									})
 							})
