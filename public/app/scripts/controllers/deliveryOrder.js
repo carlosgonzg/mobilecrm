@@ -527,7 +527,7 @@ angular.module('MobileCRMApp')
 				angular.element('#category').css('border', '2px #CCCCCC solid');
 			}
 			if ($scope.DeliveryOrder.typeTruck._id == undefined) {
-				toaster.error('The Type Truck can not be empty');
+				toaster.error('The Entrance Type can not be empty');
 				angular.element('#optEntrance').css('border', '2px red solid');
 				return
 			} else {
