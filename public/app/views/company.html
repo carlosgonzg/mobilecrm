@@ -112,6 +112,33 @@
 				<input type="number" class="form-control" ng-model="company.seqNumberDor" id="seqNumberDor" placeholder="Actual Number" ng-disabled="userData.role._id != 1">
 			</div>
 		</div>
+		<div class="col-xs-10 col-xs-10">
+			<h3>Set Up & Tear Down</h3>
+		</div>
+		<div class="col-xs-12 col-md-12">
+			<div class="form-group">
+				<label for="code"> Code</label>
+				<input type="text" class="form-control" ng-model="company.seqCodeTor" id="seqCodeTor" placeholder="Sequence Code (eg MMxxxxxx)">
+			</div>
+		</div>
+		<div class="col-xs-12 col-md-12">
+			<div class="form-group">
+				<label for="mask"> Mask</label>
+				<input type="number" class="form-control" ng-model="company.seqMaskTor" id="seqMaskTor" placeholder="Digits (How many digits do you want)">
+			</div>
+		</div>
+		<div class="col-xs-12 col-md-6">
+			<div class="form-group">
+				<label for="seqStart"> Starting point</label>
+				<input type="number" class="form-control" ng-model="company.seqStartTor" id="seqStartTor" placeholder="Starting Point">
+			</div>
+		</div>
+		<div class="col-xs-12 col-md-6">
+			<div class="form-group">
+				<label for="seqNumber"> Actual Number</label>
+				<input type="number" class="form-control" ng-model="company.seqNumberTor" id="seqNumberTor" placeholder="Actual Number" ng-disabled="userData.role._id != 1">
+			</div>
+		</div>
 		<div class="col-xs-12 col-md-12">
 			<h1>Delivery & Freight</h1>
 		</div>

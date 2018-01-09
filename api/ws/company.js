@@ -19,5 +19,11 @@ module.exports = function (prefix, app) {
 
 		company.getSequenceQuote(id, true).then(util.success(res), util.error(res));
 	});
+	app.get(prefix + '/sequence/setupTearDown/:id', function (req, res) {
+		var company = new Company(app.db, req.user);
+		var id = req.params.id
+
+		company.getSequenceSetup(id, true).then(util.success(res), util.error(res));
+	});
 	require('./crud')(prefix, app, Company);
 }

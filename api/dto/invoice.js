@@ -21,6 +21,7 @@ function Invoice(db, userLogged, dirname) {
 	this.crudServiceOrder = new Crud(db, 'SERVICEORDER', userLogged);
 	this.crudWorkOrder = new Crud(db, 'WORKORDER', userLogged);
 	this.crudDeliveryOrder = new Crud(db, 'DELIVERYORDER', userLogged);
+	this.crudSetupTearDown = new Crud(db, 'SETUPTEARDOWN', userLogged);
 	this.user = new User(db, '', userLogged);
 	this.dirname = dirname;
 	//DB Table Schema
@@ -123,7 +124,7 @@ Invoice.prototype.insert = function (invoice, username, mail) {
 			}
 			if (invoice.items[index]._id == 806 || invoice.items[index]._id == 805) {
 				if (comp.perHours != undefined) {
-					if (comp.perHours == false && comp.initialCost != undefined) {	
+					if (comp.perHours == false && comp.initialCost != undefined) {
 						InitPrice = comp.initialCost;
 						initialMile = comp.initialMile;
 						costPerMile = comp.costPerMile;
@@ -132,7 +133,7 @@ Invoice.prototype.insert = function (invoice, username, mail) {
 							costPerHours = comp.costPerHours;
 						} else {
 							costPerHours = comp.smallTruck;
-						}	
+						}
 					}
 				}
 			}
@@ -159,7 +160,13 @@ Invoice.prototype.insert = function (invoice, username, mail) {
 
 	invoice.total = total;
 	//Consigo el sequencial de invoice
-	var promise = invoice.invoiceNumber ? q.when(invoice.invoiceNumber) : _this.company.getSequence(invoice.client.company._id, false, invoice.dor);//util.getYearlySequence(_this.crud.db, 'Invoice');
+	var promise;
+
+	if (invoice.tor) {
+		promise = invoice.invoiceNumber ? q.when(invoice.invoiceNumber) : _this.company.getSequenceSetup(invoice.client.company._id, false);//util.getYearlySequence(_this.crud.db, 'Invoice');
+	} else {
+		promise = invoice.invoiceNumber ? q.when(invoice.invoiceNumber) : _this.company.getSequence(invoice.client.company._id, false, invoice.dor);//util.getYearlySequence(_this.crud.db, 'Invoice');	
+	}
 	promise
 		.then(function (sequence) {
 			invoice.invoiceNumber = sequence;
@@ -167,11 +174,13 @@ Invoice.prototype.insert = function (invoice, username, mail) {
 		})
 		.then(function (obj) {
 			if (invoice.invoiceNumber != "Pending Invoice") {
-				if (invoice.dor) {
+				if (invoice.tor) {
+					_this.company.getSequenceSetup(invoice.client.company._id)
+				}else if (invoice.dor) {
 					_this.company.setSequenceDor(invoice.client.company._id)
 				} else {
 					_this.company.setSequence(invoice.client.company._id)
-				}	
+				}
 			}
 
 			d.resolve(obj);
@@ -189,8 +198,9 @@ Invoice.prototype.insert = function (invoice, username, mail) {
 				_this.crudWorkOrder.update({ wor: invoice.wor }, setObj);
 			} else if (invoice.dor) {
 				_this.crudDeliveryOrder.update({ dor: invoice.dor }, setObj);
+			} else if (invoice.tor) {
+				_this.crudSetupTearDown.update({ tor: invoice.tor }, setObj);
 			}
-
 			d.resolve(obj);
 		})
 		.catch(function (err) {
@@ -242,7 +252,7 @@ Invoice.prototype.update = function (query, invoice, user, mail) {
 							costPerHours = comp.costPerHours;
 						} else {
 							costPerHours = comp.smallTruck;
-						}	
+						}
 					}
 				}
 			}
@@ -261,7 +271,7 @@ Invoice.prototype.update = function (query, invoice, user, mail) {
 					if (invoice.items[index].price == 0) {
 						var RInitPrice = Math.round(InitPrice * 100) / 100
 						invoice.items[index].price = RInitPrice
-					}					
+					}
 				}
 			} else if (invoice.items[index]._id == 806 && costPerHours > 0) {
 				total += (costPerHours * (invoice.items[index].quantity || 1));
@@ -296,6 +306,8 @@ Invoice.prototype.update = function (query, invoice, user, mail) {
 				_this.crudWorkOrder.update({ wor: invoice.wor }, setObj, true)
 			} else if (invoice.dor) {
 				_this.crudDeliveryOrder.update({ dor: invoice.dor }, setObj, true)
+			} else if (invoice.tor) {
+				_this.crudSetupTearDown.update({ tor: invoice.tor }, setObj, true)
 			}
 
 			d.resolve(obj);
@@ -342,12 +354,12 @@ Invoice.prototype.sendInvoice = function (id, username, mail, emails, sendToAllA
 				for (var i = 0; i < users.data.length; i++) {
 					cc.push(users.data[i].account.email);
 				}
-			}	
+			}
 			emails = _.uniq(emails);
 			cc = _.uniq(cc);
 			fileNamePdf = invoice.invoiceNumber + '.pdf';
 			urlPdf = _this.dirname + '/api/invoices/' + fileNamePdf;
-			return pdf.createInvoice(invoice, company, branch);
+			return pdf.createInvoice(invoice, company, branch, urlPdf);
 		})
 		.then(function () {
 			return mail.sendInvoice(invoice, emails, cc, urlPdf, fileNamePdf);
@@ -403,7 +415,7 @@ Invoice.prototype.sendInvoiceUpdate = function (id, username, mail) {
 	return d.promise;
 };
 
-Invoice.prototype.sendInvoiceDelete	 = function (id, username, mail, invoice) {
+Invoice.prototype.sendInvoiceDelete = function (id, username, mail, invoice) {
 	var d = q.defer();
 	var _this = this;
 	var emails = [];
@@ -414,7 +426,7 @@ Invoice.prototype.sendInvoiceDelete	 = function (id, username, mail, invoice) {
 	var company = {};
 	var branch = {};
 	_this.crudCompany.find({ _id: invoice.client.company._id })
-	//busco compañia
+		//busco compañia
 		.then(function (companyS) {
 			company = companyS.data[0];
 			return invoice.client.branch && invoice.client.branch._id ? _this.crudBranch.find({ _id: invoice.client.branch._id }) : q.when({ data: [{ name: 'None' }] });
@@ -595,12 +607,12 @@ Invoice.prototype.getMonthlyStatement = function (params, user) {
 
 	var sort = {
 		$sort:
-		{
-			date: 1,
-			'company._id': 1,
-			'branch._id': 1,
-			'client._id': 1
-		}
+			{
+				date: 1,
+				'company._id': 1,
+				'branch._id': 1,
+				'client._id': 1
+			}
 	}
 
 	var query = {
@@ -610,7 +622,7 @@ Invoice.prototype.getMonthlyStatement = function (params, user) {
 				$lte: toDate
 			},
 			'status._id': { $ne: 5 },
-			$or: [{'status._id': {$ne:7}}, {'dor': {$exists:true}}]
+			$or: [{ 'status._id': { $ne: 7 } }, { 'dor': { $exists: true } }]
 		}
 	};
 	if (params.clientId) {
@@ -624,13 +636,13 @@ Invoice.prototype.getMonthlyStatement = function (params, user) {
 	}
 	if (params.invoiceType) {
 		if (params.invoiceType == 'sor') {
-			query.$match['sor'] = {'$exists': true}
+			query.$match['sor'] = { '$exists': true }
 		}
 		if (params.invoiceType == 'wor') {
-			query.$match['wor'] = {'$exists': true}
+			query.$match['wor'] = { '$exists': true }
 		}
 		if (params.invoiceType == 'dor') {
-			query.$match['dor'] = {'$exists': true}
+			query.$match['dor'] = { '$exists': true }
 		}
 		if (params.invoiceType == 'smo') {
 			query.$match['status._id'] = 8
@@ -754,7 +766,7 @@ Invoice.prototype.getInvoicesByCompany = function (params, user) {
 
 	var project = {
 		$project: {
-			
+
 			company: {
 				_id: '$client.company._id',
 				name: '$client.company.entity.name'
@@ -789,7 +801,7 @@ Invoice.prototype.getInvoicesByCompany = function (params, user) {
 				$lte: toDate
 			},
 			'status._id': { $ne: 5 },
-			$or: [{'status._id': {$ne:7}}, {'dor': {$exists:true}}]
+			$or: [{ 'status._id': { $ne: 7 } }, { 'dor': { $exists: true } }]
 		}
 	};
 
@@ -804,19 +816,19 @@ Invoice.prototype.getInvoicesByCompany = function (params, user) {
 	}
 	if (params.invoiceType) {
 		if (params.invoiceType == 'sor') {
-			query.$match['sor'] = {'$exists': true}
+			query.$match['sor'] = { '$exists': true }
 		}
 		if (params.invoiceType == 'wor') {
-			query.$match['wor'] = {'$exists': true}
+			query.$match['wor'] = { '$exists': true }
 		}
 		if (params.invoiceType == 'dor') {
-			query.$match['dor'] = {'$exists': true}
+			query.$match['dor'] = { '$exists': true }
 		}
 		if (params.invoiceType == 'hor') {
-			query.$match['hor'] = {'$exists': true}
+			query.$match['hor'] = { '$exists': true }
 		}
 		if (params.invoiceType == 'tor') {
-			query.$match['tor'] = {'$exists': true}
+			query.$match['tor'] = { '$exists': true }
 		}
 	}
 
@@ -829,7 +841,7 @@ Invoice.prototype.getInvoicesByCompany = function (params, user) {
 			total: {
 				$sum: '$total'
 			},
-			count: {$sum:1}
+			count: { $sum: 1 }
 		}
 	};
 
@@ -841,7 +853,7 @@ Invoice.prototype.getInvoicesByCompany = function (params, user) {
 			count: '$count',
 			total: '$total'
 
-			
+
 		}
 	};
 
@@ -871,11 +883,11 @@ Invoice.prototype.getInvoicesByCompany = function (params, user) {
 	var invoices = [];
 
 	_this.crud.db.get('INVOICE').aggregate(pipeline, function (error, data) {
-				if (error) {
-					d.reject(error);
-					throw new Error("Error happened: ", error);
-				}
-				d.resolve(data);
+		if (error) {
+			d.reject(error);
+			throw new Error("Error happened: ", error);
+		}
+		d.resolve(data);
 	});
 	return d.promise;
 };
@@ -884,14 +896,14 @@ Invoice.prototype.getTotalPendingToPay = function (params, user) {
 	var d = q.defer();
 	var _this = this;
 	var today = new Date();
-	
+
 	var pipeline = [];
 
 	var group = {
 		$group: {
 			_id: null,
-			total: {$sum: '$total'},
-			count: {$sum: 1}
+			total: { $sum: '$total' },
+			count: { $sum: 1 }
 		}
 	};
 
@@ -900,11 +912,11 @@ Invoice.prototype.getTotalPendingToPay = function (params, user) {
 			'status._id': { $nin: [4, 5, 7] }
 		}
 	};
-	
+
 	var query = {
 		$match: {
-			'status._id': {$nin: [4,5]},
-			$or: [{'status._id': {$ne:7}}, {'dor': {$exists:true}}]
+			'status._id': { $nin: [4, 5] },
+			$or: [{ 'status._id': { $ne: 7 } }, { 'dor': { $exists: true } }]
 		}
 	};
 
@@ -914,11 +926,11 @@ Invoice.prototype.getTotalPendingToPay = function (params, user) {
 	var invoices = [];
 
 	_this.crud.db.get('INVOICE').aggregate(pipeline, function (error, data) {
-				if (error) {
-					d.reject(error);
-					throw new Error("Error happened: ", error);
-				}
-				d.resolve(data);
+		if (error) {
+			d.reject(error);
+			throw new Error("Error happened: ", error);
+		}
+		d.resolve(data);
 	});
 	return d.promise;
 };
@@ -942,10 +954,10 @@ Invoice.prototype.getInvoicesByServiceType = function (params, user) {
 			wor: 1,
 			serviceType: {
 				_id: {
-					$cond: [{$not:'$dor'},{$cond:[{$not:'$sor'},'wor','sor']},'dor']
+					$cond: [{ $not: '$dor' }, { $cond: [{ $not: '$sor' }, 'wor', 'sor'] }, 'dor']
 				},
 				description: {
-					$cond: [{$not:'$dor'},{$cond:[{$not:'$sor'},'Work Order','Service Order']},'Delivery Order']
+					$cond: [{ $not: '$dor' }, { $cond: [{ $not: '$sor' }, 'Work Order', 'Service Order'] }, 'Delivery Order']
 				}
 			},
 			taxes: {
@@ -978,7 +990,7 @@ Invoice.prototype.getInvoicesByServiceType = function (params, user) {
 				$lte: toDate
 			},
 			'status._id': { $ne: 5 },
-			$or: [{'status._id': {$ne:7}}, {'dor': {$exists:true}}]
+			$or: [{ 'status._id': { $ne: 7 } }, { 'dor': { $exists: true } }]
 		}
 	};
 
@@ -993,19 +1005,19 @@ Invoice.prototype.getInvoicesByServiceType = function (params, user) {
 	}
 	if (params.invoiceType) {
 		if (params.invoiceType == 'sor') {
-			query.$match['sor'] = {'$exists': true}
+			query.$match['sor'] = { '$exists': true }
 		}
 		if (params.invoiceType == 'wor') {
-			query.$match['wor'] = {'$exists': true}
+			query.$match['wor'] = { '$exists': true }
 		}
 		if (params.invoiceType == 'dor') {
-			query.$match['dor'] = {'$exists': true}
+			query.$match['dor'] = { '$exists': true }
 		}
 		if (params.invoiceType == 'hor') {
-			query.$match['hor'] = {'$exists': true}
+			query.$match['hor'] = { '$exists': true }
 		}
 		if (params.invoiceType == 'tor') {
-			query.$match['tor'] = {'$exists': true}
+			query.$match['tor'] = { '$exists': true }
 		}
 	}
 
@@ -1018,7 +1030,7 @@ Invoice.prototype.getInvoicesByServiceType = function (params, user) {
 			total: {
 				$sum: '$total'
 			},
-			count: {$sum:1}
+			count: { $sum: 1 }
 		}
 	};
 
@@ -1030,7 +1042,7 @@ Invoice.prototype.getInvoicesByServiceType = function (params, user) {
 			count: '$count',
 			total: '$total'
 
-			
+
 		}
 	};
 
@@ -1060,11 +1072,11 @@ Invoice.prototype.getInvoicesByServiceType = function (params, user) {
 	var invoices = [];
 
 	_this.crud.db.get('INVOICE').aggregate(pipeline, function (error, data) {
-				if (error) {
-					d.reject(error);
-					throw new Error("Error happened: ", error);
-				}
-				d.resolve(data);
+		if (error) {
+			d.reject(error);
+			throw new Error("Error happened: ", error);
+		}
+		d.resolve(data);
 	});
 	return d.promise;
 };
@@ -1109,16 +1121,16 @@ Invoice.prototype.createMonthlyStatement = function (params, format, user) {
 			}
 			return _this.getMonthlyStatement(params, user);
 		})
-		.then(function(data) {
+		.then(function (data) {
 			var defer = q.defer();
 			var companies = {};
 			var branchesList = {};
-			if(params.companyId){
-				for(var i = 0; i < data.length; i++){
-					for(var j = 0; j < data[i].invoices.length; j++){
-						var bId = data[i].invoices[j].branch ? data[i].invoices[j].branch._id || 'n/a' : 'n/a';
-						var bName = data[i].invoices[j].branch ? data[i].invoices[j].branch.name || 'n/a' : 'n/a';
-						if(!branchesList[bId]){
+			if (params.companyId) {
+				for (var i = 0; i < data.length; i++) {
+					for (var j = 0; j < data[i].invoices.length; j++) {
+						var bId = data[i].invoices[j].branch ? data[i].invoices[j].branch._id || 'n/a' : 'n/a';
+						var bName = data[i].invoices[j].branch ? data[i].invoices[j].branch.name || 'n/a' : 'n/a';
+						if (!branchesList[bId]) {
 							branchesList[bId] = {
 								name: bName,
 								paid: 0,
@@ -1126,11 +1138,11 @@ Invoice.prototype.createMonthlyStatement = function (params, format, user) {
 								total: 0,
 							};
 						}
-						if(data[i].invoices[j].statusPaid._id == 4){
+						if (data[i].invoices[j].statusPaid._id == 4) {
 							branchesList[bId].paid += data[i].invoices[j].totalWithTaxes;
 						}
-						else if(data[i].invoices[j].statusPaid._id == 3){
-				
+						else if (data[i].invoices[j].statusPaid._id == 3) {
+
 							branchesList[bId].pending += data[i].invoices[j].totalWithTaxes;
 						}
 						branchesList[bId].total += data[i].invoices[j].totalWithTaxes;
@@ -1139,11 +1151,11 @@ Invoice.prototype.createMonthlyStatement = function (params, format, user) {
 				}
 				defer.resolve(branchesList);
 			} else {
-				for(var i = 0; i < data.length; i++){
-					for(var j = 0; j < data[i].invoices.length; j++){
-						var bId = data[i].invoices[j].company ? data[i].invoices[j].company._id || 'n/a' : 'n/a';
-						var bName = data[i].invoices[j].company ? data[i].invoices[j].company.name || 'n/a' : 'n/a';
-						if(!companies[bId]){
+				for (var i = 0; i < data.length; i++) {
+					for (var j = 0; j < data[i].invoices.length; j++) {
+						var bId = data[i].invoices[j].company ? data[i].invoices[j].company._id || 'n/a' : 'n/a';
+						var bName = data[i].invoices[j].company ? data[i].invoices[j].company.name || 'n/a' : 'n/a';
+						if (!companies[bId]) {
 							companies[bId] = {
 								name: bName,
 								paid: 0,
@@ -1151,10 +1163,10 @@ Invoice.prototype.createMonthlyStatement = function (params, format, user) {
 								total: 0,
 							};
 						}
-						if(data[i].invoices[j].statusPaid._id == 4){
+						if (data[i].invoices[j].statusPaid._id == 4) {
 							companies[bId].paid += data[i].invoices[j].totalWithTaxes;
 						}
-						else if(data[i].invoices[j].statusPaid._id == 3){
+						else if (data[i].invoices[j].statusPaid._id == 3) {
 							companies[bId].pending += data[i].invoices[j].totalWithTaxes;
 						}
 						companies[bId].total += data[i].invoices[j].totalWithTaxes;
@@ -1163,7 +1175,7 @@ Invoice.prototype.createMonthlyStatement = function (params, format, user) {
 				}
 				defer.resolve(companies);
 			}
-			return {data:data, companies:companies, branches: branchesList}
+			return { data: data, companies: companies, branches: branchesList }
 		})
 		.then(function (data) {
 			return format == 'pdf' ? pdf.createMonthlyStatement(data, whoIs, user) : excel.createMonthlyStatement(data, whoIs, user);
@@ -1222,19 +1234,19 @@ Invoice.prototype.changeStatus = function (id) {
 
 
 			}
-			
-/* 			if (obj.status._id == 3 || obj.status._id == 8) {
-				obj.status = {
-					_id: 4,
-					description: 'Paid'
-				};
-			}
-			else {
-				obj.status = {
-					_id: 3,
-					description: 'Completed'
-				};
-			} */
+
+			/* 			if (obj.status._id == 3 || obj.status._id == 8) {
+							obj.status = {
+								_id: 4,
+								description: 'Paid'
+							};
+						}
+						else {
+							obj.status = {
+								_id: 3,
+								description: 'Completed'
+							};
+						} */
 
 			// return _this.crud.update({_id: Number(id)}, obj);
 			return _this.crud.update({ _id: Number(id) }, obj).then(function (result) {

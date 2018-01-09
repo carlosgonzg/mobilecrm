@@ -146,6 +146,47 @@ Company.prototype.getSequenceQuote = function (id, peek) {
 	return d.promise;
 }
 
+Company.prototype.getSequenceSetup = function (id, peek) {
+	var d = q.defer();
+	var _this = this;
+
+	_this.crud.find({ _id: Number(id) })
+		.then(function (company) {
+			company = company.data[0];
+
+			if (!company || !company.seqCodeTor) {
+				d.resolve('Pending Invoice #');
+			} else {
+				var seqNumberTor = Number(company.seqNumberTor);
+				if (!company.seqNumberTor) {
+					seqNumberTor = Number(company.seqStartTor || 0);
+				}
+				var sequenceTor = company.seqCodeTor + pad(seqNumberTor.toString(), company.seqMaskTor);
+
+				if (!peek) {
+					//actualizo company
+					company.seqNumberTor = seqNumberTor + 1;
+
+					_this.crud.update({ _id: Number(id) }, company, true)
+						.then(function () {
+							d.resolve(sequenceTor);
+						}, function (err) {
+							d.resolve(sequenceTor);
+						});
+				} else {
+					d.resolve(sequenceTor);
+				}
+			}
+		})
+		.catch(function (err) {
+			d.reject({
+				result: 'Not ok',
+				errors: err
+			});
+		});
+	return d.promise;
+}
+
 Company.prototype.setSequence = function (id) {
 	var d = q.defer();
 	var _this = this;

@@ -198,7 +198,7 @@ WorkOrder.prototype.update = function (query, workOrder, user, mail) {
 
 	delete workOrder.sendMail;
 
-	if (workOrder.serviceType && workOrder.serviceType._id == 2 && workOrder.quotes == 1 && (workOrder.fromQuotes || 0) == 0 ) {
+	if (workOrder.serviceType && workOrder.serviceType._id == 2 && workOrder.quotes == 1 && (workOrder.fromQuotes || 0) == 0 && (workOrder.invoiceNumber || '' ) == '' ) {
 		_this.insert(workOrder, user, mail)
 		return d.promise;
 	}

@@ -160,7 +160,7 @@ var createInvoice = function (obj, company, branch, urlPdfQuote) {
 	var url = ""
 	var body = "";
 
-	if (obj.quotes == 1) {
+	if (obj.quotes == 1 && (obj.invoiceNumber || '') == 'Pending Invoice') {
 		url = urlPdfQuote
 		body = createQuotesBody(obj, company, branch);
 	} else {

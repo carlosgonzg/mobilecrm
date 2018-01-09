@@ -77,6 +77,18 @@ angular.module('MobileCRMApp')
 			});
 		return d.promise;
 	};
+	
+	Company.prototype.setupTearDown = function (tor) {
+		var d = $q.defer();
+		$http.get(this.baseApiPath + '/sequence/setupTearDown/' + this._id)
+			.success(function (data) {
+				d.resolve(data);
+			})
+			.error(function (data, status, headers, config) {
+				d.reject(data);
+			});
+		return d.promise;
+	};
 	return Company;
 
 });

@@ -8,7 +8,7 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-	.controller('InvoiceCtrl', function ($scope, $rootScope, $location, toaster, $window, User, invoice, statusList, statusDelivery, Item, ServiceOrder, WorkOrder, DeliveryOrder, dialogs, Invoice, Company, companies, Driver, ServiceQuotes) {
+	.controller('InvoiceCtrl', function ($scope, $rootScope, $location, toaster, $window, User, invoice, statusList, statusDelivery, Item, ServiceOrder, WorkOrder, DeliveryOrder, dialogs, Invoice, Company, companies, Driver, ServiceQuotes, SetupTearDown) {
 		$scope.invoice = invoice;
 		$scope.items = [];
 		$scope.waiting = false;
@@ -189,6 +189,50 @@ angular.module('MobileCRMApp')
 		}
 		];
 
+		$scope.WsClassSetup = SetupTearDown
+		$scope.WsfieldsSetup = [{
+			label: 'Set Up #',
+			field: 'tor',
+			type: 'text',
+			show: true
+		}, {
+			label: 'Invoice #',
+			field: 'invoiceNumber',
+			type: 'text',
+			show: true
+		}, {
+			label: 'Date',
+			field: 'createdDate',
+			type: 'date',
+			show: true
+		}, {
+			label: 'Company',
+			field: 'client.company.entity.name',
+			type: 'text',
+			show: true
+		}, {
+			label: 'Branch',
+			field: 'client.branch.name',
+			type: 'text',
+			show: true
+		}, {
+			label: 'Customer',
+			field: 'client.entity.fullName',
+			type: 'text',
+			show: true
+		}, {
+			label: 'Status',
+			field: 'status.description',
+			type: 'text',
+			show: true
+		}, {
+			label: 'Total Amount',
+			field: 'total',
+			type: 'currency',
+			show: true
+		}
+		];
+
 		$scope.filterOS = {
 			'status._id': {
 				$in: [1, 2, 3, 8]
@@ -203,6 +247,11 @@ angular.module('MobileCRMApp')
 			'role._id': 3
 		};
 		$scope.filterDO = {
+			'status._id': {
+				$in: [1, 2, 3, 4, 8]
+			}
+		};
+		$scope.filterSetup = {
 			'status._id': {
 				$in: [1, 2, 3, 4, 8]
 			}
@@ -272,11 +321,19 @@ angular.module('MobileCRMApp')
 			if (client && client.company)
 				$scope.wsFilterItem = $rootScope.userData.role._id != 1 ? { 'companies._id': $rootScope.userData.company._id } : { 'companies._id': client.company._id };
 			if (!$scope.invoice._id && (!$scope.invoice.invoiceNumber || $scope.invoice.invoiceNumber == 'Pending Invoice')) {
-				var company = new Company(client.company);
-				company.peek($scope.invoice.dor)
-					.then(function (sequence) {
-						$scope.invoice.invoiceNumber = sequence;
-					});
+				var company = new Company(client.company);				
+
+				if ($scope.invoice.tor) {
+					company.setupTearDown($scope.invoice.tor)
+						.then(function (sequence) {
+							$scope.invoice.invoiceNumber = sequence;
+						});	
+				} else {
+					company.peek($scope.invoice.dor)
+						.then(function (sequence) {
+							$scope.invoice.invoiceNumber = sequence;
+						});
+				}
 			}
 		};
 		$scope.addItem = function () {
@@ -341,6 +398,7 @@ angular.module('MobileCRMApp')
 					$scope.waiting = false;
 				});
 		};
+
 		$scope.saveBranch = function () {
 			$scope.waiting = true;
 			delete $scope.invoice.client.account.password;
@@ -491,6 +549,7 @@ angular.module('MobileCRMApp')
 							$scope.ServiceOrder.sendTotech = sendTotech
 							$scope.ServiceOrder.statusTech = $scope.statusTech;
 							$scope.ServiceOrder.sendMail = false;
+							$scope.ServiceOrder.quotes = 0
 						});
 						$scope.ServiceOrder.save()
 					})
@@ -504,6 +563,7 @@ angular.module('MobileCRMApp')
 							$scope.WorkOrder.sendTotech = sendTotech
 							$scope.WorkOrder.statusTech = $scope.statusTech;
 							$scope.WorkOrder.sendMail = false;
+							$scope.WorkOrder.quotes = 0
 						});
 						$scope.WorkOrder.save()
 					})
@@ -520,7 +580,6 @@ angular.module('MobileCRMApp')
 					})
 			}
 			if ($scope.invoice.quotes) {
-				console.log(7458)
 				new ServiceQuotes().filter({ "quotesNumber": $scope.invoice.quotesNumber })
 					.then(function (result) {
 						_.map(result.data, function (obj) {
@@ -530,6 +589,7 @@ angular.module('MobileCRMApp')
 							$scope.ServiceQuotes.unitSize = $scope.invoice.unitSize;
 							$scope.ServiceQuotes.unitno = $scope.invoice.unitno;
 							$scope.ServiceQuotes.isono = $scope.invoice.isono;
+							$scope.ServiceQuotes.quotes = 0
 						});
 						$scope.ServiceQuotes.save()
 					})
