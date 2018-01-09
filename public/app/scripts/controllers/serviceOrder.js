@@ -8,11 +8,11 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-	.controller('ServiceOrderCtrl', function ($route, $scope, $rootScope, $location, $window, toaster, User, statusList, serviceOrder, Item, dialogs, $q, Branch, CrewCollection, ItemDefault) {
+	.controller('ServiceOrderCtrl', function ($filter, $route, $scope, $rootScope, $location, $window, toaster, User, statusList, serviceOrder, Item, dialogs, $q, Branch, CrewCollection, ItemDefault) {
 		$scope.serviceOrder = serviceOrder;
 		$scope.CrewCollection = CrewCollection.data
 		$scope.Math = $window.Math;
-		
+
 		$scope.addedItem = [];
 		$scope.serviceOrder.addedItems = $scope.serviceOrder.addedItems ? $scope.serviceOrder.addedItems : [];
 		$scope.serviceOrder.removedItems = $scope.serviceOrder.removedItems ? $scope.serviceOrder.removedItems : [];
@@ -23,7 +23,7 @@ angular.module('MobileCRMApp')
 		$scope.CrewHeaderSel = ""
 		$scope.statusTech = {}
 		$scope.serviceOrder.quotes = 0
-		
+
 		$scope.items = [];
 		$scope.params = {};
 		$scope.branches = [];
@@ -99,7 +99,7 @@ angular.module('MobileCRMApp')
 			}
 		}
 
-		$scope.$watch("serviceOrder.siteAddress.distanceFrom",function(newValue,oldValue) {
+		$scope.$watch("serviceOrder.siteAddress.distanceFrom", function (newValue, oldValue) {
 			for (var row = 0; row < $scope.serviceOrder.items.length; row++) {
 				if ($scope.serviceOrder.items[row]._id == 253) {
 					$scope.serviceOrder.items[row].quantity = Number(newValue);
@@ -274,7 +274,7 @@ angular.module('MobileCRMApp')
 				$scope.serviceOrder.items = [];
 			} else {
 				if ($scope.serviceOrder.client._id) {
-					var Serv = false 
+					var Serv = false
 					if (!$route.current.params.id) {
 						for (var row = 0; row < $scope.serviceOrder.items.length; row++) {
 							var code = $scope.serviceOrder.items[row].code;
@@ -285,7 +285,7 @@ angular.module('MobileCRMApp')
 						if (Serv == false) {
 							$scope.serviceOrder.items.unshift(ItemDefault.data[0]);
 						}
-					}	
+					}
 				}
 			}
 		};
@@ -352,7 +352,7 @@ angular.module('MobileCRMApp')
 						break;
 					}
 				}
-				return isHere ? 'changed' : ''; 
+				return isHere ? 'changed' : '';
 			}
 			return '';
 		};
@@ -428,7 +428,6 @@ angular.module('MobileCRMApp')
 			if ($scope.serviceOrder.siteAddress) {
 				$scope.serviceOrder.siteAddress.distanceFrom = $scope.serviceOrder.siteAddressFrom && $scope.serviceOrder.siteAddressFrom.address1 && $scope.serviceOrder.siteAddress && $scope.serviceOrder.siteAddress.address1 ? getDistance($scope.serviceOrder.siteAddress, $scope.serviceOrder.siteAddressFrom) : 0;
 			}
-
 		};
 
 		$scope.save = function (sendMail, sendTotech) {
@@ -461,6 +460,8 @@ angular.module('MobileCRMApp')
 				$scope.changed('Site Address');
 			}
 			$scope.serviceOrder.fromQuotes = 0
+			$scope.ControlstatusSor()
+
 			$scope.serviceOrder.save()
 				.then(function (data) {
 					toaster.success('The Service Order was saved successfully');
@@ -547,7 +548,7 @@ angular.module('MobileCRMApp')
 							var item = array[n];
 							if (selectedItem == item.itemid) {
 
-								if ($scope.crewHeaderAdded.length > 0 && $scope.CrewHeaderSel.length > 0 ) {
+								if ($scope.crewHeaderAdded.length > 0 && $scope.CrewHeaderSel.length > 0) {
 									if ($scope.crewHeaderAdded[0].name == element.entity.fullName) {
 										$scope.newItem = {
 											name: element.entity.fullName,
@@ -606,18 +607,18 @@ angular.module('MobileCRMApp')
 		$scope.crewHeaderRemove = function (index) {
 			$scope.crewHeaderAdded.splice(index, 1);
 			$scope.serviceOrder.crewHeader = $scope.crewHeaderAdded
-			$scope.changed('Crew Leader');	
+			$scope.changed('Crew Leader');
 		};
 
 		$scope.setAmountToZero = function (status) {
 			if (status._id == 5 || status._id == 7) {
-				for (var i=0; i<$scope.serviceOrder.items.length; i++) {
+				for (var i = 0; i < $scope.serviceOrder.items.length; i++) {
 					$scope.serviceOrder.items[i].originalPrice = $scope.serviceOrder.items[i].price;
 					$scope.serviceOrder.items[i].price = 0;
 				}
 			} else {
-				for (var i=0; i<$scope.serviceOrder.items.length; i++) {
-					$scope.serviceOrder.items[i].price = $scope.serviceOrder.items[i].originalPrice ? $scope.serviceOrder.items[i].originalPrice : $scope.serviceOrder.items[i].price; 
+				for (var i = 0; i < $scope.serviceOrder.items.length; i++) {
+					$scope.serviceOrder.items[i].price = $scope.serviceOrder.items[i].originalPrice ? $scope.serviceOrder.items[i].originalPrice : $scope.serviceOrder.items[i].price;
 					delete $scope.serviceOrder.items[i].originalPrice;
 				}
 			}
@@ -629,7 +630,7 @@ angular.module('MobileCRMApp')
 			if (chk == true) {
 				$scope.CrewHeaderSel = $scope.crewHeaderAdded[0].name
 			} else {
-				$scope.CrewHeaderSel = []				
+				$scope.CrewHeaderSel = []
 			}
 		}
 
@@ -642,5 +643,17 @@ angular.module('MobileCRMApp')
 				.then(function (res) {
 				});
 		};
+
+		$scope.ControlstatusSor = function () {
+			var status = { status: $scope.serviceOrder.status, User: $rootScope.userData.entity.fullName, date: $filter('date')(new Date(), "MM-dd-yyyy HH:mm:ss") }
+
+			if ($scope.serviceOrder.ControlStatus) {
+				$scope.serviceOrder.ControlStatus.push(status)
+			} else {
+				$scope.serviceOrder.ControlStatus = [status]
+			}
+			$scope.status = []
+		}
+
 	});
 
