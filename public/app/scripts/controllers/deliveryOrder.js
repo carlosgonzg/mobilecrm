@@ -521,17 +521,25 @@ angular.module('MobileCRMApp')
 			}
 			if ($scope.DeliveryOrder.ServiceType.item == undefined) {
 				toaster.error('The Service Type can not be empty');
-				angular.element('#category').css('border', '2px solid red');
+				angular.element('#category').css('border', '1px solid red');
 				return
 			} else {
-				angular.element('#category').css('border', '2px #CCCCCC solid');
+				angular.element('#category').css('border', '1px #CCCCCC solid');
 			}
 			if ($scope.DeliveryOrder.typeTruck._id == undefined) {
 				toaster.error('The Entrance Type can not be empty');
-				angular.element('#optEntrance').css('border', '2px red solid');
+				angular.element('#optEntrance').css('border', '1px red solid');
 				return
 			} else {
-				angular.element('#optEntrance').css('border', '2px #CCCCCC solid');
+				angular.element('#optEntrance').css('border', '1px #CCCCCC solid');
+			}
+
+			if ($scope.DeliveryOrder.pickupDate == undefined) {
+				toaster.error('The Date can not be empty');
+				angular.element('#pickupDate').css('border', '1px solid red');
+				return
+			} else {
+				angular.element('#pickupDate').css('border', '1px #CCCCCC solid');
 			}
 
 			if ($scope.DeliveryOrder.status.description == "Pending") {
@@ -974,7 +982,7 @@ angular.module('MobileCRMApp')
 				$scope.DeliveryOrder.fromwriteAddress = false
 				$scope.DeliveryOrder.fromCompanyAddress = true
 			}
-			$scope.CommentProyect()
+	//		$scope.CommentProyect()
 		};
 
 		if ($scope.DeliveryOrder.client._id) {
@@ -1144,9 +1152,8 @@ angular.module('MobileCRMApp')
 			}
 		}
 
-		$scope.changeRelocation = function () {
-			$scope.CommentProyect()
-			if ($scope.DeliveryOrder.Relocation == false) {
+		$scope.changeRelocation = function (relocation) {
+			if ($scope.DeliveryOrder.Relocation == false || relocation == false) {
 				for (var row = 0; row < $scope.DeliveryOrder.items.length; row++) {
 					var id = $scope.DeliveryOrder.items[row]._id;
 					if (id == 839) {
@@ -1161,15 +1168,6 @@ angular.module('MobileCRMApp')
 							$scope.DeliveryOrder.items.unshift(obj)
 						});
 					})
-			}
-		}
-
-		$scope.CommentProyect = function () {
-			var comment = ""
-			if ($scope.DeliveryOrder.Relocation == true) {
-				$scope.DeliveryOrder.comments = $scope.DeliveryOrder.comments ? $scope.DeliveryOrder.comments : "Relocation ";
-			} else {
-				$scope.DeliveryOrder.comments = $scope.DeliveryOrder.comments.replace("Relocation","")
 			}
 		}
 

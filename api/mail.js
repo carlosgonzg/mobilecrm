@@ -52,7 +52,7 @@ var setAttachment = function (url, fileName) {
 
 var sendMail = function (to, subject, body, isHtmlBody, attached, cc, cco, replyTo) {
 	var deferred = q.defer();
-	mailOptions.to = to;
+	mailOptions.to = to
 	mailOptions.cc = cc ? cc : '';
 	mailOptions.cco = cco ? cco : '';
 	mailOptions.subject = subject;
@@ -76,7 +76,7 @@ var sendMail = function (to, subject, body, isHtmlBody, attached, cc, cco, reply
 			console.log('Message sent');
 			deferred.resolve(response);
 		}
-	});  
+	});   
 	return deferred.promise; 
 };
 
@@ -673,7 +673,7 @@ var sendDeliveryOrder = function (deliveryOrder, mails, dirname) {
 			console.log(url)
 
 			var adressArray = deliveryOrder.siteAddressFrom.address1 + ", " + deliveryOrder.siteAddressFrom.city.id + ", " + deliveryOrder.siteAddressFrom.city.stateId
-			var pickAdress = deliveryOrder.addresstr || adressArray;
+			var pickAdress = adressArray || deliveryOrder.addresstr;
 
 			body = body.replace('<emailUrl>', url);
 			body = body.replace('<createdDate>', moment(deliveryOrder.date).format('MM/DD/YYYY'));

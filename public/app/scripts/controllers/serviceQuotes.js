@@ -70,6 +70,9 @@ angular.module('MobileCRMApp')
 		if ($route.current.params.id && $scope.serviceQuotes.serviceType._id == 2) {
 			$scope.serviceQuotes.wor = $scope.serviceQuotes.quotesNumber
 		}
+		if (!$scope.serviceQuotes._id){
+		$scope.serviceQuotes.date = new Date();
+		}
 
 		$scope.serviceTypeData = [{ _id: 1, description: 'Service Order' }, { _id: 2, description: 'Work Order' }, { _id: 3, description: 'Set up & Tear Down' }, { _id: 4, description: 'Home & Business' }]
 		$scope.waiting = false;
@@ -510,6 +513,13 @@ angular.module('MobileCRMApp')
 
 				$scope.serviceQuotes.approved = 2
 				$scope.serviceQuotes.quotesStatus = "Approved"
+			}
+			if ($scope.serviceQuotes.date == undefined) {
+				toaster.error('The Date can not be empty');
+				angular.element('#date').css('border', '1px solid red');
+				return
+			} else {
+				angular.element('#date').css('border', '1px #CCCCCC solid');
 			}
 
 			if ($scope.serviceQuotes.serviceType._id == 1) {

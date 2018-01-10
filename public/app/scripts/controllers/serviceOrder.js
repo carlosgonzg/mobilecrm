@@ -39,7 +39,9 @@ angular.module('MobileCRMApp')
 		if ($rootScope.userData.role._id == 1 || $rootScope.userData.role._id == 5) {
 			$scope.commentDiabled = false;
 		}
-
+		if (!$scope.serviceOrder._id){
+		$scope.serviceOrder.date = new Date();
+		}
 		if ($rootScope.userData.role._id != 1 && $rootScope.userData.role._id != 5) {
 			$scope.serviceOrder.client = new User($rootScope.userData);
 		}
@@ -447,6 +449,14 @@ angular.module('MobileCRMApp')
 				$scope.serviceOrder.sendTotech = true;
 			} else {
 				$scope.serviceOrder.sendTotech = false;
+			}
+			
+			if ($scope.serviceOrder.date == undefined) {
+				toaster.error('The Date can not be empty');
+				angular.element('#date').css('border', '1px solid red');
+				return
+			} else {
+				angular.element('#date').css('border', '1px #CCCCCC solid');
 			}
 
 			if (originalContacts != $scope.serviceOrder.contacts) {

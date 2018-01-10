@@ -48,6 +48,10 @@ angular.module('MobileCRMApp')
 		if ($rootScope.userData.role._id != 1 && $rootScope.userData.role._id != 5) {
 			$scope.SetupTearDown.client = new User($rootScope.userData);
 		}
+		if (!$scope.SetupTearDown._id){
+		$scope.SetupTearDown.date = new Date();
+		}
+
 		$scope.listStatus = statusList;
 		$scope.waiting = false;
 
@@ -448,6 +452,13 @@ angular.module('MobileCRMApp')
 				$scope.SetupTearDown.sendTotech = true;
 			} else {
 				$scope.SetupTearDown.sendTotech = false;
+			}
+			if ($scope.SetupTearDown.date == undefined) {
+				toaster.error('The Date can not be empty');
+				angular.element('#date').css('border', '1px solid red');
+				return
+			} else {
+				angular.element('#date').css('border', '1px #CCCCCC solid');
 			}
 
 			if (originalContacts != $scope.SetupTearDown.contacts) {

@@ -104,7 +104,7 @@
             <!-- Campos a Repetir -->
             <td ng-repeat="field in fields">
               <!-- Campos Normales -->
-              <span ng-if="!field.config && field.type !='date' && field.decimalsOnly!= 'decimals-only' && field.type !='object' && field.type !='currency' && field.type != 'checkbox'">{{inception(elem, field.name) | limitTo: field.limit}}{{(inception(elem, field.name).length > field.limit) ? '...' : ''}}</span>
+              <span ng-if="!field.config && field.type !='date' && field.decimalsOnly!= 'decimals-only' && field.type !='object' && field.type !='currency' && field.type != 'checkbox'"> {{inception(elem, field.name) | limitTo: 10}}{{(inception(elem, field.name).length > field.limit) ? '...' : ''}}</span>
               <!-- Campos Monetarios -->
               <span class="ta_right" ng-if="field.type ==='currency'">{{elem['currency'].code}} {{inception(elem, field.name) | limitTo: field.limit | currency:"$":2}}{{(inception(elem, field.name).length > field.limit) ? '...' : ''}}</span>
               <!-- Campos Numericos -->

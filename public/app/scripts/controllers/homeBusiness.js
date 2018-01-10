@@ -9,7 +9,6 @@
  */
 angular.module('MobileCRMApp')
 	.controller('homeBusinessCtrl', function ($scope, $rootScope, $location, $window, toaster, User, statusList, homeBusiness, Item, dialogs, $q, Branch, CrewCollection, ItemDefault) {
-		console.log(homeBusiness)
 		$scope.homeBusiness = homeBusiness;
 		$scope.CrewCollection = CrewCollection.data
 		$scope.Math = $window.Math;
@@ -37,6 +36,10 @@ angular.module('MobileCRMApp')
 
 		if ($scope.homeBusiness.crewHeader != undefined) {
 			$scope.crewHeaderAdded = $scope.homeBusiness.crewHeader
+		}
+
+		if (!$scope.homeBusiness._id){
+		$scope.homeBusiness.date = new Date();
 		}
 
 		$scope.readOnly = $rootScope.userData.role._id != 1;
@@ -465,7 +468,13 @@ angular.module('MobileCRMApp')
 			} else {
 				$scope.homeBusiness.sendTotech = false;
 			}
-
+			if ($scope.homeBusiness.date == undefined) {
+				toaster.error('The Date can not be empty');
+				angular.element('#date').css('border', '1px solid red');
+				return
+			} else {
+				angular.element('#date').css('border', '1px #CCCCCC solid');
+			}
 			if (originalContacts != $scope.homeBusiness.contacts) {
 				$scope.changed('Contacts');
 			}

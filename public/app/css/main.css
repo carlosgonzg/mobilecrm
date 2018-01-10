@@ -177,3 +177,16 @@ input{
 .form-group{
 	height:70px
 }
+
+
+/* STILOS PARA LOS INPUT DATE */
+
+[type="date"] {
+  background:#fff url(../images/calendar-24.png)  98% 50% no-repeat ;
+}
+[type="date"]::-webkit-inner-spin-button {
+  display: none;
+}
+[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0;
+}

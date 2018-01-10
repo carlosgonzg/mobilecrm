@@ -36,7 +36,10 @@ angular.module('MobileCRMApp')
 		if ($scope.workOrder.crewHeader != undefined) {
 			$scope.crewHeaderAdded = $scope.workOrder.crewHeader
 		}
-
+		if (!$scope.workOrder._id){
+		$scope.workOrder.date = new Date();
+		$scope.workOrder.originalShipDate = new Date();
+		}
 		if ($rootScope.userData.role._id != 1) {
 			$scope.workOrder.client = new User($rootScope.userData);
 		}
@@ -258,6 +261,15 @@ angular.module('MobileCRMApp')
 			} else {
 				$scope.workOrder.sendTotech = false;
 			}
+
+			if ($scope.workOrder.date == undefined) {
+				toaster.error('The Date can not be empty');
+				angular.element('#date').css('border', '1px solid red');
+				return
+			} else {
+				angular.element('#date').css('border', '1px #CCCCCC solid');
+			}
+
 			$scope.workOrder.fromQuotes = 0 			
 			$scope.workOrder.save()
 				.then(function (data) {
