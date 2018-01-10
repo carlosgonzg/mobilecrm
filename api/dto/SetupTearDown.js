@@ -470,7 +470,7 @@ SetupTearDown.prototype.changeStatus = function (id) {
 					description: 'Completed'
 				};
 			}
-			return _this.crud.update({ _id: Number(id) }, obj);
+			//return _this.crud.update({ _id: Number(id) }, obj);
 		})
 		.then(function (result) {
 			d.resolve(true);
