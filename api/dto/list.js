@@ -24,21 +24,24 @@ function List(db) {
 		{
 			_id: 1,
 			description: 'Pending'
-		},{
+		}, {
+			_id: 6,
+			description: 'Scheduled'
+		}, {
 			_id: 2,
 			description: 'In Progress'
 		},{
 			_id: 3,
 			description: 'Completed'
-		},{
+		}, {
+			_id: 9,
+			description: 'Completed - Pending Invoice'
+		}, {
 			_id: 4,
 			description: 'Paid'
 		},{
 			_id: 5,
 			description: 'Cancelled'
-		},{
-			_id: 6,
-			description: 'Scheduled'
 		},{
 			_id: 7,
 			description: 'Completed Under Warranty'
@@ -67,6 +70,9 @@ function List(db) {
 			_id: 1,
 			description: 'Waiting for Availability'
 		}, {
+			_id: 9,
+			description: 'Scheduled'
+		}, {
 			_id: 2,
 			description: 'Confirm'
 		}, {
@@ -76,6 +82,12 @@ function List(db) {
 			_id: 4,
 			description: 'Delivered'
 		}, {
+			_id: 11,
+			description: 'Delivered - Pending Invoice'
+		}, {
+			_id: 10,
+			description: 'Hold for Customer'
+		}, {
 			_id: 5,
 			description: 'Cancelled'
 		}, {
@@ -84,8 +96,7 @@ function List(db) {
 		}, {
 			_id: 7,
 			description: 'Paid'
-		},
-		{
+		},{
 			_id: 8,
 			description: 'Dry Run'
 		}
