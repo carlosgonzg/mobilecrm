@@ -24,7 +24,11 @@ angular.module('MobileCRMApp')
 			name: 'client.entity.fullName',
 			type: 'text'
 		}, {
-			title: 'Created Date',
+			title: 'Created',
+			name: 'createdDate',
+			type: 'date'
+		}, {
+			title: 'Completed',
 			name: 'originalShipDate',
 			type: 'date'
 		}, {
@@ -32,7 +36,7 @@ angular.module('MobileCRMApp')
 			name: 'invoiceNumber',
 			type: 'text'
 		}, {
-			title: 'Delivery Order #',
+			title: 'DO #',
 			name: 'dor',
 			type: 'text'
 		}, {
@@ -40,20 +44,24 @@ angular.module('MobileCRMApp')
 			name: 'unitno',
 			type: 'text'
 		}, {
+			title: 'Unit Size',
+			name: 'unitSize',
+			type: 'text'
+		}, {
 			title: 'PO #',
 			name: 'pono',
 			type: 'text'
 		}, {
-			title: 'Total Amount',
+			title: 'Total',
 			name: 'total',
-			type : 'function',
-			function: function (elem){ return elem.total + (elem.client.company.taxes || 0) * elem.total}
+			type: 'function',
+			function: function (elem) { return elem.total + (elem.client.company.taxes || 0) * elem.total }
 		}, {
 			title: 'Status',
 			name: 'status.description',
 			type: 'text'
 		}
-	];
+		];
 
 		$scope.search = [
 			'_id',
@@ -62,13 +70,15 @@ angular.module('MobileCRMApp')
 			'client.entity.fullName',
 			'client.branch',
 			'client.company',
-			'originalShipDate',
+			'createdDate',
 			'invoiceNumber',
 			'dor',
 			'unitno',
 			'pono',
 			'total',
-			'status.description'
+			'status.description',
+			'unitSize',
+			'originalShipDate'
 		];
 
 		$scope.filterDate = 'date';
@@ -107,7 +117,7 @@ angular.module('MobileCRMApp')
 		}, {
 			title: 'Total Amount',
 			name: 'total',
-			type : 'currency'
+			type: 'currency'
 		}, {
 			title: 'Status',
 			name: 'status.description',
