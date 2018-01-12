@@ -20,6 +20,9 @@ angular.module('MobileCRMApp')
 		if ($rootScope.userData.role._id != 1) {
 			$scope.invoice.client = new User($rootScope.userData);
 		}
+		if ($scope.invoice.dor) {
+			$scope.invoice.comment = $scope.invoice.comments
+		}		
 		$scope.listStatus = statusList;
 		$scope.listCompany = companies.data;
 		$scope.statusDelivery = statusDelivery;
@@ -235,7 +238,7 @@ angular.module('MobileCRMApp')
 
 		$scope.filterOS = {
 			'status._id': {
-				$in: [1, 2, 3, 8]
+				$in: [1, 2, 3, 8, 9]
 			}
 		};
 		$scope.filterWO = {
@@ -248,7 +251,7 @@ angular.module('MobileCRMApp')
 		};
 		$scope.filterDO = {
 			'status._id': {
-				$in: [1, 2, 3, 4, 8]
+				$in: [1, 2, 3, 4, 8, 11]
 			}
 		};
 		$scope.filterSetup = {
@@ -313,6 +316,11 @@ angular.module('MobileCRMApp')
 			if ($scope.expenses != undefined) {
 				$scope.invoice.expenses = $scope.expenses
 			}
+
+			if ($scope.invoice.dor) {
+				$scope.invoice.comment = $scope.invoice.comments
+			}
+
 			delete $scope.invoice._id;
 			$scope.clientChanged(doc.client);
 		};
@@ -575,6 +583,7 @@ angular.module('MobileCRMApp')
 							$scope.DeliveryOrder = obj
 							$scope.DeliveryOrder.status = $scope.invoice.status
 							$scope.DeliveryOrder.sendMail = false;
+							$scope.DeliveryOrder.invoiceId = $scope.invoice._id
 						});
 						$scope.DeliveryOrder.save()
 					})

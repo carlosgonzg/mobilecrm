@@ -146,7 +146,7 @@ angular.module('MobileCRMApp')
 					}
 
 					SetAddress();
-					
+
 					if ($scope.DeliveryOrder.siteAddressFrom && $scope.DeliveryOrder.siteAddress) {
 
 						$scope.DeliveryOrder.siteAddress.distanceFrom = $scope.DeliveryOrder.siteAddressFrom.address1 && $scope.DeliveryOrder.siteAddress.address1 ? parseFloat((result * 0.00062137).toFixed(2)) : 0;
@@ -362,6 +362,10 @@ angular.module('MobileCRMApp')
 					$scope.LoadItemDefault();
 				}
 			}
+console.log(status)
+			if (field == 'status') {
+				$scope.CommentProyect()
+			}
 		};
 
 		$scope.isChanged = function (field) {
@@ -547,12 +551,12 @@ angular.module('MobileCRMApp')
 			}
 
 			if (!$route.current.params.id) { $scope.DeliveryOrder.date = new Date() }
-			
+
 			$scope.DeliveryOrder.SerialNumberCol = $scope.SerialNumberCol
 
 			if ($scope.DeliveryOrder.client.company.perHours == undefined) {
 				$scope.addConfigComp()
-			} else {			
+			} else {
 				$scope.DeliveryOrder.save()
 					.then(function (data) {
 						$scope.updateDoc();
@@ -982,7 +986,6 @@ angular.module('MobileCRMApp')
 				$scope.DeliveryOrder.fromwriteAddress = false
 				$scope.DeliveryOrder.fromCompanyAddress = true
 			}
-	//		$scope.CommentProyect()
 		};
 
 		if ($scope.DeliveryOrder.client._id) {
@@ -1048,7 +1051,7 @@ angular.module('MobileCRMApp')
 				travelMode: 'DRIVING'
 			}, function (response, status) {
 				if (status === 'OK') {
-				//	$scope.SerialNumberCol = []
+					//	$scope.SerialNumberCol = []
 					$scope.serialNumber = []
 					directionsDisplay.setDirections(response);
 					var route = response.routes[0];
@@ -1189,17 +1192,26 @@ angular.module('MobileCRMApp')
 						$scope.serialNumber.unshift(index)
 					}
 				}
-			}	
+			}
 		}
-		$scope.splitSerialNumber = function () {			
+		$scope.splitSerialNumber = function () {
 			var serialN = "";
 			for (let index = 0; index < $scope.SerialNumberCol.length; index++) {
-				const element = $scope.SerialNumberCol[index];				
+				const element = $scope.SerialNumberCol[index];
 				serialN = serialN + element.name + " / ";
 			}
 			var str = serialN;
 			str = str.substring(0, str.length - 2)
 			$scope.DeliveryOrder.unitno = str
+		}
+
+		$scope.CommentProyect = function () {
+			var comment = $scope.DeliveryOrder.comments
+			if (DeliveryOrder.status.description == 'Dry Run') {
+				$scope.DeliveryOrder.comments = "Dry Run " + (comment || '')
+			} else {
+				$scope.DeliveryOrder.comments = comment.replace('Dry Run', '')
+			}
 		}
 
 		$scope.SetSerialNumber()
