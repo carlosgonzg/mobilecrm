@@ -94,16 +94,24 @@
 							</div>
 							<div class="col-xs-12">
 								<div class="form-group">
-									<label for="status">Status:</label>
-									<select class="form-control" ng-model="filter.status" ng-options="o as o.description for o in statusList track by o._id"></select>
-								</div>
-							</div>
-							<div class="col-xs-12">
-								<div class="form-group">
 									<label for="year">Invoice Type:</label>
 									<select class="form-control" name="type" ng-model="filter.invoiceType" ng-options="o._id as o.description for o in invoiceTypeList"></select>
 								</div>
 							</div>
+
+							<div class="col-xs-12" ng-if="filter.invoiceType != 'dor'">
+								<div class="form-group">
+									<label for="status">Status:</label>
+									<select class="form-control" ng-model="filter.status" ng-options="o as o.description for o in statusList track by o._id"></select>
+								</div>
+							</div>
+							<div class="col-xs-12" ng-if="filter.invoiceType == 'dor'">
+								<div class="form-group">
+									<label for="status">Status:</label>
+									<select class="form-control" ng-model="filter.statusDelivery" ng-options="o as o.description for o in statusDelivery track by o._id"></select>
+								</div>
+							</div>
+
 						</div>
 					</div>
 					<div class="row">

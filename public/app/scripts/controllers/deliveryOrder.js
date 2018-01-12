@@ -563,6 +563,7 @@ console.log(status)
 						toaster.success('The Delivery Order was saved successfully');
 						$location.path('DeliveryOrderList')
 						$scope.waiting = false;
+
 					},
 					function (error) {
 						console.log(error);
@@ -1148,8 +1149,9 @@ console.log(status)
 					.then(function (result) {
 						_.map(result.data, function (obj) {
 							$scope.Invoice = obj
-							$scope.Invoice.status = $scope.DeliveryOrder.status
-							$scope.invoice.save()
+							$scope.Invoice.status = $scope.DeliveryOrder.status		
+							$scope.Invoice.originalShipDate = $scope.DeliveryOrder.originalShipDate
+							$scope.Invoice.save()
 						});
 					})
 			}

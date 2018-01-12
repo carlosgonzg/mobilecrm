@@ -8,7 +8,7 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-	.controller('SetupTearDownCtrl', function ($scope, $rootScope, $location, $window, toaster, User, statusList, Item, SetupTearDown, dialogs, $q, Branch, CrewCollection) {
+	.controller('SetupTearDownCtrl', function ($scope, $rootScope, $location, $window, toaster, User, statusList, Item, SetupTearDown, dialogs, $q, Branch, CrewCollection, Invoice) {
 		$scope.SetupTearDown = SetupTearDown;
 		$scope.CrewCollection = CrewCollection.data
 		$scope.Math = $window.Math;
@@ -477,6 +477,7 @@ angular.module('MobileCRMApp')
 					toaster.success('The Set Up & TearDown was saved successfully');
 					$location.path('SetupTearDownList')
 					$scope.waiting = false;
+					$scope.updateDoc()
 				},
 				function (error) {
 					console.log(error);
@@ -497,6 +498,7 @@ angular.module('MobileCRMApp')
 					.then(function () {
 						toaster.success('The Set Up & TearDown was deleted successfully');
 						$location.path('/SetupTearDownList')
+						$scope.updateDoc()
 					})
 					.then(function () {
 						console.log(7899)
@@ -656,5 +658,18 @@ angular.module('MobileCRMApp')
 				.then(function (res) {
 				});
 		};
+
+		$scope.updateDoc = function () {
+			if ($scope.SetupTearDown.tor) {
+				new Invoice().filter({ "tor": $scope.SetupTearDown.tor })
+					.then(function (result) {
+						_.map(result.data, function (obj) {
+							$scope.Invoice = obj
+							$scope.Invoice.originalShipDate = $scope.SetupTearDown.originalShipDate
+							$scope.Invoice.save()
+						});
+					})
+			}
+		}
 	});
 

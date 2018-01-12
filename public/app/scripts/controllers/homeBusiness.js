@@ -2,13 +2,13 @@
 
 /**
  * @ngdoc function
- * @name MobileCRMApp.controller:AboutCtrl
+ * @name MobileCRMApp.controller:AboutCtrl 
  * @description
  * # AboutCtrl
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-	.controller('homeBusinessCtrl', function ($scope, $rootScope, $location, $window, toaster, User, statusList, homeBusiness, Item, dialogs, $q, Branch, CrewCollection, ItemDefault) {
+	.controller('homeBusinessCtrl', function ($scope, $rootScope, $location, $window, toaster, User, statusList, homeBusiness, Item, dialogs, $q, Branch, CrewCollection, ItemDefault, Invoice) {
 		$scope.homeBusiness = homeBusiness;
 		$scope.CrewCollection = CrewCollection.data
 		$scope.Math = $window.Math;
@@ -38,8 +38,8 @@ angular.module('MobileCRMApp')
 			$scope.crewHeaderAdded = $scope.homeBusiness.crewHeader
 		}
 
-		if (!$scope.homeBusiness._id){
-		$scope.homeBusiness.date = new Date();
+		if (!$scope.homeBusiness._id) {
+			$scope.homeBusiness.date = new Date();
 		}
 
 		$scope.readOnly = $rootScope.userData.role._id != 1;
@@ -491,6 +491,7 @@ angular.module('MobileCRMApp')
 					toaster.success('The Home & Business was saved successfully');
 					$location.path('homeBusinessList')
 					$scope.waiting = false;
+					$scope.updateDoc()
 				},
 				function (error) {
 					console.log(error);
@@ -669,5 +670,18 @@ angular.module('MobileCRMApp')
 				.then(function (res) {
 				});
 		};
+
+		$scope.updateDoc = function () {
+			if ($scope.homeBusiness.tor) {
+				new Invoice().filter({ "tor": $scope.homeBusiness.tor })
+					.then(function (result) {
+						_.map(result.data, function (obj) {
+							$scope.Invoice = obj
+							$scope.Invoice.originalShipDate = $scope.homeBusiness.originalShipDate
+							$scope.Invoice.save()
+						});
+					})
+			}
+		}
 	});
 

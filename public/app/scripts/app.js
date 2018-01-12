@@ -295,6 +295,9 @@ var app = angular
 					},
 					companyList: function (Company) {
 						return new Company().filter({});
+					},
+					statusDelivery: function (List) {
+						return List.get('statusDelivery');
 					}
 				}
 			})

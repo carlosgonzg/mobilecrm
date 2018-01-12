@@ -8,7 +8,7 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-	.controller('ServiceOrderCtrl', function ($filter, $route, $scope, $rootScope, $location, $window, toaster, User, statusList, serviceOrder, Item, dialogs, $q, Branch, CrewCollection, ItemDefault) {
+	.controller('ServiceOrderCtrl', function ($filter, $route, $scope, $rootScope, $location, $window, toaster, User, statusList, serviceOrder, Item, dialogs, $q, Branch, CrewCollection, ItemDefault, Invoice) {
 		$scope.serviceOrder = serviceOrder;
 		$scope.CrewCollection = CrewCollection.data
 		$scope.Math = $window.Math;
@@ -477,6 +477,7 @@ angular.module('MobileCRMApp')
 					toaster.success('The Service Order was saved successfully');
 					$location.path('serviceOrderList')
 					$scope.waiting = false;
+					$scope.updateDoc()
 				},
 				function (error) {
 					if (error && error.errors && error.errors.error == "The object already exists") {
@@ -663,6 +664,19 @@ angular.module('MobileCRMApp')
 				$scope.serviceOrder.ControlStatus = [status]
 			}
 			$scope.status = []
+		}
+
+		$scope.updateDoc = function () {
+			if ($scope.serviceOrder.sor) {
+				new Invoice().filter({ "sor": $scope.serviceOrder.sor })
+					.then(function (result) {
+						_.map(result.data, function (obj) {
+							$scope.Invoice = obj
+							$scope.Invoice.originalShipDate = $scope.serviceOrder.originalShipDate
+							$scope.Invoice.save()
+						});
+					})
+			}
 		}
 
 	});

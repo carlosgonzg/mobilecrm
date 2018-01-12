@@ -276,6 +276,7 @@ angular.module('MobileCRMApp')
 					toaster.success('The Work Order was saved successfully');
 					$location.path('workOrderList')
 					$scope.waiting = false;
+					$scope.updateDoc()
 				},
 				function (error) {
 					console.log(error);
@@ -445,4 +446,18 @@ angular.module('MobileCRMApp')
 				.then(function (res) {
 				});
 		};
+
+		$scope.updateDoc = function () {
+			if ($scope.workOrder.wor) {
+				new Invoice().filter({ "wor": $scope.workOrder.wor })
+					.then(function (result) {
+						_.map(result.data, function (obj) {
+							$scope.Invoice = obj
+							$scope.Invoice.originalShipDate = $scope.workOrder.originalShipDate
+							$scope.Invoice.save()
+						});
+					})
+			}
+		}
+
 	});
