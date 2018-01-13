@@ -63,12 +63,12 @@ var sendMail = function (to, subject, body, isHtmlBody, attached, cc, cco, reply
 		mailOptions.text = body;
 	}
 
- 	if (attached)
+	if (attached)
 		mailOptions.attachments = attached;
 	else {
 		mailOptions.attachments = [];
 	}
- 	 smtpTransport.sendMail(mailOptions, function (error, response) {
+	smtpTransport.sendMail(mailOptions, function (error, response) {
 		if (error) {
 			console.log(error);
 			deferred.reject(error);
@@ -76,8 +76,8 @@ var sendMail = function (to, subject, body, isHtmlBody, attached, cc, cco, reply
 			console.log('Message sent');
 			deferred.resolve(response);
 		}
-	});   
-	return deferred.promise; 
+	});
+	return deferred.promise;
 };
 
 var sendActivationEmail = function (to, link, config) {
@@ -674,6 +674,25 @@ var sendDeliveryOrder = function (deliveryOrder, mails, dirname) {
 
 			var adressArray = deliveryOrder.siteAddressFrom.address1 + ", " + deliveryOrder.siteAddressFrom.city.id + ", " + deliveryOrder.siteAddressFrom.city.stateId
 			var pickAdress = adressArray || deliveryOrder.addresstr;
+			var addressto = ""
+			var AddRoute = ""
+
+			if (deliveryOrder.additionalRoute && deliveryOrder.additionalRoute.Start) {
+				if (deliveryOrder.additionalRoute.waypts) {
+					var additionalrouteStart = deliveryOrder.additionalRoute ? (deliveryOrder.additionalRoute.Start ? '&nbsp;Start : ' + deliveryOrder.additionalRoute.Start : "") : ""
+					var additionalRouteEnd = deliveryOrder.additionalRoute ? (deliveryOrder.additionalRoute.End ? '&nbsp;End : ' + deliveryOrder.additionalRoute.End : "") : ""
+					var waypts = ""
+
+					for (let I = 0; I < deliveryOrder.additionalRoute.waypts.length; I++) {
+						var N = I + 1;
+						const element = deliveryOrder.additionalRoute.waypts[I];
+						waypts += '<b>Way Points # </b>' + N + ' - ' + element.location + ' <br />'
+					}
+					AddRoute = addressto + '' + additionalrouteStart + '. ' + waypts + " " + additionalRouteEnd
+				} else {
+					AddRoute = addressto
+				}
+			}
 
 			body = body.replace('<emailUrl>', url);
 			body = body.replace('<createdDate>', moment(deliveryOrder.date).format('MM/DD/YYYY'));
@@ -693,6 +712,9 @@ var sendDeliveryOrder = function (deliveryOrder, mails, dirname) {
 			body = body.replace('<clientName>', deliveryOrder.client.entity.fullName);
 			body = body.replace('<pickAddress>', pickAdress || '');
 			body = body.replace('<deliveryAddress>', deliveryOrder.siteAddress ? deliveryOrder.siteAddress.address1 + ', ' + deliveryOrder.siteAddress.city.description + ', ' + deliveryOrder.siteAddress.state.description + ' ' + deliveryOrder.siteAddress.zipcode : '');
+
+			body = body.replace('<Multipleroutes>', AddRoute || 'None');
+
 			body = body.replace('<Clientcomment>', deliveryOrder.clientcomment || 'None');
 			body = body.replace('<comment>', deliveryOrder.comments || 'None');
 
@@ -744,9 +766,27 @@ var sendDeliveryOrderUpdate = function (deliveryOrder, mails, user) {
 	bringTemplateData('/email/templateDeliveryOrderUpdate.html')
 		.then(function (body) {
 			var url = config.SERVER_URL;
-
 			var adressArray = deliveryOrder.siteAddressFrom.address1 + ", " + deliveryOrder.siteAddressFrom.city.id + ", " + deliveryOrder.siteAddressFrom.city.stateId
 			var pickAdress = deliveryOrder.addresstr || adressArray;
+			var addressto = ""
+			var AddRoute = ""
+
+			if (deliveryOrder.additionalRoute && deliveryOrder.additionalRoute.Start) {
+				if (deliveryOrder.additionalRoute.waypts) {
+					var additionalrouteStart = deliveryOrder.additionalRoute ? (deliveryOrder.additionalRoute.Start ? '&nbsp;Start : ' + deliveryOrder.additionalRoute.Start : "") : ""
+					var additionalRouteEnd = deliveryOrder.additionalRoute ? (deliveryOrder.additionalRoute.End ? '&nbsp;End : ' + deliveryOrder.additionalRoute.End : "") : ""
+					var waypts = ""
+
+					for (let I = 0; I < deliveryOrder.additionalRoute.waypts.length; I++) {
+						var N = I + 1;
+						const element = deliveryOrder.additionalRoute.waypts[I];
+						waypts += '<b>Way Points # </b>' + N + ' - ' + element.location + ' <br />'
+					}
+					AddRoute = addressto + '' + additionalrouteStart + '. ' + waypts + " " + additionalRouteEnd
+				} else {
+					AddRoute = addressto
+				}
+			}
 
 			body = body.replace('<emailUrl>', url);
 			body = body.replace('<createdDate>', moment(deliveryOrder.date).format('MM/DD/YYYY'));
@@ -771,6 +811,9 @@ var sendDeliveryOrderUpdate = function (deliveryOrder, mails, user) {
 			body = body.replace('<entrance>', deliveryOrder.typeTruck.description);
 			body = body.replace('<pickupdate>', moment(deliveryOrder.pickupDate).format('MM/DD/YYYY'));
 			body = body.replace('<pickuptime>', moment(deliveryOrder.pickupTime).format('HH:mm'));
+
+			body = body.replace('<Multipleroutes>', AddRoute || 'None');
+
 			body = body.replace('<Clientcomment>', deliveryOrder.clientcomment || 'None');
 
 			var changesByUser = '';
