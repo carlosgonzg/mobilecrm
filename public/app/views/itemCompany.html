@@ -1,0 +1,64 @@
+<form class="form" id="ItemCompany" name="ItemCompany">
+	<div class="row">
+		<div class="col-xs-12">
+			<h1 class="pull-left">
+				<i class="fa fa-lg fa-indent"></i>
+				<span>Company's Items</span>
+			</h1>
+			<div class="btn-group pull-right" style="margin-top: 20px;" role="group" aria-label="...">
+				<button type="button" form="formname" class="btn btn-primary" ng-click="save()">
+					<i class="fa fa-save"></i>&nbsp;
+					<span>Save</span>
+				</button>
+				<back-button></back-button>
+			</div>
+			<hr />
+		</div>
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-xs-12">
+			<div class="form-group">
+				<label for="description">Description</label>
+				<input name="description" ng-disabled="true" type="text" class="form-control" ng-model="companies.entity.name" ng-changed="allOption()"
+				/>
+			</div>
+		</div>
+	</div>
+
+	<div style="margin-top: 5px">
+		<div class="form-control" role="presentation" style="height: 40px">
+			<table>
+				<thead>
+					<tr>
+						<th class="col-xs-12">
+							Code - Description
+						</th>
+						<th class="col-xs-12">
+							<button type="button" id="addAll" ng-if="selectAll==true" class="btn btn-default" style="height: 30px" ng-click="addAll()">Add</button>
+							<button type="button" id="RemoveAll" ng-if="selectAll==false" class="btn btn-success" style="height: 30px" ng-click="RemoveAll()">Added</button>
+						</th>
+					</tr>
+				</thead>
+			</table>
+		</div>
+	</div>
+	<div style="margin-top: 10px">
+		<div class="form-control" ng-repeat="item in item track by $index" style="height: 40px">
+			<table>
+				<thead>
+					<tr>
+						<th class="col-xs-12">
+							{{item.code}} - {{item.description}}
+						</th>
+						<th class="col-xs-12">
+							<button type="button" class="btn btn-default" ng-if="!checkOption(item.companies)" style="height: 30px" ng-click="addOption(item)">Add</button>
+							<button type="button" class="btn btn-success" ng-if="checkOption(item.companies)" style="height: 30px" ng-click="removeOption(item)">Added</button>
+						</th>
+					</tr>
+				</thead>
+			</table>
+		</div>
+	</div>
+
+</form>

@@ -638,6 +638,26 @@ var app = angular
 					}
 				}
 			})
+			.when('/itemCompanyList', {
+				templateUrl: 'views/ItemCompanyList.html',
+				controller: 'ItemCompanyListCtrl'
+			})
+			.when('/itemCompany/:id?', {
+				templateUrl: 'views/itemCompany.html',
+				controller: 'itemCompanyCtrl',
+				resolve: {
+					items: function (Item) {
+						return new Item();
+					},
+					companies: function (ItemCompany, $route) {
+						if ($route.current.params.id) {
+							return new ItemCompany().findById(parseInt($route.current.params.id));
+						} else {
+							return new ItemCompany();
+						}
+					}
+				}
+			})
 			.when('/noaccess', {
 				templateUrl: 'views/noaccess.html'
 			})
