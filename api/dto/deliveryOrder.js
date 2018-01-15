@@ -461,6 +461,7 @@ DeliveryOrder.prototype.sendDeliveryOrderUpdate = function (id, user, mail, send
 		.then(function (users) {
 			emails = [];
 			if (sendMail == true) {
+				emails = [deliveryOrder.client.account.email];
 				for (var i = 0; i < users.data.length; i++) {
 					emails.push(users.data[i].account.email);
 				}
