@@ -465,7 +465,7 @@ DeliveryOrder.prototype.sendDeliveryOrderUpdate = function (id, user, mail, send
 					emails.push(users.data[i].account.email);
 				}
 				emails = _.uniq(emails);
-				return mail.sendDeliveryOrderUpdate(deliveryOrder, emails, user);
+				return mail.sendDeliveryOrderUpdate(deliveryOrder, emails, user , _this.dirname);
 			}
 		})
 		.then(function () {

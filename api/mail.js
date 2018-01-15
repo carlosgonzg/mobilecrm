@@ -761,7 +761,6 @@ var sendDeliveryOrder = function (deliveryOrder, mails, dirname) {
 			var branch = deliveryOrder && deliveryOrder.client && deliveryOrder.client.branch ? '' + deliveryOrder.client.branch.name : '' + deliveryOrder.client.entity.fullName;
 			var subject = 'Delivery Order: ' + deliveryOrder.dor + ' | ' + company + ' | ' + branch;
 
-
 			var deliveryOrderAttachments = [];
 			if (deliveryOrder.docs) {
 				for (var i = 0; i < deliveryOrder.docs.length; i++) {
@@ -798,7 +797,7 @@ var sendDeliveryOrder = function (deliveryOrder, mails, dirname) {
 };
 
 
-var sendDeliveryOrderUpdate = function (deliveryOrder, mails, user) {
+var sendDeliveryOrderUpdate = function (deliveryOrder, mails, user, dirname) {
 	var deferred = q.defer();
 	bringTemplateData('/email/templateDeliveryOrderUpdate.html')
 		.then(function (body) {
@@ -831,6 +830,8 @@ var sendDeliveryOrderUpdate = function (deliveryOrder, mails, user) {
 			body = body.replace('<clientBranch>', deliveryOrder.client.branch ? deliveryOrder.client.branch.name : 'None');
 			body = body.replace('<customer>', deliveryOrder.customer || 'None');
 			body = body.replace('<customerPhone>', deliveryOrder.phone ? (deliveryOrder.phone.number || '') : 'None');
+			body = body.replace('<entrance>', deliveryOrder.typeTruck.description);
+			body = body.replace('<servicetype>', deliveryOrder.ServiceType.item);
 			body = body.replace('<dor>', deliveryOrder.dor);
 			body = body.replace('<unitSize>', deliveryOrder.unitSize || '');
 			body = body.replace('<serialno>', deliveryOrder.unitno || '');
@@ -879,13 +880,26 @@ var sendDeliveryOrderUpdate = function (deliveryOrder, mails, user) {
 			var branch = deliveryOrder && deliveryOrder.client && deliveryOrder.client.branch ? '' + deliveryOrder.client.branch.name : '' + deliveryOrder.client.entity.fullName;
 			var subject = 'Delivery Order: ' + deliveryOrder.dor + ' | ' + company + ' | ' + branch;
 
+			var deliveryOrderAttachments = [];
+			if (deliveryOrder.docs) {
+				for (var i = 0; i < deliveryOrder.docs.length; i++) {
+					var docDir = dirname + '/public/app' + deliveryOrder.docs[i].url;
+
+					deliveryOrderAttachments.push({
+						filename: deliveryOrder.docs[i].name,
+						contentType: deliveryOrder.docs[i].type,
+						path: docDir
+					});
+				}
+			}
+
 			console.log('sending mail', subject);
 			mails = _.uniq(mails);
 			var newMails = ""
 			if (mails.indexOf('mf@mobileonecontainers.com') != -1) {
 				newMails = ", ar@mobileonecontainers.com, nr@mobileonecontainers.com"
 			}
-			sendMail(mails.join(', ') + newMails, subject, body, true, null, null, null, 'mf@mobileonecontainers.com')
+			sendMail(mails.join(', ') + newMails, subject, body, true, deliveryOrderAttachments, null, null, 'mf@mobileonecontainers.com')
 				.then(function (response) {
 					console.log('DONE Sending Mail: ', response)
 					deferred.resolve(response);
