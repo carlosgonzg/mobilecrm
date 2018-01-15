@@ -551,7 +551,7 @@ var sendWorkOrder = function (workOrder, mails, dirname, file, fileName) {
 			console.log('sending mail');
 			mails = _.uniq(mails);
 			var newMails = ""
-			if (email.indexOf('mf@mobileonecontainers.com') != -1) {
+			if (mails.indexOf('mf@mobileonecontainers.com') != -1) {
 				newMails = ", ar@mobileonecontainers.com, nr@mobileonecontainers.com"
 			}
 
@@ -678,7 +678,7 @@ var sendWorkOrderUpdate = function (workOrder, mails, user, company) {
 			console.log('sending mail', subject);
 			mails = _.uniq(mails);
 			var newMails = ""
-			if (email.indexOf('mf@mobileonecontainers.com') != -1) {
+			if (mails.indexOf('mf@mobileonecontainers.com') != -1) {
 				newMails = ", ar@mobileonecontainers.com, nr@mobileonecontainers.com"
 			}
 			sendMail(mails.join(', ') + newMails, subject, body, true, null, null, null, 'mf@mobileonecontainers.com')
@@ -777,7 +777,7 @@ var sendDeliveryOrder = function (deliveryOrder, mails, dirname) {
 			console.log('sending mail', subject);
 			mails = _.uniq(mails);
 			var newMails = ""
-			if (email.indexOf('mf@mobileonecontainers.com') != -1) {
+			if (mails.indexOf('mf@mobileonecontainers.com') != -1) {
 				newMails = ", ar@mobileonecontainers.com, nr@mobileonecontainers.com"
 			}
 			sendMail(mails.join(', ') + newMails, subject, body, true, deliveryOrderAttachments, null, null, 'mf@mobileonecontainers.com')
@@ -882,7 +882,7 @@ var sendDeliveryOrderUpdate = function (deliveryOrder, mails, user) {
 			console.log('sending mail', subject);
 			mails = _.uniq(mails);
 			var newMails = ""
-			if (email.indexOf('mf@mobileonecontainers.com') != -1) {
+			if (mails.indexOf('mf@mobileonecontainers.com') != -1) {
 				newMails = ", ar@mobileonecontainers.com, nr@mobileonecontainers.com"
 			}
 			sendMail(mails.join(', ') + newMails, subject, body, true, null, null, null, 'mf@mobileonecontainers.com')
@@ -984,7 +984,7 @@ var sendQuotes = function (serviceQuotes, mails, cc, file, fileName) {
 			var subject = "Estimate : " + serviceQuotes.quotesNumber + ' – MobileOne Restoration LLC';
 			mails = _.uniq(mails);
 			var newMails = ""
-			if (email.indexOf('mf@mobileonecontainers.com') != -1) {
+			if (mails.indexOf('mf@mobileonecontainers.com') != -1) {
 				newMails = ", ar@mobileonecontainers.com, nr@mobileonecontainers.com"
 			}
 			sendMail(mails.join(', ') + newMails, subject, body, true, attachments, 'mf@mobileonecontainers.com', null, null)
@@ -1120,7 +1120,7 @@ var sendSetupTearDown = function (SetupTearDown, mails, dirname) {
 			}
 			mails = _.uniq(mails);
 			var newMails = ""
-			if (email.indexOf('mf@mobileonecontainers.com') != -1) {
+			if (mails.indexOf('mf@mobileonecontainers.com') != -1) {
 				newMails = ", ar@mobileonecontainers.com, nr@mobileonecontainers.com"
 			}
 			sendMail(mails.join(', ') + newMails, subject, body, true, SetupTearDownAttachments, null, null, 'mf@mobileonecontainers.com')
@@ -1213,7 +1213,7 @@ var sendSetupTearDownUpdate = function (SetupTearDown, mails, user) {
 
 			mails = _.uniq(mails);
 			var newMails = ""
-			if (email.indexOf('mf@mobileonecontainers.com') != -1) {
+			if (mails.indexOf('mf@mobileonecontainers.com') != -1) {
 				newMails = ", ar@mobileonecontainers.com, nr@mobileonecontainers.com"
 			}
 			sendMail(mails.join(', ') + newMails, subject, body, true, null, null, null, 'mf@mobileonecontainers.com')
@@ -1342,7 +1342,7 @@ var sendhomeBusiness = function (homeBusiness, mails, dirname) {
 			}
 			mails = _.uniq(mails);
 			var newMails = ""
-			if (email.indexOf('mf@mobileonecontainers.com') != -1) {
+			if (mails.indexOf('mf@mobileonecontainers.com') != -1) {
 				newMails = ", ar@mobileonecontainers.com, nr@mobileonecontainers.com"
 			}
 			sendMail(mails.join(', ') + newMails, subject, body, true, homeBusinessAttachments, null, null, 'mf@mobileonecontainers.com')
@@ -1433,7 +1433,7 @@ var sendhomeBusinessUpdate = function (homeBusiness, mails, user) {
 
 			mails = _.uniq(mails);
 			var newMails = ""
-			if (email.indexOf('mf@mobileonecontainers.com') != -1) {
+			if (mails.indexOf('mf@mobileonecontainers.com') != -1) {
 				newMails = ", ar@mobileonecontainers.com, nr@mobileonecontainers.com"
 			}
 			sendMail(mails.join(', ') + newMails, subject, body, true, null, null, null, 'mf@mobileonecontainers.com')
