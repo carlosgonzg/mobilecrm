@@ -81,6 +81,7 @@ angular.module('MobileCRMApp')
 			//'client.branch',
 			//'client.company',
 			//'client.entity',
+			'client.company.taxes',
 			'client.entity.fullName',
 			'status.description',
 			'total',
