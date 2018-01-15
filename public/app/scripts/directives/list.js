@@ -22,6 +22,7 @@ angular.module('MobileCRMApp')
 			},
 			controller: function ($scope, $rootScope, $timeout, dialogs, toaster, Loading, $window, Company, Branch, $location) {
 				$scope.list = [];
+        $scope.userData = $rootScope.userData;
 				$scope.companies = [];
 				$scope.branches = [{ _id: -1, name: "All Branches" }];
 				$scope.currentElement = {};
