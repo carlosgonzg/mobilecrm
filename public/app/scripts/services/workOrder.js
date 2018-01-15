@@ -16,7 +16,7 @@ angular.module('MobileCRMApp')
 		this.baseApiPath = "/api/WorkOrder";
 		this.client = this.client || {};
 		this.wor = this.wor;
-		this.invoiceNumber = this.invoiceNumber || '';
+		this.invoiceNumber = this.invoiceNumber || 'Pending Invoice';
 		this.pono = this.pono || '';
 		this.unitno = this.unitno || '';
 		this.isono = this.isono || '';
@@ -32,9 +32,9 @@ angular.module('MobileCRMApp')
 		for(var i = 0; i < this.items.length; i++){
 			this.items[i] = new Item(this.items[i]);
 		}
-		if($rootScope.userData.role._id != 1){
-			this.invoiceNumber = 'Pending Invoice';
-		}
+// 		if($rootScope.userData.role._id != 1){
+// 			this.invoiceNumber = 'Pending Invoice';
+// 		}
 	}
 	var extend = function (child, parent) {
 		var key;
