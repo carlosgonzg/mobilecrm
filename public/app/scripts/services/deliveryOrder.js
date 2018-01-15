@@ -15,7 +15,7 @@ angular.module('MobileCRMApp')
 			DeliveryOrder.super.constructor.apply(this, arguments);
 			this.baseApiPath = "/api/deliveryOrder";
 			this.client = this.client || {};
-			this.invoiceNumber = this.invoiceNumber || '';
+			this.invoiceNumber = this.invoiceNumber || 'Pending Invoice';
 			this.dor = this.dor;
 			this.unitno = this.unitno || '';
 			this.siteAddress = this.siteAddress || {};
@@ -31,9 +31,9 @@ angular.module('MobileCRMApp')
 			this.RouteMile = this.RouteMile || 0;
 			this.ServiceType = this.ServiceType || {};
 
-			if ($rootScope.userData.role._id != 1 && $rootScope.userData.role._id != 5) {
-				this.invoiceNumber = 'Pending Invoice';
-			}
+// 			if ($rootScope.userData.role._id != 1 && $rootScope.userData.role._id != 5) {
+// 				this.invoiceNumber = 'Pending Invoice';
+// 			}
 
 			for(var i = 0; i < this.items.length; i++){
 				this.items[i] = new Item(this.items[i]);
