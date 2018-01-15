@@ -48,7 +48,10 @@ function List(db) {
 		},{
 			_id: 8,
 			description: 'Service Miles Only'
-		}
+		}, {
+			_id: 10,
+			description: 'Hold for Customer'
+		}		
 	];
 	this.search = [
 		{

@@ -29,14 +29,13 @@ angular.module('MobileCRMApp')
 				$scope.item.save()
 					.then(function () {
 						toaster.success('The items was saved successfully');
-						$location.path('itemList');
-						$scope.waiting = false;
+					//	$location.path('itemList');
+					//	$scope.waiting = false;
 					})
 					.catch(function (error) {
 						toaster.error(error.message);
 						$scope.waiting = false;
 					});
-
 			}
 
 			else {

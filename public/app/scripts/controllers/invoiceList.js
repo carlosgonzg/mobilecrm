@@ -26,12 +26,12 @@ angular.module('MobileCRMApp')
 			name: 'date',
 			type: 'date'
 		}, {
-			title: 'Due Date',
-			name: 'dueDate',
-			type: 'date'
-		}, {
 			title: 'Completed Date',
 			name: 'originalShipDate',
+			type: 'date'
+		}, {
+			title: 'Due Date',
+			name: 'dueDate',
 			type: 'date'
 		}, {
 			title: 'Invoice #',
