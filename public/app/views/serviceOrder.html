@@ -215,7 +215,7 @@
 						<div class="form-group">
 							<label for="pono">PO #</label>
 							<input type="text" class="form-control" ng-model="serviceOrder.pono" ng-class="isChanged('PO #')" ng-change="changed('PO #')"
-							 ng-disabled="isDisabled()">
+							 ng-disabled="userData.role._id!=1 && userData.role._id!=3">
 						</div>
 					</div>
 				</div>
@@ -233,7 +233,7 @@
 						<div class="form-group">
 							<label for="pono">ISO #</label>
 							<input type="text" class="form-control" ng-model="serviceOrder.isono" ng-class="isChanged('ISO #')" ng-change="changed('ISO #')"
-							 ng-disabled="isDisabled()">
+							 ng-disabled="userData.role._id!=1 && userData.role._id!=3">
 						</div>
 					</div>
 				</div>

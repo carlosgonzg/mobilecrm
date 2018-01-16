@@ -215,7 +215,7 @@
 						<div class="form-group">
 							<label for="pono">PO #</label>
 							<input type="text" class="form-control" ng-model="homeBusiness.pono" ng-class="isChanged('PO #')" ng-change="changed('PO #')"
-							 ng-disabled="isDisabled()">
+							 ng-disabled="userData.role._id!=1 && userData.role._id!=3">
 						</div>
 					</div>
 				</div>
