@@ -425,6 +425,18 @@ angular.module('MobileCRMApp')
 			delete $scope.invoice.client.account.password;
 			$scope.invoice.saveSendTo = false;
 
+			if ($scope.invoice.dor) {
+				if ($scope.invoice.status._id == 11) {
+					$scope.invoice.status._id = 4
+					$scope.invoice.status.description = 'Delivered'
+				}
+			} else {
+				if ($scope.invoice.status._id == 9) {
+					$scope.invoice.status._id = 3
+					$scope.invoice.status.description = 'Completed'
+				}
+			}
+
 			$scope.invoice.save()
 				.then(function (data) {
 					if (data.nModified == 1) {
@@ -455,6 +467,17 @@ angular.module('MobileCRMApp')
 			$scope.statusTech = {
 				_id: 1,
 				description: "Payment Run"
+			}
+			if ($scope.invoice.dor) {
+				if ($scope.invoice.status._id == 11) {
+					$scope.invoice.status._id = 4
+					$scope.invoice.status.description = 'Delivered'
+				}
+			} else {
+				if ($scope.invoice.status._id == 9) {
+					$scope.invoice.status._id = 3
+					$scope.invoice.status.description = 'Completed'
+				}
 			}
 			$scope.invoice.statusTech = $scope.statusTech;
 			$scope.invoice.saveSendTo = false;
@@ -490,7 +513,17 @@ angular.module('MobileCRMApp')
 			$scope.waiting = true;
 			delete $scope.invoice.client.account.password;
 			$scope.invoice.saveSendTo = true;
-
+			if ($scope.invoice.dor) {
+				if ($scope.invoice.status._id == 11) {
+					$scope.invoice.status._id = 4
+					$scope.invoice.status.description = 'Delivered'
+				}
+			} else {
+				if ($scope.invoice.status._id == 9) {
+					$scope.invoice.status._id = 3
+					$scope.invoice.status.description = 'Completed'
+				}
+			}
 			$scope.invoice.save()
 				.then(function (data) {
 					if (data.nModified == 1) {
