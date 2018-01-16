@@ -605,6 +605,10 @@ angular.module('MobileCRMApp')
 							$scope.ServiceOrder.sendMail = false;
 							$scope.ServiceOrder.quotes = 0
 						});
+						if ($scope.invoice.status._id == 9) {
+							$scope.ServiceOrder.status._id = 3
+							$scope.ServiceOrder.status.description = 'Completed'
+						}
 						$scope.ServiceOrder.save()
 					})
 			}
@@ -619,6 +623,10 @@ angular.module('MobileCRMApp')
 							$scope.WorkOrder.sendMail = false;
 							$scope.WorkOrder.quotes = 0
 						});
+						if ($scope.invoice.status._id == 9) {
+							$scope.WorkOrder.status._id = 3
+							$scope.WorkOrder.status.description = 'Completed'
+						}
 						$scope.WorkOrder.save()
 					})
 			}
@@ -646,6 +654,10 @@ angular.module('MobileCRMApp')
 							$scope.ServiceQuotes.isono = $scope.invoice.isono;
 							$scope.ServiceQuotes.quotes = 0
 						});
+						if ($scope.invoice.status._id == 9) {
+							$scope.ServiceQuotes.status._id = 3
+							$scope.ServiceQuotes.status.description = 'Completed'
+						}
 						$scope.ServiceQuotes.save()
 					})
 			}
