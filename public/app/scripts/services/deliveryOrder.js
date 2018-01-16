@@ -279,16 +279,33 @@ angular.module('MobileCRMApp')
 			return d.promise;
 		};
 		DeliveryOrder.prototype.send = function () {
-			var d = $q.defer();
+/* 			var d = $q.defer();
 			toaster.warning('Sending the email');
 			$http.post(this.baseApiPath + '/send', { id: this._id })
 				.success(function (data) {
-					toaster.success('The Service Order has been sent!.');
+					toaster.success('The Delivery Order has been sent!.');
 				})
 				.error(function (data, status, headers, config) {
 					toaster.error('There was an error sending the file, please try again')
 					d.reject(data);
 				});
+			return d.promise; */
+			var d = $q.defer();
+			var _this = this;
+			var email = _this.client ? _this.client.account.email : null;
+
+			var dialog = dialogs.create('views/emails.html', 'EmailsCtrl', { email: email });
+			dialog.result.then(function (emails) {
+				toaster.warning('Sending the email');
+				$http.post(_this.baseApiPath + '/send', { id: _this._id, emails: emails })
+					.success(function (data) {
+						toaster.success('The Quotes has been sent!.');
+					})
+					.error(function (data, status, headers, config) {
+						toaster.error('There was an error sending the email, please try again')
+						d.reject(data);
+					});
+			});
 			return d.promise;
 		};
 
@@ -434,7 +451,7 @@ angular.module('MobileCRMApp')
 			toaster.warning('Sending the email');
 			$http.post(this.baseApiPath + '/sendDelete', { id: this._id, deliveryOrder: deliveryOrder })
 				.success(function (data) {
-					toaster.success('The Service Order has been sent!.');
+					toaster.success('The Delivery Order has been sent!.');
 				})
 				.error(function (data, status, headers, config) {
 					toaster.error('There was an error sending the file, please try again')

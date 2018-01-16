@@ -597,7 +597,21 @@ console.log(status)
 		};
 
 		$scope.send = function () {
-			$scope.DeliveryOrder.send();
+			$scope.waiting = true;
+			delete $scope.DeliveryOrder.client.account.password;
+
+			$scope.DeliveryOrder.saveSendTo = true;
+			$scope.DeliveryOrder.save()
+				.then(function (data) {
+					toaster.success('The Delivery Order was saved successfully');
+					$scope.DeliveryOrder.send();
+					$scope.waiting = false;
+				},
+				function (error) {
+					console.log(error);
+					toaster.error('The Delivery Order couldn\'t be saved and/or sent, please check if some required field is empty or if its duplicated');
+					$scope.waiting = false;
+				});
 		};
 
 		var originPoint = {};

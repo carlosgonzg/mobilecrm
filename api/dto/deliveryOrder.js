@@ -337,7 +337,7 @@ DeliveryOrder.prototype.update = function (query, deliveryOrder, user, mail) {
 		} else {
 			total += (deliveryOrder.items[index].price * (deliveryOrder.items[index].quantity || 1));
 		}
-	}	
+	}
 
 	deliveryOrder.total = total;
 	delete deliveryOrder.sor
@@ -418,6 +418,7 @@ DeliveryOrder.prototype.sendDeliveryOrder = function (id, user, mail, sendMail) 
 	var fileName = '';
 	var fileNamePdf = '';
 	var emails = [];
+	var cc = [];
 
 	_this.crud.find({ _id: id })
 		.then(function (orderS) {
@@ -425,14 +426,20 @@ DeliveryOrder.prototype.sendDeliveryOrder = function (id, user, mail, sendMail) 
 			return _this.user.getAdminUsers();
 		})
 		.then(function (users) {
+			if (deliveryOrder.saveSendTo == true) {
+				emails = emails.concat([deliveryOrder.client.account.email]);
+				for (var i = 0; i < users.data.length; i++) {
+					cc.push(users.data[i].account.email);
+				}
+			}
 			if (sendMail == true) {
 				emails = [deliveryOrder.client.account.email];
 				for (var i = 0; i < users.data.length; i++) {
 					emails.push(users.data[i].account.email);
 				}
-				emails = _.uniq(emails);
-				return mail.sendDeliveryOrder(deliveryOrder, emails, _this.dirname);
 			}
+			emails = _.uniq(emails);
+			return mail.sendDeliveryOrder(deliveryOrder, emails, _this.dirname);
 		})
 		.then(function () {
 			d.resolve(true);
@@ -466,7 +473,7 @@ DeliveryOrder.prototype.sendDeliveryOrderUpdate = function (id, user, mail, send
 					emails.push(users.data[i].account.email);
 				}
 				emails = _.uniq(emails);
-				return mail.sendDeliveryOrderUpdate(deliveryOrder, emails, user , _this.dirname);
+				return mail.sendDeliveryOrderUpdate(deliveryOrder, emails, user, _this.dirname);
 			}
 		})
 		.then(function () {

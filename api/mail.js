@@ -68,7 +68,7 @@ var sendMail = function (to, subject, body, isHtmlBody, attached, cc, cco, reply
 	else {
 		mailOptions.attachments = [];
 	}
-	smtpTransport.sendMail(mailOptions, function (error, response) {
+ 	smtpTransport.sendMail(mailOptions, function (error, response) {
 		if (error) {
 			console.log(error);
 			deferred.reject(error);
@@ -76,7 +76,7 @@ var sendMail = function (to, subject, body, isHtmlBody, attached, cc, cco, reply
 			console.log('Message sent');
 			deferred.resolve(response);
 		}
-	});
+	}); 
 	return deferred.promise;
 };
 
@@ -391,7 +391,6 @@ var sendInvoice = function (invoice, mails, cc, file, fileName) {
 
 			var newMails = ""
 			if (cc.indexOf('mf@mobileonecontainers.com') != -1) {
-				cc.push("ar@mobileonecontainers.com")
 				cc.push("nr@mobileonecontainers.com")
 			}
 			sendMail(mails.join(', '), subject, body, true, attachments, cc.join(', '), null, 'mf@mobileonecontainers.com')
@@ -996,11 +995,8 @@ var sendQuotes = function (serviceQuotes, mails, cc, file, fileName) {
 
 			var subject = "Estimate : " + serviceQuotes.quotesNumber + ' – MobileOne Restoration LLC';
 			mails = _.uniq(mails);
-			if (mails.indexOf('mf@mobileonecontainers.com') != -1) {
-				mails.push("ar@mobileonecontainers.com")
-				mails.push("nr@mobileonecontainers.com")
-			}
-			sendMail(mails.join(', '), subject, body, true, attachments, 'mf@mobileonecontainers.com', null, null)
+
+			sendMail(mails.join(', '), subject, body, true, attachments, 'mf@mobileonecontainers.com, ar@mobileonecontainers.com, nr@mobileonecontainers.com', null, 'mf@mobileonecontainers.com')
 				.then(function (response) {
 					console.log('DONE Sending Mail: ', response)
 					deferred.resolve(response);
