@@ -243,7 +243,7 @@ angular.module('MobileCRMApp')
 		};
 		$scope.filterWO = {
 			'status._id': {
-				$in: [1, 2, 3]
+				$in: [1, 2, 3, 9]
 			}
 		};
 		$scope.filterC = {
