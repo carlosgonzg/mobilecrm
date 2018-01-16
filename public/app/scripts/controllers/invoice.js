@@ -16,13 +16,13 @@ angular.module('MobileCRMApp')
 		$scope.expenses = []
 		$scope.driver = Driver.data || {};
 		$scope.statusTech = {};
-		
+
 		if ($rootScope.userData.role._id != 1) {
 			$scope.invoice.client = new User($rootScope.userData);
 		}
 		if ($scope.invoice.dor) {
 			$scope.invoice.comment = $scope.invoice.comments
-		}		
+		}
 		$scope.listStatus = statusList;
 		$scope.listCompany = companies.data;
 		$scope.statusDelivery = statusDelivery;
@@ -295,11 +295,11 @@ angular.module('MobileCRMApp')
 			$scope.invoice = new Invoice(doc);
 			$scope.invoice.date = new Date();
 			$scope.expensesNewItem = {}
-			
+
 			for (var row = 0; row < $scope.invoice.items.length; row++) {
-				if ($scope.invoice.wor || $scope.invoice.sor) {				
+				if ($scope.invoice.wor || $scope.invoice.sor) {
 					var element = $scope.invoice.items[row].CrewLeaderSelected
-				}else{
+				} else {
 					var element = $scope.invoice.items[row].crewLeaderCol
 				}
 				if (element != undefined) {
@@ -329,13 +329,13 @@ angular.module('MobileCRMApp')
 			if (client && client.company)
 				$scope.wsFilterItem = $rootScope.userData.role._id != 1 ? { 'companies._id': $rootScope.userData.company._id } : { 'companies._id': client.company._id };
 			if (!$scope.invoice._id && (!$scope.invoice.invoiceNumber || $scope.invoice.invoiceNumber == 'Pending Invoice')) {
-				var company = new Company(client.company);				
+				var company = new Company(client.company);
 
 				if ($scope.invoice.tor) {
 					company.setupTearDown($scope.invoice.tor)
 						.then(function (sequence) {
 							$scope.invoice.invoiceNumber = sequence;
-						});	
+						});
 				} else {
 					company.peek($scope.invoice.dor)
 						.then(function (sequence) {
@@ -390,12 +390,25 @@ angular.module('MobileCRMApp')
 		$scope.save = function (sendTotech) {
 			$scope.waiting = true;
 			delete $scope.invoice.client.account.password;
+
+			if ($scope.invoice.dor) {
+				if ($scope.invoice.status._id == 11) {
+					$scope.invoice.status._id = 4
+					$scope.invoice.status.description = 'Delivered'
+				}
+			} else {
+				if ($scope.invoice.status._id == 9) {
+					$scope.invoice.status._id = 3
+					$scope.invoice.status.description = 'Completed'
+				}
+			}
+
 			$scope.invoice.saveSendTo = false;
 			$scope.invoice.save()
 				.then(function (data) {
 					if (data.nModified == 1) {
 						$scope.updateDoc(sendTotech)
-					}	
+					}
 					toaster.success('The Invoice was saved successfully');
 					$location.path('invoiceList')
 					$scope.waiting = false;
@@ -411,12 +424,12 @@ angular.module('MobileCRMApp')
 			$scope.waiting = true;
 			delete $scope.invoice.client.account.password;
 			$scope.invoice.saveSendTo = false;
-			
+
 			$scope.invoice.save()
 				.then(function (data) {
 					if (data.nModified == 1) {
 						$scope.updateDoc(false)
-					}	
+					}
 					new User().filter({ 'branch._id': $scope.invoice.client.branch._id })
 						.then(function (result) {
 							var emails = _.map(result.data, function (obj) {
@@ -449,7 +462,7 @@ angular.module('MobileCRMApp')
 				.then(function (data) {
 					if (data.nModified == 1) {
 						$scope.updateDoc(false)
-					}	
+					}
 					new Company().filter({ _id: $scope.invoice.client.company._id })
 						.then(function (result) {
 							var emails = _.map(result.data, function (obj) {

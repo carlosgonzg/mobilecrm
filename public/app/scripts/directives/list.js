@@ -22,7 +22,7 @@ angular.module('MobileCRMApp')
 			},
 			controller: function ($scope, $rootScope, $timeout, dialogs, toaster, Loading, $window, Company, Branch, $location) {
 				$scope.list = [];
-        $scope.userData = $rootScope.userData;
+				$scope.userData = $rootScope.userData;
 				$scope.companies = [];
 				$scope.branches = [{ _id: -1, name: "All Branches" }];
 				$scope.currentElement = {};
@@ -46,6 +46,39 @@ angular.module('MobileCRMApp')
 					{ _id: 'smo', description: 'Service Miles Only' },
 					{ _id: 'All', description: 'All Types' }
 				];
+
+
+
+				$scope.statusList = [
+					{ _id: -1, description: 'All' },
+					{ _id: 1, description: 'Pending' },
+					{ _id: 6, description: 'Scheduled' },
+					{ _id: 2, description: 'In Progress' },
+					{ _id: 3, description: 'Completed' },
+					{ _id: 9, description: 'Completed - Pending Invoice' },
+					{ _id: 4, description: 'Paid' },
+					{ _id: 5, description: 'Cancelled' },
+					{ _id: 7, description: 'Completed Under Warranty' },
+					{ _id: 8, description: 'Service Miles Only' },
+					{ _id: 10, description: 'Hold for Customer' }
+				];
+
+				if ($scope.objeto.baseApiPath == "/api/deliveryOrder") {
+					$scope.statusList = [
+						{ _id: -1, description: 'All' },
+						{ _id: 1, description: 'Waiting for Availability' },
+						{ _id: 9, description: 'Scheduled' },
+						{ _id: 2, description: 'Confirm' },
+						{ _id: 3, description: 'On Route' },
+						{ _id: 4, description: 'Delivered' },
+						{ _id: 11, description: 'Delivered - Pending Invoice' },
+						{ _id: 10, description: 'Hold for Customer' },
+						{ _id: 5, description: 'Cancelled' },
+						{ _id: 6, description: 'Pending to Pay' },
+						{ _id: 7, description: 'Paid' },
+						{ _id: 8, description: 'Dry Run' }
+					];
+				}
 
 				var today = new Date();
 				$scope.filterDateOptions = {
@@ -83,7 +116,8 @@ angular.module('MobileCRMApp')
 						excelFields: $scope.excelFields || $scope.fields,
 						fieldFilter: {},
 						company: {},
-						branch: {}
+						branch: {},
+						status: {}
 					};
 
 					var functionFields = _.where($scope.fields, { type: 'function' })
@@ -421,8 +455,18 @@ angular.module('MobileCRMApp')
 						$scope.branches.push({ _id: -1, name: "All Branches" })
 					})
 				}
+				$scope.getStatus = function (company) {
+					$scope.branches = [];
+					var query = { 'company._id': company._id };
+					new Branch().filter(query).then(function (result) {
+						$scope.branches = result.data;
+						$scope.branches.push({ _id: -1, name: "All Branches" })
+					})
+				}
 
 				$scope.filterByCompany = function () {
+					console.log($scope.params)
+
 					if ($scope.params.company._id != -1) {
 						$scope.params.filter["client.company._id"] = $scope.params.company._id;
 					} else {
@@ -433,6 +477,8 @@ angular.module('MobileCRMApp')
 				}
 
 				$scope.filterByBranch = function () {
+					console.log($scope.params.invoiceType)
+
 					if ($scope.params.branch._id != -1) {
 						$scope.params.filter["client.branch._id"] = $scope.params.branch._id;
 					} else {
@@ -446,6 +492,7 @@ angular.module('MobileCRMApp')
 					delete $scope.params.filter.wor;
 					delete $scope.params.filter.dor;
 
+
 					if ($scope.params.invoiceType._id === 'sor')
 						$scope.params.filter["sor"] = { $exists: true };
 					else if ($scope.params.invoiceType._id === 'wor')
@@ -455,6 +502,12 @@ angular.module('MobileCRMApp')
 					else if ($scope.params.invoiceType._id === 'smo')
 						$scope.params.filter["status._id"] = 8;
 
+
+					$scope.search();
+				}
+
+				$scope.filterByStatus = function () {
+					$scope.params.filter["status._id"] = $scope.params.status._id
 					$scope.search();
 				}
 
@@ -490,6 +543,7 @@ angular.module('MobileCRMApp')
 				$scope.getCompanies();
 				$scope.params.company = { _id: -1, description: "All Companies" };
 				$scope.params.branch = { _id: -1, description: "All Branches" };
+				$scope.params.status = { _id: -1, description: "All" };
 			}
 		};
 	});

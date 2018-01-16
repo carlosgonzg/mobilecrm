@@ -13,9 +13,9 @@
           </div>
           <div class="col-md-2">
             <label></label>
-            <div class="checkbox" >
+            <div class="checkbox">
               <label>
-                  <input type="checkbox" ng-model="filterDateOptions.enabled" ng-change="search()"> Filter by Dates
+                <input type="checkbox" ng-model="filterDateOptions.enabled" ng-change="search()"> Filter by Dates
               </label>
             </div>
           </div>
@@ -27,38 +27,46 @@
 
             <input class="form-control" type="text" ng-keyup="$event.keyCode == 13 ? search() : null" ng-model="params.search" ng-model-options="{ debounce: 500}"
             />
-            <span class="input-group-addon btn btn-default" ng-click="search()" tooltip="Search"><i class="fa fa-search"></i></span>
-            <span class="input-group-addon btn btn-default" ng-click="downloadExcel(params)" tooltip="Descargar Excel"><i class="fa fa fa-download"></i></span>
+            <span class="input-group-addon btn btn-default" ng-click="search()" tooltip="Search">
+              <i class="fa fa-search"></i>
+            </span>
+            <span class="input-group-addon btn btn-default" ng-click="downloadExcel(params)" tooltip="Descargar Excel">
+              <i class="fa fa fa-download"></i>
+            </span>
           </div>
         </div>
       </div>
-      <div class="col-xs-12 col-md-2" ng-if="filterDate && userData.role._id == 1" >
+      <div class="col-xs-12 col-md-2" ng-if="filterDate && userData.role._id == 1">
         <label for="date">Company:</label>
         <select class="form-control" ng-model="params.company" ng-options="company as company.entity.name for company in companies track by company._id"
           ng-change="filterByCompany()"></select>
-       
+
       </div>
       <div class="col-xs-12 col-md-2" ng-if="objeto.baseApiPath ==='/api/invoice'">
-         <label for="date">Invoice Type:</label>
-          <select class="form-control" ng-model="params.invoiceType" ng-options="type as type.description for type in invoiceTypeList track by type._id"
-            ng-change="filterByOrigin()"></select>
+        <label for="date">Invoice Type:</label>
+        <select class="form-control" ng-model="params.invoiceType" ng-options="type as type.description for type in invoiceTypeList track by type._id"
+          ng-change="filterByOrigin()"></select>
       </div>
       <div class="col-xs-12 col-md-2" ng-if="filterDate && userData.role._id == 1">
         <label for="date">Branch:</label>
         <select class="form-control" ng-model="params.branch" ng-options="branch as branch.name for branch in branches track by branch._id"
           ng-change="filterByBranch()"></select>
-       
+      </div>
+      <div class="col-xs-12 col-md-2" ng-if="userData.role._id == 1 && (objeto.baseApiPath ==='/api/ServiceOrder' || objeto.baseApiPath ==='/api/deliveryOrder' || objeto.baseApiPath ==='/api/WorkOrder' || objeto.baseApiPath ==='/api/SetupTearDown' || objeto.baseApiPath ==='/api/homeBusiness')">
+        <label for="date">Status:</label>
+        <select class="form-control" ng-model="params.status" ng-options="type as type.description for type in statusList track by type._id"
+          ng-change="filterByStatus()"></select>
       </div>
       <div class="col-xs-12 text-center" ng-if="!list.length">
         <br>
         <h4>
           <span ng-if="!loaded">
-          <i class="fa fa-spinner fa-pulse"></i>
-          Loading
-        </span>
+            <i class="fa fa-spinner fa-pulse"></i>
+            Loading
+          </span>
           <span ng-if="loaded">
-          There's no information to show
-        </span>
+            There's no information to show
+          </span>
         </h4>
       </div>
     </div>
@@ -104,23 +112,23 @@
             <!-- Campos a Repetir -->
             <td ng-repeat="field in fields">
               <!-- Campos Normales -->
-              <span ng-if="!field.config && field.type !='date' && field.decimalsOnly!= 'decimals-only' && field.type !='object' && field.type !='currency' && field.type != 'checkbox'"> {{inception(elem, field.name) | limitTo: field.limit}}{{(inception(elem, field.name).length > field.limit) ? '...' : ''}}</span>
+              <span ng-if="!field.config && field.type !='date' && field.decimalsOnly!= 'decimals-only' && field.type !='object' && field.type !='currency' && field.type != 'checkbox'">
+                {{inception(elem, field.name) | limitTo: field.limit}}{{(inception(elem, field.name).length > field.limit) ? '...' : ''}}</span>
               <!-- Campos Monetarios -->
-              <span class="ta_right" ng-if="field.type ==='currency'">{{elem['currency'].code}} {{inception(elem, field.name) | limitTo: field.limit | currency:"$":2}}{{(inception(elem, field.name).length > field.limit) ? '...' : ''}}</span>
+              <span class="ta_right" ng-if="field.type ==='currency'">{{elem['currency'].code}} {{inception(elem, field.name) | limitTo: field.limit | currency:"$":2}}{{(inception(elem,
+                field.name).length > field.limit) ? '...' : ''}}</span>
               <!-- Campos Numericos -->
-              <span ng-if="!field.config && field.type !='date' && field.decimalsOnly == 'decimals-only' && !matching(inception(elem, field.name)) && field.type !='object'">{{inception(elem, field.name) | limitTo: field.limit}}{{(inception(elem, field.name).length > field.limit) ? '...' : ''}}</span>
+              <span ng-if="!field.config && field.type !='date' && field.decimalsOnly == 'decimals-only' && !matching(inception(elem, field.name)) && field.type !='object'">{{inception(elem, field.name) | limitTo: field.limit}}{{(inception(elem, field.name).length > field.limit)
+                ? '...' : ''}}</span>
               <!-- Campos Fecha -->
               <span ng-if="field.type=='date'">{{inception(elem, field.name) | date:'MMM/dd/yyyy'}}</span>
               <!-- Campos Objetos (Vienen de la BD) -->
-              <span ng-if="field.type=='object'">{{resolve(field.routeInDb, elem, field.function, field.def) | limitTo: field.limit}}{{(resolve(field.routeInDb, elem, field.function, field.def).length > field.limit) ? '...' : ''}}</span>
+              <span ng-if="field.type=='object'">{{resolve(field.routeInDb, elem, field.function, field.def) | limitTo: field.limit}}{{(resolve(field.routeInDb,
+                elem, field.function, field.def).length > field.limit) ? '...' : ''}}</span>
               <!-- Campos Select (Solo viene el ID) -->
               <span ng-if="field.type=='select'">
-                {{
-                  getFieldLabel(elem[field.name],field.options) | limitTo: field.limit
-                }}
-                {{
-                  ( getFieldLabel(elem[field.name],field.options).length > field.limit ) ? '...' : ''
-                }}
+                {{ getFieldLabel(elem[field.name],field.options) | limitTo: field.limit }} {{ ( getFieldLabel(elem[field.name],field.options).length
+                > field.limit ) ? '...' : '' }}
               </span>
               <!-- Campos CheckBox -->
               <span ng-if="field.type=='checkbox'">
@@ -129,8 +137,8 @@
             </td>
             <td ng-show="showDeleteAction">
               <button type="button" class="btn btn-sm btn-danger" ng-click="delete(elem, 'description')">
-                    <i class="fa fa-trash-o"></i>
-                </button>
+                <i class="fa fa-trash-o"></i>
+              </button>
             </td>
           </tr>
         </tbody>
@@ -156,22 +164,22 @@
   <div class="col-xs-12 center-element paginator t-center">
     <div style="width:200px; margin: 0 auto;">
       <div class="btn-group">
-        <button type="button" class="btn btn-default disabled" ng-class="prevPageDisabled()" ng-click="firstPage()" style="cursor:pointer">        
-        <i class="fa fa-angle-double-left"></i>
+        <button type="button" class="btn btn-default disabled" ng-class="prevPageDisabled()" ng-click="firstPage()" style="cursor:pointer">
+          <i class="fa fa-angle-double-left"></i>
         </button>
 
         <button type="button" class="btn btn-default disabled" ng-class="prevPageDisabled()" ng-click="prevPage()" style="cursor:pointer">
-        <i class="fa fa-angle-left" aria-hidden="true"></i>
+          <i class="fa fa-angle-left" aria-hidden="true"></i>
         </button>
 
         <button type="button" class="btn btn-default ng-binding" disabled="" style="cursor:pointer">{{currentPage}}/{{maxPage}}</button>
 
         <button type="button" class="btn btn-default" ng-class="nextPageDisabled()" ng-click="nextPage()" style="cursor:pointer">
-        <i class="fa fa-angle-right" aria-hidden="true"></i>
+          <i class="fa fa-angle-right" aria-hidden="true"></i>
         </button>
 
-        <button type="button" class="btn btn-default" ng-class="nextPageDisabled()" ng-click="finPage()" style="cursor:pointer">        
-        <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+        <button type="button" class="btn btn-default" ng-class="nextPageDisabled()" ng-click="finPage()" style="cursor:pointer">
+          <i class="fa fa-angle-double-right" aria-hidden="true"></i>
         </button>
       </div>
     </div>

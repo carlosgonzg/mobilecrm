@@ -69,6 +69,7 @@ angular.module('MobileCRMApp')
 		'status.description',
 		'client.branch',
 		'client.company',
+		'status._id'
 	];
 
   $scope.filterDate = 'date';

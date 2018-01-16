@@ -77,6 +77,7 @@ angular.module('MobileCRMApp')
 			'pono',
 			'total',
 			'status.description',
+			'status._id',
 			'unitSize',
 			'originalShipDate'
 		];
