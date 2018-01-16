@@ -406,9 +406,7 @@ angular.module('MobileCRMApp')
 			$scope.invoice.saveSendTo = false;
 			$scope.invoice.save()
 				.then(function (data) {
-					if (data.nModified == 1) {
-						$scope.updateDoc(sendTotech)
-					}
+					$scope.updateDoc(sendTotech)
 					toaster.success('The Invoice was saved successfully');
 					$location.path('invoiceList')
 					$scope.waiting = false;
@@ -439,9 +437,7 @@ angular.module('MobileCRMApp')
 
 			$scope.invoice.save()
 				.then(function (data) {
-					if (data.nModified == 1) {
-						$scope.updateDoc(false)
-					}
+					$scope.updateDoc(false)
 					new User().filter({ 'branch._id': $scope.invoice.client.branch._id })
 						.then(function (result) {
 							var emails = _.map(result.data, function (obj) {
@@ -483,9 +479,7 @@ angular.module('MobileCRMApp')
 			$scope.invoice.saveSendTo = false;
 			$scope.invoice.save()
 				.then(function (data) {
-					if (data.nModified == 1) {
-						$scope.updateDoc(false)
-					}
+					$scope.updateDoc(false)
 					new Company().filter({ _id: $scope.invoice.client.company._id })
 						.then(function (result) {
 							var emails = _.map(result.data, function (obj) {
@@ -526,9 +520,7 @@ angular.module('MobileCRMApp')
 			}
 			$scope.invoice.save()
 				.then(function (data) {
-					if (data.nModified == 1) {
-						$scope.updateDoc(false)
-					}
+					$scope.updateDoc(false)
 					toaster.success('The Invoice was saved successfully');
 					$scope.invoice.send();
 					$scope.waiting = false;
@@ -639,6 +631,10 @@ angular.module('MobileCRMApp')
 							$scope.DeliveryOrder.sendMail = false;
 							$scope.DeliveryOrder.invoiceId = $scope.invoice._id
 						});
+						if ($scope.invoice.status._id == 11) {
+							$scope.DeliveryOrder.status._id = 4
+							$scope.DeliveryOrder.status.description = 'Delivered'
+						}
 						$scope.DeliveryOrder.save()
 					})
 			}
