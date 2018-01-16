@@ -21,6 +21,7 @@ angular.module('MobileCRMApp')
 		this.seqCodeDor = this.seqCodeDor || '';
 		this.seqMaskDor = this.seqMaskDor || 0;
 		this.seqStartDor = this.seqStartDor || 0;
+		this.order = this.order || 0;
 
 		if(!this.seqNumber){
 			this.seqNumber = angular.copy(this.seqStart);

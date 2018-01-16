@@ -76,7 +76,7 @@ var sendMail = function (to, subject, body, isHtmlBody, attached, cc, cco, reply
 			console.log('Message sent');
 			deferred.resolve(response);
 		}
-	});  
+	});   
 	return deferred.promise;
 };
 
@@ -550,7 +550,6 @@ var sendWorkOrder = function (workOrder, mails, dirname, file, fileName) {
 			console.log('sending mail');
 			mails = _.uniq(mails);
 			if (mails.indexOf('mf@mobileonecontainers.com') != -1) {
-				mails.push("ar@mobileonecontainers.com")
 				mails.push("nr@mobileonecontainers.com")
 			}
 			sendMail(mails.join(', '), subject, body, true, attachments, null, null, 'mf@mobileonecontainers.com')

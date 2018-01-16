@@ -15,13 +15,21 @@ angular.module('MobileCRMApp')
 			title: 'Name', 
 			name: 'entity.name', 
 			type: 'text'
+		},
+		{
+			title: 'Order',
+			name: 'order',
+			type: 'text'
 		}
 	];
 	$scope.search = [
 		'_id',
 		'entity.name',
-		'entity.url'
+		'entity.url',
+		'order'
 	];
+
+	$scope.sortList = ['order']
 
 	$scope.createNew = function () {
 		$location.path('company');

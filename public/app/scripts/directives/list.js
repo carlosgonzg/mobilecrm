@@ -47,8 +47,6 @@ angular.module('MobileCRMApp')
 					{ _id: 'All', description: 'All Types' }
 				];
 
-
-
 				$scope.statusList = [
 					{ _id: -1, description: 'All' },
 					{ _id: 1, description: 'Pending' },
@@ -439,11 +437,12 @@ angular.module('MobileCRMApp')
 
 				$scope.getCompanies = function () {
 					new Company().find().then(function (result) {
-						$scope.companies.push({ _id: -1, entity: { name: "All Companies" } })
+						$scope.companies.push({ _id: -1, entity: { name: "All Companies" }, order: 0 })
 
 						for (let index = 0; index < result.data.length; index++) {
-							$scope.companies.push({ _id: result.data[index]._id, entity: { name: result.data[index].entity.name } })
+							$scope.companies.push({ _id: result.data[index]._id, entity: { name: result.data[index].entity.name }, order: result.data[index].order })
 						}
+						console.log($scope.companies)
 					})
 				}
 
@@ -541,7 +540,7 @@ angular.module('MobileCRMApp')
 				}
 
 				$scope.getCompanies();
-				$scope.params.company = { _id: -1, description: "All Companies" };
+				$scope.params.company = { _id: -1, description: "All Companies", order: 0 };
 				$scope.params.branch = { _id: -1, description: "All Branches" };
 				$scope.params.status = { _id: -1, description: "All" };
 			}
