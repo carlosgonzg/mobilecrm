@@ -586,8 +586,8 @@ angular.module('MobileCRMApp')
 		}
 
 		$scope.updateDoc = function (sendTotech) {
-			if ($scope.invoice.typeTruck == undefined && $scope.invoice.sor != "") {
-				new ServiceOrder().filter({ "sor": $scope.invoice.sor })
+			if ($scope.invoice.typeTruck == undefined && $scope.invoice.sor) {
+ 				new ServiceOrder().filter({ "sor": $scope.invoice.sor })
 					.then(function (result) {
 						_.map(result.data, function (obj) {
 							$scope.ServiceOrder = obj
@@ -602,9 +602,9 @@ angular.module('MobileCRMApp')
 							$scope.ServiceOrder.status.description = 'Completed'
 						}
 						$scope.ServiceOrder.save()
-					})
+					}) 
 			}
-			if ($scope.invoice.typeTruck == undefined && $scope.invoice.wor != "") {
+			if ($scope.invoice.typeTruck == undefined && $scope.invoice.wor) {
 				new WorkOrder().filter({ "wor": $scope.invoice.wor })
 					.then(function (result) {
 						_.map(result.data, function (obj) {

@@ -565,7 +565,7 @@ var createReport = function(objs, whoIs, query, queryDescription, user){
 	excel.worksheet.mergeCells('A' + key + ':C' + key);
 	excel.worksheet.lastRow.font = boldFont;
 
-	excel.worksheet.getCell("A3").value = (objs.length +1) + " " + whoIs + "s " + (queryDescription.status ? queryDescription.status + ' ' : '') + (queryDescription.po ? 'With PO Number ' : '') + (queryDescription.pendingPo ? 'Without PO Number ' : '') ;
+	excel.worksheet.getCell("A3").value = (objs.length) + " " + whoIs + "s " + (queryDescription.status ? queryDescription.status + ' ' : '') + (queryDescription.po ? 'With PO Number ' : '') + (queryDescription.pendingPo ? 'Without PO Number ' : '') ;
 	excel.worksheet.getCell("A3").font = subHeaderFont;
 	excel.worksheet.getCell("A4").value = total;
 	excel.worksheet.getCell("A4").numFmt = '$ #,###,###,##0.00';

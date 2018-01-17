@@ -122,7 +122,9 @@ angular.module('MobileCRMApp')
 				responseType: 'arraybuffer'
 			})
 				.success(function (data, status, headers, config) {
+			
 					var json = JSON.stringify(data);
+					console.log(json)
 					var blob = new Blob([data], {
 						type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 					});
@@ -130,7 +132,7 @@ angular.module('MobileCRMApp')
 
 					a.href = url;
 
-					a.download = 'Home & Business Report ' + formatDate(new Date()) + '.xlsx';
+					a.download = 'Service Order Report ' + formatDate(new Date()) + '.xlsx';
 					a.click();
 					window.URL.revokeObjectURL(url);
 					d.resolve(url);

@@ -85,19 +85,12 @@
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
 							<label for="ServiceType">Service Type</label>
-							<select class="form-control" ng-model="DeliveryOrder.ServiceType" id="category" ng-options="item as item.item for item in list track by item.item" ng-change="changeRelocation(DeliveryOrder.ServiceType.item=='Relocation')"></select>
+							<select class="form-control" ng-model="DeliveryOrder.ServiceType" id="category" ng-options="item as item.item for item in list track by item.item"
+							 ng-change="changeRelocation(DeliveryOrder.ServiceType.item=='Relocation')"></select>
 						</div>
 					</div>
 				</div>
-				<div class="col-sm-6">
-					<div class="col-xs-12 pull-right">
-						<div class="form-group">
-							<label for="date">PO #</label>
-							<input type="text" class="form-control" ng-model="DeliveryOrder.pono" ng-class="isChanged('pono')" ng-change="changed('pono')" ng-disabled="userData.role._id!=1 && userData.role._id!=3">
-							/>
-						</div>
-					</div>
-				</div>
+
 				<div class="col-sm-6">
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
@@ -121,24 +114,17 @@
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
 							<label for="pickupDate">Pickup Date</label>
-							<input type="date" class="form-control" name="pickupDate" id="pickupDate" ng-model="DeliveryOrder.pickupDate" ng-class="isChanged('pickupDate')" ng-change="changed('pickupDate')">
+							<input type="date" class="form-control" name="pickupDate" id="pickupDate" ng-model="DeliveryOrder.pickupDate" ng-class="isChanged('pickupDate')"
+							 ng-change="changed('pickupDate')">
 						</div>
 					</div>
 				</div>
+
 				<div class="col-sm-6">
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
 							<label for="unitno">Serial #</label>
 							<input type="text" class="form-control" ng-model="DeliveryOrder.unitno" ng-class="isChanged('unitno')" ng-change="changed('unitno')"
-							/>
-						</div>
-					</div>
-				</div>
-				<div class="col-sm-6">
-					<div class="col-xs-12 pull-right">
-						<div class="form-group">
-							<label for="pickupTime">Pickup Time</label>
-							<input type="time" class="form-control" ng-model="DeliveryOrder.pickupTime" ng-class="isChanged('pickupTime')" ng-change="changed('pickupTime')"
 							/>
 						</div>
 					</div>
@@ -155,9 +141,30 @@
 				<div class="col-sm-6">
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
+							<label for="date">PO #</label>
+							<input type="text" class="form-control" ng-model="DeliveryOrder.pono" ng-class="isChanged('pono')" ng-change="changed('pono')"
+							 ng-disabled="userData.role._id!=1 && userData.role._id!=3">
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="col-xs-12 pull-right">
+						<div class="form-group">
+							<label for="pickupTime">Pickup Time</label>
+							<input type="time" class="form-control" ng-model="DeliveryOrder.pickupTime" ng-class="isChanged('pickupTime')" ng-change="changed('pickupTime')"
+							/>
+						</div>
+					</div>
+				</div>
+
+
+				<div class="col-sm-6">
+					<div class="col-xs-12 pull-right">
+						<div class="form-group">
 							<label for="contract">Entrance</label>
-							<select class="form-control" name="typeTruck" id='optEntrance' ng-model="DeliveryOrder.typeTruck" ng-class="isChanged('typeTruck')" ng-change="changed('typeTruck')"
-							 ng-options="typeTruck as typeTruck.description for typeTruck in entranceList track by typeTruck._id" validator="required"></select>
+							<select class="form-control" name="typeTruck" id='optEntrance' ng-model="DeliveryOrder.typeTruck" ng-class="isChanged('typeTruck')"
+							 ng-change="changed('typeTruck')" ng-options="typeTruck as typeTruck.description for typeTruck in entranceList track by typeTruck._id"
+							 validator="required"></select>
 						</div>
 					</div>
 				</div>
@@ -166,7 +173,8 @@
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
 							<label for="originalShipDate">Completed Date</label>
-							<input type="date" class="form-control" name="originalShipDate" id="originalShipDate" ng-model="DeliveryOrder.originalShipDate" ng-class="isChanged('originalShipDate')" ng-change="changed('originalShipDate')" ng-disabled="userData.role._id != 1">
+							<input type="date" class="form-control" name="originalShipDate" id="originalShipDate" ng-model="DeliveryOrder.originalShipDate"
+							 ng-class="isChanged('originalShipDate')" ng-change="changed('originalShipDate')" ng-disabled="userData.role._id != 1">
 						</div>
 					</div>
 				</div>
