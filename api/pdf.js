@@ -40,6 +40,8 @@ var createInvoiceBody = function (obj, company, branch) {
 	//Cliente
 	body = body.replace(/<clientName>/g, obj.client.entity.fullName || '');
 
+	var projectDesc = ""
+
 	// body = body.replace(/<clientState>/g, obj.sor ? (obj.siteAddress.state.description + ' ' + obj.siteAddress.zipcode || '') : (company.address.state.description + ' ' + company.address.zipcode || ''));
 	if (obj.dor) {
 
@@ -64,6 +66,16 @@ var createInvoiceBody = function (obj, company, branch) {
 
 		body = body.replace(/<clientAddress>/g, addressfrom.replace(/, , /g, ""));
 		body = body.replace(/<clientState>/g, AddRoute.replace(/, , /g, ""));
+
+		if (obj.ServiceType.item == "Pickup" || obj.ServiceType.item == "Delivery") {
+			projectDesc = obj.ServiceType.item
+			if (obj.Relocation) {
+				projectDesc = projectDesc + " and Relocation "
+			}
+		} else if (obj.ServiceType == "Relocation") {
+			projectDesc = "Relocation "
+		}
+
 	} else {
 		var addressFrom = obj.sor ? obj.siteAddress.address1 : obj.client.branch.addresses.length > 0 ? obj.client.branch.addresses[0].address1 : company.address.address1 || ''
 		var addressTo = obj.sor ? (obj.siteAddress.city.description + ', ' + obj.siteAddress.state.id + ', ' + obj.siteAddress.zipcode || '') : obj.client.branch.addresses.length > 0 ? obj.client.branch.addresses[0].city.description + ', ' + obj.client.branch.addresses[0].state.id + ', ' + obj.client.branch.addresses[0].zipcode : (company.address.city.description + ', ' + company.address.state.id + ', ' + company.address.zipcode || '')
@@ -75,9 +87,17 @@ var createInvoiceBody = function (obj, company, branch) {
 		body = body.replace(/<clientState>/g, addressTo);
 	}
 
+
+
 	body = body.replace(/<clientPhone>/g, obj.phone.number || '');
 	body = body.replace(/<clientMail>/g, obj.client.account.email || '');
-	body = body.replace(/<comment>/g, obj.comment || '');
+
+	if (projectDesc != "") {
+		body = body.replace(/<comment>/g, (obj.comment || '') + ' ' + projectDesc);
+	} else {
+		body = body.replace(/<comment>/g, obj.comment || '');	
+	}
+	
 	body = body.replace(/<pono>/g, obj.pono || '');
 	body = body.replace(/<unitno>/g, obj.unitno || '');
 	body = body.replace(/<isono>/g, obj.isono || '');
