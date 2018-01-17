@@ -28,6 +28,12 @@ angular.module('MobileCRMApp')
 		$scope.statusDelivery = statusDelivery;
 		$scope.Math = $window.Math;
 
+		$scope.list = [
+			{ item: 'Pickup' },
+			{ item: 'Delivery' },
+			{ item: 'Relocation' },
+		]
+
 		$scope.wsClassOS = ServiceOrder;
 		$scope.wsFieldsOS = [{
 			label: 'Service Order #',

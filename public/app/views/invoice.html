@@ -257,6 +257,14 @@
 					</div>
 				</div>
 				<div class="col-sm-6">
+					<div class="col-xs-12 pull-right" ng-if="invoice.dor">
+						<div class="form-group">
+							<label for="ServiceType">Service Type</label>
+							<select class="form-control" ng-model="invoice.ServiceType" id="category" ng-options="item as item.item for item in list track by item.item"></select>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
 					<div class="col-xs-12 pull-right">
 						<div class="form-group" ng-if="invoice.dor">
 							<label for="pono">Driver</label>
@@ -266,6 +274,7 @@
 						</div>
 					</div>
 				</div>
+
 			</div>
 		</div>
 	</div>

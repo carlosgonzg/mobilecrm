@@ -26,7 +26,7 @@ angular.module('MobileCRMApp')
 			name: 'date',
 			type: 'date'
 		}, {
-			title: 'Completed Date',
+			title: 'Completed',
 			name: 'originalShipDate',
 			type: 'date'
 		}, {

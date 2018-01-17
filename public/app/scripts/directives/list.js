@@ -176,7 +176,15 @@ angular.module('MobileCRMApp')
 					var cells = table.rows[0].cells;
 					for (var i in cells) {
 						if (cells[i].clientWidth) {
-							$scope.fields[i].limit = Math.ceil((cells[i].clientWidth) / 4);
+							if ($scope.objeto.baseApiPath == "/api/deliveryOrder") {
+								if ($scope.fields[i].name == "pono") {
+									$scope.fields[i].limit = 50
+								} else {
+									$scope.fields[i].limit = 13 
+								}
+							} else {
+								$scope.fields[i].limit = Math.ceil((cells[i].clientWidth) / 4);
+							}
 						}
 					};
 				};
@@ -442,7 +450,6 @@ angular.module('MobileCRMApp')
 						for (let index = 0; index < result.data.length; index++) {
 							$scope.companies.push({ _id: result.data[index]._id, entity: { name: result.data[index].entity.name }, order: result.data[index].order })
 						}
-						console.log($scope.companies)
 					})
 				}
 

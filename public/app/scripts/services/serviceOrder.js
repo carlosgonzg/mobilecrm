@@ -124,7 +124,6 @@ angular.module('MobileCRMApp')
 				.success(function (data, status, headers, config) {
 			
 					var json = JSON.stringify(data);
-					console.log(json)
 					var blob = new Blob([data], {
 						type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 					});

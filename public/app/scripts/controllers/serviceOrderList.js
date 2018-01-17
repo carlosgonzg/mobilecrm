@@ -24,7 +24,11 @@ angular.module('MobileCRMApp')
 			name: 'client.entity.fullName',
 			type: 'text'
 		}, {
-			title: 'Completed Date',
+			title: 'Created',
+			name: 'createdDate',
+			type: 'date'
+		}, {
+			title: 'Completed',
 			name: 'originalShipDate',
 			type: 'date'
 		}, {
@@ -32,7 +36,7 @@ angular.module('MobileCRMApp')
 			name: 'invoiceNumber',
 			type: 'text'
 		}, {
-			title: 'Service Order #',
+			title: 'SO #',
 			name: 'sor',
 			type: 'text'
 		}, {
@@ -44,7 +48,7 @@ angular.module('MobileCRMApp')
 			name: 'pono',
 			type: 'text'
 		}, {
-			title: 'Total Amount',
+			title: 'Total',
 			name: 'total',
 			type : 'function',
 			function: function (elem){ return elem.total + (elem.client.company.taxes || 0) * elem.total}
@@ -69,7 +73,8 @@ angular.module('MobileCRMApp')
 		'status.description',
 		'client.branch',
 		'client.company',
-		'status._id'
+		'status._id',
+		'createdDate'
 	];
 
   $scope.filterDate = 'date';

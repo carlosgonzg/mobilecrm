@@ -319,7 +319,7 @@ angular.module('MobileCRMApp')
 		DeliveryOrder.prototype.filter = function (query, sort) {
 			var deferred = $q.defer();
 			var _this = this.constructor;
-			console.log(this.baseApiPath)
+
 			$http.post(this.baseApiPath + '/filter', { query: query, sort: sort })
 				.success(function (data, status, headers, config) {
 					console.log(data)	

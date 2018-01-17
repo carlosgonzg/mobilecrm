@@ -42,7 +42,8 @@ angular.module('MobileCRMApp')
 		}, {
 			title: 'Serial #',
 			name: 'unitno',
-			type: 'text'
+			type: 'text',
+			limit: 12
 		}, {
 			title: 'Unit Size',
 			name: 'unitSize',
