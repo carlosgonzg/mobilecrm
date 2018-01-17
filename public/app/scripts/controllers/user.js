@@ -40,8 +40,6 @@ angular.module('MobileCRMApp')
 				toaster.error(error.message);
 			});
 		} else {
-			$scope.user.status._id = 1
-			$scope.user.status.description = 'Active'
 			$scope.user.update()
 			.then(function (data) {
 				toaster.success('The user was updated successfully');

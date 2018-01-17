@@ -537,7 +537,11 @@ var createReport = function(objs, whoIs, query, queryDescription, user){
 		console.log(obj.crewHeader)
 		if (whoIs != "Invoice") {
 			if (whoIs == "ServiceOrder") {
-				valueArray = [moment(obj.date).format('MM/DD/YYYY'), obj.client.company.entity.name, obj.client.branch.name, obj.client.entity.fullName, obj.sor, obj.unitno, obj.invoiceNumber, obj.pono,  subTotal, obj.siteAddressFrom ? obj.siteAddressFrom.city.description : '', obj.crewHeader ? obj.crewHeader[0].name : '', obj.status.description];
+				var name = "";
+				if (obj.crewHeader && obj.crewHeader[0] && obj.crewHeader[0].name) {
+					name = obj.crewHeader[0].name
+				}					
+				valueArray = [moment(obj.date).format('MM/DD/YYYY'), obj.client.company.entity.name, obj.client.branch.name, obj.client.entity.fullName, obj.sor, obj.unitno, obj.invoiceNumber, obj.pono, subTotal, obj.siteAddressFrom ? obj.siteAddressFrom.city.description : '', obj.crewHeader ? name : '', obj.status.description];
 			} else {
 				valueArray = [moment(obj.date).format('MM/DD/YYYY'), obj.unitno, obj.pono, whoIs == 'ServiceOrder' ? obj.sor : (whoIs == 'WorkOrder' ? obj.wor: obj.dor), obj.invoiceNumber, subTotal, obj.client.branch.name, obj.status.description, moment(obj.date).format('YYYY'), moment(obj.date).format('MM')];
 			}
