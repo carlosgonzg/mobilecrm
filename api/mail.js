@@ -53,10 +53,10 @@ var setAttachment = function (url, fileName) {
 var sendMail = function (to, subject, body, isHtmlBody, attached, cc, cco, replyTo) {
 	var deferred = q.defer();
 	mailOptions.to = to;
-	mailOptions.cc = cc ? cc : '';
-	mailOptions.cco = cco ? cco : '';
+//	mailOptions.cc = cc ? cc : '';
+//	mailOptions.cco = cco ? cco : '';
 	mailOptions.subject = subject;
-	mailOptions.replyTo = replyTo || '';
+//	mailOptions.replyTo = replyTo || '';
 	if (isHtmlBody) {
 		mailOptions.html = body;
 	} else {
@@ -174,8 +174,10 @@ var sendServiceOrder = function (serviceOrder, mails, dirname) {
 			console.log('sending mail', subject);
 			mails = _.uniq(mails);
 			var newMails = ""
-			if (mails.indexOf('mf@mobileonecontainers.com') != -1) {
+			if (mails.indexOf('ar@mobileonecontainers.com') != -1) {
 				mails.push("ar@mobileonecontainers.com")
+			}
+			if (mails.indexOf('nr@mobileonecontainers.com') != -1) {
 				mails.push("nr@mobileonecontainers.com")
 			}
 			sendMail(mails.join(', '), subject, body, true, serviceOrderAttachments, null, null, 'mf@mobileonecontainers.com')
@@ -339,8 +341,10 @@ var sendServiceOrderUpdate = function (serviceOrder, mails, user) {
 
 			console.log('sending mail', subject);
 			mails = _.uniq(mails);
-			if (mails.indexOf('mf@mobileonecontainers.com') != -1) {
+			if (mails.indexOf('ar@mobileonecontainers.com') != -1) {
 				mails.push("ar@mobileonecontainers.com")
+			}
+			if (mails.indexOf('nr@mobileonecontainers.com') != -1) {
 				mails.push("nr@mobileonecontainers.com")
 			}
 			sendMail(mails.join(', '), subject, body, true, null, null, null, 'mf@mobileonecontainers.com')
@@ -390,12 +394,13 @@ var sendInvoice = function (invoice, mails, cc, file, fileName) {
 			mails = _.uniq(mails);
 
 			var newMails = ""
-			if (cc.indexOf('mf@mobileonecontainers.com') != -1) {
-				if (cc.indexOf('ar@mobileonecontainers.com') != -1) {
-					cc.indexOf('ar@mobileonecontainers.com')
-				}
+			if (cc.indexOf('ar@mobileonecontainers.com') != -1) {
+				cc.push("ar@mobileonecontainers.com")
+			}
+			if (cc.indexOf('nr@mobileonecontainers.com') != -1) {
 				cc.push("nr@mobileonecontainers.com")
 			}
+			
 			sendMail(mails.join(', '), subject, body, true, attachments, cc.join(', '), null, 'mf@mobileonecontainers.com')
 				.then(function (response) {
 					console.log('DONE Sending Mail: ', response)
@@ -484,8 +489,10 @@ var sendInvoiceUpdate = function (invoice, mails, user, file, fileName) {
 			subject += ' – MobileOne Restoration LLC';
 			var attachments = setAttachment(file, fileName);
 			mails = _.uniq(mails);
-			if (mails.indexOf('mf@mobileonecontainers.com') != -1) {
+			if (mails.indexOf('ar@mobileonecontainers.com') != -1) {
 				mails.push("ar@mobileonecontainers.com")
+			}
+			if (mails.indexOf('nr@mobileonecontainers.com') != -1) {
 				mails.push("nr@mobileonecontainers.com")
 			}
 			sendMail(mails.join(', '), subject, body, true, attachments, null, null, 'mf@mobileonecontainers.com')
@@ -542,17 +549,20 @@ var sendWorkOrder = function (workOrder, mails, dirname, file, fileName) {
 			console.log(url)
 			body = body.replace('<emailUrl>', url);
 			body = body.replace('<createdBy>', workOrder.createdBy.entity ? workOrder.createdBy.entity.fullName : '');
-			body = body.replace('<clientCompany>', workOrder.client.company ? workOrder.client.company.entity.name : 'None');
-			body = body.replace('<clientBranch>', workOrder.client.branch ? workOrder.client.branch.name : 'None');
+			body = body.replace('<clientCompany>', workOrder.client.company ? workOrder.client.company.entity.name : '');
+			body = body.replace('<clientBranch>', workOrder.client.branch ? workOrder.client.branch.name : '');
 			body = body.replace('<wor>', workOrder.wor);
-			body = body.replace('<pono>', workOrder.pono ? 'With PO Number: ' + workOrder.pono : 'Without PO Number. Please provide PO Number for this Work Order.');
-			var company = '' + (workOrder && workOrder.client && workOrder.client.company && workOrder.client.company.entity ? workOrder.client.company.entity.name : 'Not Defined');
+			body = body.replace('<pono>', workOrder.pono || '')
+			var company = '' + (workOrder && workOrder.client && workOrder.client.company && workOrder.client.company.entity ? workOrder.client.company.entity.name : '');
 			var branch = workOrder && workOrder.client && workOrder.client.branch ? '' + workOrder.client.branch.name : '' + workOrder.client.entity.fullName;
 			var subject = 'Work Order: ' + workOrder.wor + ' | ' + company + ' | ' + branch;
 			var attachments = setAttachment(file, fileName)
 			console.log('sending mail');
 			mails = _.uniq(mails);
-			if (mails.indexOf('mf@mobileonecontainers.com') != -1) {
+			if (mails.indexOf('ar@mobileonecontainers.com') != -1) {
+				mails.push("ar@mobileonecontainers.com")
+			}
+			if (mails.indexOf('nr@mobileonecontainers.com') != -1) {
 				mails.push("nr@mobileonecontainers.com")
 			}
 			sendMail(mails.join(', '), subject, body, true, attachments, null, null, 'mf@mobileonecontainers.com')
@@ -580,10 +590,10 @@ var sendWorkOrderDelete = function (workOrder, mails, dirname, file, fileName) {
 			console.log(url)
 			body = body.replace('<emailUrl>', url);
 			body = body.replace('<createdBy>', workOrder.createdBy.entity ? workOrder.createdBy.entity.fullName : '');
-			body = body.replace('<clientCompany>', workOrder.client.company ? workOrder.client.company.entity.name : 'None');
-			body = body.replace('<clientBranch>', workOrder.client.branch ? workOrder.client.branch.name : 'None');
+			body = body.replace('<clientCompany>', workOrder.client.company ? workOrder.client.company.entity.name : '');
+			body = body.replace('<clientBranch>', workOrder.client.branch ? workOrder.client.branch.name : '');
 			body = body.replace('<wor>', workOrder.wor);
-			body = body.replace('<pono>', workOrder.pono ? 'With PO Number: ' + workOrder.pono : 'Without PO Number. Please provide PO Number for this Work Order.');
+			body = body.replace('<pono>', workOrder.pono || '');
 			var company = '' + (workOrder && workOrder.client && workOrder.client.company && workOrder.client.company.entity ? workOrder.client.company.entity.name : 'Not Defined');
 			var branch = workOrder && workOrder.client && workOrder.client.branch ? '' + workOrder.client.branch.name : '' + workOrder.client.entity.fullName;
 			var subject = 'DELETED - Work Order: ' + workOrder.wor + ' | ' + company + ' | ' + branch;
@@ -615,24 +625,24 @@ var sendWorkOrderUpdate = function (workOrder, mails, user, company) {
 			var url = config.SERVER_URL;
 			body = body.replace('<emailUrl>', url);
 			body = body.replace('<createdDate>', moment(workOrder.date).format('MM/DD/YYYY'));
-			body = body.replace('<clientCompany>', company.entity.name || 'None');
-			body = body.replace('<clientBranch>', workOrder.client.branch ? workOrder.client.branch.name : 'None');
+			body = body.replace('<clientCompany>', company.entity.name || '');
+			body = body.replace('<clientBranch>', workOrder.client.branch ? workOrder.client.branch.name : '');
 			body = body.replace('<wor>', workOrder.wor);
 			body = body.replace('<unitno>', workOrder.unitno || '');
-			body = body.replace('<pono>', workOrder.pono ? 'With PO Number: ' + workOrder.pono : 'Without PO Number. Please provide PO Number for this Work Order.');
+			body = body.replace('<pono>', workOrder.pono || '');
 			body = body.replace('<isono>', workOrder.isono || '');
 			body = body.replace('<clientName>', workOrder.client.entity.fullName);
-			body = body.replace('<clientPhone>', workOrder.client && workOrder.client.branch && workOrder.client.branch.phones && workOrder.client.branch.phones.length > 0 ? workOrder.client.branch.phones[0].number : 'None');
+			body = body.replace('<clientPhone>', workOrder.client && workOrder.client.branch && workOrder.client.branch.phones && workOrder.client.branch.phones.length > 0 ? workOrder.client.branch.phones[0].number : '');
 			body = body.replace('<clientMail>', workOrder.client.account.email);
 			if (company.address) {
 				body = body.replace('<clientAddress>', company.address.address1 + ', ' + company.address.city.description + ', ' + company.address.state.description + ' ' + company.address.zipcode);
 			}
 			else {
-				body = body.replace('<clientAddress>', 'None');
+				body = body.replace('<clientAddress>', '');
 			}
 
-			body = body.replace('<issue>', workOrder.issue || 'None');
-			body = body.replace('<comment>', workOrder.comment || 'None');
+			body = body.replace('<issue>', workOrder.issue || '');
+			body = body.replace('<comment>', workOrder.comment || '');
 			var changesByUser = '';
 			changesByUser += (user.entity.fullName || user.entity.name) + '<br> Changes: ';
 			var fieldsChanged = '';
@@ -675,13 +685,16 @@ var sendWorkOrderUpdate = function (workOrder, mails, user, company) {
 			var companyS = '' + company.entity.name;
 			var branch = workOrder && workOrder.client && workOrder.client.branch ? '' + workOrder.client.branch.name : '' + workOrder.client.entity.fullName;
 			var subject = 'Work Order: ' + workOrder.wor + ' | ' + companyS + ' | ' + branch;
-			console.log('sending mail', subject);
+			var attachments = setAttachment(file, fileName)
+			console.log('sending mail', subject);			
 			mails = _.uniq(mails);
-			if (mails.indexOf('mf@mobileonecontainers.com') != -1) {
+			if (mails.indexOf('ar@mobileonecontainers.com') != -1) {
 				mails.push("ar@mobileonecontainers.com")
+			}
+			if (mails.indexOf('nr@mobileonecontainers.com') != -1) {
 				mails.push("nr@mobileonecontainers.com")
 			}
-			sendMail(mails.join(', '), subject, body, true, null, null, null, 'mf@mobileonecontainers.com')
+			sendMail(mails.join(', '), subject, body, true, attachments, null, null, 'mf@mobileonecontainers.com')
 				.then(function (response) {
 					console.log('DONE Sending Mail: ', response)
 					deferred.resolve(response);
@@ -776,8 +789,10 @@ var sendDeliveryOrder = function (deliveryOrder, mails, dirname) {
 			console.log('sending mail', subject);
 			mails = _.uniq(mails);
 			var newMails = ""
-			if (mails.indexOf('mf@mobileonecontainers.com') != -1) {
+			if (mails.indexOf('ar@mobileonecontainers.com') != -1) {
 				mails.push("ar@mobileonecontainers.com")
+			}
+			if (mails.indexOf('nr@mobileonecontainers.com') != -1) {
 				mails.push("nr@mobileonecontainers.com")
 			}
 			sendMail(mails.join(', '), subject, body, true, deliveryOrderAttachments, null, null, 'mf@mobileonecontainers.com')
@@ -895,8 +910,10 @@ var sendDeliveryOrderUpdate = function (deliveryOrder, mails, user, dirname) {
 			console.log('sending mail', subject);
 			mails = _.uniq(mails);
 			var newMails = ""
-			if (mails.indexOf('mf@mobileonecontainers.com') != -1) {
+			if (mails.indexOf('ar@mobileonecontainers.com') != -1) {
 				mails.push("ar@mobileonecontainers.com")
+			}
+			if (mails.indexOf('nr@mobileonecontainers.com') != -1) {
 				mails.push("nr@mobileonecontainers.com")
 			}
 			sendMail(mails.join(', '), subject, body, true, deliveryOrderAttachments, null, null, 'mf@mobileonecontainers.com')
@@ -1130,8 +1147,10 @@ var sendSetupTearDown = function (SetupTearDown, mails, dirname) {
 				}
 			}
 			mails = _.uniq(mails);
-			if (mails.indexOf('mf@mobileonecontainers.com') != -1) {
+			if (mails.indexOf('ar@mobileonecontainers.com') != -1) {
 				mails.push("ar@mobileonecontainers.com")
+			}
+			if (mails.indexOf('nr@mobileonecontainers.com') != -1) {
 				mails.push("nr@mobileonecontainers.com")
 			}
 			sendMail(mails.join(', '), subject, body, true, SetupTearDownAttachments, null, null, 'mf@mobileonecontainers.com')
@@ -1223,8 +1242,10 @@ var sendSetupTearDownUpdate = function (SetupTearDown, mails, user) {
 			var subject = 'Set Up & Tear Down: ' + SetupTearDown.tor + ' | ' + company + ' | ' + branch;
 
 			mails = _.uniq(mails);
-			if (mails.indexOf('mf@mobileonecontainers.com') != -1) {
+			if (mails.indexOf('ar@mobileonecontainers.com') != -1) {
 				mails.push("ar@mobileonecontainers.com")
+			}
+			if (mails.indexOf('nr@mobileonecontainers.com') != -1) {
 				mails.push("nr@mobileonecontainers.com")
 			}
 			sendMail(mails.join(', '), subject, body, true, null, null, null, 'mf@mobileonecontainers.com')
@@ -1352,8 +1373,10 @@ var sendhomeBusiness = function (homeBusiness, mails, dirname) {
 				}
 			}
 			mails = _.uniq(mails);
-			if (mails.indexOf('mf@mobileonecontainers.com') != -1) {
+			if (mails.indexOf('ar@mobileonecontainers.com') != -1) {
 				mails.push("ar@mobileonecontainers.com")
+			}
+			if (mails.indexOf('nr@mobileonecontainers.com') != -1) {
 				mails.push("nr@mobileonecontainers.com")
 			}
 			sendMail(mails.join(', '), subject, body, true, homeBusinessAttachments, null, null, 'mf@mobileonecontainers.com')
@@ -1443,8 +1466,10 @@ var sendhomeBusinessUpdate = function (homeBusiness, mails, user) {
 			var subject = 'Home & Business: ' + homeBusiness.hor + ' | ' + company + ' | ' + branch;
 
 			mails = _.uniq(mails);
-			if (mails.indexOf('mf@mobileonecontainers.com') != -1) {
+			if (mails.indexOf('ar@mobileonecontainers.com') != -1) {
 				mails.push("ar@mobileonecontainers.com")
+			}
+			if (mails.indexOf('nr@mobileonecontainers.com') != -1) {
 				mails.push("nr@mobileonecontainers.com")
 			}
 			sendMail(mails.join(', '), subject, body, true, null, null, null, 'mf@mobileonecontainers.com')

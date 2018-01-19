@@ -198,7 +198,7 @@ WorkOrder.prototype.update = function (query, workOrder, user, mail) {
 
 	delete workOrder.sendMail;
 
-	if (workOrder.serviceType && workOrder.serviceType._id == 2 && workOrder.quotes == 1 && (workOrder.fromQuotes || 0) == 0 && (workOrder.invoiceNumber || '' ) == '' ) {
+	if (workOrder.serviceType && workOrder.serviceType._id == 2 && workOrder.quotes == 1 && (workOrder.fromQuotes || 0) == 0 && (workOrder.invoiceNumber || '') == '') {
 		_this.insert(workOrder, user, mail)
 		return d.promise;
 	}
@@ -225,7 +225,7 @@ WorkOrder.prototype.update = function (query, workOrder, user, mail) {
 	_this.savePhotos(workOrder)
 		.then(function (photos) {
 			workOrder.photos = photos;
-			
+
 			return _this.crud.update(query, workOrder);
 		})
 		.then(function (obj) {
@@ -284,7 +284,7 @@ WorkOrder.prototype.sendWorkOrder = function (id, emails, user, mail, sendMail, 
 			for (var i = 0; i < users.data.length; i++) {
 				emails.push(users.data[i].account.email);
 			}
-			if (sendMail == true) {
+			if (sendMail == true || emails) {
 				return _this.createWorkOrder(id, user, true);
 			} else if (sendMailTech == true) {
 				return _this.createWorkOrderCrew(id, user, true);
@@ -315,8 +315,10 @@ WorkOrder.prototype.sendWorkOrder = function (id, emails, user, mail, sendMail, 
 					mail.sendWorkOrder(workOrder, emailTech, _this.dirname, file, fileName);
 					emailTech = [];
 				}
-				d.resolve(true);
+			} else if (emails) {
+				return mail.sendWorkOrder(workOrder, emails, _this.dirname, data.path, data.fileName);
 			}
+			d.resolve(true);
 		})
 		.then(function () {
 			d.resolve(true);
@@ -357,7 +359,7 @@ WorkOrder.prototype.sendWorkOrderUpdate = function (id, emails, user, mail) {
 			workOrder.fieldsChanged = [];
 			workOrder.addedItems = [];
 			workOrder.removedItems = [];
-			return _this.crud.update({_id: workOrder._id}, workOrder);
+			return _this.crud.update({ _id: workOrder._id }, workOrder);
 		})
 		.then(function () {
 			d.resolve(true);
