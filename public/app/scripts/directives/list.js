@@ -76,6 +76,13 @@ angular.module('MobileCRMApp')
 						{ _id: 7, description: 'Paid' },
 						{ _id: 8, description: 'Dry Run' }
 					];
+
+					$scope.ServiceTypeList = [
+						{ item: 'All' },		
+						{ item: 'Pickup' },
+						{ item: 'Delivery' },
+						{ item: 'Relocation' },
+					]
 				}
 
 				var today = new Date();
@@ -180,7 +187,7 @@ angular.module('MobileCRMApp')
 								if ($scope.fields[i].name == "pono") {
 									$scope.fields[i].limit = 50
 								} else {
-									$scope.fields[i].limit = 13 
+									$scope.fields[i].limit = 13
 								}
 							} else {
 								$scope.fields[i].limit = Math.ceil((cells[i].clientWidth) / 4);
@@ -508,7 +515,15 @@ angular.module('MobileCRMApp')
 					else if ($scope.params.invoiceType._id === 'smo')
 						$scope.params.filter["status._id"] = 8;
 
+					$scope.search();
+				}
 
+				$scope.filterByServiceType = function () {
+					if ($scope.params.ServiceTypeDor.item != "All"){
+						$scope.params.filter["ServiceType.item"] = $scope.params.ServiceTypeDor.item
+					}else{
+						delete 	$scope.params.filter["ServiceType.item"]
+					}
 					$scope.search();
 				}
 
@@ -550,6 +565,7 @@ angular.module('MobileCRMApp')
 				$scope.params.company = { _id: -1, description: "All Companies", order: 0 };
 				$scope.params.branch = { _id: -1, description: "All Branches" };
 				$scope.params.status = { _id: -1, description: "All" };
+				$scope.params.ServiceTypeDor = {item: "All"}
 			}
 		};
 	});

@@ -57,6 +57,11 @@
         <select class="form-control" ng-model="params.status" ng-options="type as type.description for type in statusList track by type._id"
           ng-change="filterByStatus()"></select>
       </div>
+      <div class="col-xs-12 col-md-2" ng-if="userData.role._id == 1 && (objeto.baseApiPath ==='/api/deliveryOrder')">
+        <label for="date">Service Type:</label>
+        <select class="form-control" ng-model="params.ServiceTypeDor" ng-options="type as type.item for type in ServiceTypeList track by type.item"
+          ng-change="filterByServiceType()"></select>
+      </div>
       <div class="col-xs-12 text-center" ng-if="!list.length">
         <br>
         <h4>
