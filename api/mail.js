@@ -53,10 +53,10 @@ var setAttachment = function (url, fileName) {
 var sendMail = function (to, subject, body, isHtmlBody, attached, cc, cco, replyTo) {
 	var deferred = q.defer();
 	mailOptions.to = to;
-//	mailOptions.cc = cc ? cc : '';
-//	mailOptions.cco = cco ? cco : '';
+	mailOptions.cc = cc ? cc : '';
+	mailOptions.cco = cco ? cco : '';
 	mailOptions.subject = subject;
-//	mailOptions.replyTo = replyTo || '';
+	mailOptions.replyTo = replyTo || '';
 	if (isHtmlBody) {
 		mailOptions.html = body;
 	} else {
