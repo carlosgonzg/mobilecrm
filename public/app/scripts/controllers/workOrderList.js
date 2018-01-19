@@ -24,7 +24,11 @@ angular.module('MobileCRMApp')
 			name: 'client.entity.fullName',
 			type: 'text'
 		}, {
-			title: 'Completed Date',
+			title: 'Created',
+			name: 'createdDate',
+			type: 'date'
+		}, {
+			title: 'Completed',
 			name: 'originalShipDate',
 			type: 'date'
 		}, {
@@ -32,7 +36,7 @@ angular.module('MobileCRMApp')
 			name: 'invoiceNumber',
 			type: 'text'
 		}, {
-			title: 'Work Order #',
+			title: 'Wor #',
 			name: 'wor',
 			type: 'text'
 		}, {
@@ -44,10 +48,10 @@ angular.module('MobileCRMApp')
 			name: 'pono',
 			type: 'text'
 		}, {
-			title: 'Total Amount',
+			title: 'Total',
 			name: 'total',
-			type : 'function',
-			function: function (elem){ return elem.total + (elem.client.company.taxes || 0) * elem.total}
+			type: 'function',
+			function: function (elem) { return elem.total + (elem.client.company.taxes || 0) * elem.total }
 		}, {
 			title: 'Status',
 			name: 'status.description',
@@ -69,6 +73,7 @@ angular.module('MobileCRMApp')
 			'pono',
 			'total',
 			'status.description',
+			'createdDate'
 		];
 
 		$scope.filterDate = 'date';
@@ -85,6 +90,10 @@ angular.module('MobileCRMApp')
 			name: 'client.entity.fullName',
 			type: 'text'
 		}, {
+			title: 'Created',
+			name: 'createdDate',
+			type: 'text'
+		}, {
 			title: 'Work Date',
 			name: 'originalShipDate',
 			type: 'date'
@@ -93,7 +102,7 @@ angular.module('MobileCRMApp')
 			name: 'invoiceNumber',
 			type: 'text'
 		}, {
-			title: 'Work Order #',
+			title: 'Wor #',
 			name: 'sor',
 			type: 'text'
 		}, {
@@ -107,8 +116,8 @@ angular.module('MobileCRMApp')
 		}, {
 			title: 'Total Amount',
 			name: 'total',
-			type : 'function',
-			function: function (elem){ return elem.total + (elem.client.company.taxes || 0) * elem.total}
+			type: 'function',
+			function: function (elem) { return elem.total + (elem.client.company.taxes || 0) * elem.total }
 		}, {
 			title: 'Status',
 			name: 'status.description',

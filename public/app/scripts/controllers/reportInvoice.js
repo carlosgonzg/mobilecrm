@@ -38,6 +38,7 @@ angular.module('MobileCRMApp')
 			{ _id: 'sor', description: 'Service Order' },
 			{ _id: 'wor', description: 'Work Order' },
 			{ _id: 'dor', description: 'Delivery Order' },
+			{ _id: 'tor', description: 'Setup & Tear Down' },
 			{ _id: 'smo', description: 'Service Miles Only' },
 			{ _id: 'All', description: 'All' }
 		];
@@ -421,6 +422,11 @@ angular.module('MobileCRMApp')
 				if (params.invoiceType == 'dor') {
 					query.$and.push({
 						'dor': { '$exists': true }
+					});
+				}
+				if (params.invoiceType == 'tor') {
+					query.$and.push({
+						'tor': { '$exists': true }
 					});
 				}
 				if (params.invoiceType == 'smo') {
