@@ -316,7 +316,7 @@ WorkOrder.prototype.sendWorkOrder = function (id, emails, user, mail, sendMail, 
 					emailTech = [];
 				}
 			} else if (emails) {
-				return mail.sendWorkOrder(workOrder, emails, _this.dirname, data.path, data.fileName);
+				return mail.sendWorkOrder(workOrder, emails, _this.dirname, data.path, data.fileName, true);
 			}
 			d.resolve(true);
 		})
@@ -353,7 +353,7 @@ WorkOrder.prototype.sendWorkOrderUpdate = function (id, emails, user, mail) {
 			//return _this.crudCompany.find({ _id: workOrder.client.company._id });
 		})
 		.then(function (data) {
-			return mail.sendWorkOrderUpdate(workOrder, emails, user, workOrder.client.company);
+			return mail.sendWorkOrderUpdate(workOrder, emails, user, workOrder.client.company, data.path, data.fileName);
 		})
 		.then(function (data) {
 			workOrder.fieldsChanged = [];

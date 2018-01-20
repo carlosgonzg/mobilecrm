@@ -76,7 +76,7 @@ var sendMail = function (to, subject, body, isHtmlBody, attached, cc, cco, reply
 			console.log('Message sent');
 			deferred.resolve(response);
 		}
-	});    
+	}); 
 	return deferred.promise;
 };
 
@@ -174,10 +174,10 @@ var sendServiceOrder = function (serviceOrder, mails, dirname) {
 			console.log('sending mail', subject);
 			mails = _.uniq(mails);
 			var newMails = ""
-			if (mails.indexOf('ar@mobileonecontainers.com') != -1) {
+			if (mails.indexOf('ar@mobileonecontainers.com') <= -1) {
 				mails.push("ar@mobileonecontainers.com")
 			}
-			if (mails.indexOf('nr@mobileonecontainers.com') != -1) {
+			if (mails.indexOf('nr@mobileonecontainers.com') <= -1) {
 				mails.push("nr@mobileonecontainers.com")
 			}
 			sendMail(mails.join(', '), subject, body, true, serviceOrderAttachments, null, null, 'mf@mobileonecontainers.com')
@@ -341,10 +341,10 @@ var sendServiceOrderUpdate = function (serviceOrder, mails, user) {
 
 			console.log('sending mail', subject);
 			mails = _.uniq(mails);
-			if (mails.indexOf('ar@mobileonecontainers.com') != -1) {
+			if (mails.indexOf('ar@mobileonecontainers.com') <= -1) {
 				mails.push("ar@mobileonecontainers.com")
 			}
-			if (mails.indexOf('nr@mobileonecontainers.com') != -1) {
+			if (mails.indexOf('nr@mobileonecontainers.com') <= -1) {
 				mails.push("nr@mobileonecontainers.com")
 			}
 			sendMail(mails.join(', '), subject, body, true, null, null, null, 'mf@mobileonecontainers.com')
@@ -394,10 +394,10 @@ var sendInvoice = function (invoice, mails, cc, file, fileName) {
 			mails = _.uniq(mails);
 
 			var newMails = ""
-			if (cc.indexOf('ar@mobileonecontainers.com') != -1) {
+			if (cc.indexOf('ar@mobileonecontainers.com') <= -1) {
 				cc.push("ar@mobileonecontainers.com")
 			}
-			if (cc.indexOf('nr@mobileonecontainers.com') != -1) {
+			if (cc.indexOf('nr@mobileonecontainers.com') <= -1) {
 				cc.push("nr@mobileonecontainers.com")
 			}
 			
@@ -489,10 +489,10 @@ var sendInvoiceUpdate = function (invoice, mails, user, file, fileName) {
 			subject += ' – MobileOne Restoration LLC';
 			var attachments = setAttachment(file, fileName);
 			mails = _.uniq(mails);
-			if (mails.indexOf('ar@mobileonecontainers.com') != -1) {
+			if (mails.indexOf('ar@mobileonecontainers.com') <= -1) {
 				mails.push("ar@mobileonecontainers.com")
 			}
-			if (mails.indexOf('nr@mobileonecontainers.com') != -1) {
+			if (mails.indexOf('nr@mobileonecontainers.com') <= -1) {
 				mails.push("nr@mobileonecontainers.com")
 			}
 			sendMail(mails.join(', '), subject, body, true, attachments, null, null, 'mf@mobileonecontainers.com')
@@ -541,7 +541,7 @@ exports.sendConfirmateMail = function (email, password) {
 	return token;
 };
 
-var sendWorkOrder = function (workOrder, mails, dirname, file, fileName) {
+var sendWorkOrder = function (workOrder, mails, dirname, file, fileName, buttonSend) {
 	var deferred = q.defer();
 	bringTemplateData('/email/templateWorkOrder.html')
 		.then(function (body) {
@@ -559,12 +559,16 @@ var sendWorkOrder = function (workOrder, mails, dirname, file, fileName) {
 			var attachments = setAttachment(file, fileName)
 			console.log('sending mail');
 			mails = _.uniq(mails);
-			if (mails.indexOf('ar@mobileonecontainers.com') != -1) {
-				mails.push("ar@mobileonecontainers.com")
-			}
-			if (mails.indexOf('nr@mobileonecontainers.com') != -1) {
-				mails.push("nr@mobileonecontainers.com")
-			}
+			if (buttonSend == false) {
+				if (mails.indexOf('ar@mobileonecontainers.com') <= -1) {
+					mails.push("ar@mobileonecontainers.com")
+				}
+				if (mails.indexOf('nr@mobileonecontainers.com') <= -1) {
+					mails.push("nr@mobileonecontainers.com")
+				}
+			} else {
+				mails = [mails[0]]
+			}	
 			sendMail(mails.join(', '), subject, body, true, attachments, null, null, 'mf@mobileonecontainers.com')
 				.then(function (response) {
 					console.log('DONE Sending Mail: ', response)
@@ -618,7 +622,7 @@ var sendWorkOrderDelete = function (workOrder, mails, dirname, file, fileName) {
 };
 
 
-var sendWorkOrderUpdate = function (workOrder, mails, user, company) {
+var sendWorkOrderUpdate = function (workOrder, mails, user, company, file, fileName) {
 	var deferred = q.defer();
 	bringTemplateData('/email/templateWorkOrderUpdate.html')
 		.then(function (body) {
@@ -688,10 +692,10 @@ var sendWorkOrderUpdate = function (workOrder, mails, user, company) {
 			var attachments = setAttachment(file, fileName)
 			console.log('sending mail', subject);			
 			mails = _.uniq(mails);
-			if (mails.indexOf('ar@mobileonecontainers.com') != -1) {
+			if (mails.indexOf('ar@mobileonecontainers.com') <= -1) {
 				mails.push("ar@mobileonecontainers.com")
 			}
-			if (mails.indexOf('nr@mobileonecontainers.com') != -1) {
+			if (mails.indexOf('nr@mobileonecontainers.com') <= -1) {
 				mails.push("nr@mobileonecontainers.com")
 			}
 			sendMail(mails.join(', '), subject, body, true, attachments, null, null, 'mf@mobileonecontainers.com')
@@ -789,10 +793,10 @@ var sendDeliveryOrder = function (deliveryOrder, mails, dirname) {
 			console.log('sending mail', subject);
 			mails = _.uniq(mails);
 			var newMails = ""
-			if (mails.indexOf('ar@mobileonecontainers.com') != -1) {
+			if (mails.indexOf('ar@mobileonecontainers.com') <= -1) {
 				mails.push("ar@mobileonecontainers.com")
 			}
-			if (mails.indexOf('nr@mobileonecontainers.com') != -1) {
+			if (mails.indexOf('nr@mobileonecontainers.com') <= -1) {
 				mails.push("nr@mobileonecontainers.com")
 			}
 			sendMail(mails.join(', '), subject, body, true, deliveryOrderAttachments, null, null, 'mf@mobileonecontainers.com')
@@ -910,10 +914,10 @@ var sendDeliveryOrderUpdate = function (deliveryOrder, mails, user, dirname) {
 			console.log('sending mail', subject);
 			mails = _.uniq(mails);
 			var newMails = ""
-			if (mails.indexOf('ar@mobileonecontainers.com') != -1) {
+			if (mails.indexOf('ar@mobileonecontainers.com') <= -1) {
 				mails.push("ar@mobileonecontainers.com")
 			}
-			if (mails.indexOf('nr@mobileonecontainers.com') != -1) {
+			if (mails.indexOf('nr@mobileonecontainers.com') <= -1) {
 				mails.push("nr@mobileonecontainers.com")
 			}
 			sendMail(mails.join(', '), subject, body, true, deliveryOrderAttachments, null, null, 'mf@mobileonecontainers.com')
@@ -1147,10 +1151,10 @@ var sendSetupTearDown = function (SetupTearDown, mails, dirname) {
 				}
 			}
 			mails = _.uniq(mails);
-			if (mails.indexOf('ar@mobileonecontainers.com') != -1) {
+			if (mails.indexOf('ar@mobileonecontainers.com') <= -1) {
 				mails.push("ar@mobileonecontainers.com")
 			}
-			if (mails.indexOf('nr@mobileonecontainers.com') != -1) {
+			if (mails.indexOf('nr@mobileonecontainers.com') <= -1) {
 				mails.push("nr@mobileonecontainers.com")
 			}
 			sendMail(mails.join(', '), subject, body, true, SetupTearDownAttachments, null, null, 'mf@mobileonecontainers.com')
@@ -1242,10 +1246,10 @@ var sendSetupTearDownUpdate = function (SetupTearDown, mails, user) {
 			var subject = 'Set Up & Tear Down: ' + SetupTearDown.tor + ' | ' + company + ' | ' + branch;
 
 			mails = _.uniq(mails);
-			if (mails.indexOf('ar@mobileonecontainers.com') != -1) {
+			if (mails.indexOf('ar@mobileonecontainers.com') <= -1) {
 				mails.push("ar@mobileonecontainers.com")
 			}
-			if (mails.indexOf('nr@mobileonecontainers.com') != -1) {
+			if (mails.indexOf('nr@mobileonecontainers.com') <= -1) {
 				mails.push("nr@mobileonecontainers.com")
 			}
 			sendMail(mails.join(', '), subject, body, true, null, null, null, 'mf@mobileonecontainers.com')
@@ -1373,10 +1377,10 @@ var sendhomeBusiness = function (homeBusiness, mails, dirname) {
 				}
 			}
 			mails = _.uniq(mails);
-			if (mails.indexOf('ar@mobileonecontainers.com') != -1) {
+			if (mails.indexOf('ar@mobileonecontainers.com') <= -1) {
 				mails.push("ar@mobileonecontainers.com")
 			}
-			if (mails.indexOf('nr@mobileonecontainers.com') != -1) {
+			if (mails.indexOf('nr@mobileonecontainers.com') <= -1) {
 				mails.push("nr@mobileonecontainers.com")
 			}
 			sendMail(mails.join(', '), subject, body, true, homeBusinessAttachments, null, null, 'mf@mobileonecontainers.com')
@@ -1466,10 +1470,10 @@ var sendhomeBusinessUpdate = function (homeBusiness, mails, user) {
 			var subject = 'Home & Business: ' + homeBusiness.hor + ' | ' + company + ' | ' + branch;
 
 			mails = _.uniq(mails);
-			if (mails.indexOf('ar@mobileonecontainers.com') != -1) {
+			if (mails.indexOf('ar@mobileonecontainers.com') <= -1) {
 				mails.push("ar@mobileonecontainers.com")
 			}
-			if (mails.indexOf('nr@mobileonecontainers.com') != -1) {
+			if (mails.indexOf('nr@mobileonecontainers.com') <= -1) {
 				mails.push("nr@mobileonecontainers.com")
 			}
 			sendMail(mails.join(', '), subject, body, true, null, null, null, 'mf@mobileonecontainers.com')
