@@ -303,8 +303,11 @@
 							Total
 						</th>
 						<th width="10%">
-							<button type="button" class="btn btn-sm btn-primary update" ng-disabled="serviceQuotes.dor" ng-click="addItem()">
+							<button type="button" class="btn btn-sm btn-primary update" ng-disabled="serviceQuotes.dor" ng-click="addItem()" data-toggle="tooltip" title="Add Items">
 								<i class="fa fa-plus"></i>
+							</button>
+							<button type="button" class="btn btn-sm btn-primary update" ng-click="addItemCollection()" ng-disabled="!serviceQuotes.client._id" data-toggle="tooltip" title="Add Items Collection">
+								<i class="fa fa-list"></i>
 							</button>
 						</th>
 					</tr>

@@ -35,7 +35,21 @@ var createInvoiceBody = function (obj, company, branch) {
 	//Company
 
 	body = body.replace(/<companyName>/g, company.entity.name || '');
-	body = body.replace(/<companyAddress>/g, company.address.address1 || '');
+
+	if (company._id == 21) {
+		var addressWilliams = ""
+
+		if (branch._id == 31) {  //SI ES ORLANDO
+			addressWilliams = "Attn: Branch 12140"
+		}
+		if (branch._id == 32) { //SI ES FORT. LAUDERDALE
+			addressWilliams = "Attn: Branch 12110"
+		}
+		body = body.replace(/<companyAddress>/g, addressWilliams + '<br />P.O. Box 17552<br />Baltimore, MD 21297-1552');
+	} else {
+		body = body.replace(/<companyAddress>/g, company.address.address1 || '');
+	}
+
 	body = body.replace(/<companyState>/g, (company.address.state.description ? (company.address.state.description + ' ' + company.address.zipcode) || '' : ''));
 	//Cliente
 	body = body.replace(/<clientName>/g, obj.client.entity.fullName || '');

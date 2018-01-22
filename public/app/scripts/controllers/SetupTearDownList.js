@@ -8,10 +8,10 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-.controller('SetupTearDownListCtrl', function ($scope, $rootScope, $location, SetupTearDown) {
-	$scope.SetupTearDown = SetupTearDown;
+	.controller('SetupTearDownListCtrl', function ($scope, $rootScope, $location, SetupTearDown) {
+		$scope.SetupTearDown = SetupTearDown;
 
-	$scope.fields = [{
+		$scope.fields = [{
 			title: 'Company',
 			name: 'client.company.entity.name',
 			type: 'text'
@@ -40,14 +40,18 @@ angular.module('MobileCRMApp')
 			name: 'unitno',
 			type: 'text'
 		}, {
+			title: 'Unit Size',
+			name: 'unitSize',
+			type: 'text'
+		}, {
 			title: 'PO #',
 			name: 'pono',
 			type: 'text'
 		}, {
 			title: 'Total Amount',
 			name: 'total',
-			type : 'function',
-			function: function (elem){ return elem.total + (elem.client.company.taxes || 0) * elem.total}
+			type: 'function',
+			function: function (elem) { return elem.total + (elem.client.company.taxes || 0) * elem.total }
 		}, {
 			title: 'Status',
 			name: 'status.description',
@@ -55,24 +59,25 @@ angular.module('MobileCRMApp')
 		}
 		];
 
-	$scope.search = [
-		'_id',
-		'client.company.entity.name',
-		'client.branch.name',
-		'client.entity.fullName',
-		'originalShipDate',
-		'invoiceNumber',
-		'tor',
-		'unitno',
-		'pono',
-		'total',
-		'status.description',
-		'client.branch',
-		'client.company',
-	];
+		$scope.search = [
+			'_id',
+			'client.company.entity.name',
+			'client.branch.name',
+			'client.entity.fullName',
+			'originalShipDate',
+			'invoiceNumber',
+			'tor',
+			'unitno',
+			'pono',
+			'total',
+			'status.description',
+			'client.branch',
+			'client.company',
+			'unitSize'
+		];
 
-  $scope.filterDate = 'date';
-  $scope.excelFields = [{
+		$scope.filterDate = 'date';
+		$scope.excelFields = [{
 			title: 'Company',
 			name: 'client.company.entity.name',
 			type: 'text'
@@ -101,13 +106,17 @@ angular.module('MobileCRMApp')
 			name: 'unitno',
 			type: 'text'
 		}, {
+			title: 'Unit Size',
+			name: 'unitSize',
+			type: 'text'
+		}, {
 			title: 'PO #',
 			name: 'pono',
 			type: 'text'
 		}, {
 			title: 'Total Amount',
 			name: 'total',
-			type : 'currency'
+			type: 'currency'
 		}, {
 			title: 'Status',
 			name: 'status.description',
@@ -115,9 +124,9 @@ angular.module('MobileCRMApp')
 		}
 		];
 
-	$scope.filter = $rootScope.userData.role._id == 1 || $rootScope.userData.role._id == 5 ? { } : $rootScope.userData.branch && $rootScope.userData.branch._id ?  { 'client.branch._id': $rootScope.userData.branch._id } : { 'client._id': $rootScope.userData._id };
+		$scope.filter = $rootScope.userData.role._id == 1 || $rootScope.userData.role._id == 5 ? {} : $rootScope.userData.branch && $rootScope.userData.branch._id ? { 'client.branch._id': $rootScope.userData.branch._id } : { 'client._id': $rootScope.userData._id };
 
-	$scope.createNew = function () {
-		$location.path('SetupTearDown');
-	};
-});
+		$scope.createNew = function () {
+			$location.path('SetupTearDown');
+		};
+	});
