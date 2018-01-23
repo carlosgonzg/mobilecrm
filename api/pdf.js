@@ -39,7 +39,7 @@ var createInvoiceBody = function (obj, company, branch) {
 	if (company._id == 21) {
 		var addressWilliams = ""
 
-		if (branch._id == 31) {  //SI ES ORLANDO
+		if ( branch._id == 31) {  //SI ES ORLANDO
 			addressWilliams = "Attn: Branch 12140"
 		}
 		if (branch._id == 32) { //SI ES FORT. LAUDERDALE
@@ -81,7 +81,7 @@ var createInvoiceBody = function (obj, company, branch) {
 		body = body.replace(/<clientAddress>/g, addressfrom.replace(/, , /g, ""));
 		body = body.replace(/<clientState>/g, AddRoute.replace(/, , /g, ""));
 
-		if (obj.ServiceType.item == "Pickup" || obj.ServiceType.item == "Delivery") {
+		if (obj.ServiceType && (obj.ServiceType.item == "Pickup" || obj.ServiceType.item == "Delivery")) {
 			projectDesc = obj.ServiceType.item
 			if (obj.Relocation) {
 				projectDesc = projectDesc + " and Relocation "
@@ -100,8 +100,6 @@ var createInvoiceBody = function (obj, company, branch) {
 		body = body.replace(/<clientAddress>/g, addressFrom ? "ADDRESS: " + addressFrom : "");
 		body = body.replace(/<clientState>/g, addressTo);
 	}
-
-
 
 	body = body.replace(/<clientPhone>/g, obj.phone.number || '');
 	body = body.replace(/<clientMail>/g, obj.client.account.email || '');

@@ -68,7 +68,7 @@ var sendMail = function (to, subject, body, isHtmlBody, attached, cc, cco, reply
 	else {
 		mailOptions.attachments = [];
 	}
-   	smtpTransport.sendMail(mailOptions, function (error, response) {
+	smtpTransport.sendMail(mailOptions, function (error, response) {
 		if (error) {
 			console.log(error);
 			deferred.reject(error);
@@ -76,7 +76,7 @@ var sendMail = function (to, subject, body, isHtmlBody, attached, cc, cco, reply
 			console.log('Message sent');
 			deferred.resolve(response);
 		}
-	}); 
+	});
 	return deferred.promise;
 };
 
@@ -394,13 +394,15 @@ var sendInvoice = function (invoice, mails, cc, file, fileName) {
 			mails = _.uniq(mails);
 
 			var newMails = ""
-			if (cc.indexOf('ar@mobileonecontainers.com') <= -1) {
-				cc.push("ar@mobileonecontainers.com")
+			if (invoice.saveSendTo == false) {
+				if (cc.indexOf('ar@mobileonecontainers.com') <= -1) {
+					cc.push("ar@mobileonecontainers.com")
+				}
+				if (cc.indexOf('nr@mobileonecontainers.com') <= -1) {
+					cc.push("nr@mobileonecontainers.com")
+				}
 			}
-			if (cc.indexOf('nr@mobileonecontainers.com') <= -1) {
-				cc.push("nr@mobileonecontainers.com")
-			}
-			
+
 			sendMail(mails.join(', '), subject, body, true, attachments, cc.join(', '), null, 'mf@mobileonecontainers.com')
 				.then(function (response) {
 					console.log('DONE Sending Mail: ', response)
@@ -568,7 +570,7 @@ var sendWorkOrder = function (workOrder, mails, dirname, file, fileName, buttonS
 				}
 			} else {
 				mails = [mails[0]]
-			}	
+			}
 			sendMail(mails.join(', '), subject, body, true, attachments, null, null, 'mf@mobileonecontainers.com')
 				.then(function (response) {
 					console.log('DONE Sending Mail: ', response)
@@ -690,7 +692,7 @@ var sendWorkOrderUpdate = function (workOrder, mails, user, company, file, fileN
 			var branch = workOrder && workOrder.client && workOrder.client.branch ? '' + workOrder.client.branch.name : '' + workOrder.client.entity.fullName;
 			var subject = 'Work Order: ' + workOrder.wor + ' | ' + companyS + ' | ' + branch;
 			var attachments = setAttachment(file, fileName)
-			console.log('sending mail', subject);			
+			console.log('sending mail', subject);
 			mails = _.uniq(mails);
 			if (mails.indexOf('ar@mobileonecontainers.com') <= -1) {
 				mails.push("ar@mobileonecontainers.com")
@@ -1019,7 +1021,16 @@ var sendQuotes = function (serviceQuotes, mails, cc, file, fileName) {
 			var subject = "Estimate : " + serviceQuotes.quotesNumber + ' – MobileOne Restoration LLC';
 			mails = _.uniq(mails);
 
-			sendMail(mails.join(', '), subject, body, true, attachments, 'mf@mobileonecontainers.com, ar@mobileonecontainers.com, nr@mobileonecontainers.com', null, 'mf@mobileonecontainers.com')
+			if (serviceQuotes.saveSendTo == false) {
+				if (mails.indexOf('ar@mobileonecontainers.com') <= -1) {
+					mails.push("ar@mobileonecontainers.com")
+				}
+				if (mails.indexOf('nr@mobileonecontainers.com') <= -1) {
+					mails.push("nr@mobileonecontainers.com")
+				}
+			}
+
+			sendMail(mails.join(', '), subject, body, true, attachments, null, null, 'mf@mobileonecontainers.com')
 				.then(function (response) {
 					console.log('DONE Sending Mail: ', response)
 					deferred.resolve(response);

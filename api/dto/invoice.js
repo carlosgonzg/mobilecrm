@@ -529,7 +529,13 @@ Invoice.prototype.getInvoice = function (id, res) {
 				res.contentType("application/pdf");
 				res.send(data);
 			});
+		}).catch(function (err) {
+			d.reject({
+				result: 'Not ok',
+				errors: err
+			});
 		});
+	
 };
 
 Invoice.prototype.getMonthlyStatement = function (params, user) {
