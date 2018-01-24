@@ -498,6 +498,7 @@ Invoice.prototype.createInvoice = function (id) {
 	var invoice = {};
 	var company = {};
 	var _this = this;
+	var branch = {}
 	var query = {
 		_id: id
 	};
@@ -506,9 +507,17 @@ Invoice.prototype.createInvoice = function (id) {
 			invoice = result.data[0];
 			return _this.crudCompany.find({ _id: invoice.client.company._id });
 		})
+		//busco compañia
+		.then(function (companyS) {
+			company = companyS.data[0];
+			return invoice.client.branch && invoice.client.branch._id ? _this.crudBranch.find({ _id: invoice.client.branch._id }) : q.when({ data: [{ name: 'None' }] });
+		})
+		//busco branch
+		.then(function (branchS) {
+			branch = branchS.data[0];
+		})
 		.then(function (result) {
-			company = result.data[0];
-			return pdf.createInvoice(invoice, company);
+			return pdf.createInvoice(invoice, company, branch);
 		})
 		.then(function (data) {
 			d.resolve(data);
