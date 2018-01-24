@@ -9,6 +9,13 @@
  */
 angular.module('MobileCRMApp')
 	.controller('InvoiceCtrl', function ($scope, $rootScope, $location, toaster, $window, User, invoice, statusList, statusDelivery, Item, ServiceOrder, WorkOrder, DeliveryOrder, dialogs, Invoice, Company, companies, Driver, ServiceQuotes, SetupTearDown) {
+			if ($rootScope.userData.role._id == 3){
+if ( $rootScope.userData.company.entity.name != invoice.client.company.entity.name){
+$location.path("/noaccess")
+	return
+}
+		}
+
 		$scope.invoice = invoice;
 		$scope.items = [];
 		$scope.waiting = false;
@@ -27,6 +34,8 @@ angular.module('MobileCRMApp')
 		$scope.listCompany = companies.data;
 		$scope.statusDelivery = statusDelivery;
 		$scope.Math = $window.Math;
+
+
 
 		$scope.list = [
 			{ item: 'Pickup' },
@@ -390,7 +399,13 @@ angular.module('MobileCRMApp')
 			return '';
 		};
 		$scope.isDisabled = function () {
-			return $rootScope.userData.role._id != 1 && $scope.invoice.status._id == 3;
+			if ($rootScope.userData.role._id == 1) {
+				return false
+			} else {
+				return true
+			}
+
+			//return $rootScope.userData.role._id != 1 && $scope.invoice.status._id == 3;
 		};
 
 		$scope.save = function (sendTotech) {

@@ -234,7 +234,7 @@
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
 							<label for="pono">PO #</label>
-							<input type="text" class="form-control" ng-model="serviceOrder.pono" ng-class="isChanged('PO #')" ng-change="changed('PO #')"
+							<input type="text" class="form-control" id="txtpono" name="txtpono" ng-model="serviceOrder.pono" ng-class="isChanged('PO #')" ng-change="changed('PO #')"
 							 ng-disabled="userData.role._id!=1 && userData.role._id!=3">
 						</div>
 					</div>
