@@ -371,7 +371,7 @@ var sendInvoice = function (invoice, mails, cc, file, fileName) {
 			var url = config.SERVER_URL;
 			body = body.replace('<emailUrl>', url);
 			body = body.replace('<clientName>', invoice.client.entity.fullName);
-			body = body.replace('<pono>', invoice.pono && invoice.pono != ''? 'With PO Number: ' + invoice.pono : 'Without PO Number. Please provide PO Number for this Invoice');
+			body = body.replace('<pono>', invoice.pono && invoice.pono != '' && invoice.pono != ' '? 'With PO Number: ' + invoice.pono : 'Without PO Number. Please provide PO Number for this Invoice');
 			body = body.replace('<invoiceNumber>', invoice.invoiceNumber);
 			body = body.replace('<confirm>', !invoice.pono ? '' : 'Please confirm as received.<br/><br/>I wait for your comment.<br/>');
 
@@ -473,7 +473,7 @@ var sendInvoiceUpdate = function (invoice, mails, user, file, fileName) {
 			body = body.replace('<emailUrl>', url);
 			body = body.replace('<clientName>', invoice.client.entity.fullName);
 			body = body.replace('<invoiceNumber>', invoice.invoiceNumber);
-			body = body.replace('<pono>', invoice.pono && invoice.pono != '' ? 'With PO Number: ' + invoice.pono : 'Without PO Number. Please provide PO Number for this Invoice.');
+			body = body.replace('<pono>', invoice.pono && invoice.pono != '' && invoice.pono != ' '? 'With PO Number: ' + invoice.pono : 'Without PO Number. Please provide PO Number for this Invoice.');
 
 			var companyName = "";
 
