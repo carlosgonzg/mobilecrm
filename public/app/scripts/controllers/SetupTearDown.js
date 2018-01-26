@@ -443,6 +443,33 @@ angular.module('MobileCRMApp')
 			} else {
 				$scope.SetupTearDown.sendMail = false;
 			}
+			if ($scope.SetupTearDown.tor == '') {
+				toaster.error('The Set Up # can not be empty');
+				angular.element('#tor').css('border', '1px solid red');
+				return
+			} else {
+				angular.element('#tor').css('border', '1px #CCCCCC solid');
+			}
+			if ($scope.SetupTearDown.unitSize == undefined || $scope.SetupTearDown.unitSize == '') {
+				toaster.error('The Unit Size can not be empty');
+				angular.element('#unitSize').css('border', '1px solid red');
+				return
+			} else {
+				angular.element('#unitSize').css('border', '1px #CCCCCC solid');
+			}
+			
+			var had = false
+			for (let index = 0; index < $scope.SetupTearDown.contacts.length; index++) {
+				if ( $scope.SetupTearDown.contacts[index] && $scope.SetupTearDown.contacts[index].name !=''){
+					had = true
+					break
+				}
+			}
+			if (had == false){
+				toaster.error('You must add a contact.');
+				return
+			}
+
 			if (sendTotech) {
 				if ($scope.crewHeaderAdded.length == 0) {
 					toaster.error('The Setup & TearDown couldn\'t be saved, please check if some required field is empty');
@@ -666,6 +693,7 @@ angular.module('MobileCRMApp')
 						_.map(result.data, function (obj) {
 							$scope.Invoice = obj
 							$scope.Invoice.originalShipDate = $scope.SetupTearDown.originalShipDate
+							$scope.Invoice.pono = $scope.SetupTearDown.pono
 							$scope.Invoice.save()
 						});
 					})

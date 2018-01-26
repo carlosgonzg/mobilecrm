@@ -454,6 +454,8 @@ angular.module('MobileCRMApp')
 						_.map(result.data, function (obj) {
 							$scope.Invoice = obj
 							$scope.Invoice.originalShipDate = $scope.workOrder.originalShipDate
+							$scope.Invoice.pono = $scope.workOrder.pono
+							$scope.Invoice.isono = $scope.workOrder.isono
 							$scope.Invoice.save()
 						});
 					})

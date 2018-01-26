@@ -362,7 +362,7 @@ angular.module('MobileCRMApp')
 					$scope.LoadItemDefault();
 				}
 			}
-console.log(status)
+			console.log(status)
 			if (field == 'status') {
 				$scope.CommentProyect()
 			}
@@ -1163,16 +1163,30 @@ console.log(status)
 					.then(function (result) {
 						_.map(result.data, function (obj) {
 							$scope.Invoice = obj
-							$scope.Invoice.status = $scope.DeliveryOrder.status		
+							$scope.Invoice.status = $scope.DeliveryOrder.status
 							$scope.Invoice.originalShipDate = $scope.DeliveryOrder.originalShipDate
+							$scope.Invoice.pono = $scope.DeliveryOrder.pono
 							$scope.Invoice.save()
 						});
 					})
 			}
 		}
 
-		$scope.changeRelocation = function (relocation) {
-			if ($scope.DeliveryOrder.Relocation == false || relocation == false) {
+		$scope.changeRelocation = function () {		
+			if (DeliveryOrder.ServiceType.item == 'Relocation' || $scope.DeliveryOrder.Relocation == true) {
+				for (var row = 0; row < $scope.DeliveryOrder.items.length; row++) {
+					var id = $scope.DeliveryOrder.items[row]._id;
+					if (id == 839) {
+						return
+					}
+				}
+				new Item().filter({ _id: 839 })
+					.then(function (result) {
+						_.map(result.data, function (obj) {
+							$scope.DeliveryOrder.items.unshift(obj)
+						});
+					})
+			} else {
 				for (var row = 0; row < $scope.DeliveryOrder.items.length; row++) {
 					var id = $scope.DeliveryOrder.items[row]._id;
 					if (id == 839) {
@@ -1180,13 +1194,6 @@ console.log(status)
 						return
 					}
 				}
-			} else {
-				new Item().filter({ _id: 839 })
-					.then(function (result) {
-						_.map(result.data, function (obj) {
-							$scope.DeliveryOrder.items.unshift(obj)
-						});
-					})
 			}
 		}
 

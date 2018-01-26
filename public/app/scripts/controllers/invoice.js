@@ -9,11 +9,11 @@
  */
 angular.module('MobileCRMApp')
 	.controller('InvoiceCtrl', function ($scope, $rootScope, $location, toaster, $window, User, invoice, statusList, statusDelivery, Item, ServiceOrder, WorkOrder, DeliveryOrder, dialogs, Invoice, Company, companies, Driver, ServiceQuotes, SetupTearDown) {
-			if ($rootScope.userData.role._id == 3){
-if ( $rootScope.userData.company.entity.name != invoice.client.company.entity.name){
-$location.path("/noaccess")
-	return
-}
+		if ($rootScope.userData.role._id == 3) {
+			if ($rootScope.userData.company.entity.name != invoice.client.company.entity.name) {
+				$location.path("/noaccess")
+				return
+			}
 		}
 
 		$scope.invoice = invoice;
@@ -608,13 +608,14 @@ $location.path("/noaccess")
 
 		$scope.updateDoc = function (sendTotech) {
 			if ($scope.invoice.typeTruck == undefined && $scope.invoice.sor) {
- 				new ServiceOrder().filter({ "sor": $scope.invoice.sor })
+				new ServiceOrder().filter({ "sor": $scope.invoice.sor })
 					.then(function (result) {
 						_.map(result.data, function (obj) {
 							$scope.ServiceOrder = obj
 							$scope.ServiceOrder.status = $scope.invoice.status
 							$scope.ServiceOrder.sendTotech = sendTotech
 							$scope.ServiceOrder.statusTech = $scope.statusTech;
+							$scope.ServiceOrder.isono = $scope.invoice.isono
 							$scope.ServiceOrder.sendMail = false;
 							$scope.ServiceOrder.quotes = 0
 						});
@@ -623,7 +624,7 @@ $location.path("/noaccess")
 							$scope.ServiceOrder.status.description = 'Completed'
 						}
 						$scope.ServiceOrder.save()
-					}) 
+					})
 			}
 			if ($scope.invoice.typeTruck == undefined && $scope.invoice.wor) {
 				new WorkOrder().filter({ "wor": $scope.invoice.wor })
@@ -633,6 +634,7 @@ $location.path("/noaccess")
 							$scope.WorkOrder.status = $scope.invoice.status
 							$scope.WorkOrder.sendTotech = sendTotech
 							$scope.WorkOrder.statusTech = $scope.statusTech;
+							$scope.WorkOrder.isono = $scope.invoice.isono
 							$scope.WorkOrder.sendMail = false;
 							$scope.WorkOrder.quotes = 0
 						});
@@ -649,6 +651,7 @@ $location.path("/noaccess")
 						_.map(result.data, function (obj) {
 							$scope.DeliveryOrder = obj
 							$scope.DeliveryOrder.status = $scope.invoice.status
+							$scope.DeliveryOrder.isono = $scope.invoice.isono
 							$scope.DeliveryOrder.sendMail = false;
 							$scope.DeliveryOrder.invoiceId = $scope.invoice._id
 						});
