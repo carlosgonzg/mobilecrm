@@ -215,7 +215,7 @@ angular.module('MobileCRMApp')
 			for (var i = 0; i < this.items.length; i++) {
 				total += (this.items[i].price * this.items[i].quantity)
 			}
-			return (total * taxes) / 100
+			return (total * taxes)
 		};
 
 		return ServiceQuotes;
