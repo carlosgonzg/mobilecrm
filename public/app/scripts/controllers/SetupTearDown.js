@@ -457,7 +457,14 @@ angular.module('MobileCRMApp')
 			} else {
 				angular.element('#unitSize').css('border', '1px #CCCCCC solid');
 			}
-			
+
+			if ($scope.SetupTearDown.typeItem.item == undefined) {
+				toaster.error('The Service Type can not be empty');
+				angular.element('#category').css('border', '1px solid red');
+				return
+			} else {
+				angular.element('#category').css('border', '1px #CCCCCC solid');
+			}
 			var had = false
 			for (let index = 0; index < $scope.SetupTearDown.contacts.length; index++) {
 				if ( $scope.SetupTearDown.contacts[index] && $scope.SetupTearDown.contacts[index].name !=''){
