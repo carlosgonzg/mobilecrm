@@ -39,7 +39,7 @@ var createInvoiceBody = function (obj, company, branch) {
 	if (company._id == 21) {
 		var addressWilliams = ""
 
-		if ( branch._id == 31) {  //SI ES ORLANDO
+		if (branch._id == 31) {  //SI ES ORLANDO
 			addressWilliams = "Attn: Branch 12140"
 		}
 		if (branch._id == 32) { //SI ES FORT. LAUDERDALE
@@ -55,7 +55,7 @@ var createInvoiceBody = function (obj, company, branch) {
 	body = body.replace(/<clientName>/g, obj.client.entity.fullName || '');
 
 	var projectDesc = ""
-
+	var dorDesc = "";
 	// body = body.replace(/<clientState>/g, obj.sor ? (obj.siteAddress.state.description + ' ' + obj.siteAddress.zipcode || '') : (company.address.state.description + ' ' + company.address.zipcode || ''));
 	if (obj.dor) {
 
@@ -107,9 +107,9 @@ var createInvoiceBody = function (obj, company, branch) {
 	if (projectDesc != "") {
 		body = body.replace(/<comment>/g, (obj.comment || '') + ' ' + projectDesc);
 	} else {
-		body = body.replace(/<comment>/g, obj.comment || '');	
+		body = body.replace(/<comment>/g, obj.comment || '');
 	}
-	
+
 	body = body.replace(/<pono>/g, obj.pono || '');
 	body = body.replace(/<unitno>/g, obj.unitno || '');
 	body = body.replace(/<isono>/g, obj.isono || '');
@@ -121,6 +121,23 @@ var createInvoiceBody = function (obj, company, branch) {
 	var tableItems = '';
 	for (var i = 0; i < obj.items.length; i++) {
 		var item = obj.items[i];
+		var priceUnit = 0;
+		var quantity = 0;
+
+		if (obj.dor) {
+			if (company.perHours && company.perHours == true) {
+				quantity = (item.quantity || 1)
+			} else {
+				quantity = 1;				
+			}
+			var res = getTotalDelivery(company, obj.items, obj.typeTruck)
+			priceUnit = res[0]
+			dorDesc = res[1] + '<br/>'
+		} else {
+			priceUnit = item.price
+			quantity = item.quantity || 1;
+		}
+
 		tableItems += '<tr>';
 		tableItems += '<td style="text-align: center;border: thin solid black; border-top: none; border-right: none;">';
 		tableItems += item.code || '';
@@ -132,25 +149,39 @@ var createInvoiceBody = function (obj, company, branch) {
 		tableItems += item.part || '';
 		tableItems += '</td>';
 		tableItems += '<td style="text-align: right;border: thin solid black; border-top: none; border-right: none;">';
-		tableItems += numeral(item.price || 0).format('$0,0.00');
+	
+		if (obj.dor && company.perHours && company.perHours == true) {
+			var costPerHours = 0;
+			if (obj.typeTruck._id == 1) {
+				costPerHours = company.costPerHours;
+			} else {
+				costPerHours = company.smallTruck;
+			}
+			tableItems += numeral(costPerHours || 0).format('$0,0.00');
+		} else {
+			tableItems += numeral(priceUnit || 0).format('$0,0.00');
+		}
+		
 		tableItems += '</td>';
 		tableItems += '<td style="text-align: right;border: thin solid black; border-top: none; border-right: none;">';
-		tableItems += item.quantity || 1;
+		tableItems += quantity;
 		tableItems += '</td>';
 		tableItems += '<td style="text-align: right;border: thin solid black; border-top: none;">';
+
 		if (obj.dor) {
-			tableItems += numeral(item.price || 1).format('$0,0.00');
+			tableItems += numeral(priceUnit || 1).format('$0,0.00');
 		} else {
 			tableItems += numeral((item.price || 0) * (item.quantity || 1)).format('$0,0.00');
+			total += (item.price || 0) * (item.quantity || 1);
 		}
 		tableItems += '</td>';
-		total += (item.price || 0) * (item.quantity || 1);
 		tableItems += '</tr>';
 	}
 	body = body.replace('<tableItems>', tableItems || '');
 
 	if (obj.dor) {
 		total = obj.total;
+		body = body.replace(/<dorDesc>/g, dorDesc);
 	}
 
 	total = total || 0;
@@ -749,12 +780,84 @@ var createQuotesBody = function (obj, company, branch) {
 	body = body.replace('<date60>', moment(obj.date, 'MM/DD/YYYY').add(90, 'days').format('MM/DD/YYYY'));
 
 	body = body.replace('<taxesPorcentage>', Math.round(taxes) || 0);
-	body = body.replace('<taxes>', numeral(((obj.total  * taxes) / 100)).format('$0,0.00'));
+	body = body.replace('<taxes>', numeral(((obj.total * taxes) / 100)).format('$0,0.00'));
 	body = body.replace('<total>', numeral(total).format('$0,0.00'))
 	body = body.replace('<total15>', numeral(total * 1.05).format('$0,0.00'))
 	body = body.replace('<total30>', numeral(total * 1.10).format('$0,0.00'));
 	body = body.replace('<total60>', numeral(total * 1.15).format('$0,0.00'));
 	return body;
+};
+
+
+var getTotalDelivery = function (comp, items, typeTruck) {
+	var total = 0;
+	//sumo el total
+	var InitPrice = 0;
+	var initialMile = 30;
+	var costPerMile = 3.25;
+	var costPerHours = 0;
+	var dorDesc = "";
+
+	for (var index = 0; index < items.length; index++) {
+		InitPrice = items[index].price;
+
+		if (comp == undefined) { //SI NO TIENE LA CONFIGURACION
+			var miles = (items[index].quantity || 1);;
+			
+			if (items[index]._id == 805) {
+				if (miles > 30) {
+					total += (miles - initialMile) * costPerMile + (items[index].price)
+					dorDesc = "Total miles : " + miles + "<br/>First " + 30 + " miles : $" + items[index].price + "; Additional miles : $3.25 each"; 
+				} else {
+					total += items[index].price
+					dorDesc = "Total miles : " + miles + "<br/>First " + 30 + " miles : $" + items[index].price + "; Additional miles : $3.25 each"; 
+				}
+			} else {
+				total += (items[index].price * (miles || 1));
+			}			
+		}
+		if (items[index]._id == 806 || items[index]._id == 805) {
+			if (comp.perHours != undefined) {
+				if (comp.perHours == false && comp.initialCost != undefined) {
+					InitPrice = comp.initialCost;
+					initialMile = comp.initialMile;
+					costPerMile = comp.costPerMile;
+				} else {
+					if (typeTruck._id == 1) {
+						costPerHours = comp.costPerHours;
+					} else {
+						costPerHours = comp.smallTruck;
+					}
+				}
+			}
+		}
+		if (items[index]._id == 805 && costPerHours == 0) {
+			if (items[index].quantity <= initialMile) {
+				total += InitPrice;
+				items[index].price = InitPrice;
+				dorDesc = "Total miles : " + items[index].quantity + "<br/>First " + initialMile + " miles : $" + InitPrice + "; Additional miles : $" + costPerMile + " each";
+			} else {
+				var minMiles = initialMile;
+				var miles = items[index].quantity;
+				var cosTotalmiles = (miles - minMiles) * costPerMile + (InitPrice)
+
+				dorDesc = "Total miles : " + miles + "<br/>First " + minMiles + " miles : $" + InitPrice + "; Additional miles : $" + costPerMile + " each";
+
+				total += cosTotalmiles
+				items[index].price = cosTotalmiles
+
+				if (items[index].price == 0) {
+					var RInitPrice = Math.round(InitPrice * 100) / 100
+					items[index].price = RInitPrice
+				}
+			}
+		} else if (items[index]._id == 806 && costPerHours > 0) {
+			total += (costPerHours * (items[index].quantity || 1));
+		} else {
+			total += (items[index].price * (items[index].quantity || 1));
+		}
+	}
+	return [total, dorDesc]
 };
 
 exports.createInvoice = createInvoice;

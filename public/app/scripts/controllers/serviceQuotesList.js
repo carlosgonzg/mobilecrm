@@ -50,7 +50,7 @@ angular.module('MobileCRMApp')
 			title: 'Total Amount',
 			name: 'total',
 			type: 'function',
-			function: function (elem) { return elem.taxes ? (((elem.taxes * elem.total) / 100) + elem.total) : elem.total }
+			function: function (elem) { return elem.taxes ? ((elem.taxes * elem.total) + elem.total) : elem.total }
 		}
 		];
 
