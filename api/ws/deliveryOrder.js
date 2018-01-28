@@ -18,7 +18,7 @@ module.exports = function (prefix, app, mail, dirname) {
 
 	app.post(prefix + '/download', function (req, res) {
 		var deliveryOrder = new DeliveryOrder(app.db, req.user, dirname);
-		deliveryOrder.getServiceOrder(req.body.id, res, req.user)
+		deliveryOrder.getDeliveryOrder(req.body.id, res, req.user)
 	});
 
 	app.post(prefix + '/report', function (req, res) {
@@ -28,7 +28,7 @@ module.exports = function (prefix, app, mail, dirname) {
 
 	app.post(prefix + '/send', function (req, res) {
 		var deliveryOrder = new DeliveryOrder(app.db, req.user, dirname);
-		deliveryOrder.sendServiceOrder(req.body.id, req.user, mail)
+		deliveryOrder.sendDeliveryOrder(req.body.id, req.user, mail)
 			.then(util.success(res), util.error(res));
 	});
 
