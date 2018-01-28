@@ -409,7 +409,7 @@ DeliveryOrder.prototype.update = function (query, deliveryOrder, user, mail) {
 	return d.promise;
 };
 
-DeliveryOrder.prototype.sendDeliveryOrder = function (id, user, mail, sendMail) {
+DeliveryOrder.prototype.sendDeliveryOrder = function (id, user, mail, emails) {
 	var d = q.defer();
 	var _this = this;
 	var deliveryOrder = {};
@@ -417,7 +417,6 @@ DeliveryOrder.prototype.sendDeliveryOrder = function (id, user, mail, sendMail) 
 	var urlPdf = '';
 	var fileName = '';
 	var fileNamePdf = '';
-	var emails = [];
 	var cc = [];
 
 	_this.crud.find({ _id: id })
@@ -426,16 +425,10 @@ DeliveryOrder.prototype.sendDeliveryOrder = function (id, user, mail, sendMail) 
 			return _this.user.getAdminUsers();
 		})
 		.then(function (users) {
-			if (deliveryOrder.saveSendTo == true) {
+			if (deliveryOrder.saveSendTo == false) {
 				emails = emails.concat([deliveryOrder.client.account.email]);
 				for (var i = 0; i < users.data.length; i++) {
 					cc.push(users.data[i].account.email);
-				}
-			}
-			if (sendMail == true) {
-				emails = [deliveryOrder.client.account.email];
-				for (var i = 0; i < users.data.length; i++) {
-					emails.push(users.data[i].account.email);
 				}
 			}
 			emails = _.uniq(emails);

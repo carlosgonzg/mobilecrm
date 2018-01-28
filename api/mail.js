@@ -68,7 +68,7 @@ var sendMail = function (to, subject, body, isHtmlBody, attached, cc, cco, reply
 	else {
 		mailOptions.attachments = [];
 	}
-	smtpTransport.sendMail(mailOptions, function (error, response) {
+  	smtpTransport.sendMail(mailOptions, function (error, response) {
 		if (error) {
 			console.log(error);
 			deferred.reject(error);
@@ -76,7 +76,7 @@ var sendMail = function (to, subject, body, isHtmlBody, attached, cc, cco, reply
 			console.log('Message sent');
 			deferred.resolve(response);
 		}
-	});
+ 	}); 
 	return deferred.promise;
 };
 
@@ -794,13 +794,16 @@ var sendDeliveryOrder = function (deliveryOrder, mails, dirname) {
 			}
 			console.log('sending mail', subject);
 			mails = _.uniq(mails);
-			var newMails = ""
-			if (mails.indexOf('ar@mobileonecontainers.com') <= -1) {
-				mails.push("ar@mobileonecontainers.com")
+
+			if (deliveryOrder.saveSendTo == false) {
+				if (mails.indexOf('ar@mobileonecontainers.com') <= -1) {
+					mails.push("ar@mobileonecontainers.com")
+				}
+				if (mails.indexOf('nr@mobileonecontainers.com') <= -1) {
+					mails.push("nr@mobileonecontainers.com")
+				}
 			}
-			if (mails.indexOf('nr@mobileonecontainers.com') <= -1) {
-				mails.push("nr@mobileonecontainers.com")
-			}
+
 			sendMail(mails.join(', '), subject, body, true, deliveryOrderAttachments, null, null, 'mf@mobileonecontainers.com')
 				.then(function (response) {
 					console.log('DONE Sending Mail: ', response)
