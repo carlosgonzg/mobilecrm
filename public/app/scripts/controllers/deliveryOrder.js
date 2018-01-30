@@ -962,7 +962,28 @@ angular.module('MobileCRMApp')
 				}
 			}
 
-			$scope.changeRelocation()
+			if (DeliveryOrder.ServiceType.item == 'Relocation' || $scope.DeliveryOrder.Relocation == true) {
+				for (var row = 0; row < $scope.DeliveryOrder.items.length; row++) {
+					var id = $scope.DeliveryOrder.items[row]._id;
+					if (id == 839) {
+						return
+					}
+				}
+				new Item().filter({ _id: 839 })
+					.then(function (result) {
+						_.map(result.data, function (obj) {
+							$scope.DeliveryOrder.items.unshift(obj)
+						});
+					})
+			} else {
+				for (var row = 0; row < $scope.DeliveryOrder.items.length; row++) {
+					var id = $scope.DeliveryOrder.items[row]._id;
+					if (id == 839) {
+						$scope.DeliveryOrder.items.splice(row, 1);
+						return
+					}
+				}
+			}
 		}
 
 		$scope.addConfigComp = function () {
