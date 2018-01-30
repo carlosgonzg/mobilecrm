@@ -362,7 +362,7 @@ angular.module('MobileCRMApp')
 					$scope.LoadItemDefault();
 				}
 			}
-			console.log(status)
+
 			if (field == 'status') {
 				$scope.CommentProyect()
 			}
@@ -553,7 +553,8 @@ angular.module('MobileCRMApp')
 			if (!$route.current.params.id) { $scope.DeliveryOrder.date = new Date() }
 
 			$scope.DeliveryOrder.SerialNumberCol = $scope.SerialNumberCol
-
+			console.log($scope.DeliveryOrder.siteAddressFrom)
+	//	return 
 			if ($scope.DeliveryOrder.client.company.perHours == undefined) {
 				$scope.addConfigComp()
 			} else {
@@ -959,8 +960,9 @@ angular.module('MobileCRMApp')
 						$scope.DeliveryOrder.items[row].quantity = element.quantity
 					}
 				}
-
 			}
+
+			$scope.changeRelocation()
 		}
 
 		$scope.addConfigComp = function () {
@@ -995,9 +997,11 @@ angular.module('MobileCRMApp')
 
 		$scope.FromCompany = function (e) {
 			if (e == 1) {
+				console.log(111)
 				$scope.DeliveryOrder.fromwriteAddress = true
 				$scope.DeliveryOrder.fromCompanyAddress = false
 			} else {
+				console.log(2222)
 				$scope.DeliveryOrder.fromwriteAddress = false
 				$scope.DeliveryOrder.fromCompanyAddress = true
 			}
