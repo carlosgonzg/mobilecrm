@@ -123,65 +123,98 @@ var createInvoiceBody = function (obj, company, branch) {
 		var item = obj.items[i];
 		var priceUnit = 0;
 		var quantity = 0;
+		var miles = false;
 
-		if (obj.dor) {
+		if (obj.dor && item._id == 805) {
 			if (company.perHours && company.perHours == true) {
 				quantity = (item.quantity || 1)
 			} else {
-				quantity = 1;				
+				quantity = 1;
+				miles = true
 			}
 			var res = getTotalDelivery(company, obj.items, obj.typeTruck)
-			priceUnit = res[0]
-			dorDesc = res[1] + '<br/>'
+			priceUnit = res[0];
+			dorDesc = res[1];
 		} else {
 			priceUnit = item.price
 			quantity = item.quantity || 1;
 		}
 
-		tableItems += '<tr>';
-		tableItems += '<td style="text-align: center;border: thin solid black; border-top: none; border-right: none;">';
-		tableItems += item.code || '';
-		tableItems += '</td>';
-		tableItems += '<td colspan="4" style="border: thin solid black; border-top: none; border-right: none;">';
-		tableItems += item.description || '';
-		tableItems += '</td>';
-		tableItems += '<td style="text-align: right;border: thin solid black; border-top: none; border-right: none;">';
-		tableItems += item.part || '';
-		tableItems += '</td>';
-		tableItems += '<td style="text-align: right;border: thin solid black; border-top: none; border-right: none;">';
-	
-		if (obj.dor && company.perHours && company.perHours == true) {
-			var costPerHours = 0;
-			if (obj.typeTruck._id == 1) {
-				costPerHours = company.costPerHours;
-			} else {
-				costPerHours = company.smallTruck;
-			}
-			tableItems += numeral(costPerHours || 0).format('$0,0.00');
-		} else {
-			tableItems += numeral(priceUnit || 0).format('$0,0.00');
-		}
-		
-		tableItems += '</td>';
-		tableItems += '<td style="text-align: right;border: thin solid black; border-top: none; border-right: none;">';
-		tableItems += quantity;
-		tableItems += '</td>';
-		tableItems += '<td style="text-align: right;border: thin solid black; border-top: none;">';
+		if (miles == false) { //SI EL CALCULO ES NORMAL Ej... CANTIDAD * PRECIO = TOTAL
+			tableItems += '<tr>';
+			tableItems += '<td style="text-align: center;border: thin solid black; border-top: none; border-right: none;">';
+			tableItems += item.code || '';
+			tableItems += '</td>';
+			tableItems += '<td colspan="4" style="border: thin solid black; border-top: none; border-right: none;">';
+			tableItems += item.description || '';
+			tableItems += '</td>';
+			tableItems += '<td style="text-align: right;border: thin solid black; border-top: none; border-right: none;">';
+			tableItems += item.part || '';
+			tableItems += '</td>';
+			tableItems += '<td style="text-align: right;border: thin solid black; border-top: none; border-right: none;">';
 
-		if (obj.dor) {
-			tableItems += numeral(priceUnit || 1).format('$0,0.00');
-		} else {
-			tableItems += numeral((item.price || 0) * (item.quantity || 1)).format('$0,0.00');
-			total += (item.price || 0) * (item.quantity || 1);
+			if (obj.dor && company.perHours && company.perHours == true) {
+				var costPerHours = 0;
+				if (obj.typeTruck._id == 1) {
+					costPerHours = company.costPerHours;
+				} else {
+					costPerHours = company.smallTruck;
+				}
+				tableItems += numeral(costPerHours || 0).format('$0,0.00');
+			} else {
+				tableItems += numeral(priceUnit || 0).format('$0,0.00');
+			}
+
+			tableItems += '</td>';
+			tableItems += '<td style="text-align: right;border: thin solid black; border-top: none; border-right: none;">';
+			tableItems += quantity;
+			tableItems += '</td>';
+			tableItems += '<td style="text-align: right;border: thin solid black; border-top: none;">';
+
+			if (obj.dor) {
+				tableItems += numeral(priceUnit || 1).format('$0,0.00');
+			} else {
+				tableItems += numeral((item.price || 0) * (item.quantity || 1)).format('$0,0.00');
+				total += (item.price || 0) * (item.quantity || 1);
+			}
+			tableItems += '</td>';
+			tableItems += '</tr>';
+		} else if (miles == true && obj.dor) { //SI EL CALCULO ES APLICANDOLE LA FORMULA DE DELIVERY
+			dorDesc = dorDesc
+
+			var dataRow = [
+				{ description: "1st " + dorDesc.split(";")[1] + " mile charge", coste: dorDesc.split(";")[2], qty: 1, total: dorDesc.split(";")[2] },
+				{ description: "Additional Miles", coste: dorDesc.split(";")[3], qty: dorDesc.split(";")[0] - dorDesc.split(";")[1], total: numeral((dorDesc.split(";")[0] - dorDesc.split(";")[1]) * (dorDesc.split(";")[3]).replace("$", "")).format('$0,0.00') }]
+
+			for (let row = 0; row < dataRow.length; row++) {
+				tableItems += '<tr>';
+				tableItems += '<td style="text-align: center;border: thin solid black; border-top: none; border-right: none;">';
+				tableItems += '';
+				tableItems += '</td>';
+				tableItems += '<td colspan="4" style="border: thin solid black; border-top: none; border-right: none;">';
+				tableItems += dataRow[row].description || '';
+				tableItems += '</td>';
+				tableItems += '<td style="text-align: right;border: thin solid black; border-top: none; border-right: none;">';
+				tableItems += item.part || '';
+				tableItems += '</td>';
+				tableItems += '<td style="text-align: right;border: thin solid black; border-top: none; border-right: none;">';
+				tableItems += numeral(dataRow[row].coste || 0).format('$0,0.00');
+				tableItems += '</td>';
+				tableItems += '<td style="text-align: right;border: thin solid black; border-top: none; border-right: none;">';
+				tableItems += (dataRow[row].qty || 1);
+				tableItems += '</td>';
+				tableItems += '<td style="text-align: right;border: thin solid black; border-top: none;">';
+				tableItems += numeral(dataRow[row].total || 1).format('$0,0.00');
+				tableItems += '</td>';
+				tableItems += '</tr>';
+			}
 		}
-		tableItems += '</td>';
-		tableItems += '</tr>';
 	}
+
 	body = body.replace('<tableItems>', tableItems || '');
 
 	if (obj.dor) {
 		total = obj.total;
-		body = body.replace(/<dorDesc>/g, dorDesc);
 	}
 
 	total = total || 0;
@@ -803,18 +836,18 @@ var getTotalDelivery = function (comp, items, typeTruck) {
 
 		if (comp == undefined) { //SI NO TIENE LA CONFIGURACION
 			var miles = (items[index].quantity || 1);;
-			
+
 			if (items[index]._id == 805) {
 				if (miles > 30) {
 					total += (miles - initialMile) * costPerMile + (items[index].price)
-					dorDesc = "Total miles : " + miles + "<br/>First " + 30 + " miles : $" + items[index].price + "; Additional miles : $3.25 each"; 
+					dorDesc = miles + ";" + 30 + ";" + items[index].price + ";$3.25";
 				} else {
 					total += items[index].price
-					dorDesc = "Total miles : " + miles + "<br/>First " + 30 + " miles : $" + items[index].price + "; Additional miles : $3.25 each"; 
+					dorDesc = miles + ";" + 30 + ";" + items[index].price + ";$3.25";
 				}
 			} else {
 				total += (items[index].price * (miles || 1));
-			}			
+			}
 		}
 		if (items[index]._id == 806 || items[index]._id == 805) {
 			if (comp.perHours != undefined) {
@@ -835,13 +868,13 @@ var getTotalDelivery = function (comp, items, typeTruck) {
 			if (items[index].quantity <= initialMile) {
 				total += InitPrice;
 				items[index].price = InitPrice;
-				dorDesc = "Total miles : " + items[index].quantity + "<br/>First " + initialMile + " miles : $" + InitPrice + "; Additional miles : $" + costPerMile + " each";
+				dorDesc = items[index].quantity + ";" + initialMile + ";" + InitPrice + ";$" + costPerMile
 			} else {
 				var minMiles = initialMile;
 				var miles = items[index].quantity;
 				var cosTotalmiles = (miles - minMiles) * costPerMile + (InitPrice)
 
-				dorDesc = "Total miles : " + miles + "<br/>First " + minMiles + " miles : $" + InitPrice + "; Additional miles : $" + costPerMile + " each";
+				dorDesc = miles + ";" + minMiles + ";" + InitPrice + ";$" + costPerMile
 
 				total += cosTotalmiles
 				items[index].price = cosTotalmiles
