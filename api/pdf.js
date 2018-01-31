@@ -181,10 +181,19 @@ var createInvoiceBody = function (obj, company, branch) {
 			tableItems += '</tr>';
 		} else if (miles == true && obj.dor) { //SI EL CALCULO ES APLICANDOLE LA FORMULA DE DELIVERY
 			dorDesc = dorDesc
+			var DefaultMiles = dorDesc.split(";")[1];
+			var miles = dorDesc.split(";")[0];
+			var calcMiles = 0;
+			var totalAdditional = 0;
+
+			if (numeral(miles) > numeral(DefaultMiles)) {
+				calcMiles = miles - DefaultMiles
+				totalAdditional = numeral((dorDesc.split(";")[0] - dorDesc.split(";")[1]) * (dorDesc.split(";")[3]).replace("$", "")).format('$0,0.00');
+			}
 
 			var dataRow = [
 				{ description: "1st " + dorDesc.split(";")[1] + " mile charge", coste: dorDesc.split(";")[2], qty: 1, total: dorDesc.split(";")[2] },
-				{ description: "Additional Miles", coste: dorDesc.split(";")[3], qty: dorDesc.split(";")[0] - dorDesc.split(";")[1], total: numeral((dorDesc.split(";")[0] - dorDesc.split(";")[1]) * (dorDesc.split(";")[3]).replace("$", "")).format('$0,0.00') }]
+				{ description: "Additional Miles", coste: dorDesc.split(";")[3], qty: calcMiles, total: totalAdditional}]
 
 			for (let row = 0; row < dataRow.length; row++) {
 				tableItems += '<tr>';
@@ -201,10 +210,10 @@ var createInvoiceBody = function (obj, company, branch) {
 				tableItems += numeral(dataRow[row].coste || 0).format('$0,0.00');
 				tableItems += '</td>';
 				tableItems += '<td style="text-align: right;border: thin solid black; border-top: none; border-right: none;">';
-				tableItems += (dataRow[row].qty || 1);
+				tableItems += (dataRow[row].qty || 0);
 				tableItems += '</td>';
 				tableItems += '<td style="text-align: right;border: thin solid black; border-top: none;">';
-				tableItems += numeral(dataRow[row].total || 1).format('$0,0.00');
+				tableItems += numeral(dataRow[row].total || 0).format('$0,0.00');
 				tableItems += '</td>';
 				tableItems += '</tr>';
 			}
