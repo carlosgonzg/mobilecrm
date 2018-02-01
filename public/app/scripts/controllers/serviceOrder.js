@@ -474,8 +474,8 @@ angular.module('MobileCRMApp')
 
 			var pono = document.getElementById('txtpono').value
 
-			if (pono == ''){
-				$scope.serviceOrder.pono = ' '
+			if (pono == ""){
+				$scope.serviceOrder.pono = " ";
 			}
 
 			$scope.serviceOrder.save()

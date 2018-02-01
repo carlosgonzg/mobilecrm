@@ -176,7 +176,7 @@ Invoice.prototype.insert = function (invoice, username, mail) {
 			if (invoice.invoiceNumber != "Pending Invoice") {
 				if (invoice.tor) {
 					_this.company.getSequenceSetup(invoice.client.company._id)
-				}else if (invoice.dor) {
+				} else if (invoice.dor) {
 					_this.company.setSequenceDor(invoice.client.company._id)
 				} else {
 					_this.company.setSequence(invoice.client.company._id)
@@ -290,6 +290,8 @@ Invoice.prototype.update = function (query, invoice, user, mail) {
 		.then(function (obj) {
 			var setObj = { invoiceNumber: invoice.invoiceNumber };
 
+			if (invoice.pono == "")
+				setObj.pono = "";
 			if (invoice.pono)
 				setObj.pono = invoice.pono;
 			if (invoice.unitno)
@@ -544,7 +546,7 @@ Invoice.prototype.getInvoice = function (id, res) {
 				errors: err
 			});
 		});
-	
+
 };
 
 Invoice.prototype.getMonthlyStatement = function (params, user) {

@@ -28,6 +28,7 @@ angular.module('MobileCRMApp')
 		$scope.commentDiabled = true;
 		$scope.seralNumberAdd = []
 		$scope.SerialNumberCol = $scope.DeliveryOrder.SerialNumberCol
+		$scope.DeliveryOrder.initialStatus = $scope.DeliveryOrder.status.description
 
 		if ($rootScope.userData.role._id == 1 || $rootScope.userData.role._id == 5) {
 			$scope.commentDiabled = false;
@@ -378,6 +379,7 @@ angular.module('MobileCRMApp')
 						break;
 					}
 				}
+				console.log()
 				return isHere ? 'changed' : '';
 			}
 			return '';
@@ -553,8 +555,10 @@ angular.module('MobileCRMApp')
 			if (!$route.current.params.id) { $scope.DeliveryOrder.date = new Date() }
 
 			$scope.DeliveryOrder.SerialNumberCol = $scope.SerialNumberCol
-			console.log($scope.DeliveryOrder.siteAddressFrom)
-	//	return 
+
+			$scope.ControlstatusChanged()
+			console.log($scope.DeliveryOrder.fieldsChanged)
+		//	return
 			if ($scope.DeliveryOrder.client.company.perHours == undefined) {
 				$scope.addConfigComp()
 			} else {
@@ -1197,7 +1201,7 @@ angular.module('MobileCRMApp')
 			}
 		}
 
-		$scope.changeRelocation = function () {		
+		$scope.changeRelocation = function () {
 			if (DeliveryOrder.ServiceType.item == 'Relocation' || $scope.DeliveryOrder.Relocation == true) {
 				for (var row = 0; row < $scope.DeliveryOrder.items.length; row++) {
 					var id = $scope.DeliveryOrder.items[row]._id;
@@ -1258,7 +1262,17 @@ angular.module('MobileCRMApp')
 			if (DeliveryOrder.status.description == 'Dry Run') {
 				$scope.DeliveryOrder.comments = "Dry Run " + (comment || '')
 			} else {
-				$scope.DeliveryOrder.comments = comment.replace('Dry Run', '')
+				if ($scope.DeliveryOrder.comments && $scope.DeliveryOrder.comments != "") {
+					$scope.DeliveryOrder.comments = comment.replace('Dry Run', '')
+				}
+			}
+		}
+
+		$scope.ControlstatusChanged = function () {
+			if ($scope.DeliveryOrder._id){
+			var status = [{ status: $scope.DeliveryOrder.initialStatus }, { status: $scope.DeliveryOrder.status.description }]
+
+			$scope.DeliveryOrder.ControlstatusChanged = status
 			}
 		}
 

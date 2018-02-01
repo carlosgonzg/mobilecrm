@@ -180,7 +180,6 @@ var createInvoiceBody = function (obj, company, branch) {
 			tableItems += '</td>';
 			tableItems += '</tr>';
 		} else if (miles == true && obj.dor) { //SI EL CALCULO ES APLICANDOLE LA FORMULA DE DELIVERY
-			dorDesc = dorDesc
 			var DefaultMiles = dorDesc.split(";")[1];
 			var miles = dorDesc.split(";")[0];
 			var calcMiles = 0;

@@ -85,7 +85,7 @@
 					<div class="col-xs-12 pull-right">
 						<div class="form-group">
 							<label for="ServiceType">Service Type</label>
-							<select class="form-control" ng-model="DeliveryOrder.ServiceType" id="category" ng-options="item as item.item for item in list track by item.item"
+							<select class="form-control" ng-model="DeliveryOrder.ServiceType" id="category" ng-class="isChanged('ServiceType')" ng-change="changed('ServiceType')" ng-options="item as item.item for item in list track by item.item"
 							 ng-change="changeRelocation()"></select>
 						</div>
 					</div>
@@ -550,6 +550,7 @@
 					<textarea id="comment" ng-model="DeliveryOrder.comments" class="form-control" ng-disabled="isDisabled()" ng-class="isChanged('issue')"
 					 ng-change="changed('issue')">
 					</textarea>
+					<input type="hidden" ng-model="DeliveryOrder.initialStatus" name="initialStatus" value="initialStatus">
 				</div>
 			</div>
 		</div>
