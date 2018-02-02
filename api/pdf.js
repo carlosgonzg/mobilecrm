@@ -56,6 +56,8 @@ var createInvoiceBody = function (obj, company, branch) {
 
 	var projectDesc = ""
 	var dorDesc = "";
+	var dorMilesDesc = "";
+
 	// body = body.replace(/<clientState>/g, obj.sor ? (obj.siteAddress.state.description + ' ' + obj.siteAddress.zipcode || '') : (company.address.state.description + ' ' + company.address.zipcode || ''));
 	if (obj.dor) {
 
@@ -184,7 +186,8 @@ var createInvoiceBody = function (obj, company, branch) {
 			var miles = dorDesc.split(";")[0];
 			var calcMiles = 0;
 			var totalAdditional = 0;
-
+			dorMilesDesc = "Total Miles : " + miles + "<br />"
+			
 			if (numeral(miles) > numeral(DefaultMiles)) {
 				calcMiles = miles - DefaultMiles
 				totalAdditional = numeral((dorDesc.split(";")[0] - dorDesc.split(";")[1]) * (dorDesc.split(";")[3]).replace("$", "")).format('$0,0.00');
@@ -209,13 +212,15 @@ var createInvoiceBody = function (obj, company, branch) {
 				tableItems += numeral(dataRow[row].coste || 0).format('$0,0.00');
 				tableItems += '</td>';
 				tableItems += '<td style="text-align: right;border: thin solid black; border-top: none; border-right: none;">';
-				tableItems += (dataRow[row].qty || 0);
+				tableItems += (roundToTwo(dataRow[row].qty || 0));
 				tableItems += '</td>';
 				tableItems += '<td style="text-align: right;border: thin solid black; border-top: none;">';
 				tableItems += numeral(dataRow[row].total || 0).format('$0,0.00');
 				tableItems += '</td>';
 				tableItems += '</tr>';
 			}
+
+			body = body.replace(/<dorDesc>/g, dorMilesDesc || '');
 		}
 	}
 
@@ -246,6 +251,10 @@ var createInvoiceBody = function (obj, company, branch) {
 	body = body.replace('<total60>', numeral((total + (total * taxes)) * 1.15).format('$0,0.00'));
 	return body;
 };
+
+function roundToTwo(num) {
+	return +(Math.round(num + "e+2") + "e-2");
+}
 
 var createInvoice = function (obj, company, branch, urlPdfQuote) {
 	var d = q.defer();
