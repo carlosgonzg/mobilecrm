@@ -1,3 +1,5 @@
+/* global _ */
+
 'use strict';
 
 /**
@@ -12,6 +14,7 @@ angular.module('MobileCRMApp')
 		$scope.params = { quantity: 1 };
 		$scope.items = items.data;
 		$scope.itemCollection = itemCollection;
+    $scope.itemsFiltered = [];
 
 		$scope.addItem = function (item, quantity) {
 			console.log(item)
@@ -39,6 +42,16 @@ angular.module('MobileCRMApp')
 		$scope.getItem = function (itemId) {
 			var item = _.filter(items.data, function (obj) { return obj._id == itemId; })
 			return item.length > 0 ? item[0] : {};
+		};
+
+		$scope.searchItemsLocally = function (searchText) {
+      let searchTextMod = searchText.toLowerCase();
+      if(searchText){
+        $scope.itemsFiltered = _.filter(items.data, obj => {
+          return obj.code.toString().toLowerCase().indexOf(searchTextMod) !== -1 
+            || obj.description.toLowerCase().indexOf(searchTextMod) !== -1; 
+        });
+      }
 		};
 
 		$scope.save = function () {

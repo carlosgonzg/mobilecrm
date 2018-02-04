@@ -70,7 +70,9 @@
 									<ui-select-match placeholder="Select the item you want on the list...">
 										{{$select.selected.code}}&nbsp;-&nbsp;{{$select.selected.description}}
 									</ui-select-match>
-									<ui-select-choices repeat="i in items | filter: $select.search track by i._id">
+									<ui-select-choices repeat="i in itemsFiltered | filter: $select.search track by i._id"
+                                     refresh="searchItemsLocally($select.search)"
+                                     refresh-delay="500">
 										<div ng-bind-html="i.description | highlight: $select.search"></div>
 										<small ng-bind-html="i.code | highlight: $select.search"></small>
 									</ui-select-choices>

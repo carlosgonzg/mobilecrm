@@ -77,3 +77,4 @@ public/app/images
 api/workorders
 api/monthystatement/ms-12-13-2016 04:35.xlsx
 *.xlsx
+/nbproject
