@@ -33,8 +33,7 @@ var createInvoiceBody = function (obj, company, branch) {
 	body = body.replace(/<dueDate>/g, moment(obj.date).add(30, 'days').format('MM/DD/YYYY'));
 	body = body.replace(/<invoiceNumber>/g, obj.invoiceNumber || '');
 	//Company
-	console.log('Create pdf ' + 36)
-	
+
 	body = body.replace(/<companyName>/g, company.entity.name || '');
 
 	if (company._id == 21) {
@@ -57,8 +56,6 @@ var createInvoiceBody = function (obj, company, branch) {
 
 	var projectDesc = ""
 	var dorDesc = "";
-	var dorMilesDesc = "";
-
 	// body = body.replace(/<clientState>/g, obj.sor ? (obj.siteAddress.state.description + ' ' + obj.siteAddress.zipcode || '') : (company.address.state.description + ' ' + company.address.zipcode || ''));
 	if (obj.dor) {
 
@@ -187,7 +184,6 @@ var createInvoiceBody = function (obj, company, branch) {
 			var miles = dorDesc.split(";")[0];
 			var calcMiles = 0;
 			var totalAdditional = 0;
-			dorMilesDesc = "Total Miles : " + miles + "<br />"
 
 			if (numeral(miles) > numeral(DefaultMiles)) {
 				calcMiles = miles - DefaultMiles
@@ -213,15 +209,13 @@ var createInvoiceBody = function (obj, company, branch) {
 				tableItems += numeral(dataRow[row].coste || 0).format('$0,0.00');
 				tableItems += '</td>';
 				tableItems += '<td style="text-align: right;border: thin solid black; border-top: none; border-right: none;">';
-				tableItems += (roundToTwo(dataRow[row].qty || 0));
+				tableItems += (dataRow[row].qty || 0);
 				tableItems += '</td>';
 				tableItems += '<td style="text-align: right;border: thin solid black; border-top: none;">';
 				tableItems += numeral(dataRow[row].total || 0).format('$0,0.00');
 				tableItems += '</td>';
 				tableItems += '</tr>';
 			}
-
-			body = body.replace(/<dorDesc>/g, dorMilesDesc || '');
 		}
 	}
 
@@ -253,13 +247,7 @@ var createInvoiceBody = function (obj, company, branch) {
 	return body;
 };
 
-function roundToTwo(num) {
-	return +(Math.round(num + "e+2") + "e-2");
-}
-
-
 var createInvoice = function (obj, company, branch, urlPdfQuote) {
-	console.log("create invoice");
 	var d = q.defer();
 	var options = {
 		format: 'Letter',
@@ -276,18 +264,18 @@ var createInvoice = function (obj, company, branch, urlPdfQuote) {
 	var url = ""
 	var body = "";
 
+	console.log('pdf - 267')
 	if (obj.quotes == 1 && (obj.invoiceNumber || '') == 'Pending Invoice') {
-		console.log("createQuotes ");
+		console.log('pdf - 269')
 		url = urlPdfQuote
 		body = createQuotesBody(obj, company, branch);
 	} else {
-		console.log("create invoice");
+		console.log('pdf - 273')
 		fileName = obj.invoiceNumber + '.pdf';
 		url = __dirname + '/invoices/' + fileName;
 		body = createInvoiceBody(obj, company, branch);
 	}
-
-	console.log("created");
+	console.log('pdf - 278')
 
 	pdf.create(body, options).toFile(url, function (err, res) {
 		if (err) {
@@ -295,6 +283,7 @@ var createInvoice = function (obj, company, branch, urlPdfQuote) {
 			d.reject(err)
 		}
 		else {
+			console.log('pdf - 286')
 			d.resolve({ path: url, fileName: fileName });
 		}
 	});

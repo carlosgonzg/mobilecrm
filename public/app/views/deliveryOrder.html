@@ -285,6 +285,22 @@
 
 				<div class="col-xs-12">
 					<div class="col-xs-12 pull-right">
+						<uib-accordion id="grouptoId" ng-click="meclick()">
+							<uib-accordion-group class="panel-default">
+								<uib-accordion-heading>
+									<span class="fa fa-map-marker fa-lg"></span> To sssss
+									<small ng-if="DeliveryOrder.siteAddress.city">{{DeliveryOrder.siteAddressSecond.address1}}</small>
+								</uib-accordion-heading>
+				
+								<address-model-to ng-model="DeliveryOrder.siteAddressSecond" origin-point="DeliveryOrder.siteAddress" ng-class="isChanged('siteAddress')"
+								 ng-change="changed('siteAddress')" show-map="true"></address-model-to>
+							</uib-accordion-group>
+						</uib-accordion>
+					</div>
+				</div>
+
+				<div class="col-xs-12">
+					<div class="col-xs-12 pull-right">
 						<div style="height: 40px; border: 1px #DDDDDD solid; background-color: #F5F5F5; cursor: pointer;" ng-click="showdiv(); initMapRoute()">
 							<span class="fa fa-map-marker fa-lg" style="padding-left: 15px; padding-top: 10px" ng-click="showdiv()">&nbsp;
 								<span style="font-family: OpenSans" ng-click="showdiv()"> Multiple Routes</span>
@@ -556,3 +572,5 @@
 		</div>
 	</div>
 </div>
+
+<input type="text" name="" ng-model="DeliveryOrder.siteAddress.distanceFrom" id="">

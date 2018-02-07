@@ -279,8 +279,9 @@ angular.module('MobileCRMApp')
 									result = response.rows[0].elements[0].distance.value;
 								} else {
 									result = 0;
-								}
-								  $scope.ngModel.distanceFrom = parseFloat((result * 0.00062137).toFixed(2)) ;
+								  }  
+								  $scope.ngModel.distanceFrom = parseFloat((result * 0.00062137).toFixed(2));
+								  $scope.ngModel.distanceFromSecond = $scope.ngModel.distanceFrom
 								  $scope.$apply();
 
 								//d.resolve(parseFloat((result * 0.00062137).toFixed(2)))

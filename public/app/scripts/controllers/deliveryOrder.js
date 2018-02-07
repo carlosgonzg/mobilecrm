@@ -12,7 +12,10 @@ angular.module('MobileCRMApp')
 		$scope.DeliveryOrder = DeliveryOrder;
 		$scope.item = ItemDefault;
 		$scope.Math = $window.Math;
-		
+
+		$scope.DeliveryOrder.siteAddress.distanceFromSecond = 0
+		console.log($scope.DeliveryOrder.siteAddress)
+
 		LoadData()
 		ConcatenateAddress();
 
@@ -48,6 +51,10 @@ angular.module('MobileCRMApp')
 			$scope.DeliveryOrder.fromwriteAddress = false
 			$scope.DeliveryOrder.fromCompanyAddress = true
 		}
+	
+		$scope.$watch('DeliveryOrder.siteAddress.distanceFromSecond', function (newValue, oldValue, scope) {
+			console.log(newValue, oldValue)
+		});
 
 		$scope.list = [
 			{ item: 'Pickup' },

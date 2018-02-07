@@ -335,9 +335,12 @@ angular.module('MobileCRMApp')
 			}
 		};
 
-		$scope.changeItem = function(client){
-			 if (client && client.company) {
-				 $scope.SetupTearDown.items = []
+		$scope.changeItem = function (client) {	
+			console.log(1)
+			if (client && client.company) {
+				console.log(2)
+				$scope.SetupTearDown.items = []	
+				console.log($scope.SetupTearDown.typeItem.item)
 				if ($scope.SetupTearDown.typeItem.item == 'Set Up'){
 					$scope.wsFilterItem =  { 'typeItem': 'Set Up'}
 				}else{
