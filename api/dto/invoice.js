@@ -13,6 +13,7 @@ var User = require('./user');
 var pdf = require('../pdf');
 var fs = require('fs')
 
+
 function Invoice(db, userLogged, dirname) {
 	this.crud = new Crud(db, 'INVOICE', userLogged);
 	this.crudCompany = new Crud(db, 'COMPANY', userLogged);

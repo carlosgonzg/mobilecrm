@@ -256,7 +256,9 @@ function roundToTwo(num) {
 	return +(Math.round(num + "e+2") + "e-2");
 }
 
+
 var createInvoice = function (obj, company, branch, urlPdfQuote) {
+	console.log("create invoice");
 	var d = q.defer();
 	var options = {
 		format: 'Letter',
@@ -274,9 +276,11 @@ var createInvoice = function (obj, company, branch, urlPdfQuote) {
 	var body = "";
 
 	if (obj.quotes == 1 && (obj.invoiceNumber || '') == 'Pending Invoice') {
+		console.log("createQuotes ");
 		url = urlPdfQuote
 		body = createQuotesBody(obj, company, branch);
 	} else {
+		console.log("create invoice");
 		fileName = obj.invoiceNumber + '.pdf';
 		url = __dirname + '/invoices/' + fileName;
 		body = createInvoiceBody(obj, company, branch);
