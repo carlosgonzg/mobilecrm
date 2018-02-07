@@ -783,7 +783,7 @@ Invoice.prototype.getInvoicesByCompany = function (params, user) {
 
 	var project = {
 		$project: {
-			
+
 			company: {
 				_id: '$client.company._id',
 				name: '$client.company.entity.name'
@@ -818,7 +818,7 @@ Invoice.prototype.getInvoicesByCompany = function (params, user) {
 				$lte: toDate
 			},
 			'status._id': { $ne: 5 },
-			$or: [{'status._id': {$ne:7}}, {'dor': {$exists:true}}]
+			$or: [{ 'status._id': { $ne: 7 } }, { 'dor': { $exists: true } }]
 		}
 	};
 
@@ -833,19 +833,19 @@ Invoice.prototype.getInvoicesByCompany = function (params, user) {
 	}
 	if (params.invoiceType) {
 		if (params.invoiceType == 'sor') {
-			query.$match['sor'] = {'$exists': true}
+			query.$match['sor'] = { '$exists': true }
 		}
 		if (params.invoiceType == 'wor') {
-			query.$match['wor'] = {'$exists': true}
+			query.$match['wor'] = { '$exists': true }
 		}
 		if (params.invoiceType == 'dor') {
-			query.$match['dor'] = {'$exists': true}
+			query.$match['dor'] = { '$exists': true }
 		}
 		if (params.invoiceType == 'hor') {
-			query.$match['hor'] = {'$exists': true}
+			query.$match['hor'] = { '$exists': true }
 		}
 		if (params.invoiceType == 'tor') {
-			query.$match['tor'] = {'$exists': true}
+			query.$match['tor'] = { '$exists': true }
 		}
 	}
 
@@ -858,7 +858,7 @@ Invoice.prototype.getInvoicesByCompany = function (params, user) {
 			total: {
 				$sum: '$total'
 			},
-			count: {$sum:1}
+			count: { $sum: 1 }
 		}
 	};
 
@@ -870,7 +870,7 @@ Invoice.prototype.getInvoicesByCompany = function (params, user) {
 			count: '$count',
 			total: '$total'
 
-			
+
 		}
 	};
 
@@ -900,11 +900,11 @@ Invoice.prototype.getInvoicesByCompany = function (params, user) {
 	var invoices = [];
 
 	_this.crud.db.get('INVOICE').aggregate(pipeline, function (error, data) {
-				if (error) {
-					d.reject(error);
-					throw new Error("Error happened: ", error);
-				}
-				d.resolve(data);
+		if (error) {
+			d.reject(error);
+			throw new Error("Error happened: ", error);
+		}
+		d.resolve(data);
 	});
 	return d.promise;
 };
@@ -913,32 +913,14 @@ Invoice.prototype.getTotalPendingToPay = function (params, user) {
 	var d = q.defer();
 	var _this = this;
 	var today = new Date();
-	
-	var pipeline = [];
 
-	var group2 = {
-		$group: {
-			_id: {
-				_id: {
-					$cond: [{$not:'$dor'},{$cond:[{$not:'$sor'},{$cond:[{$not:'$wor'},{$cond:[{$not:'$tor'},'hor','tor']},'wor']},'sor']},'dor']
-				},
-				description: {
-					$cond: [{$not:'$dor'},{$cond:[{$not:'$sor'},{$cond:[{$not:'$wor'},{$cond:[{$not:'$tor'},'Home & Bussiness','Setup & Teardown']},'Work Order']},'Service Order']},'Delivery Order']
-				}
-			},
-			count: {$sum:1},
-			total: {$sum: '$total'}
-		}
-	}
+	var pipeline = [];
 
 	var group = {
 		$group: {
 			_id: null,
-			total: {$sum: '$total'},
-			count: {$sum: '$count'},
-			serviceType: {
-				$push: '$$ROOT'
-			}
+			total: { $sum: '$total' },
+			count: { $sum: 1 }
 		}
 	};
 
@@ -947,93 +929,25 @@ Invoice.prototype.getTotalPendingToPay = function (params, user) {
 			'status._id': { $nin: [4, 5, 7] }
 		}
 	};
-	
+
 	var query = {
 		$match: {
-			'status._id': {$nin: [4,5]},
-			$or: [{'status._id': {$ne:7}}, {'dor': {$exists:true}}]
+			'status._id': { $nin: [4, 5] },
+			$or: [{ 'status._id': { $ne: 7 } }, { 'dor': { $exists: true } }]
 		}
 	};
 
 	pipeline.push(query);
-	pipeline.push(group2);
 	pipeline.push(group);
 	var results = [];
 	var invoices = [];
 
 	_this.crud.db.get('INVOICE').aggregate(pipeline, function (error, data) {
-				if (error) {
-					d.reject(error);
-					throw new Error("Error happened: ", error);
-				}
-				d.resolve(data);
-	});
-	return d.promise;
-};
-
-Invoice.prototype.getTotalPaid = function (params, user) {
-	var d = q.defer();
-	var _this = this;
-
-	var today = new Date();
-	var fromDate = params.fromDate ? new Date(params.fromDate) : new Date(today.getFullYear(), 0, 1, 0, 0, 0, 0);
-	var toDate = params.toDate ? new Date(params.toDate) : new Date(today.getFullYear(), 11, 31, 23, 59, 59, 999);
-	var queryDate = {
-		$gte: fromDate,
-		$lte: toDate
-	};
-	
-	var pipeline = [];
-
-	var group2 = {
-		$group: {
-			_id: {
-				_id: {
-					$cond: [{$not:'$dor'},{$cond:[{$not:'$sor'},{$cond:[{$not:'$wor'},{$cond:[{$not:'$tor'},'hor','tor']},'wor']},'sor']},'dor']
-				},
-				description: {
-					$cond: [{$not:'$dor'},{$cond:[{$not:'$sor'},{$cond:[{$not:'$wor'},{$cond:[{$not:'$tor'},'Home & Bussiness','Setup & Teardown']},'Work Order']},'Service Order']},'Delivery Order']
-				}
-			},
-			count: {$sum:1},
-			total: {$sum: '$total'}
+		if (error) {
+			d.reject(error);
+			throw new Error("Error happened: ", error);
 		}
-	}
-
-	var group = {
-		$group: {
-			_id: null,
-			total: {$sum: '$total'},
-			count: {$sum: '$count'},
-			serviceType: {
-				$push: '$$ROOT'
-			}
-		}
-	};
-
-	var query = {
-		$match: {
-			date: {
-				$gte: fromDate,
-				$lte: toDate
-			},
-			$or: [{$and:[{'status._id': { $eq: 4 }},{'dor': {$exists:false}}]},
-			{$and: [{'status._id': {$eq:7}}, {'dor': {$exists:true}}]}]
-		}
-	};
-
-	pipeline.push(query);
-	pipeline.push(group2);
-	pipeline.push(group);
-	var results = [];
-	var invoices = [];
-
-	_this.crud.db.get('INVOICE').aggregate(pipeline, function (error, data) {
-				if (error) {
-					d.reject(error);
-					throw new Error("Error happened: ", error);
-				}
-				d.resolve(data);
+		d.resolve(data);
 	});
 	return d.promise;
 };
@@ -1057,10 +971,10 @@ Invoice.prototype.getInvoicesByServiceType = function (params, user) {
 			wor: 1,
 			serviceType: {
 				_id: {
-					$cond: [{$not:'$dor'},{$cond:[{$not:'$sor'},{$cond:[{$not:'$wor'},{$cond:[{$not:'$tor'},'hor','tor']},'wor']},'sor']},'dor']
+					$cond: [{ $not: '$dor' }, { $cond: [{ $not: '$sor' }, 'wor', 'sor'] }, 'dor']
 				},
 				description: {
-					$cond: [{$not:'$dor'},{$cond:[{$not:'$sor'},{$cond:[{$not:'$wor'},{$cond:[{$not:'$tor'},'Home & Bussiness','Setup & Teardown']},'Work Order']},'Service Order']},'Delivery Order']
+					$cond: [{ $not: '$dor' }, { $cond: [{ $not: '$sor' }, 'Work Order', 'Service Order'] }, 'Delivery Order']
 				}
 			},
 			taxes: {
@@ -1093,7 +1007,7 @@ Invoice.prototype.getInvoicesByServiceType = function (params, user) {
 				$lte: toDate
 			},
 			'status._id': { $ne: 5 },
-			$or: [{'status._id': {$ne:7}}, {'dor': {$exists:true}}]
+			$or: [{ 'status._id': { $ne: 7 } }, { 'dor': { $exists: true } }]
 		}
 	};
 
@@ -1108,19 +1022,19 @@ Invoice.prototype.getInvoicesByServiceType = function (params, user) {
 	}
 	if (params.invoiceType) {
 		if (params.invoiceType == 'sor') {
-			query.$match['sor'] = {'$exists': true}
+			query.$match['sor'] = { '$exists': true }
 		}
 		if (params.invoiceType == 'wor') {
-			query.$match['wor'] = {'$exists': true}
+			query.$match['wor'] = { '$exists': true }
 		}
 		if (params.invoiceType == 'dor') {
-			query.$match['dor'] = {'$exists': true}
+			query.$match['dor'] = { '$exists': true }
 		}
 		if (params.invoiceType == 'hor') {
-			query.$match['hor'] = {'$exists': true}
+			query.$match['hor'] = { '$exists': true }
 		}
 		if (params.invoiceType == 'tor') {
-			query.$match['tor'] = {'$exists': true}
+			query.$match['tor'] = { '$exists': true }
 		}
 	}
 
@@ -1133,7 +1047,7 @@ Invoice.prototype.getInvoicesByServiceType = function (params, user) {
 			total: {
 				$sum: '$total'
 			},
-			count: {$sum:1}
+			count: { $sum: 1 }
 		}
 	};
 
@@ -1145,7 +1059,7 @@ Invoice.prototype.getInvoicesByServiceType = function (params, user) {
 			count: '$count',
 			total: '$total'
 
-			
+
 		}
 	};
 
@@ -1175,11 +1089,11 @@ Invoice.prototype.getInvoicesByServiceType = function (params, user) {
 	var invoices = [];
 
 	_this.crud.db.get('INVOICE').aggregate(pipeline, function (error, data) {
-				if (error) {
-					d.reject(error);
-					throw new Error("Error happened: ", error);
-				}
-				d.resolve(data);
+		if (error) {
+			d.reject(error);
+			throw new Error("Error happened: ", error);
+		}
+		d.resolve(data);
 	});
 	return d.promise;
 };

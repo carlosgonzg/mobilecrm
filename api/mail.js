@@ -878,8 +878,6 @@ var sendDeliveryOrderUpdate = function (deliveryOrder, mails, user, dirname) {
 			body = body.replace('<Clientcomment>', deliveryOrder.clientcomment || 'None');
 
 			var changesByUser = '';
-			var changedStatus = '';
-
 			changesByUser += (user.entity.fullName || user.entity.name) + '<br/> Changes: ';
 			var fieldsChanged = '';
 			if (deliveryOrder.fieldsChanged) {
@@ -891,13 +889,8 @@ var sendDeliveryOrderUpdate = function (deliveryOrder, mails, user, dirname) {
 						fieldsChanged += ', ';
 					}
 				}
-				if (deliveryOrder.ControlstatusChanged.length > 0 && deliveryOrder.ControlstatusChanged[0].status != deliveryOrder.ControlstatusChanged[1].status) {
-					changedStatus = "<br/> Status Changed : From " + deliveryOrder.ControlstatusChanged[0].status + ' to ' + deliveryOrder.ControlstatusChanged[1].status + "<br/>"
-				}
 			}
 			changesByUser += fieldsChanged == '' ? 'None' : fieldsChanged;
-			changesByUser += changedStatus;
-
 			body = body.replace('<client>', changesByUser);
 			var contacts = '';
 			for (var i = 0; i < deliveryOrder.contacts.length; i++) {
