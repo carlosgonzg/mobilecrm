@@ -3,6 +3,9 @@
 angular.module('MobileCRMApp')
 .controller('DashboardCtrl', function ($scope, $rootScope, toaster, clients, countries, Invoice, $timeout, dialogs, statusList, companyList, Loading, Branch, ServiceOrder, WorkOrder, DeliveryOrder, SetupTearDown, homeBusiness) {
 	var today = new Date();
+	$scope.showDetail = false;
+	$scope.showDetail2 = false;
+	$scope.showDetail3 = false;
 	$scope.isClient = $rootScope.userData.role._id != 1;
 	$scope.selectedTab = 'w';
 	$scope.invoices = [];
@@ -342,6 +345,7 @@ angular.module('MobileCRMApp')
 			}
 
 		}
+		console.log(obj.serviceType)
 		return obj;
 	};
 
@@ -721,8 +725,15 @@ angular.module('MobileCRMApp')
 			var xAxis = ['0-7','8-30','31-120','120+'];
 			var seriesData = [];
 			$scope.countNewServices = 0;
+			$scope.sumNewServices = 0;
+			$scope.newServices = {
+				sor:{count:0, total: 0},
+				wor:{count:0, total: 0},
+				dor:{count:0, total: 0},
+				tor:{count:0, total: 0},
+				hor:{count:0, total: 0}
+			};
 			var array = $scope.servicesByOpenDays; //$scope.selectedTab == 'totalPriceByClient' ? data.price : $scope.selectedTab == 'countByClient' ? data.count : $scope.selectedTab == 'status' ? data.status : [];
-		 	console.log(array)
 		 	for (var i=0; i<array.length; i++) {
 		 		var valueArray = [0,0,0,0];
 		 		for (var j=0; j<array[i].invoices.length; j++) {
@@ -731,6 +742,25 @@ angular.module('MobileCRMApp')
 					if (diff >= 0 && diff <= 7) {
 						valueArray[0] += value;
 						$scope.countNewServices++;
+						$scope.sumNewServices += array[i].invoices[j].total || 0;
+
+						if (array[i].invoices[j].dor) {
+							$scope.newServices.dor.count++;
+							$scope.newServices.dor.total += array[i].invoices[j].total || 0;
+						} else if (array[i].invoices[j].tor) {
+							$scope.newServices.tor.count++;
+							$scope.newServices.tor.total += array[i].invoices[j].total || 0;
+						} else if (array[i].invoices[j].hor) {
+							$scope.newServices.hor.count++;
+							$scope.newServices.hor.total += array[i].invoices[j].total || 0;
+						} else if (array[i].invoices[j].wor) {
+							$scope.newServices.wor.count++;
+							$scope.newServices.wor.total += array[i].invoices[j].total || 0;
+						} else if (array[i].invoices[j].sor) {
+							$scope.newServices.sor.count++;
+							$scope.newServices.sor.total += array[i].invoices[j].total || 0;
+						};
+						console.log($scope.newServices)
 					} else if (diff > 7 && diff <= 30) {
 						valueArray[1] += value;
 					} else if (diff > 30 && diff <= 120) {
@@ -1060,6 +1090,10 @@ angular.module('MobileCRMApp')
 		$scope.servicesByOpenDays = [];
 		$scope.countPendingToPay = 0;
 		$scope.sumPendingToPay = 0;
+		$scope.countPaid = 0;
+		$scope.sumPaid = 0;
+		$scope.pendingByService = [];
+		$scope.paidByService = [];
 
 		$scope.filter.isOpen = false;
 		var query = setQuery($scope.filter);
@@ -1083,8 +1117,18 @@ angular.module('MobileCRMApp')
 		});
 		new Invoice().getTotalPendingToPay()
 		.then(function(invoices){
+			console.log(invoices)
 			$scope.countPendingToPay = invoices[0].count;
 			$scope.sumPendingToPay = invoices[0].total;
+			$scope.pendingByService = invoices[0].serviceType;
+			Loading.hide();
+		});
+		new Invoice().getTotalPaid(query)
+		.then(function(invoices){
+			console.log(invoices)
+			$scope.countPaid = invoices[0].count;
+			$scope.sumPaid = invoices[0].total;
+			$scope.paidByService = invoices[0].serviceType;
 			Loading.hide();
 		});
 		new ServiceOrder().filter(pieQuery, $scope.sort)
@@ -1181,6 +1225,39 @@ angular.module('MobileCRMApp')
 
 		new Invoice().getReport(query, queryDescription);
 	};
+	$scope.showDetails = function () {
+		$scope.showDetail = true;
+	}
+	$scope.hideDetails = function () {
+		$scope.showDetail = false;
+	}
+	$scope.showDetails2 = function () {
+		$scope.showDetail2 = true;
+	}
+	$scope.hideDetails2 = function () {
+		$scope.showDetail2 = false;
+	}
+	$scope.showDetails3 = function () {
+		$scope.showDetail3 = true;
+	}
+	$scope.hideDetails3 = function () {
+		$scope.showDetail3 = false;
+	}
+	$scope.getPeriodDescription = function (range) {
+		var period;
+		if (range == 'w') {
+			period = "Week";
+		} else if (range == 'm') {
+			period = "Month";
+		} else if (range == 'q') {
+			period = "Quarter";
+		} else if (range == 'y') {
+			period = "Year";
+		}
+
+		return period;
+	}
+
 	$scope.search();
 	$scope.changeValueType('count');
 });

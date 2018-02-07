@@ -169,28 +169,10 @@
 </div>
 <br>
 <div class="row">
+
 	<div class="col-md-4">
-		<div class="panel panel-info">
-			<div class="panel-heading">
-				<div class="row">
-					<div class="col-xs-3">
-						<i class="fa fa-money fa-5x"></i>
-					</div>
-					<div class="col-xs-9 text-right">
-						<div style="font-size:36px">
-							{{countPendingToPay}}
-						</div>
-						<div>
-							Pending to Pay
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="col-md-4">
-		<div class="panel panel-info">
-			<div class="panel-heading">
+		<div class="panel panel-danger">
+			<div class="panel-heading" ng-focus="showDetail()">
 				<div class="row">
 					<div class="col-xs-2">
 						<i class="fa fa-dollar fa-5x"></i>
@@ -200,29 +182,97 @@
 							US {{sumPendingToPay | currency}}
 						</div>
 						<div>
-							Pending to Pay
+							{{countPendingToPay}} Invoices Pending to Pay
 						</div>
 					</div>
 				</div>
+				
+			</div>
+			<div class="panel-body" ng-show="showDetail">
+				<div class="row">
+					
+					<div ng-repeat="service in pendingByService" class="col-md-6" >
+						<p ><label>{{service._id.description}} ({{service.count}}):</label> {{service.total | currency}}</p>
+					</div>
+				</div>
+			</div>
+			<div class="panel-footer">
+				<a href="" ng-click="showDetails()" ng-if="!showDetail" >Show Details</a>
+				<a href="" ng-click="hideDetails()" ng-if="showDetail" >Hide Details</a>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-4">
+		<div class="panel panel-info">
+			<div class="panel-heading" ng-focus="showDetail2()">
+				<div class="row">
+					<div class="col-xs-2">
+						<i class="fa fa-money fa-5x"></i>
+					</div>
+					<div class="col-xs-10 text-right">
+						<div style="font-size:32px">
+							US {{sumPaid | currency}}
+						</div>
+						<div>
+							{{countPaid}} Invoices Paid <strong>Last {{getPeriodDescription(selectedTab)}}</strong>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="panel-body" ng-show="showDetail2">
+				<div class="row">
+					
+					<div ng-repeat="service in paidByService" class="col-md-6" >
+						<p ><label>{{service._id.description}} ({{service.count}}):</label> {{service.total | currency}}</p>
+					</div>
+				</div>
+			</div>
+			<div class="panel-footer">
+				<a href="" ng-click="showDetails2()" ng-if="!showDetail2" >Show Details</a>
+				<a href="" ng-click="hideDetails2()" ng-if="showDetail2" >Hide Details</a>
 			</div>
 		</div>
 	</div>
 	<div class="col-md-4">
 		<div class="panel panel-primary">
-			<div class="panel-heading">
+			<div class="panel-heading" ng-focus="showDetail3()">
 				<div class="row">
 					<div class="col-xs-3">
 						<i class="fa fa-truck fa-5x"></i>
 					</div>
 					<div class="col-xs-9 text-right">
 						<div style="font-size:36px">
-							{{countNewServices}}
+							US {{sumNewServices | currency}}
 						</div>
 						<div>
-							New Services
+							{{countNewServices}} New Services
 						</div>
 					</div>
 				</div>
+			</div>
+			<div class="panel-body" ng-show="showDetail3">
+				<div class="row">
+					
+					<div  class="col-md-6" >
+						<p ><label>Service Order ({{newServices.sor.count}}):</label> {{newServices.sor.total | currency}}</p>
+					</div>
+					<div  class="col-md-6" >
+						<p ><label>Work Order ({{newServices.wor.count}}):</label> {{newServices.wor.total | currency}}</p>
+					</div>
+					<div  class="col-md-6" >
+						<p ><label>Delivery Order ({{newServices.dor.count}}):</label> {{newServices.dor.total | currency}}</p>
+					</div>
+					<div  class="col-md-6" >
+						<p ><label>Home & Bussiness ({{newServices.hor.count}}):</label> {{newServices.hor.total | currency}}</p>
+					</div>
+					<div  class="col-md-6" >
+						<p ><label>Setup & Teardown ({{newServices.tor.count}}):</label> {{newServices.sor.total | currency}}</p>
+					</div>
+				</div>
+			</div>
+			<div class="panel-footer">
+				<a href="" ng-click="showDetails3()" ng-if="!showDetail3" >Show Details</a>
+				<a href="" ng-click="hideDetails3()" ng-if="showDetail3" >Hide Details</a>
 			</div>
 		</div>
 	</div>

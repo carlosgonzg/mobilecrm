@@ -359,6 +359,22 @@ angular.module('MobileCRMApp')
 			return d.promise;
 		};
 
+				Invoice.prototype.getTotalPaid = function (query) {
+			var d = $q.defer();
+			var _this = this;
+			console.log(query)
+			$http.post(_this.baseApiPath + '/totalPaid', { query: query })
+				.success(function (data) {
+					
+					d.resolve(data)
+				})
+				.error(function (data) {
+					toaster.error('There was an error, please try again');
+					d.reject(data);
+				});
+			return d.promise;
+		};
+
 		Invoice.prototype.exportMonthlyStatement = function (query, format) {
 			var d = $q.defer();
 			var _this = this;
