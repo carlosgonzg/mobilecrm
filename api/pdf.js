@@ -285,6 +285,7 @@ var createInvoice = function (obj, company, branch, urlPdfQuote) {
 	return d.promise;
 };
 
+
 var createServiceOrderBody = function (serviceOrder) {
 	var body = fs.readFileSync(__dirname + '/serviceorder.html', 'utf8').toString();
 	//replacement of data
