@@ -36,7 +36,7 @@
     "gulp-uglify": "^1.2.0"
   },
   "engines": {
-    "node": "8.1.4"
+    "node": "9.4.0"
   },
   "scripts": {
     "start": "nodemon server.js"
