@@ -33,7 +33,8 @@ var createInvoiceBody = function (obj, company, branch) {
 	body = body.replace(/<dueDate>/g, moment(obj.date).add(30, 'days').format('MM/DD/YYYY'));
 	body = body.replace(/<invoiceNumber>/g, obj.invoiceNumber || '');
 	//Company
-
+	console.log('Create pdf ' + 36)
+	
 	body = body.replace(/<companyName>/g, company.entity.name || '');
 
 	if (company._id == 21) {
@@ -285,6 +286,8 @@ var createInvoice = function (obj, company, branch, urlPdfQuote) {
 		url = __dirname + '/invoices/' + fileName;
 		body = createInvoiceBody(obj, company, branch);
 	}
+
+	console.log("created");
 
 	pdf.create(body, options).toFile(url, function (err, res) {
 		if (err) {
