@@ -5,7 +5,7 @@
 			<span> Invoice</span>
 		</h1>
 		<div class="btn-group pull-right" style="margin-top: 20px;" role="group" aria-label="...">
-			<button type="submit" form="userForm" class="btn btn-primary update" ng-click="save()" ng-disabled="waiting || isDisabled()">
+      <button type="submit" form="userForm" class="btn btn-primary update" ng-click="save()" ng-disabled="waiting || !isAdminOrClient();">
 				<i class="fa fa-save"></i>&nbsp;
 				<span>Save</span>
 			</button>
@@ -228,7 +228,7 @@
 						<div class="form-group">
 							<label for="pono">PO #</label>
 							<input type="text" class="form-control" ng-model="invoice.pono" ng-class="isChanged('pono')" ng-change="changed('pono')"
-							 ng-disabled="isDisabled()">
+							 ng-disabled="!isAdminOrClient()">
 						</div>
 					</div>
 				</div>

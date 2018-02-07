@@ -9,7 +9,7 @@
  */
 angular.module('MobileCRMApp')
 	.controller('InvoiceCtrl', function ($scope, $rootScope, $location, toaster, $window, User, invoice, statusList, statusDelivery, Item, ServiceOrder, WorkOrder, DeliveryOrder, dialogs, Invoice, Company, companies, Driver, ServiceQuotes, SetupTearDown) {
-		if ($rootScope.userData.role._id == 3) {
+    if ($rootScope.userData.role._id == 3) {
 			if ($rootScope.userData.company.entity.name != invoice.client.company.entity.name) {
 				$location.path("/noaccess")
 				return
@@ -24,7 +24,7 @@ angular.module('MobileCRMApp')
 		$scope.driver = Driver.data || {};
 		$scope.statusTech = {};
 
-		if ($rootScope.userData.role._id != 1) {
+		if ($rootScope.userData.role._id != 1 && $rootScope.userData.role._id != 3) {
 			$scope.invoice.client = new User($rootScope.userData);
 		}
 		if ($scope.invoice.dor) {
@@ -406,6 +406,9 @@ angular.module('MobileCRMApp')
 			}
 
 			//return $rootScope.userData.role._id != 1 && $scope.invoice.status._id == 3;
+		};
+		$scope.isAdminOrClient = function () {
+			return $rootScope.userData.role._id === 1 ||$rootScope.userData.role._id === 3;
 		};
 
 		$scope.save = function (sendTotech) {
