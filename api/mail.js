@@ -68,7 +68,7 @@ var sendMail = function (to, subject, body, isHtmlBody, attached, cc, cco, reply
 	else {
 		mailOptions.attachments = [];
 	}
-   	smtpTransport.sendMail(mailOptions, function (error, response) {
+	smtpTransport.sendMail(mailOptions, function (error, response) {
 		if (error) {
 			console.log(error);
 			deferred.reject(error);
@@ -76,7 +76,7 @@ var sendMail = function (to, subject, body, isHtmlBody, attached, cc, cco, reply
 			console.log('Message sent');
 			deferred.resolve(response);
 		}
- 	});  
+	});
 	return deferred.promise;
 };
 
@@ -148,7 +148,6 @@ var sendServiceOrder = function (serviceOrder, mails, dirname) {
 			body = body.replace('<clientAddress>', serviceOrder.siteAddress.address1 + ', ' + serviceOrder.siteAddress.city.description + ', ' + serviceOrder.siteAddress.state.description + ' ' + serviceOrder.siteAddress.zipcode);
 			body = body.replace('<issue>', serviceOrder.issue || 'None');
 			body = body.replace('<comment>', serviceOrder.comment || 'None');
-			body = body.replace('<status>', serviceOrder.status.description || 'None');
 			var contacts = '';
 			for (var i = 0; i < serviceOrder.contacts.length; i++) {
 				if (serviceOrder.contacts[i].name)
@@ -223,8 +222,6 @@ var sendServiceOrderDelete = function (serviceOrder, mails, dirname) {
 			body = body.replace('<clientAddress>', serviceOrder.siteAddress.address1 + ', ' + serviceOrder.siteAddress.city.description + ', ' + serviceOrder.siteAddress.state.description + ' ' + serviceOrder.siteAddress.zipcode);
 			body = body.replace('<issue>', serviceOrder.issue || 'None');
 			body = body.replace('<comment>', serviceOrder.comment || 'None');
-			body = body.replace('<status>', serviceOrder.status.description || 'None');
-
 			var contacts = '';
 			for (var i = 0; i < serviceOrder.contacts.length; i++) {
 				if (serviceOrder.contacts[i].name)
@@ -291,7 +288,6 @@ var sendServiceOrderUpdate = function (serviceOrder, mails, user) {
 			body = body.replace('<clientAddress>', serviceOrder.siteAddress.address1 + ', ' + serviceOrder.siteAddress.city.description + ', ' + serviceOrder.siteAddress.state.description + ' ' + serviceOrder.siteAddress.zipcode);
 			body = body.replace('<issue>', serviceOrder.issue || 'None');
 			body = body.replace('<comment>', serviceOrder.comment || 'None');
-			body = body.replace('<status>', serviceOrder.status.description || 'None');
 
 			var changesByUser = '';
 			changesByUser += (user.entity.fullName || user.entity.name) + '<br/> Changes: ';
@@ -375,7 +371,7 @@ var sendInvoice = function (invoice, mails, cc, file, fileName) {
 			var url = config.SERVER_URL;
 			body = body.replace('<emailUrl>', url);
 			body = body.replace('<clientName>', invoice.client.entity.fullName);
-			body = body.replace('<pono>', invoice.pono && invoice.pono != '' && invoice.pono != ' '? 'With PO Number: ' + invoice.pono : 'Without PO Number. Please provide PO Number for this Invoice');
+			body = body.replace('<pono>', invoice.pono && invoice.pono != '' && invoice.pono != ' ' ? 'With PO Number: ' + invoice.pono : 'Without PO Number. Please provide PO Number for this Invoice');
 			body = body.replace('<invoiceNumber>', invoice.invoiceNumber);
 			body = body.replace('<confirm>', !invoice.pono ? '' : 'Please confirm as received.<br/><br/>I wait for your comment.<br/>');
 
@@ -477,7 +473,7 @@ var sendInvoiceUpdate = function (invoice, mails, user, file, fileName) {
 			body = body.replace('<emailUrl>', url);
 			body = body.replace('<clientName>', invoice.client.entity.fullName);
 			body = body.replace('<invoiceNumber>', invoice.invoiceNumber);
-			body = body.replace('<pono>', invoice.pono && invoice.pono != '' && invoice.pono != ' '? 'With PO Number: ' + invoice.pono : 'Without PO Number. Please provide PO Number for this Invoice.');
+			body = body.replace('<pono>', invoice.pono && invoice.pono != '' && invoice.pono != ' ' ? 'With PO Number: ' + invoice.pono : 'Without PO Number. Please provide PO Number for this Invoice.');
 
 			var companyName = "";
 
@@ -559,7 +555,6 @@ var sendWorkOrder = function (workOrder, mails, dirname, file, fileName, buttonS
 			body = body.replace('<clientBranch>', workOrder.client.branch ? workOrder.client.branch.name : '');
 			body = body.replace('<wor>', workOrder.wor);
 			body = body.replace('<pono>', workOrder.pono || '')
-			body = body.replace('<status>', workOrder.status.description || 'None');
 			var company = '' + (workOrder && workOrder.client && workOrder.client.company && workOrder.client.company.entity ? workOrder.client.company.entity.name : '');
 			var branch = workOrder && workOrder.client && workOrder.client.branch ? '' + workOrder.client.branch.name : '' + workOrder.client.entity.fullName;
 			var subject = 'Work Order: ' + workOrder.wor + ' | ' + company + ' | ' + branch;
@@ -605,7 +600,6 @@ var sendWorkOrderDelete = function (workOrder, mails, dirname, file, fileName) {
 			body = body.replace('<clientBranch>', workOrder.client.branch ? workOrder.client.branch.name : '');
 			body = body.replace('<wor>', workOrder.wor);
 			body = body.replace('<pono>', workOrder.pono || '');
-			body = body.replace('<status>', workOrder.status.description || 'None');
 			var company = '' + (workOrder && workOrder.client && workOrder.client.company && workOrder.client.company.entity ? workOrder.client.company.entity.name : 'Not Defined');
 			var branch = workOrder && workOrder.client && workOrder.client.branch ? '' + workOrder.client.branch.name : '' + workOrder.client.entity.fullName;
 			var subject = 'DELETED - Work Order: ' + workOrder.wor + ' | ' + company + ' | ' + branch;
@@ -646,7 +640,6 @@ var sendWorkOrderUpdate = function (workOrder, mails, user, company, file, fileN
 			body = body.replace('<clientName>', workOrder.client.entity.fullName);
 			body = body.replace('<clientPhone>', workOrder.client && workOrder.client.branch && workOrder.client.branch.phones && workOrder.client.branch.phones.length > 0 ? workOrder.client.branch.phones[0].number : '');
 			body = body.replace('<clientMail>', workOrder.client.account.email);
-			body = body.replace('<status>', workOrder.status.description || 'None');
 			if (company.address) {
 				body = body.replace('<clientAddress>', company.address.address1 + ', ' + company.address.city.description + ', ' + company.address.state.description + ' ' + company.address.zipcode);
 			}
@@ -771,10 +764,11 @@ var sendDeliveryOrder = function (deliveryOrder, mails, dirname) {
 			body = body.replace('<clientName>', deliveryOrder.client.entity.fullName);
 			body = body.replace('<pickAddress>', pickAdress || '');
 			body = body.replace('<deliveryAddress>', deliveryOrder.siteAddress ? deliveryOrder.siteAddress.address1 + ', ' + deliveryOrder.siteAddress.city.description + ', ' + deliveryOrder.siteAddress.state.description + ' ' + deliveryOrder.siteAddress.zipcode : '');
+
 			body = body.replace('<Multipleroutes>', AddRoute || 'None');
+
 			body = body.replace('<Clientcomment>', deliveryOrder.clientcomment || 'None');
 			body = body.replace('<comment>', deliveryOrder.comments || 'None');
-			body = body.replace('<status>', deliveryOrder.status.description || 'None');
 
 			var contacts = '';
 			for (var i = 0; i < deliveryOrder.contacts.length; i++) {
@@ -878,9 +872,10 @@ var sendDeliveryOrderUpdate = function (deliveryOrder, mails, user, dirname) {
 			body = body.replace('<comment>', deliveryOrder.comments || 'None');
 			body = body.replace('<pickupdate>', moment(deliveryOrder.pickupDate).format('MM/DD/YYYY'));
 			body = body.replace('<pickuptime>', moment(deliveryOrder.pickupTime).format('HH:mm'));
+
 			body = body.replace('<Multipleroutes>', AddRoute || 'None');
+
 			body = body.replace('<Clientcomment>', deliveryOrder.clientcomment || 'None');
-			body = body.replace('<status>', deliveryOrder.status.description || 'None');
 
 			var changesByUser = '';
 			var changedStatus = '';
@@ -896,7 +891,7 @@ var sendDeliveryOrderUpdate = function (deliveryOrder, mails, user, dirname) {
 						fieldsChanged += ', ';
 					}
 				}
-				if (deliveryOrder.ControlstatusChanged.length > 0 && deliveryOrder.ControlstatusChanged[0].status != deliveryOrder.ControlstatusChanged[1].status ){
+				if (deliveryOrder.ControlstatusChanged.length > 0 && deliveryOrder.ControlstatusChanged[0].status != deliveryOrder.ControlstatusChanged[1].status) {
 					changedStatus = "<br/> Status Changed : From " + deliveryOrder.ControlstatusChanged[0].status + ' to ' + deliveryOrder.ControlstatusChanged[1].status + "<br/>"
 				}
 			}
@@ -979,8 +974,6 @@ var sendDeliveryOrderDelete = function (deliveryOrder, mails, dirname) {
 			body = body.replace('<deliveryAddress>', deliveryOrder.siteAddress ? deliveryOrder.siteAddress.address1 + ', ' + deliveryOrder.siteAddress.city.description + ', ' + deliveryOrder.siteAddress.state.description + ' ' + deliveryOrder.siteAddress.zipcode : '');
 			body = body.replace('<Clientcomment>', deliveryOrder.clientcomment || 'None');
 			body = body.replace('<comment>', deliveryOrder.comments || 'None');
-			body = body.replace('<status>', deliveryOrder.status.description || 'None');
-
 			var contacts = '';
 			for (var i = 0; i < deliveryOrder.contacts.length; i++) {
 				if (deliveryOrder.contacts[i].name)
