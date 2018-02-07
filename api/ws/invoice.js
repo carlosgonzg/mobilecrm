@@ -28,7 +28,7 @@ module.exports = function (prefix, app, mail, dirname) {
 
 	app.post(prefix + '/send', function (req, res) {
 		var invoice = new Invoice(app.db, req.user, dirname);
-		invoice.sendInvoice(req.body.id, req.user, mail, req.body.emails || [], req.body.sendToAllAdmin)
+		invoice.sendInvoice(req.body.id, req.user, mail, req.body.emails || [], req.body.sendToAllAdmin, req.body.query)
 		.then(util.success(res), util.error(res));
 	});
 

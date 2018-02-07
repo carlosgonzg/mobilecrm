@@ -356,6 +356,8 @@ DeliveryOrder.prototype.update = function (query, deliveryOrder, user, mail) {
 				setObj = { invoiceNumber: deliveryOrder.invoiceNumber };
 			}
 
+			if (deliveryOrder.pono == "")
+				setObj.pono = "";
 			if (deliveryOrder.pono)
 				setObj.pono = deliveryOrder.pono;
 			if (deliveryOrder.unitno)
@@ -382,6 +384,8 @@ DeliveryOrder.prototype.update = function (query, deliveryOrder, user, mail) {
 				setObj = { invoiceNumber: deliveryOrder.invoiceNumber };
 			}
 
+			if (deliveryOrder.pono == "")
+				setObj.pono = "";
 			if (deliveryOrder.pono)
 				setObj.pono = deliveryOrder.pono;
 			if (deliveryOrder.unitno)
@@ -400,6 +404,13 @@ DeliveryOrder.prototype.update = function (query, deliveryOrder, user, mail) {
 				_this.sendDeliveryOrderUpdate(query._id, user, mail, sendMail);
 			d.resolve(obj);
 		})
+		.then(function () {	
+			if (deliveryOrder.clearfieldsChanged == true){
+			deliveryOrder.fieldsChanged = [];
+					return _this.crud.update(query, deliveryOrder);	
+			}
+			d.resolve(obj);
+		})	
 		.catch(function (err) {
 			d.reject({
 				result: 'Not ok',

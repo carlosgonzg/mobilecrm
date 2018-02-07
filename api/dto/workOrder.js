@@ -238,6 +238,8 @@ WorkOrder.prototype.update = function (query, workOrder, user, mail) {
 				setObj = { invoiceNumber: workOrder.invoiceNumber };
 			}
 
+			if (workOrder.pono == "")
+				setObj.pono = "";
 			if (workOrder.pono)
 				setObj.pono = workOrder.pono;
 			if (workOrder.unitno)

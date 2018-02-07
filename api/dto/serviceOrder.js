@@ -250,6 +250,8 @@ ServiceOrder.prototype.update = function (query, serviceOrder, user, mail) {
 				setObj = { invoiceNumber: serviceOrder.invoiceNumber };
 			}
 
+			if (serviceOrder.pono == "")
+				setObj.pono = "";
 			if (serviceOrder.pono)
 				setObj.pono = serviceOrder.pono;
 			if (serviceOrder.unitno)

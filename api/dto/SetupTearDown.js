@@ -238,6 +238,8 @@ SetupTearDown.prototype.update = function (query, SetupTearDown, user, mail) {
 				setObj = { invoiceNumber: SetupTearDown.invoiceNumber };
 			}
 
+			if (SetupTearDown.pono == "")
+				setObj.pono = "";
 			if (SetupTearDown.pono)
 				setObj.pono = SetupTearDown.pono;
 			if (SetupTearDown.unitno)

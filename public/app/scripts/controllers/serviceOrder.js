@@ -471,13 +471,7 @@ angular.module('MobileCRMApp')
 			}
 			$scope.serviceOrder.fromQuotes = 0
 			$scope.ControlstatusSor()
-
-			var pono = document.getElementById('txtpono').value
-
-			if (pono == ""){
-				$scope.serviceOrder.pono = " ";
-			}
-
+			
 			$scope.serviceOrder.save()
 				.then(function (data) {
 					toaster.success('The Service Order was saved successfully');

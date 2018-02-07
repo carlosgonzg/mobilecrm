@@ -12,7 +12,7 @@ angular.module('MobileCRMApp')
 		$scope.DeliveryOrder = DeliveryOrder;
 		$scope.item = ItemDefault;
 		$scope.Math = $window.Math;
-
+		
 		LoadData()
 		ConcatenateAddress();
 
@@ -499,6 +499,9 @@ angular.module('MobileCRMApp')
 
 			if (sendMail) {
 				$scope.DeliveryOrder.sendMail = true;
+				$scope.DeliveryOrder.clearfieldsChanged = true;
+			} else {
+				$scope.DeliveryOrder.clearfieldsChanged = false;
 			}
 
 			if (originalContacts != $scope.DeliveryOrder.contacts) {
