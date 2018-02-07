@@ -324,7 +324,7 @@ Invoice.prototype.update = function (query, invoice, user, mail) {
 	return d.promise;
 };
 
-Invoice.prototype.sendInvoice = function (id, username, mail, emails, sendToAllAdmin, query) {
+Invoice.prototype.sendInvoice = function (id, username, mail, emails, sendToAllAdmin) {
 	var d = q.defer();
 	var _this = this;
 	var invoice = {};
@@ -365,9 +365,6 @@ Invoice.prototype.sendInvoice = function (id, username, mail, emails, sendToAllA
 		})
 		.then(function () {
 			return mail.sendInvoice(invoice, emails, cc, urlPdf, fileNamePdf);
-		})
-		.then(function () {
-			return _this.crud.update(query, invoice)
 		})
 		.then(function () {
 			d.resolve(true);
