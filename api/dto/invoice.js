@@ -361,9 +361,11 @@ Invoice.prototype.sendInvoice = function (id, username, mail, emails, sendToAllA
 			cc = _.uniq(cc);
 			fileNamePdf = invoice.invoiceNumber + '.pdf';
 			urlPdf = _this.dirname + '/api/invoices/' + fileNamePdf;
+			console.log('to create pdf')
 			return pdf.createInvoice(invoice, company, branch, urlPdf);
 		})
 		.then(function () {
+			console.log('to send')
 			return mail.sendInvoice(invoice, emails, cc, urlPdf, fileNamePdf);
 		})
 		.then(function () {
