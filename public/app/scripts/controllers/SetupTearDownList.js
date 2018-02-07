@@ -24,6 +24,10 @@ angular.module('MobileCRMApp')
 			name: 'client.entity.fullName',
 			type: 'text'
 		}, {
+			title: 'Created Date',
+			name: 'createdDate',
+			type: 'date'
+		}, {
 			title: 'Completed Date',
 			name: 'originalShipDate',
 			type: 'date'
@@ -73,7 +77,8 @@ angular.module('MobileCRMApp')
 			'status.description',
 			'client.branch',
 			'client.company',
-			'unitSize'
+			'unitSize',
+			'createdDate'
 		];
 
 		$scope.filterDate = 'date';
