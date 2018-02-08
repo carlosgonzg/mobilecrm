@@ -8,7 +8,7 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-	.controller('SetupTearDownCtrl', function ($scope, $rootScope, $location, $window, toaster, User, statusList, Item, SetupTearDown, dialogs, $q, Branch, CrewCollection, Invoice) {
+	.controller('SetupTearDownCtrl', function ($route, $scope, $rootScope, $location, $window, toaster, User, statusList, Item, SetupTearDown, dialogs, $q, Branch, CrewCollection, Invoice) {
 		$scope.SetupTearDown = SetupTearDown;
 		$scope.CrewCollection = CrewCollection.data
 		$scope.Math = $window.Math;
@@ -23,7 +23,8 @@ angular.module('MobileCRMApp')
 		$scope.CrewHeaderSel = ""
 		$scope.statusTech = {}
 		$scope.SetupTearDown.quotes = 0
-		
+		$scope.SetupTearDown.initialStatus = $scope.SetupTearDown.status.description
+
 		$scope.items = [];
 		$scope.params = {};
 		$scope.branches = [];
@@ -278,7 +279,11 @@ angular.module('MobileCRMApp')
 
 		$scope.clientChanged = function (client) {
 			if (client && client.company) {
-				$scope.wsFilterItem =  { 'typeItem': 'Set Up' };
+				if ($route.current.params.id) {					
+					$scope.wsFilterItem = { 'typeItem': $scope.SetupTearDown.typeItem.item };
+				} else {
+					$scope.wsFilterItem =  { 'typeItem': 'Set Up' };
+				}
 
 				if (!$scope.SetupTearDown.siteAddressFrom) {
 					$scope.SetupTearDown.siteAddressFrom = $scope.SetupTearDown.client.branch ? $scope.SetupTearDown.client.branch.addresses[0] : {};
@@ -508,7 +513,7 @@ angular.module('MobileCRMApp')
 			if (originalSiteAddress.address1 != $scope.SetupTearDown.siteAddress.address1) {
 				$scope.changed('Site Address');
 			}
-				
+			$scope.ControlstatusChanged()
 			$scope.SetupTearDown.save()
 				.then(function (data) {
 					toaster.success('The Set Up & TearDown was saved successfully');
@@ -707,6 +712,14 @@ angular.module('MobileCRMApp')
 							$scope.Invoice.save()
 						});
 					})
+			}
+		}
+
+		$scope.ControlstatusChanged = function () {
+			if ($scope.SetupTearDown._id) {
+				var status = [{ status: $scope.SetupTearDown.initialStatus }, { status: $scope.SetupTearDown.status.description }]
+
+				$scope.SetupTearDown.ControlstatusChanged = status
 			}
 		}
 	});

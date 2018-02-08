@@ -23,7 +23,8 @@ angular.module('MobileCRMApp')
 		$scope.CrewHeaderSel = ""
 		$scope.statusTech = {}
 		$scope.serviceOrder.quotes = 0
-
+		$scope.serviceOrder.initialStatus = $scope.serviceOrder.status.description
+		
 		$scope.items = [];
 		$scope.params = {};
 		$scope.branches = [];
@@ -471,7 +472,8 @@ angular.module('MobileCRMApp')
 			}
 			$scope.serviceOrder.fromQuotes = 0
 			$scope.ControlstatusSor()
-			
+			$scope.ControlstatusChanged()
+
 			$scope.serviceOrder.save()
 				.then(function (data) {
 					toaster.success('The Service Order was saved successfully');
@@ -678,6 +680,14 @@ angular.module('MobileCRMApp')
 							$scope.Invoice.save()
 						});
 					})
+			}
+		}
+
+		$scope.ControlstatusChanged = function () {
+			if ($scope.serviceOrder._id) {
+				var status = [{ status: $scope.serviceOrder.initialStatus }, { status: $scope.serviceOrder.status.description }]
+
+				$scope.serviceOrder.ControlstatusChanged = status
 			}
 		}
 

@@ -13,8 +13,8 @@ angular.module('MobileCRMApp')
 		$scope.item = ItemDefault;
 		$scope.Math = $window.Math;
 
-		$scope.DeliveryOrder.siteAddress.distanceFromSecond = 0
-		console.log($scope.DeliveryOrder.siteAddress)
+	//	$scope.DeliveryOrder.siteAddress.distanceFromSecond = 0
+	//	console.log($scope.DeliveryOrder.siteAddress)
 
 		LoadData()
 		ConcatenateAddress();

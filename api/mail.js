@@ -142,6 +142,7 @@ var sendServiceOrder = function (serviceOrder, mails, dirname) {
 			body = body.replace('<unitSize>', serviceOrder.unitSize || '');
 			body = body.replace('<pono>', serviceOrder.pono || '');
 			body = body.replace('<isono>', serviceOrder.isono || '');
+			body = body.replace('<contract>', serviceOrder.contract || '');
 			body = body.replace('<clientName>', serviceOrder.client.entity.fullName);
 			body = body.replace('<clientPhone>', serviceOrder.client && serviceOrder.client.branch && serviceOrder.client.branch.phones && serviceOrder.client.branch.phones.length > 0 ? serviceOrder.client.branch.phones[0].number : 'None');
 			body = body.replace('<clientMail>', serviceOrder.client.account.email);
@@ -294,6 +295,8 @@ var sendServiceOrderUpdate = function (serviceOrder, mails, user) {
 			body = body.replace('<status>', serviceOrder.status.description || 'None');
 
 			var changesByUser = '';
+			var changedStatus = '';
+
 			changesByUser += (user.entity.fullName || user.entity.name) + '<br/> Changes: ';
 			var fieldsChanged = '';
 			if (serviceOrder.fieldsChanged) {
@@ -304,6 +307,9 @@ var sendServiceOrderUpdate = function (serviceOrder, mails, user) {
 					if (i != serviceOrder.fieldsChanged.length - 1) {
 						fieldsChanged += ', ';
 					}
+				}
+				if (serviceOrder.ControlstatusChanged.length > 0 && serviceOrder.ControlstatusChanged[0].status != serviceOrder.ControlstatusChanged[1].status) {
+					changedStatus = "<br/> Status Changed : From " + serviceOrder.ControlstatusChanged[0].status + ' to ' + serviceOrder.ControlstatusChanged[1].status + "<br/>"
 				}
 			}
 			var addedItems = '';
@@ -330,6 +336,8 @@ var sendServiceOrderUpdate = function (serviceOrder, mails, user) {
 			changesByUser += fieldsChanged == '' ? 'None' : fieldsChanged;
 			changesByUser += addedItems == '' ? '' : '<br/> Added Items: ' + addedItems;
 			changesByUser += removedItems == '' ? '' : '<br/> Removed Items: ' + removedItems;
+			changesByUser += changedStatus;
+			
 			console.log(changesByUser, addedItems, removedItems)
 			body = body.replace('<client>', changesByUser);
 			var contacts = '';
@@ -656,7 +664,10 @@ var sendWorkOrderUpdate = function (workOrder, mails, user, company, file, fileN
 
 			body = body.replace('<issue>', workOrder.issue || '');
 			body = body.replace('<comment>', workOrder.comment || '');
+			
 			var changesByUser = '';
+			var changedStatus = '';
+
 			changesByUser += (user.entity.fullName || user.entity.name) + '<br> Changes: ';
 			var fieldsChanged = '';
 			if (workOrder.fieldsChanged) {
@@ -667,6 +678,9 @@ var sendWorkOrderUpdate = function (workOrder, mails, user, company, file, fileN
 					if (i != workOrder.fieldsChanged.length - 1) {
 						fieldsChanged += ', ';
 					}
+				}
+				if (workOrder.ControlstatusChanged.length > 0 && workOrder.ControlstatusChanged[0].status != workOrder.ControlstatusChanged[1].status) {
+					changedStatus = "<br/> Status Changed : From " + workOrder.ControlstatusChanged[0].status + ' to ' + workOrder.ControlstatusChanged[1].status + "<br/>"
 				}
 			}
 
@@ -693,6 +707,7 @@ var sendWorkOrderUpdate = function (workOrder, mails, user, company, file, fileN
 			changesByUser += fieldsChanged == '' ? 'None' : fieldsChanged;
 			changesByUser += addedItems == '' ? '' : '<br> Added Items: ' + addedItems;
 			changesByUser += removedItems == '' ? '' : '<br> Removed Items: ' + removedItems;
+			changesByUser += changedStatus;
 			body = body.replace('<client>', changesByUser);
 
 			var companyS = '' + company.entity.name;
@@ -1155,6 +1170,7 @@ var sendSetupTearDown = function (SetupTearDown, mails, dirname) {
 			body = body.replace('<clientAddress>', SetupTearDown.siteAddress.address1 + ', ' + SetupTearDown.siteAddress.city.description + ', ' + SetupTearDown.siteAddress.state.description + ' ' + SetupTearDown.siteAddress.zipcode);
 			body = body.replace('<issue>', SetupTearDown.issue || 'None');
 			body = body.replace('<comment>', SetupTearDown.comment || 'None');
+			body = body.replace('<status>', SetupTearDown.status.description || 'None');
 			var contacts = '';
 			for (var i = 0; i < SetupTearDown.contacts.length; i++) {
 				if (SetupTearDown.contacts[i].name)
@@ -1223,8 +1239,11 @@ var sendSetupTearDownUpdate = function (SetupTearDown, mails, user) {
 			body = body.replace('<clientAddress>', SetupTearDown.siteAddress.address1 + ', ' + SetupTearDown.siteAddress.city.description + ', ' + SetupTearDown.siteAddress.state.description + ' ' + SetupTearDown.siteAddress.zipcode);
 			body = body.replace('<issue>', SetupTearDown.issue || 'None');
 			body = body.replace('<comment>', SetupTearDown.comment || 'None');
+			body = body.replace('<status>', SetupTearDown.status.description || 'None');
 
 			var changesByUser = '';
+			var changedStatus = '';
+
 			changesByUser += (user.entity.fullName || user.entity.name) + '<br/> Changes: ';
 			var fieldsChanged = '';
 			if (SetupTearDown.fieldsChanged) {
@@ -1235,6 +1254,9 @@ var sendSetupTearDownUpdate = function (SetupTearDown, mails, user) {
 					if (i != SetupTearDown.fieldsChanged.length - 1) {
 						fieldsChanged += ', ';
 					}
+				}
+				if (SetupTearDown.ControlstatusChanged.length > 0 && SetupTearDown.ControlstatusChanged[0].status != SetupTearDown.ControlstatusChanged[1].status) {
+					changedStatus = "<br/> Status Changed : From " + SetupTearDown.ControlstatusChanged[0].status + ' to ' + SetupTearDown.ControlstatusChanged[1].status + "<br/>"
 				}
 			}
 			var addedItems = '';
@@ -1260,6 +1282,7 @@ var sendSetupTearDownUpdate = function (SetupTearDown, mails, user) {
 			changesByUser += fieldsChanged == '' ? 'None' : fieldsChanged;
 			changesByUser += addedItems == '' ? '' : '<br/> Added Items: ' + addedItems;
 			changesByUser += removedItems == '' ? '' : '<br/> Removed Items: ' + removedItems;
+			changesByUser += changedStatus;
 
 			body = body.replace('<client>', changesByUser);
 			var contacts = '';
@@ -1318,6 +1341,8 @@ var sendSetupTearDownDelete = function (SetupTearDown, mails, dirname) {
 			body = body.replace('<clientAddress>', SetupTearDown.siteAddress.address1 + ', ' + SetupTearDown.siteAddress.city.description + ', ' + SetupTearDown.siteAddress.state.description + ' ' + SetupTearDown.siteAddress.zipcode);
 			body = body.replace('<issue>', SetupTearDown.issue || 'None');
 			body = body.replace('<comment>', SetupTearDown.comment || 'None');
+			body = body.replace('<status>', SetupTearDown.status.description || 'None');
+			
 			var contacts = '';
 			for (var i = 0; i < SetupTearDown.contacts.length; i++) {
 				if (SetupTearDown.contacts[i].name)

@@ -422,6 +422,7 @@
 					<label for="comment">Comment</label>
 					<textarea id="comment" ng-model="workOrder.comment" class="form-control" ng-class="isChanged('Comment')" ng-change="changed('Comment')">
 					</textarea>
+					<input type="hidden" ng-model="workOrder.initialStatus" name="initialStatus" value="initialStatus">
 				</div>
 			</div>
 		</div>

@@ -31,6 +31,10 @@ angular.module('MobileCRMApp')
 			name: 'client.entity.fullName',
 			type: 'text'
 		}, {
+			title: 'Created',
+			name: 'createdDate',
+			type: 'date'
+		}, {
 			title: 'Estimate #',
 			name: 'quotesNumber',
 			type: 'text'
@@ -65,7 +69,8 @@ angular.module('MobileCRMApp')
 			'unitno',
 			'pono',
 			'total',
-			'taxes'
+			'taxes',
+			'createdDate'
 		];
 
 		$scope.filterDate = 'date';

@@ -23,6 +23,7 @@ angular.module('MobileCRMApp')
 		$scope.crewHeaderAdded = []
 		$scope.CrewHeaderSel = ""
 		$scope.workOrder.quotes = 0
+		$scope.workOrder.initialStatus = $scope.workOrder.status.description
 
 		$scope.items = [];
 		$scope.params = {};
@@ -269,7 +270,7 @@ angular.module('MobileCRMApp')
 			} else {
 				angular.element('#date').css('border', '1px #CCCCCC solid');
 			}
-
+			$scope.ControlstatusChanged()
 			$scope.workOrder.fromQuotes = 0 			
 			$scope.workOrder.save()
 				.then(function (data) {
@@ -459,6 +460,14 @@ angular.module('MobileCRMApp')
 							$scope.Invoice.save()
 						});
 					})
+			}
+		}
+
+		$scope.ControlstatusChanged = function () {
+			if ($scope.workOrder._id) {
+				var status = [{ status: $scope.workOrder.initialStatus }, { status: $scope.workOrder.status.description }]
+
+				$scope.workOrder.ControlstatusChanged = status
 			}
 		}
 
