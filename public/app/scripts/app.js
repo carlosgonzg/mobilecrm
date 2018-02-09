@@ -610,6 +610,9 @@ var app = angular
 					CrewCollection: function (CrewCollection, $route) {
 						return new CrewCollection().filter({ "role.description": 'Crew Leader' })
 					},
+					ItemDefault: function (Item) {
+						return new Item().filter({ _id: { $in: [599] } })
+					}
 				}
 			})
 			.when('/homeBusinessList', {

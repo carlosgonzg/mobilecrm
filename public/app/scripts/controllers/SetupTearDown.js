@@ -8,11 +8,11 @@
  * Controller of the MobileCRMApp
  */
 angular.module('MobileCRMApp')
-	.controller('SetupTearDownCtrl', function ($route, $scope, $rootScope, $location, $window, toaster, User, statusList, Item, SetupTearDown, dialogs, $q, Branch, CrewCollection, Invoice) {
+	.controller('SetupTearDownCtrl', function ($route, $scope, $rootScope, $location, $window, toaster, User, statusList, Item, SetupTearDown, dialogs, $q, Branch, CrewCollection, Invoice, ItemDefault) {
 		$scope.SetupTearDown = SetupTearDown;
 		$scope.CrewCollection = CrewCollection.data
 		$scope.Math = $window.Math;
-		
+
 		$scope.addedItem = [];
 		$scope.SetupTearDown.addedItems = $scope.SetupTearDown.addedItems ? $scope.SetupTearDown.addedItems : [];
 		$scope.SetupTearDown.removedItems = $scope.SetupTearDown.removedItems ? $scope.SetupTearDown.removedItems : [];
@@ -49,8 +49,8 @@ angular.module('MobileCRMApp')
 		if ($rootScope.userData.role._id != 1 && $rootScope.userData.role._id != 5) {
 			$scope.SetupTearDown.client = new User($rootScope.userData);
 		}
-		if (!$scope.SetupTearDown._id){
-		$scope.SetupTearDown.date = new Date();
+		if (!$scope.SetupTearDown._id) {
+			$scope.SetupTearDown.date = new Date();
 		}
 
 		$scope.listStatus = statusList;
@@ -115,7 +115,7 @@ angular.module('MobileCRMApp')
 			}
 		}
 
-		$scope.$watch("SetupTearDown.siteAddress.distanceFrom",function(newValue,oldValue) {
+		$scope.$watch("SetupTearDown.siteAddress.distanceFrom", function (newValue, oldValue) {
 			for (var row = 0; row < $scope.SetupTearDown.items.length; row++) {
 				if ($scope.SetupTearDown.items[row]._id == 253) {
 					$scope.SetupTearDown.items[row].quantity = Number(newValue);
@@ -248,7 +248,7 @@ angular.module('MobileCRMApp')
 			});
 		}
 
-		$scope.wsClassItem = Item;		
+		$scope.wsClassItem = Item;
 		$scope.wsFieldsItem = [{
 			label: 'Code',
 			field: 'code',
@@ -279,10 +279,10 @@ angular.module('MobileCRMApp')
 
 		$scope.clientChanged = function (client) {
 			if (client && client.company) {
-				if ($route.current.params.id) {					
+				if ($route.current.params.id) {
 					$scope.wsFilterItem = { 'typeItem': $scope.SetupTearDown.typeItem.item };
 				} else {
-					$scope.wsFilterItem =  { 'typeItem': 'Set Up' };
+					$scope.wsFilterItem = { 'typeItem': 'Set Up' };
 				}
 
 				if (!$scope.SetupTearDown.siteAddressFrom) {
@@ -290,6 +290,22 @@ angular.module('MobileCRMApp')
 				}
 			}
 		};
+
+		//console.log(ItemDefault.data[0])
+		//	$scope.SetupTearDown.items.unshift(ItemDefault.data[0]);
+
+		$scope.AddWithMaterial = function () {
+			console.log($scope.SetupTearDown.WithMaterial)
+			if ($scope.SetupTearDown.WithMaterial == true) {
+				$scope.SetupTearDown.items.unshift(ItemDefault.data[0]);
+			} else {
+				for (let index = 0; index < $scope.SetupTearDown.items.length; index++) {
+					if ($scope.SetupTearDown.items[index]._id == 599) {
+						$scope.SetupTearDown.items.splice(index, 1);
+					}
+				}
+			}
+		}
 
 		$scope.addContact = function () {
 			$scope.SetupTearDown.contacts.push({})
@@ -340,18 +356,18 @@ angular.module('MobileCRMApp')
 			}
 		};
 
-		$scope.changeItem = function (client) {	
+		$scope.changeItem = function (client) {
 			console.log(1)
 			if (client && client.company) {
 				console.log(2)
-				$scope.SetupTearDown.items = []	
+				$scope.SetupTearDown.items = []
 				console.log($scope.SetupTearDown.typeItem.item)
-				if ($scope.SetupTearDown.typeItem.item == 'Set Up'){
-					$scope.wsFilterItem =  { 'typeItem': 'Set Up'}
-				}else{
+				if ($scope.SetupTearDown.typeItem.item == 'Set Up') {
+					$scope.wsFilterItem = { 'typeItem': 'Set Up' }
+				} else {
 					$scope.wsFilterItem = { 'typeItem': 'Tear Down' }
-				} 
-		  } 
+				}
+			}
 		}
 
 		$scope.isChanged = function (field) {
@@ -364,7 +380,7 @@ angular.module('MobileCRMApp')
 						break;
 					}
 				}
-				return isHere ? 'changed' : ''; 
+				return isHere ? 'changed' : '';
 			}
 			return '';
 		};
@@ -475,12 +491,12 @@ angular.module('MobileCRMApp')
 			}
 			var had = false
 			for (let index = 0; index < $scope.SetupTearDown.contacts.length; index++) {
-				if ( $scope.SetupTearDown.contacts[index] && $scope.SetupTearDown.contacts[index].name !=''){
+				if ($scope.SetupTearDown.contacts[index] && $scope.SetupTearDown.contacts[index].name != '') {
 					had = true
 					break
 				}
 			}
-			if (had == false){
+			if (had == false) {
 				toaster.error('You must add a contact.');
 				return
 			}
@@ -605,7 +621,7 @@ angular.module('MobileCRMApp')
 							var item = array[n];
 							if (selectedItem == item.itemid) {
 
-								if ($scope.crewHeaderAdded.length > 0 && $scope.CrewHeaderSel.length > 0 ) {
+								if ($scope.crewHeaderAdded.length > 0 && $scope.CrewHeaderSel.length > 0) {
 									if ($scope.crewHeaderAdded[0].name == element.entity.fullName) {
 										$scope.newItem = {
 											name: element.entity.fullName,
@@ -664,18 +680,18 @@ angular.module('MobileCRMApp')
 		$scope.crewHeaderRemove = function (index) {
 			$scope.crewHeaderAdded.splice(index, 1);
 			$scope.SetupTearDown.crewHeader = $scope.crewHeaderAdded
-			$scope.changed('Crew Leader');	
+			$scope.changed('Crew Leader');
 		};
 
 		$scope.setAmountToZero = function (status) {
 			if (status._id == 5 || status._id == 7) {
-				for (var i=0; i<$scope.SetupTearDown.items.length; i++) {
+				for (var i = 0; i < $scope.SetupTearDown.items.length; i++) {
 					$scope.SetupTearDown.items[i].originalPrice = $scope.SetupTearDown.items[i].price;
 					$scope.SetupTearDown.items[i].price = 0;
 				}
 			} else {
-				for (var i=0; i<$scope.SetupTearDown.items.length; i++) {
-					$scope.SetupTearDown.items[i].price = $scope.SetupTearDown.items[i].originalPrice ? $scope.SetupTearDown.items[i].originalPrice : $scope.SetupTearDown.items[i].price; 
+				for (var i = 0; i < $scope.SetupTearDown.items.length; i++) {
+					$scope.SetupTearDown.items[i].price = $scope.SetupTearDown.items[i].originalPrice ? $scope.SetupTearDown.items[i].originalPrice : $scope.SetupTearDown.items[i].price;
 					delete $scope.SetupTearDown.items[i].originalPrice;
 				}
 			}
@@ -687,7 +703,7 @@ angular.module('MobileCRMApp')
 			if (chk == true) {
 				$scope.CrewHeaderSel = $scope.crewHeaderAdded[0].name
 			} else {
-				$scope.CrewHeaderSel = []				
+				$scope.CrewHeaderSel = []
 			}
 		}
 
